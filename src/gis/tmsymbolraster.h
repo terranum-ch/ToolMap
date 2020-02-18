@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmsymbolraster.h
-				Deals with GIS raster symbology and associed dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsymbolraster.h
+ Deals with GIS raster symbology and associed dialog
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,48 +16,45 @@
 
 // comment doxygen
 
-
 #ifndef _TM_SYMBOLRASTER_H_
 #define _TM_SYMBOLRASTER_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "tmsymbol.h"    // tmSymbol class definition
-#include "tmsymboldlgraster.h"    // raster dialog definition
+#include "tmsymbol.h"           // tmSymbol class definition
+#include "tmsymboldlgraster.h"  // raster dialog definition
 
-class tmSymbolRaster : public tmSymbol
-{
-private:
-    tmSymbolDataRaster m_RasterData;
+class tmSymbolRaster : public tmSymbol {
+ private:
+  tmSymbolDataRaster m_RasterData;
 
-    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
-    virtual bool GetDialogData(tmSymbolDLG *dlg);
+  virtual bool GetDialogData(tmSymbolDLG *dlg);
 
+ protected:
+ public:
+  tmSymbolRaster();
 
-protected:
-public:
-    tmSymbolRaster();
+  tmSymbolRaster(const tmSymbolRaster &origin);
 
-    tmSymbolRaster(const tmSymbolRaster &origin);
+  ~tmSymbolRaster();
 
-    ~tmSymbolRaster();
+  virtual bool Serialize(tmSerialize &s);
 
+  virtual int GetTransparency() {
+    return m_RasterData.m_GlobalTransparency;
+  }
 
-    virtual bool Serialize(tmSerialize &s);
-
-    virtual int GetTransparency()
-    { return m_RasterData.m_GlobalTransparency; }
-
-    bool GetDoMultiply() {return m_RasterData.m_DoMultiplyRaster;}
-
+  bool GetDoMultiply() {
+    return m_RasterData.m_DoMultiplyRaster;
+  }
 };
-
 
 #endif

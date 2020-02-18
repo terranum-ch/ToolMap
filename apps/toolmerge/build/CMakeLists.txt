@@ -2,34 +2,34 @@
 # (c) LUCIEN SCHREIBER CREALP 2012
 cmake_minimum_required(VERSION 2.6)
 
-PROJECT ("ToolMerge")
+PROJECT("ToolMerge")
 
 #search all source files
-FILE (GLOB_RECURSE SRC_FILES "../src/*.cpp")
-FILE (GLOB_RECURSE HEAD_FILES "../src/*.h")
-SET (SRC_FILES ${SRC_FILES}
-	"../../../src/database/database.cpp"
-	"../../../src/database/databaseresult.cpp"
-	"../../../src/database/tmprojectmerge.cpp"
-	"../../../src/database/tmprojectmaintenance.cpp")
-	SET (HEAD_FILES ${HEAD_FILES} 
-	"../../../src/database/database.h"
-	"../../../src/database/databaseresult.h"
-	"../../../src/database/tmprojectmaintenance.h"
-	"../../../src/database/tmprojectmerge.h")
+FILE(GLOB_RECURSE SRC_FILES "../src/*.cpp")
+FILE(GLOB_RECURSE HEAD_FILES "../src/*.h")
+SET(SRC_FILES ${SRC_FILES}
+        "../../../src/database/database.cpp"
+        "../../../src/database/databaseresult.cpp"
+        "../../../src/database/tmprojectmerge.cpp"
+        "../../../src/database/tmprojectmaintenance.cpp")
+SET(HEAD_FILES ${HEAD_FILES}
+        "../../../src/database/database.h"
+        "../../../src/database/databaseresult.h"
+        "../../../src/database/tmprojectmaintenance.h"
+        "../../../src/database/tmprojectmerge.h")
 MESSAGE(${SRC_FILES})
-SOURCE_GROUP (source FILES ${SRC_FILES})
-SOURCE_GROUP (header FILES ${HEAD_FILES})
+SOURCE_GROUP(source FILES ${SRC_FILES})
+SOURCE_GROUP(header FILES ${HEAD_FILES})
 
 # WXWIDGETS
 # DEFINE ALL INCLUDES AND SO ON
-INCLUDE ("../../../build/cmake/FindwxWidgets.cmake")
- 
+INCLUDE("../../../build/cmake/FindwxWidgets.cmake")
+
 #MYSQL EMBEDDED
-INCLUDE ("../../../build/cmake/findMySQLEmbedded.cmake")
+INCLUDE("../../../build/cmake/findMySQLEmbedded.cmake")
 
 #GEOS - GDAL libs
-INCLUDE ("../../../build/cmake/findGISLib.cmake")
+INCLUDE("../../../build/cmake/findGISLib.cmake")
 
 INCLUDE_DIRECTORIES("../../../src/database/")
 
@@ -41,7 +41,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} ${HEAD_FILES} ${SRC_FILES})
 # SHOULD WE USE THE MT VERSION FOR DEFAULT 
 # COMPATIBILITY WITH < WINXP
 IF (WIN32)
-	INCLUDE ("cmake/Use_visualstudioMT.cmake")
+    INCLUDE("cmake/Use_visualstudioMT.cmake")
 ENDIF (WIN32)
 
 #Copy errmsg.sys to correct path

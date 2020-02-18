@@ -1,9 +1,8 @@
 /***************************************************************************
-								main_panel.cpp
-				Display the main panel where drawing occurs
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ main_panel.cpp
+ Display the main panel where drawing occurs
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,52 +18,38 @@
 
 #include "main_panel.h"
 
+Main_PANEL::Main_PANEL(wxWindow *parent, wxAuiManager *AuiManager) : ManagedAuiWnd(AuiManager) {
+  wxPanel *ContentFrame =
+      new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxWANTS_CHARS);
+  CreateControls(ContentFrame);
 
-Main_PANEL::Main_PANEL(wxWindow *parent, wxAuiManager *AuiManager) : ManagedAuiWnd(AuiManager)
-{
-    wxPanel *ContentFrame = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                        wxTAB_TRAVERSAL | wxWANTS_CHARS);
-    CreateControls(ContentFrame);
+  // define properties of Panel.
+  mPaneInfo.Name(SYMBOL_MAIN_PANEL_TITLE);
+  mPaneInfo.CentrePane();
 
+  // pass panel name to parent class.
+  m_AuiPanelName = SYMBOL_MAIN_PANEL_TITLE;
 
-
-    // define properties of Panel.
-    mPaneInfo.Name(SYMBOL_MAIN_PANEL_TITLE);
-    mPaneInfo.CentrePane();
-
-    // pass panel name to parent class.
-    m_AuiPanelName = SYMBOL_MAIN_PANEL_TITLE;
-
-    // add the panel
-    AddManagedPane(ContentFrame, mPaneInfo, TRUE);
-
+  // add the panel
+  AddManagedPane(ContentFrame, mPaneInfo, TRUE);
 }
 
-
-Main_PANEL::~Main_PANEL()
-{
-    delete m_GISRenderer;
-
+Main_PANEL::~Main_PANEL() {
+  delete m_GISRenderer;
 }
 
+wxSizer *Main_PANEL::CreateControls(wxWindow *parent, bool call_fit, bool set_sizer) {
+  wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-wxSizer *Main_PANEL::CreateControls(wxWindow *parent, bool call_fit, bool set_sizer)
-{
-    wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+  m_GISRenderer = new tmRenderer(parent, wxID_ANY);
 
-    m_GISRenderer = new tmRenderer(parent, wxID_ANY);
+  m_GISRenderer->SetBackgroundColour(*wxWHITE);
+  itemBoxSizer2->Add(m_GISRenderer, 1, wxGROW | wxALL, 0);
 
+  if (set_sizer) {
+    parent->SetSizer(itemBoxSizer2);
+    if (call_fit) itemBoxSizer2->SetSizeHints(parent);
+  }
 
-    m_GISRenderer->SetBackgroundColour(*wxWHITE);
-    itemBoxSizer2->Add(m_GISRenderer, 1, wxGROW | wxALL, 0);
-
-
-    if (set_sizer) {
-        parent->SetSizer(itemBoxSizer2);
-        if (call_fit)
-            itemBoxSizer2->SetSizeHints(parent);
-    }
-
-    return itemBoxSizer2;
+  return itemBoxSizer2;
 }
-

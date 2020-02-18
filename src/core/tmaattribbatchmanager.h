@@ -1,9 +1,7 @@
 /***************************************************************************
  tmaattribbatchmanager.h
-
  -------------------
- copyright            : (C) 2007 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -19,7 +17,7 @@
 #define _TMAATTRIBBATCHMANAGER_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -36,41 +34,32 @@ class tmSelectedDataMemory;
 
 class tmAAttribCtrl;
 
+class tmAAttribBatchManager {
+ private:
+  PrjDefMemManage *m_Project;
+  DataBaseTM *m_DB;
+  tmSelectedDataMemory *m_Selected;
+  PRJDEF_LAYERS_TYPE m_SelLayerType;
 
-class tmAAttribBatchManager
-{
-private:
-    PrjDefMemManage *m_Project;
-    DataBaseTM *m_DB;
-    tmSelectedDataMemory *m_Selected;
-    PRJDEF_LAYERS_TYPE m_SelLayerType;
+  bool _GetSelectionSubset(long layerid, wxArrayLong &subselected);
 
-    bool _GetSelectionSubset(long layerid, wxArrayLong &subselected);
+  wxString _CreateListOfIds(const wxArrayLong *ids);
 
-    wxString _CreateListOfIds(const wxArrayLong *ids);
+ public:
+  tmAAttribBatchManager(PrjDefMemManage *project, DataBaseTM *database, tmSelectedDataMemory *selected,
+                        PRJDEF_LAYERS_TYPE sellayertype);
 
+  virtual ~tmAAttribBatchManager();
 
-public:
-    tmAAttribBatchManager(PrjDefMemManage *project,
-                          DataBaseTM *database,
-                          tmSelectedDataMemory *selected,
-                          PRJDEF_LAYERS_TYPE sellayertype);
+  bool GetTypes(PrjMemObjectsArray &objects, wxArrayInt &number, wxArrayLong &layerid);
 
-    virtual ~tmAAttribBatchManager();
+  bool GetFields(long layerid, PrjMemFieldArray &fields);
 
-    bool GetTypes(PrjMemObjectsArray &objects, wxArrayInt &number, wxArrayLong &layerid);
+  tmAAttribCtrl *GetValueControl(const ProjectDefMemoryFields &field, wxWindow *wnd);
 
-    bool GetFields(long layerid, PrjMemFieldArray &fields);
+  bool IsOk();
 
-    tmAAttribCtrl *GetValueControl(const ProjectDefMemoryFields &field, wxWindow *wnd);
-
-    bool IsOk();
-
-    int Attribute(long layerid,
-                  const ProjectDefMemoryFields &field,
-                  const wxString &value);
-
-
+  int Attribute(long layerid, const ProjectDefMemoryFields &field, const wxString &value);
 };
 
 #endif

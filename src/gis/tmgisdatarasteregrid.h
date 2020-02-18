@@ -1,9 +1,8 @@
 /***************************************************************************
-							tmgisdatarasteregrid.h
-                    For dealing with raster ESRI's binary grid
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmgisdatarasteregrid.h
+ For dealing with raster ESRI's binary grid
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,36 +16,29 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATARASTER_EGRID_H_
 #define _TM_GISDATARASTER_EGRID_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-#include "tmgisdataraster.h"
 #include "gdal_priv.h"
+#include "tmgisdataraster.h"
 
+class tmGISDataRasterEGRID : public tmGISDataRaster {
+ private:
+ protected:
+ public:
+  tmGISDataRasterEGRID();
 
-class tmGISDataRasterEGRID : public tmGISDataRaster
-{
-private:
+  ~tmGISDataRasterEGRID();
 
-protected:
-public:
-    tmGISDataRasterEGRID();
-
-    ~tmGISDataRasterEGRID();
-
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
-
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
-
 
 #endif

@@ -1,9 +1,8 @@
 /***************************************************************************
-							tmgisdatarasterjpeg.h
-						For dealing with JPEG raster
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmgisdatarasterjpeg.h
+ For dealing with JPEG raster
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,35 +16,29 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATARASTER_JPEG_H_
 #define _TM_GISDATARASTER_JPEG_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "tmgisdataraster.h"
 #include "gdal_priv.h"
+#include "tmgisdataraster.h"
 
+class tmGISDataRasterJPEG : public tmGISDataRaster {
+ private:
+ protected:
+ public:
+  tmGISDataRasterJPEG();
 
-class tmGISDataRasterJPEG : public tmGISDataRaster
-{
-private:
+  ~tmGISDataRasterJPEG();
 
-protected:
-public:
-    tmGISDataRasterJPEG();
-
-    ~tmGISDataRasterJPEG();
-
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
-
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
-
 
 #endif

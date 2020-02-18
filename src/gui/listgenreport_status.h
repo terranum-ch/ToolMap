@@ -1,9 +1,8 @@
 /***************************************************************************
-								listgenreport_status.h
-					Enhance the listgenreport class with a status bar 
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ listgenreport_status.h
+ Enhance the listgenreport class with a status bar
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef NAME_H
 #define NAME_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -31,69 +29,61 @@
 
 #include "listgenreport.h"
 
-enum TM_STATUS_FIELD
-{
-    /// only first status field will be modified
-            STATUS_FIELD_ITEM_COUNT = 1,
-    /// only second status field will be modified
-            STATUS_FIELD_ITEM_SELECTED = 2,
-    /// both status fields will be modified
-            STATUS_FIELD_ITEM_BOTH = 3
+enum TM_STATUS_FIELD {
+  /// only first status field will be modified
+  STATUS_FIELD_ITEM_COUNT = 1,
+  /// only second status field will be modified
+  STATUS_FIELD_ITEM_SELECTED = 2,
+  /// both status fields will be modified
+  STATUS_FIELD_ITEM_BOTH = 3
 };
 
+/***************************************************************************/ /**
+  @brief Enhance the #ListGenReportWithDialog for supporting status bar
+  @details This class is able to automaticaly deals with a status bar updating
+  number of elements status and number of selected items. String displayed is
+  customizable
+  @todo add a code sample for using this class
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 21 May 2008
+  *******************************************************************************/
+class ListGenReportWithStatus : public ListGenReportWithDialog {
+ private:
+  // private members
+  wxStatusBar *m_status;
 
-/***************************************************************************//**
- @brief Enhance the #ListGenReportWithDialog for supporting status bar
- @details This class is able to automaticaly deals with a status bar updating
- number of elements status and number of selected items. String displayed is
- customizable
- @todo add a code sample for using this class
- @author Lucien Schreiber (c) CREALP 2008
- @date 21 May 2008
- *******************************************************************************/
-class ListGenReportWithStatus : public ListGenReportWithDialog
-{
-private:
-    // private members
-    wxStatusBar *m_status;
+  wxString m_TextField1;
+  wxString m_TextField2;
 
-    wxString m_TextField1;
-    wxString m_TextField2;
+  // private functions
+  void InitMembers();
 
-    // private functions
-    void InitMembers();
+  // event functions
+  void OnSelectionChange(wxListEvent &event);
 
-    // event functions
-    void OnSelectionChange(wxListEvent &event);
+ protected:
+ public:
+  // constructor
+  ListGenReportWithStatus(wxWindow *parent, wxWindowID id, wxArrayString *pColsName, wxArrayInt *pColsSize = nullptr,
+                          wxSize size = wxDefaultSize);
 
-protected:
+  // status setter and getter
+  void SetStatusBar(wxStatusBar *status);
 
-public:
-    // constructor
-    ListGenReportWithStatus(wxWindow *parent, wxWindowID id,
-                            wxArrayString *pColsName,
-                            wxArrayInt *pColsSize = NULL,
-                            wxSize size = wxDefaultSize);
+  wxStatusBar *GetStatusBar() {
+    return m_status;
+  }
 
-    // status setter and getter
-    void SetStatusBar(wxStatusBar *status);
+  // set the status text
+  void SetTextFields(const wxString &field1 = wxEmptyString, const wxString &field2 = wxEmptyString);
 
-    wxStatusBar *GetStatusBar()
-    { return m_status; }
+  // update the status
+  bool UpdateStatus(int iField = STATUS_FIELD_ITEM_BOTH);
 
-    // set the status text
-    void SetTextFields(const wxString &field1 = wxEmptyString,
-                       const wxString &field2 = wxEmptyString);
+  // re-implement for adding / deleting update process
+  virtual void AddItem();
 
-    // update the status
-    bool UpdateStatus(int iField = STATUS_FIELD_ITEM_BOTH);
-
-    // re-implement for adding / deleting update process
-    virtual void AddItem();
-
-    virtual void DeleteItem();
-
+  virtual void DeleteItem();
 };
-
 
 #endif

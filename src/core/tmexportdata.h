@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmexportdata.h
-                    main class for the process of exporting data
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmexportdata.h
+ main class for the process of exporting data
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_EXPORTDATA_H_
 #define _TM_EXPORTDATA_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -31,8 +29,8 @@
 
 #include <wx/progdlg.h>
 
-#include "projectdefmemory.h"            // for ProjectDefMemoryLayers definition
 #include "../database/databaseresult.h"
+#include "projectdefmemory.h"  // for ProjectDefMemoryLayers definition
 
 class DataBaseTM;
 
@@ -40,135 +38,158 @@ class PrjDefMemManage;
 
 class tmPercent;
 
-/***************************************************************************//**
- @brief Parent class for exporting data
- @details This class is used by the #tmExportManager to abstract the access to
- the data and to allow us to implement new export format
- @author Lucien Schreiber (c) CREALP 2008
- @date 14 November 2008
- *******************************************************************************/
-class tmExportData : public wxObject
-{
-private:
-    bool m_ExportAttributEnumerationCode;
+/***************************************************************************/ /**
+  @brief Parent class for exporting data
+  @details This class is used by the #tmExportManager to abstract the access to
+  the data and to allow us to implement new export format
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 14 November 2008
+  *******************************************************************************/
+class tmExportData : public wxObject {
+ private:
+  bool m_ExportAttributEnumerationCode;
 
-    void InitMemberValues();
+  void InitMemberValues();
 
-    double m_CropBufferDistance;
+  double m_CropBufferDistance;
 
-protected:
-    DataBaseTM *m_pDB;
-    wxString m_Extension;
-    bool m_Overwrite;
-    bool m_EmptyLayer;
+ protected:
+  DataBaseTM *m_pDB;
+  wxString m_Extension;
+  bool m_Overwrite;
+  bool m_EmptyLayer;
 
-    // protected functions
-    wxFileName *GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path);
+  // protected functions
+  wxFileName *GetFileName(ProjectDefMemoryLayers *myLayer, const wxString &path);
 
-    wxFileName *GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const wxString &path);
+  wxFileName *GetFileNamePrj(ProjectDefMemoryLayers *myLayer, const wxString &path);
 
-    int GetSizeOfEnum(const PrjMemFieldCodedValArray &mCodedVal);
+  int GetSizeOfEnum(const PrjMemFieldCodedValArray &mCodedVal);
 
-    bool GetSimpleAttribData(PRJDEF_LAYERS_TYPE layertype, long layerindex);
+  bool GetSimpleAttribData(PRJDEF_LAYERS_TYPE layertype, long layerindex);
 
-    bool GetSimpleAttribDataWithSpatial(PRJDEF_LAYERS_TYPE layertype, long layerindex);
+  bool GetSimpleAttribDataWithSpatial(PRJDEF_LAYERS_TYPE layertype, long layerindex);
 
-    bool GetAdvancedAttribution(ProjectDefMemoryLayers *layer);
+  bool GetAdvancedAttribution(ProjectDefMemoryLayers *layer);
 
-    virtual bool SetPolyExportInfo(ProjectDefMemoryLayers *layer)
-    { return false; }
+  virtual bool SetPolyExportInfo(ProjectDefMemoryLayers *layer) {
+    return false;
+  }
 
-public:
-    // ctor
-    tmExportData();
+ public:
+  // ctor
+  tmExportData();
 
-    tmExportData(DataBaseTM *database);
+  tmExportData(DataBaseTM *database);
 
-    void Create(DataBaseTM *database);
+  void Create(DataBaseTM *database);
 
-    ~tmExportData();
+  ~tmExportData();
 
-    // informations
-    int GetSizeOfObjDesc(int layerindex);
+  // informations
+  int GetSizeOfObjDesc(int layerindex);
 
-    wxString GetFileExtension();
+  wxString GetFileExtension();
 
-    void SetExportAttributEnumeration(bool useAttributCode)
-    { m_ExportAttributEnumerationCode = useAttributCode; }
+  void SetExportAttributEnumeration(bool useAttributCode) {
+    m_ExportAttributEnumerationCode = useAttributCode;
+  }
 
-    bool DoExportAttributEnumerationCode()
-    { return m_ExportAttributEnumerationCode; }
+  bool DoExportAttributEnumerationCode() {
+    return m_ExportAttributEnumerationCode;
+  }
 
-    // create export file
-    virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path)
-    { return false; }
+  // create export file
+  virtual bool CreateEmptyExportFile(ProjectDefMemoryLayers *myLayer, const wxString &path) {
+    return false;
+  }
 
-    virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj)
-    { return false; }
+  virtual bool CreatePrjFile(ProjectDefMemoryLayers *myLayer, const wxString &path, PRJDEF_PROJ_TYPE proj) {
+    return false;
+  }
 
-    virtual bool AddOptFields(const PrjMemFieldArray &myfields)
-    { return false; }
+  virtual bool AddOptFields(const PrjMemFieldArray &myfields) {
+    return false;
+  }
 
-    virtual bool AddGenericFields(int iSize)
-    { return false; }
+  virtual bool AddGenericFields(int iSize) {
+    return false;
+  }
 
-    virtual bool AddFIDField()
-    { return false; }
+  virtual bool AddFIDField() {
+    return false;
+  }
 
-    virtual void SetFrame(wxRealPoint *points, int nbvertex)
-    { ; }
+  virtual void SetFrame(wxRealPoint *points, int nbvertex) {
+    ;
+  }
 
-    virtual bool WriteLines(ProjectDefMemoryLayers *myLayer)
-    { return false; }
+  virtual bool WriteLines(ProjectDefMemoryLayers *myLayer) {
+    return false;
+  }
 
-    virtual bool WritePoints(ProjectDefMemoryLayers *myLayer)
-    { return false; }
+  virtual bool WritePoints(ProjectDefMemoryLayers *myLayer) {
+    return false;
+  }
 
-    virtual bool WritePolygons(ProjectDefMemoryLayers *myLayer)
-    { return false; }
+  virtual bool WritePolygons(ProjectDefMemoryLayers *myLayer) {
+    return false;
+  }
 
-    virtual bool WriteLabels(ProjectDefMemoryLayers *myLayer)
-    { return false; }
+  virtual bool WriteLabels(ProjectDefMemoryLayers *myLayer) {
+    return false;
+  }
 
-    virtual long WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxProgressDialog *progDlg, tmPercent *percent)
-    { return false; }
+  virtual long WriteConcatGeometries(ProjectDefMemoryLayers *layer, wxProgressDialog *progDlg, tmPercent *percent) {
+    return false;
+  }
 
-    virtual bool AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMemManage *projdef, long loop,
-                                    wxProgressDialog *progDlg, tmPercent *percent)
-    { return false; }
+  virtual bool AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMemManage *projdef, long loop,
+                                  wxProgressDialog *progDlg, tmPercent *percent) {
+    return false;
+  }
 
-    virtual bool SetAttributsBasic(DataBaseResult &results)
-    { return false; }
+  virtual bool SetAttributsBasic(DataBaseResult &results) {
+    return false;
+  }
 
-    virtual bool SetAttributsAdvanced(DataBaseResult &results, ProjectDefMemoryLayers *layer)
-    { return false; }
+  virtual bool SetAttributsAdvanced(DataBaseResult &results, ProjectDefMemoryLayers *layer) {
+    return false;
+  }
 
-    virtual bool GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport)
-    { return false; }
+  virtual bool GetPolyExportInfo(ProjectDefMemoryLayers *layer, bool usefastexport) {
+    return false;
+  }
 
-    virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer)
-    { return false; }
+  virtual bool CreateSpatialIndex(ProjectDefMemoryLayers *layer) {
+    return false;
+  }
 
-    virtual bool HasFeatures()
-    {return false;}
+  virtual bool HasFeatures() {
+    return false;
+  }
 
-    virtual void SetEmptyLayer();
+  virtual void SetEmptyLayer();
 
-    virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path) {return false;}
+  virtual bool DeleteLayer(ProjectDefMemoryLayers *layer, const wxString &path) {
+    return false;
+  }
 
-    void SetCropBufferDistance(double value)
-    { m_CropBufferDistance = value; }
+  void SetCropBufferDistance(double value) {
+    m_CropBufferDistance = value;
+  }
 
-    double GetCropBufferDistance()
-    { return m_CropBufferDistance; }
+  double GetCropBufferDistance() {
+    return m_CropBufferDistance;
+  }
 
-    void SetOverwrite(bool value)
-    { m_Overwrite = value; }
+  void SetOverwrite(bool value) {
+    m_Overwrite = value;
+  }
 
-    bool DoOverwrite()
-    { return m_Overwrite; }
-
+  bool DoOverwrite() {
+    return m_Overwrite;
+  }
 };
-
 
 #endif

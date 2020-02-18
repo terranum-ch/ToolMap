@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmlayerproperties.h
-                    Class used for managing layer informations 
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmlayerproperties.h
+ Class used for managing layer informations
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,22 +16,22 @@
 
 // comment doxygen
 
-
 #ifndef _TM_LAYERPROPERTIES_H_
 #define _TM_LAYERPROPERTIES_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/treectrl.h>
 #include <wx/filename.h>
-#include "tmlayerpropertiesdef.h"
 #include <wx/mstream.h>
+#include <wx/treectrl.h>
+
+#include "tmlayerpropertiesdef.h"
 
 class tmSymbol;
 
@@ -40,127 +39,124 @@ class tmSymbolRuleManager;
 
 class tmWebFrame;
 
-/***************************************************************************//**
- @brief Storing object of layer type
- @author Lucien Schreiber (c) CREALP 2008
- @date 07 July 2008
- *******************************************************************************/
-class tmLayerProperties : public wxTreeItemData
-{
-private:
-    wxFileName m_LayerName;
-    long m_LayerID;
-    TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
-    bool m_LayerVisible;
-    TOC_GENERIC_NAME m_LayerType;
-    tmSymbol *m_LayerSymbol;
-    int m_LayerVertexFlags;
-    bool m_LayerEditing;
-    tmSymbolRuleManager *m_SymbolRulesManager;
+/***************************************************************************/ /**
+  @brief Storing object of layer type
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 07 July 2008
+  *******************************************************************************/
+class tmLayerProperties : public wxTreeItemData {
+ private:
+  wxFileName m_LayerName;
+  long m_LayerID;
+  TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
+  bool m_LayerVisible;
+  TOC_GENERIC_NAME m_LayerType;
+  tmSymbol *m_LayerSymbol;
+  int m_LayerVertexFlags;
+  bool m_LayerEditing;
+  tmSymbolRuleManager *m_SymbolRulesManager;
 
-    bool m_LabelIsVisible;
-    wxString m_LabelDefinition;
+  bool m_LabelIsVisible;
+  wxString m_LabelDefinition;
 
-    void InitMemberValues();
+  void InitMemberValues();
 
-public:
-    // init from string array
-    bool InitFromArray(const wxArrayString &array, bool userelativepath, const wxString &prjpath);
+ public:
+  // init from string array
+  bool InitFromArray(const wxArrayString &array, bool userelativepath, const wxString &prjpath);
 
-    void InitSymbology(const wxString &itemBinSymbology);
+  void InitSymbology(const wxString &itemBinSymbology);
 
-    bool InitFromPathAndName(const wxString &path, const wxString &nameext,
-                             const wxArrayString &supportedext);
+  bool InitFromPathAndName(const wxString &path, const wxString &nameext, const wxArrayString &supportedext);
 
-    wxString GetNameDisplay();
+  wxString GetNameDisplay();
 
-    wxFileName GetName();
+  wxFileName GetName();
 
-    void SetName(const wxFileName &filename)
-    { m_LayerName = filename; }
+  void SetName(const wxFileName &filename) {
+    m_LayerName = filename;
+  }
 
-    inline const long GetID() const;
+  inline const long GetID() const;
 
-    void SetID(long value);
+  void SetID(long value);
 
-    inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
+  inline const TM_GIS_SPATIAL_TYPES GetSpatialType() const;
 
-    void SetSpatialType(TM_GIS_SPATIAL_TYPES value);
+  void SetSpatialType(TM_GIS_SPATIAL_TYPES value);
 
-    inline const bool IsVisible() const;
+  inline const bool IsVisible() const;
 
-    void SetVisible(bool value);
+  void SetVisible(bool value);
 
-    inline const TOC_GENERIC_NAME GetType() const;
+  inline const TOC_GENERIC_NAME GetType() const;
 
-    void SetType(TOC_GENERIC_NAME value);
+  void SetType(TOC_GENERIC_NAME value);
 
-    inline const int GetVertexFlags() const;
+  inline const int GetVertexFlags() const;
 
-    void SetVertexFlags(int value);
+  void SetVertexFlags(int value);
 
-    inline const bool IsEditing() const;
+  inline const bool IsEditing() const;
 
-    void SetEditing(bool value);
+  void SetEditing(bool value);
 
-    void SetLabelVisible(bool value)
-    { m_LabelIsVisible = value; }
+  void SetLabelVisible(bool value) {
+    m_LabelIsVisible = value;
+  }
 
-    bool IsLabelVisible()
-    { return m_LabelIsVisible; }
+  bool IsLabelVisible() {
+    return m_LabelIsVisible;
+  }
 
-    void SetLabelDefinition(const wxString &value)
-    { m_LabelDefinition = value; }
+  void SetLabelDefinition(const wxString &value) {
+    m_LabelDefinition = value;
+  }
 
-    wxString GetLabelDefinition()
-    { return m_LabelDefinition; }
+  wxString GetLabelDefinition() {
+    return m_LabelDefinition;
+  }
 
-    tmSymbol *GetSymbolRef();
+  tmSymbol *GetSymbolRef();
 
-    void SetSymbolDirectly(tmSymbol *value);
+  void SetSymbolDirectly(tmSymbol *value);
 
-    tmSymbolRuleManager *GetSymbolRuleManagerRef()
-    { return m_SymbolRulesManager; }
+  tmSymbolRuleManager *GetSymbolRuleManagerRef() {
+    return m_SymbolRulesManager;
+  }
 
-    // constructor
-    tmLayerProperties()
-    { InitMemberValues(); }
+  // constructor
+  tmLayerProperties() {
+    InitMemberValues();
+  }
 
-    tmLayerProperties(tmLayerProperties &layerprop);
+  tmLayerProperties(tmLayerProperties &layerprop);
 
-    ~tmLayerProperties();
-
+  ~tmLayerProperties();
 };
 
-inline const long tmLayerProperties::GetID() const
-{
-    return m_LayerID;
+inline const long tmLayerProperties::GetID() const {
+  return m_LayerID;
 }
 
-inline const TM_GIS_SPATIAL_TYPES tmLayerProperties::GetSpatialType() const
-{
-    return m_LayerSpatialType;
+inline const TM_GIS_SPATIAL_TYPES tmLayerProperties::GetSpatialType() const {
+  return m_LayerSpatialType;
 }
 
-inline const bool tmLayerProperties::IsVisible() const
-{
-    return m_LayerVisible;
+inline const bool tmLayerProperties::IsVisible() const {
+  return m_LayerVisible;
 }
 
-inline const TOC_GENERIC_NAME tmLayerProperties::GetType() const
-{
-    return m_LayerType;
+inline const TOC_GENERIC_NAME tmLayerProperties::GetType() const {
+  return m_LayerType;
 }
 
-inline const int tmLayerProperties::GetVertexFlags() const
-{
-    return m_LayerVertexFlags;
+inline const int tmLayerProperties::GetVertexFlags() const {
+  return m_LayerVertexFlags;
 }
 
-inline const bool tmLayerProperties::IsEditing() const
-{
-    return m_LayerEditing;
+inline const bool tmLayerProperties::IsEditing() const {
+  return m_LayerEditing;
 }
-
 
 #endif

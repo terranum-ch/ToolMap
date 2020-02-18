@@ -2,8 +2,7 @@
  preference_dlg.h
  Display Preference dialog
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,55 +14,46 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #ifndef _PREFERENCE_DLG_H_
 #define _PREFERENCE_DLG_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/notebook.h>
-#include <wx/config.h>
 #include <wx/clrpicker.h>
+#include <wx/config.h>
+#include <wx/notebook.h>
 
+class PreferenceDLG : public wxDialog {
+ private:
+  wxCheckBox *m_UpdateCheckCtrl;
+  wxTextCtrl *m_ProxyInfoCtrl;
+  wxColourPickerCtrl *m_SelColourCtrl;
+  wxCheckBox *m_SelOutlineCtrl;
+  wxCheckBox *m_RelPathCtrl;
+  wxCheckBox *m_BuildOverviewCtrl;
 
-class PreferenceDLG : public wxDialog
-{
-private:
-    wxCheckBox *m_UpdateCheckCtrl;
-    wxTextCtrl *m_ProxyInfoCtrl;
-    wxColourPickerCtrl *m_SelColourCtrl;
-    wxCheckBox *m_SelOutlineCtrl;
-    wxCheckBox *m_RelPathCtrl;
-    wxCheckBox *m_BuildOverviewCtrl;
+  wxSlider *m_WaitingTimeCtrl;
+  wxRadioButton *m_RamCtrl;
+  wxRadioButton *m_MemoryCtrl;
 
-    wxSlider *m_WaitingTimeCtrl;
-    wxRadioButton *m_RamCtrl;
-    wxRadioButton *m_MemoryCtrl;
+  void _CreateControls();
 
-    void _CreateControls();
+ public:
+  PreferenceDLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Preferences"),
+                const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                long style = wxDEFAULT_DIALOG_STYLE);
 
-public:
+  ~PreferenceDLG();
 
-    PreferenceDLG(wxWindow *parent, wxWindowID id = wxID_ANY,
-                  const wxString &title = _("Preferences"),
-                  const wxPoint &pos = wxDefaultPosition,
-                  const wxSize &size = wxDefaultSize,
-                  long style = wxDEFAULT_DIALOG_STYLE);
+  virtual bool TransferDataToWindow();
 
-    ~PreferenceDLG();
-
-    virtual bool TransferDataToWindow();
-
-    virtual bool TransferDataFromWindow();
-
-
+  virtual bool TransferDataFromWindow();
 };
-
 
 #endif

@@ -1,9 +1,7 @@
 /***************************************************************************
  tmimportgis.h
- 
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,36 +16,35 @@
 #ifndef _TMIMPORTGIS_H
 #define _TMIMPORTGIS_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "tmimport.h"
 #include "../core/prjdefmemmanage.h"
+#include "tmimport.h"
 
 class tmGISDataVector;
 
-class tmImportGIS : public tmImport
-{
-private:
-    tmGISDataVector *m_Vector;
+class tmImportGIS : public tmImport {
+ private:
+  tmGISDataVector *m_Vector;
 
-public:
-    tmImportGIS();
+ public:
+  tmImportGIS();
 
-    virtual ~tmImportGIS();
+  virtual ~tmImportGIS();
 
-    virtual bool Open(const wxFileName &filename);
+  virtual bool Open(const wxFileName &filename);
 
-    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
 
-    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
+  virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 
-    virtual wxArrayInt GetTargetSupported();
+  virtual wxArrayInt GetTargetSupported();
 
-    virtual bool GetFieldNames(wxArrayString &Fields);
+  virtual bool GetFieldNames(wxArrayString &Fields);
 };
 
 #endif

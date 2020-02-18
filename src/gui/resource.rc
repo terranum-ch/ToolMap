@@ -2,7 +2,4 @@
 // #define WX_CPU_X86 1
 #include "wx/msw/wx.rc"
 
-toolmap ICON
-"../../art/toolmap2.ico"
-
-
+toolmap ICON "../../art/toolmap2.ico"

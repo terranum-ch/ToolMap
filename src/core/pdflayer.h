@@ -1,8 +1,7 @@
 /***************************************************************************
  pdflayer.h
  -------------------
- copyright            : (C) 2011 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2011 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,7 +16,7 @@
 #define _PDFLAYER_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -25,55 +24,51 @@
 
 #include <wx/pdfdocument.h>
 
-
 class ProjectDefMemoryLayers;
 
 class ProjectDefMemoryFields;
 
 class PdfDocument;
 
+class PdfLayer : wxObject {
+ private:
+  ProjectDefMemoryLayers *m_prjLayer;
+  PdfDocument *m_pdfDocumentParent;
 
-class PdfLayer : wxObject
-{
-private:
-    ProjectDefMemoryLayers *m_prjLayer;
-    PdfDocument *m_pdfDocumentParent;
+  wxArrayDouble m_ColWidthLayer;
+  wxArrayDouble m_ColWidthObjects;
+  wxArrayDouble m_ColWidthAttributs;
 
-    wxArrayDouble m_ColWidthLayer;
-    wxArrayDouble m_ColWidthObjects;
-    wxArrayDouble m_ColWidthAttributs;
+  void _UpdateColWidth();
 
-    void _UpdateColWidth();
+  void _WriteCell(const wxString &text, int columnindex);
 
-    void _WriteCell(const wxString &text, int columnindex);
+  void _GenerateObjects();
 
-    void _GenerateObjects();
+  void _GenerateAttributs();
 
-    void _GenerateAttributs();
+  void _GenerateAttributsDefinition(ProjectDefMemoryFields *field);
 
-    void _GenerateAttributsDefinition(ProjectDefMemoryFields *field);
+ public:
+  PdfLayer(PdfDocument *parent, ProjectDefMemoryLayers *layer);
 
-public:
-    PdfLayer(PdfDocument *parent, ProjectDefMemoryLayers *layer);
+  virtual ~PdfLayer();
 
-    virtual ~PdfLayer();
+  bool Generate();
 
-    bool Generate();
+  wxString GetName();
 
-    wxString GetName();
+  int GetLayerTypeOrder();
 
-    int GetLayerTypeOrder();
+  double GetObjectsWidth(wxPdfDocument *pdf);
 
-    double GetObjectsWidth(wxPdfDocument *pdf);
+  double GetAttributsWidth(wxPdfDocument *pdf);
 
-    double GetAttributsWidth(wxPdfDocument *pdf);
+  double GetObjectsHeight(wxPdfDocument *pdf);
 
-    double GetObjectsHeight(wxPdfDocument *pdf);
-
-    double GetAttributsHeight(wxPdfDocument *pdf);
-
+  double GetAttributsHeight(wxPdfDocument *pdf);
 };
 
-WX_DECLARE_OBJARRAY(PdfLayer*, ArrayPdfLayer);
+WX_DECLARE_OBJARRAY(PdfLayer *, ArrayPdfLayer);
 
 #endif

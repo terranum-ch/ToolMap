@@ -1,9 +1,8 @@
 /***************************************************************************
-								queries_panel_dlg.h
-                    Display dialog for queries panel (simple version)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ queries_panel_dlg.h
+ Display dialog for queries panel (simple version)
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,73 +16,70 @@
 
 // comment doxygen
 
-
 #ifndef _TM_QUERIES_PANEL_DLG_H_
 #define _TM_QUERIES_PANEL_DLG_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
+#include <wx/statline.h>  // for static_line
 
-#include <wx/statline.h>                    // for static_line
-#include "../gis/tmlayerpropertiesdef.h"    // for target definition
+#include "../gis/tmlayerpropertiesdef.h"  // for target definition
 
+/***************************************************************************/ /**
+  @brief Queries panel dialog
+  @details This is the first very simple version of the dialog. In a future
+  version a better version will be used.
+  @todo Implement a new more complete
+  version of this dialog
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 09 November 2008
+  *******************************************************************************/
+class QueriesListDLG : public wxDialog {
+ private:
+ protected:
+  wxTextCtrl *m_QueriesName;
+  wxTextCtrl *m_QueriesDescription;
+  wxChoice *m_Target;
 
-/***************************************************************************//**
- @brief Queries panel dialog
- @details This is the first very simple version of the dialog. In a future
- version a better version will be used.
- @todo Implement a new more complete
- version of this dialog
- @author Lucien Schreiber (c) CREALP 2008
- @date 09 November 2008
- *******************************************************************************/
-class QueriesListDLG : public wxDialog
-{
-private:
+ public:
+  QueriesListDLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = wxT("Edit queries"),
+                 const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                 long style = wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
 
-protected:
-    wxTextCtrl *m_QueriesName;
-    wxTextCtrl *m_QueriesDescription;
-    wxChoice *m_Target;
+  ~QueriesListDLG();
 
-public:
-    QueriesListDLG(wxWindow *parent, wxWindowID id = wxID_ANY,
-                   const wxString &title = wxT("Edit queries"),
-                   const wxPoint &pos = wxDefaultPosition,
-                   const wxSize &size = wxDefaultSize,
-                   long style = wxRESIZE_BORDER | wxDEFAULT_DIALOG_STYLE);
+  // query name
+  wxString GetQueriesName() {
+    return m_QueriesName->GetValue();
+  }
 
-    ~QueriesListDLG();
+  void SetQueriesName(const wxString &name) {
+    m_QueriesName->SetValue(name);
+  }
 
-    // query name
-    wxString GetQueriesName()
-    { return m_QueriesName->GetValue(); }
+  // query description
+  wxString GetQueriesDescription() {
+    return m_QueriesDescription->GetValue();
+  }
 
-    void SetQueriesName(const wxString &name)
-    { m_QueriesName->SetValue(name); }
+  void SetQueriesDescription(const wxString &desc) {
+    m_QueriesDescription->SetValue(desc);
+  }
 
-    // query description
-    wxString GetQueriesDescription()
-    { return m_QueriesDescription->GetValue(); }
+  // query target
+  int GetQueriesTarget() {
+    return m_Target->GetSelection();
+  }
 
-    void SetQueriesDescription(const wxString &desc)
-    { m_QueriesDescription->SetValue(desc); }
-
-    // query target
-    int GetQueriesTarget()
-    { return m_Target->GetSelection(); }
-
-    void SetQueriesTarget(int toc_generic_name)
-    { m_Target->SetSelection(toc_generic_name); }
-
-
+  void SetQueriesTarget(int toc_generic_name) {
+    m_Target->SetSelection(toc_generic_name);
+  }
 };
-
 
 #endif

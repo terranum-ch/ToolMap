@@ -1,9 +1,8 @@
 /***************************************************************************
-								shortcut_panel.h
-							Display the Shortcut panel
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ shortcut_panel.h
+ Display the Shortcut panel
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,23 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-
-
 #ifndef _TM_SHORTCUT_PANEL_H
 #define _TM_SHORTCUT_PANEL_H
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "managed_aui_wnd.h"
 #include "listgenreport.h"
+#include "managed_aui_wnd.h"
+#include "shortcut_panel_dlg.h"  // dialog for adding shortcuts
 #include "wxflatbutton.h"
-#include "shortcut_panel_dlg.h"        // dialog for adding shortcuts
 
 class DataBaseTM;
 
@@ -43,106 +40,90 @@ class DataBaseTM;
 #define SHORTCUT_PANEL_TITLE _("Shortcut")
 #define SHORTCUT_PANEL_SIZE wxSize(230, 150)
 
+class ShortcutList : public ListGenReportWithDialog {
+ private:
+  DataBaseTM *m_pDB;
+  int m_LayerType;
+  int m_OldKey;
+  wxWindow *m_ParentEvt;
 
-class ShortcutList : public ListGenReportWithDialog
-{
-private:
-    DataBaseTM *m_pDB;
-    int m_LayerType;
-    int m_OldKey;
-    wxWindow *m_ParentEvt;
+  virtual void BeforeAdding();
 
-    virtual void BeforeAdding();
+  virtual void AfterAdding(bool bRealyAddItem);
 
-    virtual void AfterAdding(bool bRealyAddItem);
+  virtual void BeforeDeleting();
 
-    virtual void BeforeDeleting();
+  virtual void BeforeEditing();
 
-    virtual void BeforeEditing();
+  virtual void AfterEditing(bool bRealyEdited);
 
-    virtual void AfterEditing(bool bRealyEdited);
+ protected:
+ public:
+  ShortcutList(wxWindow *parent, wxWindow *parent_evt, wxWindowID id, wxArrayString *pColsName,
+               wxArrayInt *pColsSize = nullptr, wxSize size = wxDefaultSize);
 
+  ~ShortcutList();
 
-protected:
-public:
-    ShortcutList(wxWindow *parent,
-                 wxWindow *parent_evt,
-                 wxWindowID id,
-                 wxArrayString *pColsName,
-                 wxArrayInt *pColsSize = NULL,
-                 wxSize size = wxDefaultSize);
+  // setter
+  void SetDataBase(DataBaseTM *database) {
+    m_pDB = database;
+  }
 
-    ~ShortcutList();
+  void SetLayerType(int iLayertype) {
+    m_LayerType = iLayertype;
+  }
 
-    // setter
-    void SetDataBase(DataBaseTM *database)
-    { m_pDB = database; }
+  // key function
+  int GetShortcutInt(const wxString &myShortCut);
 
-    void SetLayerType(int iLayertype)
-    { m_LayerType = iLayertype; }
+  wxString GetKeyFromInt(int key) {
+    return wxString::Format(_T("F%d"), key);
+  }
 
-    // key function
-    int GetShortcutInt(const wxString &myShortCut);
-
-    wxString GetKeyFromInt(int key)
-    { return wxString::Format(_T("F%d"), key); }
-
-
-    // send order to attribution manager
-    void RefreshShortcuts();
+  // send order to attribution manager
+  void RefreshShortcuts();
 };
 
+class Shortcuts_PANEL : public ManagedAuiWnd {
+ private:
+  // Control Member
+  wxChoice *m_TargetChoice;
+  ShortcutList *m_ListShortcuts;
 
-class Shortcuts_PANEL : public ManagedAuiWnd
-{
+  // other member
+  wxWindow *m_ParentEvt;
+  wxAuiPaneInfo m_PaneInfo;
+  DataBaseTM *m_pDB;
+  bool m_ProjectOpen;
 
-private:
-    //Control Member
-    wxChoice *m_TargetChoice;
-    ShortcutList *m_ListShortcuts;
+  // event function for panel
+  void OnChangeTarget(wxCommandEvent &event);
 
-    // other member
-    wxWindow *m_ParentEvt;
-    wxAuiPaneInfo m_PaneInfo;
-    DataBaseTM *m_pDB;
-    bool m_ProjectOpen;
+  void OnShortcutAdd(wxCommandEvent &event);
 
+  void OnShortcutDel(wxCommandEvent &event);
+  // void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
 
-    // event function for panel
-    void OnChangeTarget(wxCommandEvent &event);
+  /// Creates the controls and sizers
+  wxSizer *CreateControls(wxWindow *parent, bool call_fit = true, bool set_sizer = true);
 
-    void OnShortcutAdd(wxCommandEvent &event);
+  void InitMemberValues();
 
-    void OnShortcutDel(wxCommandEvent &event);
-    //void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
+  DECLARE_EVENT_TABLE()
 
+ public:
+  Shortcuts_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auimanager);
 
-    /// Creates the controls and sizers
-    wxSizer *CreateControls(wxWindow *parent,
-                            bool call_fit = true,
-                            bool set_sizer = true);
+  ~Shortcuts_PANEL();
 
-    void InitMemberValues();
+  int LoadShortcutList(bool bStoreShortcutinmemory = false);
 
+  // setter
+  void SetProjectOpen(bool bStatus = true) {
+    m_ProjectOpen = bStatus;
+  }
 
-DECLARE_EVENT_TABLE()
-
-public:
-    Shortcuts_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auimanager);
-
-    ~Shortcuts_PANEL();
-
-    int LoadShortcutList(bool bStoreShortcutinmemory = false);
-
-
-    // setter
-    void SetProjectOpen(bool bStatus = true)
-    { m_ProjectOpen = bStatus; }
-
-    void SetDataBase(DataBaseTM *database);
-
-
+  void SetDataBase(DataBaseTM *database);
 };
-
 
 #endif

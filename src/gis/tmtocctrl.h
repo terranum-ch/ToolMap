@@ -1,9 +1,8 @@
 /***************************************************************************
-							tmtocctrl.h
-                    Contain description of the GIS toc ctrl
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmtocctrl.h
+ Contain description of the GIS toc ctrl
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,28 +16,25 @@
 
 // comment doxygen
 
-
 #ifndef _TM_TOCCTRL_H_
 #define _TM_TOCCTRL_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include <wx/treectrl.h>
+#include <wx/dcgraph.h>
 #include <wx/imaglist.h>
 #include <wx/renderer.h>
-#include <wx/dcgraph.h>
+#include <wx/treectrl.h>
 
-
-//#include "../core/projectdefmemory.h"	for PRJDEF_LAYERS_TYPE
+//#include "../core/projectdefmemory.h" for PRJDEF_LAYERS_TYPE
 // for image list for toc
-#include "tmtocctrlmenu.h"            // for contextual menu
-
+#include "tmtocctrlmenu.h"  // for contextual menu
 
 // EVENT FOR TOC CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)
@@ -51,140 +47,134 @@ DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_START, -1)
 DECLARE_EVENT_TYPE(tmEVT_EM_EDIT_STOP, -1)
 DECLARE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED, -1)
 
+/***************************************************************************/ /**
+  @brief GIS TOC class
+  @details This object is in charge of all operations linked to the table of
+  content (TOC). Most of the events comming from the #tmTOCCtrlMenu are processed
+  here except events needing direct acces to GIS data wich are processed in the
+  #tmLayerManager.
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 07 July 2008
+  *******************************************************************************/
+class tmTOCCtrl : public wxTreeCtrl {
+ private:
+  wxTreeItemId m_root;
+  wxWindow *m_ParentEvt;
+  // wxTreeItemIdValue m_Cookie;
+  tmTOCCtrlMenu *m_ContextMenu;
+  wxTreeItemId m_ActualItemID;
+  tmLayerProperties *m_EditingLayer;
+  bool m_IsImageInited;
 
-/***************************************************************************//**
- @brief GIS TOC class
- @details This object is in charge of all operations linked to the table of
- content (TOC). Most of the events comming from the #tmTOCCtrlMenu are processed
- here except events needing direct acces to GIS data wich are processed in the 
- #tmLayerManager.
- @author Lucien Schreiber (c) CREALP 2008
- @date 07 July 2008
- *******************************************************************************/
-class tmTOCCtrl : public wxTreeCtrl
-{
-private:
-    wxTreeItemId m_root;
-    wxWindow *m_ParentEvt;
-    //wxTreeItemIdValue m_Cookie;
-    tmTOCCtrlMenu *m_ContextMenu;
-    wxTreeItemId m_ActualItemID;
-    tmLayerProperties *m_EditingLayer;
-    bool m_IsImageInited;
+  // private functions
+  void InitTocMemberValues();
 
-    // private functions
-    void InitTocMemberValues();
+  void LoadImageList();
 
-    void LoadImageList();
+  int GetSelectedPosition();
 
-    int GetSelectedPosition();
+  bool MoveLayers(const wxTreeItemId &item, int newpos);
 
-    bool MoveLayers(const wxTreeItemId &item, int newpos);
+  bool SwapLayers(const wxTreeItemId &item, int newpos);
 
-    bool SwapLayers(const wxTreeItemId &item, int newpos);
+  void StartEditing();
 
-    void StartEditing();
+  void StopEditing(bool bSentmessage = false);
 
-    void StopEditing(bool bSentmessage = false);
+  // graphical display
+  void SetItemStyle(wxTreeItemId id, tmLayerProperties *item);
 
-    // graphical display
-    void SetItemStyle(wxTreeItemId id, tmLayerProperties *item);
+  // private event functions
+  void OnMouseClick(wxMouseEvent &event);
 
-    // private event functions
-    void OnMouseClick(wxMouseEvent &event);
+  void OnMouseItemRightClick(wxTreeEvent &event);
 
-    void OnMouseItemRightClick(wxTreeEvent &event);
+  void OnMouseItemDoubleClick(wxTreeEvent &event);
 
-    void OnMouseItemDoubleClick(wxTreeEvent &event);
+  void OnMoveLayers(wxCommandEvent &event);
 
-    void OnMoveLayers(wxCommandEvent &event);
+  void OnShortcutKey(wxKeyEvent &event);
 
-    void OnShortcutKey(wxKeyEvent &event);
+  void OnLayerSelected(wxTreeEvent &event);
 
-    void OnLayerSelected(wxTreeEvent &event);
+  void OnPaint(wxPaintEvent &event);
 
-    void OnPaint(wxPaintEvent &event);
+  // contextual menu event functions
+  void OnShowProperties(wxCommandEvent &event);
 
-    // contextual menu event functions
-    void OnShowProperties(wxCommandEvent &event);
+  void OnPropertiesSave(wxCommandEvent &event);
 
-    void OnPropertiesSave(wxCommandEvent &event);
+  void OnPropertiesLoad(wxCommandEvent &event);
 
-    void OnPropertiesLoad(wxCommandEvent &event);
+  void OnShowLabels(wxCommandEvent &event);
 
-    void OnShowLabels(wxCommandEvent &event);
+  void OnVertexMenu(wxCommandEvent &event);
 
-    void OnVertexMenu(wxCommandEvent &event);
+  void OnEditingChange(wxCommandEvent &event);
 
-    void OnEditingChange(wxCommandEvent &event);
+  // dragging functions
+  wxTreeItemId m_DragItemID;
 
-    // dragging functions
-    wxTreeItemId m_DragItemID;
+  void OnDragStart(wxTreeEvent &event);
 
-    void OnDragStart(wxTreeEvent &event);
+  void OnDragStop(wxTreeEvent &event);
 
-    void OnDragStop(wxTreeEvent &event);
+  DECLARE_EVENT_TABLE()
 
+ public:
+  // construcor / destructor
+  tmTOCCtrl(wxWindow *parent, wxWindowID id, wxSize size, long style);
 
-DECLARE_EVENT_TABLE()
+  ~tmTOCCtrl();
 
+  // adding, removing layers functions
+  void InsertProjectName(const wxString &prjname);
 
-public:
-    // construcor / destructor
-    tmTOCCtrl(wxWindow *parent, wxWindowID id, wxSize size, long style);
+  bool InsertLayer(tmLayerProperties *item, wxTreeItemId postion = 0);
 
-    ~tmTOCCtrl();
+  bool UpdateLayerName(tmLayerProperties *item, const wxString &newname);
 
-    // adding, removing layers functions
-    void InsertProjectName(const wxString &prjname);
+  bool RemoveLayer(wxTreeItemId position, bool bRemoveChild = TRUE);
 
-    bool InsertLayer(tmLayerProperties *item, wxTreeItemId postion = 0);
+  bool GetItemByID(wxTreeItemId &position, long searchedid);
 
-    bool UpdateLayerName(tmLayerProperties *item, const wxString &newname);
+  void ClearAllLayers();
 
-    bool RemoveLayer(wxTreeItemId position, bool bRemoveChild = TRUE);
+  bool EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position);
 
-    bool GetItemByID(wxTreeItemId &position, long searchedid);
+  tmLayerProperties *IterateLayers(bool ResetToLast);
 
-    void ClearAllLayers();
+  // counting layers only
+  unsigned int GetCountLayers();
 
-    bool EditLayer(tmLayerProperties *newitemdata, wxTreeItemId position);
+  // selection
+  tmLayerProperties *GetSelectionLayer();
 
-    tmLayerProperties *IterateLayers(bool ResetToLast);
+  void SetSelectedLayer(int layerID);
 
-    // counting layers only
-    unsigned int GetCountLayers();
+  tmLayerProperties *GetLayerById(long layerid);
 
-    // selection
-    tmLayerProperties *GetSelectionLayer();
+  tmLayerProperties *GetLayerByName(const wxString &layername);
 
-    void SetSelectedLayer(int layerID);
+  tmLayerProperties *GetLayerByPath(const wxString &layerPath);
 
-    tmLayerProperties *GetLayerById(long layerid);
+  // public event function
+  void OnRemoveItem(wxCommandEvent &event);
 
-    tmLayerProperties *GetLayerByName(const wxString &layername);
+  // Project check function
+  bool IsTOCReady();
 
-    tmLayerProperties *GetLayerByPath(const wxString &layerPath);
+  // expanding all child
+  bool ExpandAllLayers();
 
+  // Setting, Getting editing layer
+  tmLayerProperties *GetEditLayer() {
+    return m_EditingLayer;
+  }
 
-    // public event function
-    void OnRemoveItem(wxCommandEvent &event);
-
-    // Project check function
-    bool IsTOCReady();
-
-    // expanding all child
-    bool ExpandAllLayers();
-
-    // Setting, Getting editing layer
-    tmLayerProperties *GetEditLayer()
-    { return m_EditingLayer; }
-
-    void SetEditLayer(tmLayerProperties *layerprop)
-    { m_EditingLayer = layerprop; }
-
-
+  void SetEditLayer(tmLayerProperties *layerprop) {
+    m_EditingLayer = layerprop;
+  }
 };
-
 
 #endif

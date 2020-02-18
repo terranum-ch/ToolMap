@@ -1,6 +1,5 @@
 /***************************************************************************
  tmimportdatawiz.h
-
  -------------------
  copyright            : (C) 2018 TERRANUM Pascal Horton
  email                : pascal.horton at terranum dot ch
@@ -18,7 +17,7 @@
 #ifndef _TMIMPORTDATAWIZ_H
 #define _TMIMPORTDATAWIZ_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -26,82 +25,77 @@
 
 #include "wizard_import_data.h"
 
-
 class tmImport;
 class ProjectManager;
 
-class ImportDataWizard : public tmWizardImport
-{
-private:
-    tmImport *m_Import;
-    ProjectManager *m_PrjManager;
-    wxString m_IgnoreLabel;
-    wxString m_ImportButIgnoreValueLabel;
-    wxString m_DoNotImportLabel;
-    wxString m_AllObjectsLabel;
+class ImportDataWizard : public tmWizardImport {
+ private:
+  tmImport *m_Import;
+  ProjectManager *m_PrjManager;
+  wxString m_IgnoreLabel;
+  wxString m_ImportButIgnoreValueLabel;
+  wxString m_DoNotImportLabel;
+  wxString m_AllObjectsLabel;
 
-    void ResetFilePicker(const wxWizardPageSimple *page);
+  void ResetFilePicker(const wxWizardPageSimple *page);
 
-    void SetXYFieldsOptions() const;
+  void SetXYFieldsOptions() const;
 
-    void GetXYFieldsSelection() const;
+  void GetXYFieldsSelection() const;
 
-    void SetTargetsOptions() const;
+  void SetTargetsOptions() const;
 
-    void GetTargetSelection() const;
+  void GetTargetSelection() const;
 
-    void SetLayerOptions() const;
+  void SetLayerOptions() const;
 
-    void GetLayerSelection() const;
+  void GetLayerSelection() const;
 
-    void SetKindFieldOptions() const;
+  void SetKindFieldOptions() const;
 
-    void GetKindFieldSelection() const;
+  void GetKindFieldSelection() const;
 
-    void SetKindOptions() const;
+  void SetKindOptions() const;
 
-    void GetKindSelection() const;
+  void GetKindSelection() const;
 
-    void SetAttributeOptions() const;
+  void SetAttributeOptions() const;
 
-    void GetAttributeSelection() const;
+  void GetAttributeSelection() const;
 
-    void SetEnumerationOptions() const;
+  void SetEnumerationOptions() const;
 
-    void GetEnumerationSelection() const;
+  void GetEnumerationSelection() const;
 
-protected:
-    int GetPageIndex(wxWizardPage* page);
+ protected:
+  int GetPageIndex(wxWizardPage *page);
 
-    void OnWizardBeforePageChanged(wxWizardEvent &event);
+  void OnWizardBeforePageChanged(wxWizardEvent &event);
 
-    void OnWizardFinished(wxWizardEvent &event);
+  void OnWizardFinished(wxWizardEvent &event);
 
-    void EnableNextButton(bool state = true);
+  void EnableNextButton(bool state = true);
 
-    void EnableBackButton(bool state = true);
+  void EnableBackButton(bool state = true);
 
-    inline void SetControlEnable(int id, bool state);
+  inline void SetControlEnable(int id, bool state);
 
-    void OnFileChanged(wxFileDirPickerEvent &event);
+  void OnFileChanged(wxFileDirPickerEvent &event);
 
-    virtual void ToggleKindFieldSelection(wxCommandEvent &event);
+  virtual void ToggleKindFieldSelection(wxCommandEvent &event);
 
-public:
-    ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManager *prjManager);
+ public:
+  ImportDataWizard(wxWindow *window, wxWindowID id, ProjectManager *prjManager);
 
-    virtual ~ImportDataWizard();
+  virtual ~ImportDataWizard();
 
-    wxWizardPage *GetFirstPage() const
-    {
-        return m_pages.Item(0);
-    }
+  wxWizardPage *GetFirstPage() const {
+    return m_pages.Item(0);
+  }
 
-    tmImport *GetImport() const
-    {
-        return m_Import;
-    }
+  tmImport *GetImport() const {
+    return m_Import;
+  }
 };
-
 
 #endif

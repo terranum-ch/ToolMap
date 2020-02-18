@@ -1,9 +1,8 @@
 /***************************************************************************
-							tmAttributionDataLine.h
-						Class for attributing line
-                             -------------------
-    copyright            : (C) 2008 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmAttributionDataLine.h
+ Class for attributing line
+ -------------------
+ copyright : (C) 2008 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_ATTRIBUTION_DATA_LINE_H_
 #define _TM_ATTRIBUTION_DATA_LINE_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -31,46 +29,39 @@
 
 #include "tmattributiondata.h"
 
+class tmAttributionDataLine : public tmAttributionData {
+ private:
+ protected:
+  bool GetPanelValues(AttribObjType_PANEL *panel, wxArrayLong &valueids);
 
-class tmAttributionDataLine : public tmAttributionData
-{
-private:
+  void SetPanelValues(AttribObjType_PANEL *panel, const wxArrayLong &valueids);
 
+ public:
+  // ctor - dtor
+  tmAttributionDataLine();
 
-protected:
-    bool GetPanelValues(AttribObjType_PANEL *panel, wxArrayLong &valueids);
+  tmAttributionDataLine(wxArrayLong *selected, DataBaseTM *database);
 
-    void SetPanelValues(AttribObjType_PANEL *panel, const wxArrayLong &valueids);
+  virtual void Create(wxArrayLong *selected, DataBaseTM *database);
 
-public:
-    // ctor - dtor
-    tmAttributionDataLine();
+  ~tmAttributionDataLine();
 
-    tmAttributionDataLine(wxArrayLong *selected, DataBaseTM *database);
+  // attribution
+  virtual bool SetAttributeBasic(AttribObjType_PANEL *panel);
+  // copy attribution
+  // virtual bool CopyAttributesBasic (const long & copyfrom,
+  //   const wxArrayLong & copyto);
 
-    virtual void Create(wxArrayLong *selected, DataBaseTM *database);
+  // info
+  virtual bool GetInfoBasic(AttribObjType_PANEL *panel);
 
-    ~tmAttributionDataLine();
+  virtual bool GetInfoBasic(long oid, wxArrayLong &objid, wxArrayString &objcode, wxArrayString &objname);
 
+  // virtual bool GetInfoBasicValues (const long & selected,
+  //  wxArrayLong & values);
+  virtual bool GetAttributionLayersID(const long &geomid, tmLayerValueArray &layersid);
 
-    // attribution
-    virtual bool SetAttributeBasic(AttribObjType_PANEL *panel);
-    // copy attribution
-    //virtual bool CopyAttributesBasic (const long & copyfrom,
-    //								  const wxArrayLong & copyto);
-
-    // info
-    virtual bool GetInfoBasic(AttribObjType_PANEL *panel);
-
-    virtual bool GetInfoBasic(long oid, wxArrayLong &objid,
-                              wxArrayString &objcode, wxArrayString &objname);
-
-    //virtual bool GetInfoBasicValues (const long & selected,
-    //								 wxArrayLong & values);
-    virtual bool GetAttributionLayersID(const long &geomid, tmLayerValueArray &layersid);
-
-    virtual bool GetAttributionLayersIDFull(const long &geomid, tmLayerValueArray &layersid);
+  virtual bool GetAttributionLayersIDFull(const long &geomid, tmLayerValueArray &layersid);
 };
-
 
 #endif

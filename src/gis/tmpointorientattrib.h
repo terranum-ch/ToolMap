@@ -1,9 +1,8 @@
 /***************************************************************************
-							tmpointorientattrib.h
-                    Point orientation with attribution
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmpointorientattrib.h
+ Point orientation with attribution
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,12 +16,11 @@
 
 // comment doxygen
 
-
 #ifndef _TM_POINT_ORIENT_ATTRIB_H_
 #define _TM_POINT_ORIENT_ATTRIB_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -32,35 +30,32 @@
 #include "tmpointorient.h"
 #include "../database/database_tm.h"
 
+class tmPointOrientAttrib : public tmPointOrient {
+ private:
+  long m_Oid;
+  long m_LayerId;
+  DataBaseTM *m_DB;
+  ProjectDefMemoryFields m_OrientField;
 
-class tmPointOrientAttrib : public tmPointOrient
-{
-private:
-    long m_Oid;
-    long m_LayerId;
-    DataBaseTM *m_DB;
-    ProjectDefMemoryFields m_OrientField;
+  void InitMemberValues();
 
-    void InitMemberValues();
+  bool POA_IsOIDInited();
 
-    bool POA_IsOIDInited();
+  bool POA_IsAttributed(long &attributedvalue);
 
-    bool POA_IsAttributed(long &attributedvalue);
+  bool POA_HasOrientField();
 
-    bool POA_HasOrientField();
+ protected:
+ public:
+  tmPointOrientAttrib();
 
-protected:
-public:
-    tmPointOrientAttrib();
+  void Create(DataBaseTM *database, long oid);
 
-    void Create(DataBaseTM *database, long oid);
+  ~tmPointOrientAttrib();
 
-    ~tmPointOrientAttrib();
+  bool IsCorrectType();
 
-    bool IsCorrectType();
-
-    bool Update();
+  bool Update();
 };
-
 
 #endif

@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmsymbolvectorpolygon.h
-				Deals with GIS polygon vector symbology and associed dialog
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmsymbolvectorpolygon.h
+ Deals with GIS polygon vector symbology and associed dialog
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,60 +16,61 @@
 
 // comment doxygen
 
-
 #ifndef _TM_SYMBOLVECTORPOLYGON_H_
 #define _TM_SYMBOLVECTORPOLYGON_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "tmsymbolvector.h"    // tmSymbol class definition
 #include "tmsymboldlgpolygon.h"
+#include "tmsymbolvector.h"  // tmSymbol class definition
 
+class tmSymbolVectorPolygon : public tmSymbolVector {
+ private:
+  tmSymbolDataPolygonUnique m_plgUniqueSymbol;
 
-class tmSymbolVectorPolygon : public tmSymbolVector
-{
-private:
-    tmSymbolDataPolygonUnique m_plgUniqueSymbol;
+  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
 
-    virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+  virtual bool GetDialogData(tmSymbolDLG *dlg);
 
-    virtual bool GetDialogData(tmSymbolDLG *dlg);
+ protected:
+ public:
+  tmSymbolVectorPolygon();
 
-protected:
-public:
-    tmSymbolVectorPolygon();
+  tmSymbolVectorPolygon(const tmSymbolVectorPolygon &origin);
 
-    tmSymbolVectorPolygon(const tmSymbolVectorPolygon &origin);
+  ~tmSymbolVectorPolygon();
 
-    ~tmSymbolVectorPolygon();
+  wxColour GetBorderColour();
 
-    wxColour GetBorderColour();
+  wxColour GetFillColour();
 
-    wxColour GetFillColour();
+  int GetBorderWidth() {
+    return m_plgUniqueSymbol.m_bWidth;
+  }
 
-    int GetBorderWidth()
-    { return m_plgUniqueSymbol.m_bWidth; }
+  wxBrushStyle GetFillStyle() {
+    return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];
+  }
 
-    wxBrushStyle GetFillStyle()
-    { return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle]; }
+  virtual int GetTransparency() {
+    return m_plgUniqueSymbol.m_GlobalTransparency;
+  }
 
-    virtual int GetTransparency()
-    { return m_plgUniqueSymbol.m_GlobalTransparency; }
+  virtual void SetColour(const wxColour &colour) {
+    m_plgUniqueSymbol.m_fColour = colour;
+  }
 
-    virtual void SetColour(const wxColour &colour)
-    { m_plgUniqueSymbol.m_fColour = colour; }
+  virtual bool Serialize(tmSerialize &s);
 
-    virtual bool Serialize(tmSerialize &s);
-
-    tmSymbolDataPolygonUnique *GetSymbolData()
-    { return &m_plgUniqueSymbol; }
+  tmSymbolDataPolygonUnique *GetSymbolData() {
+    return &m_plgUniqueSymbol;
+  }
 };
-
 
 #endif

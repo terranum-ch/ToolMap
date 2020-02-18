@@ -2,7 +2,6 @@
  silayer.h
  -------------------
  copyright            : (C) 2012 CREALP Lucien Schreiber
- email                : lucien.schreiber at crealp dot vs dot ch
  ***************************************************************************/
 
 /***************************************************************************
@@ -26,54 +25,47 @@
 #include <wx/filename.h>
 #include <wx/textfile.h>
 
-
-#include "sikind.h"
-#include "siattribut.h"
 #include "database.h"
 #include "databaseresult.h"
+#include "siattribut.h"
+#include "sikind.h"
 
-enum SILAYER_TYPE {
-    SILAYER_TYPE_POINT = 0,
-    SILAYER_TYPE_LINE,
-    SILAYER_TYPE_POLYGON,
-    SILAYER_TYPE_UNKNOWN = -1
-};
+enum SILAYER_TYPE { SILAYER_TYPE_POINT = 0, SILAYER_TYPE_LINE, SILAYER_TYPE_POLYGON, SILAYER_TYPE_UNKNOWN = -1 };
 
 class siProgressIndicator;
 class siLayer {
-private:
-    wxFileName m_RuleFileName;
-    wxFileName m_LayerNameIn;
-    long m_LayerIndexOut;
-    DataBase * m_Database;
-    siKind m_Kind;
-    siAttributArray m_Attributs;
-    SILAYER_TYPE m_LayerType;
-    wxString m_LayerTypeName;
-    long m_ProcessFeatureSkipped;
-    siProgressIndicator * m_ProgressIndicator;
-    
-    int _GetEmptyBlockStop(int startpos);
-    bool _LoadRuleIntoArray(int start, int stop, wxArrayString * array);
-    bool _ProcessFeature(OGRFeature * feature);
-    void _ClearAttributArray();
-    
-public:
-    siLayer(const wxString & layerpath, DataBase * database);
-    virtual ~siLayer();
-    
-    bool LoadFromFile(const wxString & filename);
-    int Process();
-    
-    const siKind GetKindRef();
-    inline const SILAYER_TYPE GetLayerType() const;
-    
-    void SetProgressIndicator(siProgressIndicator * value);    
+ private:
+  wxFileName m_RuleFileName;
+  wxFileName m_LayerNameIn;
+  long m_LayerIndexOut;
+  DataBase* m_Database;
+  siKind m_Kind;
+  siAttributArray m_Attributs;
+  SILAYER_TYPE m_LayerType;
+  wxString m_LayerTypeName;
+  long m_ProcessFeatureSkipped;
+  siProgressIndicator* m_ProgressIndicator;
+
+  int _GetEmptyBlockStop(int startpos);
+  bool _LoadRuleIntoArray(int start, int stop, wxArrayString* array);
+  bool _ProcessFeature(OGRFeature* feature);
+  void _ClearAttributArray();
+
+ public:
+  siLayer(const wxString& layerpath, DataBase* database);
+  virtual ~siLayer();
+
+  bool LoadFromFile(const wxString& filename);
+  int Process();
+
+  const siKind GetKindRef();
+  inline const SILAYER_TYPE GetLayerType() const;
+
+  void SetProgressIndicator(siProgressIndicator* value);
 };
 
-
 inline const SILAYER_TYPE siLayer::GetLayerType() const {
-    return m_LayerType;
+  return m_LayerType;
 }
 
 #endif

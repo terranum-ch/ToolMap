@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmdraweredit.h
-                    Drawing data during editing process
-                             -------------------
-    copyright            : (C) 2009 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmdraweredit.h
+ Drawing data during editing process
+ -------------------
+ copyright : (C) 2009 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,76 +16,70 @@
 
 // comment doxygen
 
-
 #ifndef _TM_DRAWER_EDIT_H_
 #define _TM_DRAWER_EDIT_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-#include "wx/overlay.h"
-
+#include <wx/overlay.h>
 
 #include "../core/tmarraysize.h"
 
-class tmDrawerEditLine : public wxObject
-{
-private:
-    wxPoint *m_LeftPT;
-    wxPoint *m_Pt;
-    wxPoint *m_RightPT;
-    int m_Index;
+class tmDrawerEditLine : public wxObject {
+ private:
+  wxPoint *m_LeftPT;
+  wxPoint *m_Pt;
+  wxPoint *m_RightPT;
+  int m_Index;
 
-    wxPen m_EditPen;
-    wxOverlay m_Overlay;
+  wxPen m_EditPen;
+  wxOverlay m_Overlay;
 
+  void DLVertexDelete();
 
-    void DLVertexDelete();
+  int DLGetCountPoints();
 
-    int DLGetCountPoints();
+  wxPoint *DLGetPoints();
 
-    wxPoint *DLGetPoints();
+  void DLReorderVertex();
 
-    void DLReorderVertex();
+ protected:
+ public:
+  tmDrawerEditLine();
 
-protected:
+  ~tmDrawerEditLine();
 
-public:
-    tmDrawerEditLine();
+  // creating and validating
+  bool CreateVertex(const wxArrayPoints &pts, int index);
 
-    ~tmDrawerEditLine();
+  bool CreateVertex(const wxPoint &pt, wxPoint *left, wxPoint *right, int index);
 
-    // creating and validating
-    bool CreateVertex(const wxArrayPoints &pts, int index);
+  bool CreateVertex(const wxPoint &pt);
 
-    bool CreateVertex(const wxPoint &pt, wxPoint *left, wxPoint *right, int index);
+  bool IsEndVertex();
 
-    bool CreateVertex(const wxPoint &pt);
+  bool IsOK();
 
-    bool IsEndVertex();
+  bool ClearVertex();
 
-    bool IsOK();
+  bool SetVertex(const wxPoint &pt);
 
-    bool ClearVertex();
+  int GetVertexIndex() {
+    return m_Index;
+  }
 
-    bool SetVertex(const wxPoint &pt);
+  // Drawing functions
+  void SetSymbology(wxColour col, int width);
 
-    int GetVertexIndex()
-    { return m_Index; }
+  bool DrawEditPart(wxClientDC *pdc);
 
-    // Drawing functions
-    void SetSymbology(wxColour col, int width);
-
-    bool DrawEditPart(wxClientDC *pdc);
-
-    void DrawEditReset(wxClientDC *pdc);
-
+  void DrawEditReset(wxClientDC *pdc);
 };
-
 
 #endif

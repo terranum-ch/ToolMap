@@ -1,9 +1,7 @@
 /***************************************************************************
-				lsversion_core.cpp
-                    
-                             -------------------
-    copyright            : (C) 2010 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ lsversion_core.cpp
+ -------------------
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,165 +15,143 @@
 
 #include "lsversion_core.h"
 
-wxString lsVersion::GetSoftName()
-{
-    wxString myName = wxEmptyString;
+wxString lsVersion::GetSoftName() {
+  wxString myName = wxEmptyString;
 #ifdef lsVERSION_SOFT_NAME
-    myName = lsVERSION_SOFT_NAME;
+  myName = lsVERSION_SOFT_NAME;
 #endif
-    return myName;
+  return myName;
 }
 
-wxString lsVersion::GetSoftGIT()
-{
-    wxString myGITVersion = wxEmptyString;
+wxString lsVersion::GetSoftGIT() {
+  wxString myGITVersion = wxEmptyString;
 #ifdef lsVERSION_SOFT_VERSION
-    myGITVersion = lsVERSION_SOFT_VERSION;
+  myGITVersion = lsVERSION_SOFT_VERSION;
 #endif
-    return myGITVersion;
+  return myGITVersion;
 }
 
-wxString lsVersion::GetSoftGITBranch()
-{
-    wxString myGITtxt = wxEmptyString;
+wxString lsVersion::GetSoftGITBranch() {
+  wxString myGITtxt = wxEmptyString;
 #ifdef lsVERSION_SOFT_VERSION_BRANCH
-    myGITtxt = lsVERSION_SOFT_VERSION_BRANCH;
+  myGITtxt = lsVERSION_SOFT_VERSION_BRANCH;
 #endif
-    return myGITtxt;
+  return myGITtxt;
 }
 
-wxString lsVersion::GetSoftGITRevision()
-{
-    wxString myGITtxt = wxEmptyString;
+wxString lsVersion::GetSoftGITRevision() {
+  wxString myGITtxt = wxEmptyString;
 #ifdef lsVERSION_SOFT_VERSION_REVISION
-    myGITtxt = lsVERSION_SOFT_VERSION_REVISION;
+  myGITtxt = lsVERSION_SOFT_VERSION_REVISION;
 #endif
-    return myGITtxt;
+  return myGITtxt;
 }
 
-wxString lsVersion::GetwxWidgetsNumber()
-{
-    wxString mywxVersion = wxString::Format("%d.%d.%d",
-                                            wxMAJOR_VERSION,
-                                            wxMINOR_VERSION,
-                                            wxRELEASE_NUMBER);
-    if (wxSUBRELEASE_NUMBER != 0) {
-        mywxVersion.Append(wxString::Format(".%d", wxSUBRELEASE_NUMBER));
-    }
+wxString lsVersion::GetwxWidgetsNumber() {
+  wxString mywxVersion = wxString::Format("%d.%d.%d", wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER);
+  if (wxSUBRELEASE_NUMBER != 0) {
+    mywxVersion.Append(wxString::Format(".%d", wxSUBRELEASE_NUMBER));
+  }
 
-    return mywxVersion;
+  return mywxVersion;
 }
 
-wxString lsVersion::GetwxWidgetsGIT()
-{
-    wxString myGITVersion = wxEmptyString;
+wxString lsVersion::GetwxWidgetsGIT() {
+  wxString myGITVersion = wxEmptyString;
 #ifdef lsVERSION_WXWIDGETS_GIT
-    myGITVersion = lsVERSION_WXWIDGETS_GIT;
+  myGITVersion = lsVERSION_WXWIDGETS_GIT;
 #endif
-    return myGITVersion;
+  return myGITVersion;
 }
 
-wxString lsVersion::GetGDALNumber()
-{
-    wxString myGDAL = wxEmptyString;
+wxString lsVersion::GetGDALNumber() {
+  wxString myGDAL = wxEmptyString;
 #ifdef lsVERSION_HAS_GDAL
-    myGDAL = GDAL_RELEASE_NAME;
+  myGDAL = GDAL_RELEASE_NAME;
 #endif
-    return myGDAL;
+  return myGDAL;
 }
 
-wxString lsVersion::GetGEOSNumber()
-{
-    wxString myGEOS = wxEmptyString;
+wxString lsVersion::GetGEOSNumber() {
+  wxString myGEOS = wxEmptyString;
 #ifdef lsVERSION_HAS_GEOS
-    myGEOS = GEOS_VERSION;
+  myGEOS = GEOS_VERSION;
 #endif
-    return myGEOS;
+  return myGEOS;
 }
 
-
-wxString lsVersion::GetCurlNumber()
-{
-    wxString myCurl = wxEmptyString;
+wxString lsVersion::GetCurlNumber() {
+  wxString myCurl = wxEmptyString;
 #ifdef lsVERSION_HAS_CURL
-    myCurl = wxString(LIBCURL_VERSION);
+  myCurl = wxString(LIBCURL_VERSION);
 #endif
-    return myCurl;
+  return myCurl;
 }
 
-
-wxString lsVersion::GetSQLiteNumber()
-{
-    wxString mySQlite = wxEmptyString;
+wxString lsVersion::GetSQLiteNumber() {
+  wxString mySQlite = wxEmptyString;
 #ifdef lsVERSION_HAS_SQLITE
-    mySQlite  = wxString(sqlite3_libversion());
+  mySQlite = wxString(sqlite3_libversion());
 #endif
-    return mySQlite;
+  return mySQlite;
 }
 
-
-wxString lsVersion::GetMySQLNumber()
-{
-    wxString myMySQL = wxEmptyString;
+wxString lsVersion::GetMySQLNumber() {
+  wxString myMySQL = wxEmptyString;
 #ifdef lsVERSION_HAS_MYSQL
-    myMySQL = wxString(mysql_get_client_info(), wxConvUTF8);
+  myMySQL = wxString(mysql_get_client_info(), wxConvUTF8);
 #endif
-    return myMySQL;
+  return myMySQL;
 }
 
-
-wxString lsVersion::GetVroomGISNumber()
-{
-    wxString myVroomGIS = wxEmptyString;
+wxString lsVersion::GetVroomGISNumber() {
+  wxString myVroomGIS = wxEmptyString;
 #ifdef lsVERSION_VROOMGIS_SVN
-    myVroomGIS = lsVERSION_VROOMGIS_SVN;
+  myVroomGIS = lsVERSION_VROOMGIS_SVN;
 #endif
-    return myVroomGIS;
+  return myVroomGIS;
 }
 
+wxString lsVersion::GetAllModules() {
+  wxString myModules = _T("wxWidgets: ") + GetwxWidgetsNumber();
 
-wxString lsVersion::GetAllModules()
-{
-    wxString myModules = _T("wxWidgets: ") + GetwxWidgetsNumber();
+  if (!GetwxWidgetsGIT().IsEmpty()) {
+    myModules.Append(wxString::Format(" (%s)", GetwxWidgetsGIT()));
+  }
+  myModules.Append(_T("\n"));
 
-    if (GetwxWidgetsGIT().IsEmpty() == false) {
-        myModules.Append(wxString::Format(" (%s)", GetwxWidgetsGIT()));
-    }
-    myModules.Append(_T("\n"));
+  if (!GetVroomGISNumber().IsEmpty()) {
+    myModules.Append(_T("vroomGIS: ") + GetVroomGISNumber() + _T("\n"));
+  }
 
-    if (GetVroomGISNumber().IsEmpty() == false) {
-        myModules.Append(_T("vroomGIS: ") + GetVroomGISNumber() + _T("\n"));
-    }
+  if (!GetMySQLNumber().IsEmpty()) {
+    myModules.Append(_T("MySQL: ") + GetMySQLNumber() + _T("\n"));
+  }
 
-    if (GetMySQLNumber().IsEmpty() == false) {
-        myModules.Append(_T("MySQL: ") + GetMySQLNumber() + _T("\n"));
-    }
+  if (!GetSQLiteNumber().IsEmpty()) {
+    myModules.Append(_T("SQLite: ") + GetSQLiteNumber() + _T("\n"));
+  }
 
-    if (GetSQLiteNumber().IsEmpty() == false) {
-        myModules.Append(_T("SQLite: ") + GetSQLiteNumber() + _T("\n"));
-    }
+  if (!GetGDALNumber().IsEmpty()) {
+    myModules.Append(_T("GDAL: ") + GetGDALNumber() + _T("\n"));
+  }
 
-    if (GetGDALNumber().IsEmpty() == false) {
-        myModules.Append(_T("GDAL: ") + GetGDALNumber() + _T("\n"));
-    }
+  if (!GetGEOSNumber().IsEmpty()) {
+    myModules.Append(_T("GEOS: ") + GetGEOSNumber() + _T("\n"));
+  }
 
-    if (GetGEOSNumber().IsEmpty() == false) {
-        myModules.Append(_T("GEOS: ") + GetGEOSNumber() + _T("\n"));
-    }
+  if (!GetCurlNumber().IsEmpty()) {
+    myModules.Append(_T("libCURL: ") + GetCurlNumber() + _T("\n"));
+  }
 
-    if (GetCurlNumber().IsEmpty() == false) {
-        myModules.Append(_T("libCURL: ") + GetCurlNumber() + _T("\n"));
-    }
+  if (!GetSoftGITRevision().IsEmpty()) {
+    myModules.Append(wxString::Format(_T("%s revision: %s \n"), GetSoftName(), GetSoftGITRevision()));
+  }
 
-    if (GetSoftGITRevision().IsEmpty() == false) {
-        myModules.Append(wxString::Format(_T("%s revision: %s \n"), GetSoftName(), GetSoftGITRevision()));
-    }
+  if (!GetSoftGITBranch().IsEmpty()) {
+    myModules.Append(wxString::Format(_T("%s branch: %s \n"), GetSoftName(), GetSoftGITBranch()));
+  }
 
-    if (GetSoftGITBranch().IsEmpty() == false) {
-        myModules.Append(wxString::Format(_T("%s branch: %s \n"), GetSoftName(), GetSoftGITBranch()));
-    }
-
-    myModules.Append(wxGetOsDescription());
-    return myModules;
+  myModules.Append(wxGetOsDescription());
+  return myModules;
 }
-

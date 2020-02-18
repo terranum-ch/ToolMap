@@ -5,13 +5,12 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-#	include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 extern void images_cursor_init(void);
 
 extern void images_cursor_clean(void);
-
 
 extern wxBitmap *_img_cursor_editing;
 extern wxBitmap *_img_cursor_hand;

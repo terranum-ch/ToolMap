@@ -1,10 +1,9 @@
 /***************************************************************************
-								wxflatbutton.cpp
-                    Creation of a flat button on every plateform
-					uses wxButton flat or wxToggleButton (on mac)
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ wxflatbutton.cpp
+ Creation of a flat button on every plateform
+ uses wxButton flat or wxToggleButton (on mac)
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,32 +19,23 @@
 
 #include "wxflatbutton.h"
 
-
 /******************************  wxFlatButton (for mac) *************************/
 #if (__WXMAC__)
 
-wxFlatButton::wxFlatButton()
-{
-    //InitwxFlatButton();
+wxFlatButton::wxFlatButton() {
+  // InitwxFlatButton();
 }
 
-
-wxFlatButton::wxFlatButton(wxWindow * parent, wxWindowID id, const wxString & label, wxSize size)
-: wxButton(parent,id,label,wxDefaultPosition, size, wxBORDER_SIMPLE)
-{
-    /*InitwxFlatButton(id);
-    Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
-            (wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
+wxFlatButton::wxFlatButton(wxWindow* parent, wxWindowID id, const wxString& label, wxSize size)
+    : wxButton(parent, id, label, wxDefaultPosition, size, wxBORDER_SIMPLE) {
+  /*InitwxFlatButton(id);
+  Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+          (wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
 }
 
+wxFlatButton::~wxFlatButton() {}
 
-wxFlatButton::~wxFlatButton()
-{
-}
-
-
-IMPLEMENT_DYNAMIC_CLASS( wxFlatButton, wxButton)
-
+IMPLEMENT_DYNAMIC_CLASS(wxFlatButton, wxButton)
 
 /*
 void wxFlatButton::InitwxFlatButton(wxWindowID id)
@@ -59,7 +49,7 @@ void wxFlatButton::InitwxFlatButton(wxWindowID id)
 void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 {
     // if the toggle button is checked we uncheck it
-    if (GetValue() == TRUE)
+    if (GetValue())
     {
         SetValue(FALSE);
         event.Skip(TRUE);
@@ -75,31 +65,23 @@ void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 /******************************  wxFlatButton (win and linux)**********************/
 #else
 
-wxFlatButton::wxFlatButton()
-{
-    //InitwxFlatButton();
+wxFlatButton::wxFlatButton() {
+  // InitwxFlatButton();
 }
-
 
 wxFlatButton::wxFlatButton(wxWindow *parent, wxWindowID id, const wxString &label, wxSize size)
-        : wxButton(parent, id, label, wxDefaultPosition, size, wxFLATBUTTON_STYLE)
-{
-    //InitwxFlatButton();
-
+    : wxButton(parent, id, label, wxDefaultPosition, size, wxFLATBUTTON_STYLE) {
+  // InitwxFlatButton();
 }
 
-
-wxFlatButton::~wxFlatButton()
-{
-}
-
+wxFlatButton::~wxFlatButton() {}
 
 IMPLEMENT_DYNAMIC_CLASS(wxFlatButton, wxButton)
 
 /*
 void wxFlatButton::InitwxFlatButton()
 {
-	
+
 }
 */
 

@@ -2,8 +2,7 @@
  danglingnodes_dlg.h
  Display Dangling nodes Dialog
  -------------------
- copyright            : (C) 2007 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,52 +16,45 @@
 
 // comment doxygen
 
-
 #ifndef _DANGLING_NODES_DLG_H_
 #define _DANGLING_NODES_DLG_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
 const int ID_DLGDN_CLEAR = 22210;
 
-class DanglingNode_DLG : public wxDialog
-{
-private:
-    wxListBox *m_LayerChoice;
+class DanglingNode_DLG : public wxDialog {
+ private:
+  wxListBox *m_LayerChoice;
 
-    void CreateControls();
+  void CreateControls();
 
-    int m_SelectedLayer;
+  int m_SelectedLayer;
 
-    // private event
-    void OnClearDangling(wxCommandEvent &event);
+  // private event
+  void OnClearDangling(wxCommandEvent &event);
 
-DECLARE_EVENT_TABLE();
+  DECLARE_EVENT_TABLE();
 
-public:
-    DanglingNode_DLG(wxWindow *parent, wxWindowID id = wxID_ANY,
-                     const wxString &title = _("Dangling nodes"),
-                     const wxPoint &pos = wxDefaultPosition,
-                     const wxSize &size = wxDefaultSize,
-                     long style = wxDEFAULT_DIALOG_STYLE); //|wxRESIZE_BORDER );
-    ~DanglingNode_DLG();
+ public:
+  DanglingNode_DLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Dangling nodes"),
+                   const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                   long style = wxDEFAULT_DIALOG_STYLE);  //|wxRESIZE_BORDER );
+  ~DanglingNode_DLG();
 
-    void SetLayers(const wxArrayString &layers, int selected = wxNOT_FOUND);
+  void SetLayers(const wxArrayString &layers, int selected = wxNOT_FOUND);
 
-    virtual bool TransferDataFromWindow();
+  virtual bool TransferDataFromWindow();
 
-    int GetSelectedLayer()
-    { return m_SelectedLayer; }
-
-
+  int GetSelectedLayer() {
+    return m_SelectedLayer;
+  }
 };
-
 
 #endif

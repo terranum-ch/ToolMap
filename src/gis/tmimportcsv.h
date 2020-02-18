@@ -1,9 +1,7 @@
 /***************************************************************************
  tmimportcsv.h
- 
  -------------------
- copyright            : (C) 2010 CREALP Lucien Schreiber 
- email                : lucien.schreiber at crealp dot vs dot ch
+ copyright            : (C) 2010 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,7 +16,7 @@
 #ifndef _TMIMPORTCSV_H
 #define _TMIMPORTCSV_H
 
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
@@ -27,59 +25,57 @@
 #include <wx/txtstrm.h>
 #include <wx/wfstream.h>
 
-
-#include "tmimport.h"
 #include "../core/prjdefmemmanage.h"
+#include "tmimport.h"
 
+class tmImportCSV : public tmImport {
+ private:
+  int m_Xcolumn;
+  int m_Ycolumn;
+  wxFileInputStream *m_FileStream;
+  wxTextInputStream *m_TextStream;
+  wxArrayString m_Fields;
 
-class tmImportCSV : public tmImport
-{
-private:
-    int m_Xcolumn;
-    int m_Ycolumn;
-    wxFileInputStream *m_FileStream;
-    wxTextInputStream *m_TextStream;
-    wxArrayString m_Fields;
+  bool _ResetReading();
 
-    bool _ResetReading();
+  bool _GetNextData(wxArrayString &tokenArray);
 
-    bool _GetNextData(wxArrayString &tokenArray);
+  bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
 
-    bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
+  bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
 
-    bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+ public:
+  tmImportCSV();
 
+  virtual ~tmImportCSV();
 
-public:
-    tmImportCSV();
+  virtual bool Open(const wxFileName &filename);
 
-    virtual ~tmImportCSV();
+  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
 
-    virtual bool Open(const wxFileName &filename);
+  virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
 
-    virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = NULL);
+  virtual bool IsOk();
 
-    virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
+  void ListFields();
 
-    virtual bool IsOk();
+  wxArrayString GetFieldsList();
 
-    void ListFields();
+  void GuessXYfields();
 
-    wxArrayString GetFieldsList();
+  virtual bool GetFieldNames(wxArrayString &Fields);
 
-    void GuessXYfields();
+  int GetColumnX() {
+    return m_Xcolumn;
+  }
 
-    virtual bool GetFieldNames(wxArrayString &Fields);
+  int GetColumnY() {
+    return m_Ycolumn;
+  }
 
-    int GetColumnX()
-    { return m_Xcolumn; }
+  void SetXYColumn(int x, int y);
 
-    int GetColumnY()
-    { return m_Ycolumn; }
-
-    void SetXYColumn(int x, int y);
-
-    virtual wxArrayInt GetTargetSupported();
+  virtual wxArrayInt GetTargetSupported();
 };
 
 #endif

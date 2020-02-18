@@ -1,9 +1,8 @@
 /***************************************************************************
-								tmgisdatavectormysql.h
-                    For dealing with spatial data from a mysql database
-                             -------------------
-    copyright            : (C) 2007 CREALP Lucien Schreiber 
-    email                : lucien.schreiber at crealp dot vs dot ch
+ tmgisdatavectormysql.h
+ For dealing with spatial data from a mysql database
+ -------------------
+ copyright : (C) 2007 CREALP Lucien Schreiber
  ***************************************************************************/
 
 /***************************************************************************
@@ -17,22 +16,19 @@
 
 // comment doxygen
 
-
 #ifndef _TM_GISDATAVECTOR_MYSQL_H_
 #define _TM_GISDATAVECTOR_MYSQL_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+#include <wx/wxprec.h>
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
 
-
-#include "tmgisdatavector.h"
 #include "../database/database_tm.h"
-
+#include "tmgisdatavector.h"
 
 class tmAttributionData;
 
@@ -42,108 +38,100 @@ const wxString tmGISMYSQL_FIELD2 = _T("OBJECT_GEOMETRY");
 // same order as in TM_GIS_SPATIAL_TYPES
 const wxString tmGISMYSQL_TEXT_TYPES[] = {_T("linestring"), _T("multipoint"), _T("polygon")};
 
+class tmGISDataVectorMYSQL : public tmGISDataVector {
+ private:
+  static DataBaseTM *m_DB;
+  // static PrjDefMemManage * m_ProjDef;
 
-class tmGISDataVectorMYSQL : public tmGISDataVector
-{
-private:
-    static DataBaseTM *m_DB;
-    //static PrjDefMemManage * m_ProjDef;
+  tmAttributionData *_CreateAttributionObject(int &layertype);
 
-    tmAttributionData *_CreateAttributionObject(int &layertype);
+  PrjDefMemManage *m_PrjDef;
 
-    PrjDefMemManage *m_PrjDef;
+ protected:
+  // checking db fields
+  bool CheckGeometryFields(const wxString &tablename);
 
-protected:
-    // checking db fields
-    bool CheckGeometryFields(const wxString &tablename);
+  // gis database function
+  OGRGeometry *CreateDataBaseGeometry(MYSQL_ROW &row, const tmArrayULong &row_lengths, int geometry_col = 0);
 
-    // gis database function
-    OGRGeometry *CreateDataBaseGeometry(MYSQL_ROW &row,
-                                        const tmArrayULong &row_lengths,
-                                        int geometry_col = 0);
+  long GetOid(MYSQL_ROW &row, const int &col);
 
-    long GetOid(MYSQL_ROW &row, const int &col);
+  virtual wxString GetTableName(TOC_GENERIC_NAME type);
 
-    virtual wxString GetTableName(TOC_GENERIC_NAME type);
+ public:
+  tmGISDataVectorMYSQL();
 
+  ~tmGISDataVectorMYSQL();
 
-public:
-    tmGISDataVectorMYSQL();
+  // special function for DB, use it first.
+  static void SetDataBaseHandle(DataBaseTM *db) {
+    m_DB = db;
+  }
 
-    ~tmGISDataVectorMYSQL();
+  static DataBaseTM *GetDataBaseHandle() {
+    return m_DB;
+  }
 
-    // special function for DB, use it first.
-    static void SetDataBaseHandle(DataBaseTM *db)
-    { m_DB = db; }
+  void SetProject(PrjDefMemManage *prj) {
+    m_PrjDef = prj;
+  }
 
-    static DataBaseTM *GetDataBaseHandle()
-    { return m_DB; }
+  // implementing virtual function
+  virtual bool Open(const wxString &filename, bool bReadWrite = FALSE);
 
-    void SetProject(PrjDefMemManage *prj)
-    { m_PrjDef = prj; }
+  virtual tmRealRect GetMinimalBoundingRectangle();
 
+  virtual TM_GIS_SPATIAL_TYPES GetSpatialType();
 
-    // implementing virtual function
-    virtual bool Open(const wxString &filename, bool bReadWrite = FALSE);
+  // virtual function for getting data & drawing
+  virtual bool SetSpatialFilter(tmRealRect filter, int type);
 
-    virtual tmRealRect GetMinimalBoundingRectangle();
+  virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver);
 
-    virtual TM_GIS_SPATIAL_TYPES GetSpatialType();
+  virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver);
 
-    // virtual function for getting data & drawing
-    virtual bool SetSpatialFilter(tmRealRect filter, int type);
+  OGRPoint *GetNextDataPointWithAttrib(long &oid, wxArrayString &values);
 
-    virtual wxRealPoint *GetNextDataLine(int &nbvertex, long &oid, bool &isOver);
+  virtual OGRLineString *GetNextDataLine(long &oid);
 
-    virtual wxRealPoint *GetNextDataPoint(long &oid, bool &isOver);
+  virtual OGRPoint *GetOGRNextDataPoint(long &oid);
 
-    OGRPoint *GetNextDataPointWithAttrib(long &oid, wxArrayString &values);
+  virtual OGRFeature *GetFeatureByOID(long oid);
 
-    virtual OGRLineString *GetNextDataLine(long &oid);
+  virtual long AddGeometry(OGRGeometry *Geom, const long &oid, int layertype = wxNOT_FOUND);
 
-    virtual OGRPoint *GetOGRNextDataPoint(long &oid);
+  virtual bool UpdateGeometry(OGRGeometry *geom, const long &oid);
 
-    virtual OGRFeature *GetFeatureByOID(long oid);
+  virtual OGRGeometryCollection *GetGeometryColByOID(wxArrayLong *OIDs);
 
-    virtual long AddGeometry(OGRGeometry *Geom, const long &oid, int layertype = wxNOT_FOUND);
+  virtual OGRGeometry *GetNextGeometry(bool restart, long &oid);
 
-    virtual bool UpdateGeometry(OGRGeometry *geom, const long &oid);
+  // metadata
+  virtual wxString GetMetaDataAsHtml();
 
-    virtual OGRGeometryCollection *GetGeometryColByOID(wxArrayLong *OIDs);
+  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 
-    virtual OGRGeometry *GetNextGeometry(bool restart, long &oid);
+  // fields functions
+  // static void SetProjectDefinition(PrjDefMemManage * project){m_ProjDef = project;}
+  virtual int GetFieldsCount();
 
-    // metadata
-    virtual wxString GetMetaDataAsHtml();
+  virtual bool GetFieldsName(wxArrayString &Fields, long oid = wxNOT_FOUND);
 
-    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
+  virtual bool GetFieldsValue(wxArrayString &values, long oid);
 
-    // fields functions
-    //static void SetProjectDefinition(PrjDefMemManage * project){m_ProjDef = project;}
-    virtual int GetFieldsCount();
+  // count
+  virtual int GetCount();
 
-    virtual bool GetFieldsName(wxArrayString &Fields, long oid = wxNOT_FOUND);
+  // searching data
+  virtual wxArrayLong *SearchData(const tmRealRect &rect, int type);
 
-    virtual bool GetFieldsValue(wxArrayString &values, long oid);
+  virtual wxArrayLong *GetAllData();
 
+  virtual wxArrayLong *SearchIntersectingGeometry(OGRGeometry *intersectinggeom);
 
-    // count
-    virtual int GetCount();
+  virtual bool GetSnapCoord(const wxRealPoint &clickpt, double buffersize, wxArrayRealPoints &snapppts, int snaptype);
 
-    // searching data
-    virtual wxArrayLong *SearchData(const tmRealRect &rect, int type);
-
-    virtual wxArrayLong *GetAllData();
-
-    virtual wxArrayLong *SearchIntersectingGeometry(OGRGeometry *intersectinggeom);
-
-    virtual bool GetSnapCoord(const wxRealPoint &clickpt, double buffersize,
-                              wxArrayRealPoints &snapppts, int snaptype);
-
-    virtual bool IsPointSnapped(const wxRealPoint &point, int snaptype, long excludeoid = wxNOT_FOUND);
-
-
+  virtual bool IsPointSnapped(const wxRealPoint &point, int snaptype, long excludeoid = wxNOT_FOUND);
 };
-
 
 #endif
