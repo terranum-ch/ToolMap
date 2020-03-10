@@ -317,7 +317,7 @@ bool ProjectManager::_copy_directory(wxString from, wxString to) {
   @date 10 April 2008
   *******************************************************************************/
 bool ProjectManager::EditProject(int notebooknumber) {
-  wxASSERT(m_PrjMem);
+  if (!m_PrjMem) return false;
   bool bReturn = true;
 
   // copy project definition

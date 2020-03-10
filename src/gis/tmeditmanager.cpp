@@ -523,7 +523,7 @@ void tmEditManager::BezierModifyDraw(wxGCDC *dc) {
   wxASSERT(dc);
 
   tmLayerProperties *myLayerProperties = m_TOC->GetEditLayer();
-  wxASSERT(myLayerProperties);
+  if (!myLayerProperties) return;
   tmSymbolVectorLine *mySymbol = static_cast<tmSymbolVectorLine *>(myLayerProperties->GetSymbolRef());
 
   // draw existing bezier
@@ -1950,7 +1950,7 @@ bool tmEditManager::EditVertexPosition() {
   // getting geometry info
   long lSelectedOID = m_SelectedData->GetSelectedUnique();
   OGRFeature *myFeature = mySelLayer->GetFeatureByOID(lSelectedOID);
-  wxASSERT(myFeature);
+  if (!myFeature) return false;
   OGRGeometry *myGeom = myFeature->GetGeometryRef();
   wxASSERT(myGeom);
   OGRwkbGeometryType myType = wkbFlatten(myGeom->getGeometryType());

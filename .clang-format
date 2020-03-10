@@ -4,5 +4,5 @@ ColumnLimit: 120
 BreakConstructorInitializers: BeforeColon
 BreakInheritanceList: BeforeColon
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
-AllowAllConstructorInitializersOnNextLine: false
+#AllowAllConstructorInitializersOnNextLine: false
 AllowShortFunctionsOnASingleLine: Empty
