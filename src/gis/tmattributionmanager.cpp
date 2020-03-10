@@ -438,6 +438,11 @@ void tmAttributionManager::OnInfoBtn(wxCommandEvent &event) {
   wxASSERT(m_pLayerProperties);
   wxASSERT(m_pDB);
 
+  if (!m_pLayerProperties) {
+    wxLogError(_("No layer selected."));
+    return;
+  }
+
   // create attribution object based on type
   wxArrayLong *mySelObjArray = m_SelData->GetSelectedValues();
   tmAttributionData *myAttrib = CreateAttributionData(m_pLayerProperties->GetType());
