@@ -134,7 +134,7 @@ ProjectDefMemoryLayers *PrjDefMemManage::FindLayer(unsigned int iIndex) {
 ProjectDefMemoryLayers *PrjDefMemManage::FindLayerByRealID(unsigned int iIndex) {
   // search this item in the array for the good layer name.
   for (unsigned int i = 0; i < m_PrjLayerArray.GetCount(); i++) {
-    if (m_PrjLayerArray.Item(i)->m_LayerID == (signed int)iIndex) {
+    if (m_PrjLayerArray.Item(i) && m_PrjLayerArray.Item(i)->m_LayerID == (signed int)iIndex) {
       // wxLogDebug(_T("Object found in Layer array in position : %d"), i);
       // set active layer
       SetActiveLayer(m_PrjLayerArray.Item(i));
