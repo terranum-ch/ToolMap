@@ -139,7 +139,6 @@ bool tmDropFiles::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenam
 IMPLEMENT_DYNAMIC_CLASS(ToolMapFrame, wxFrame)
 
 BEGIN_EVENT_TABLE(ToolMapFrame, wxFrame)
-EVT_CHAR_HOOK(ToolMapFrame::HandleCharHookEvent)
 
 EVT_MENU(ID_MENU_NEW_PRJ_EMPTY, ToolMapFrame::OnNewProject)
 EVT_MENU(ID_MENU_NEW_PRJ_EXISTING, ToolMapFrame::OnNewProjectExisting)
@@ -243,6 +242,8 @@ EVT_COMMAND(wxID_ANY, tmEVT_EM_EDIT_START, ToolMapFrame::OnEditSwitch)
 EVT_COMMAND(wxID_ANY, tmEVT_EM_EDIT_STOP, ToolMapFrame::OnEditSwitch)
 EVT_COMMAND(wxID_ANY, tmEVT_SELECTION_DONE, ToolMapFrame::OnUpdateSelection)
 EVT_COMMAND(wxID_ANY, tmEVT_TOGGLE_FREQUENT, ToolMapFrame::OnEditObjectFrequency)
+EVT_COMMAND(wxID_ANY, tmEVT_ENABLE_ACCELERATORS, ToolMapFrame::EnableAcceleratorTable)
+EVT_COMMAND(wxID_ANY, tmEVT_DISABLE_ACCELERATORS, ToolMapFrame::DisableAcceleratorTable)
 
 // STATISTICS EVENT
 EVT_COMMAND(wxID_ANY, tmEVT_STAT_CLICK, ToolMapFrame::OnStatisticsUpdate)
@@ -510,22 +511,18 @@ ToolMapFrame::~ToolMapFrame() {
   // tmGISData::finishGEOS();
 }
 
-void ToolMapFrame::HandleCharHookEvent(wxKeyEvent &event) {
-  if (event.GetKeyCode() == -1) {
-    m_MenuBar->SetAcceleratorTable(*m_MenuBarAcceleratorTable);
-  } else {
-    wxWindow *p_focus = FindFocus();
-    if (p_focus && dynamic_cast<wxSearchCtrl *>(p_focus)) {
-      m_MenuBarAcceleratorTable = new wxAcceleratorTable;
-      m_MenuBarAcceleratorTable->Ref(*m_MenuBar->GetAcceleratorTable());
-      m_MenuBar->SetAcceleratorTable(wxNullAcceleratorTable);
-      wxKeyEvent *p_event = new wxKeyEvent(wxEVT_CHAR_HOOK);
-      p_event->m_keyCode = -1;
-      QueueEvent(p_event);
-    }
-  }
+void ToolMapFrame::SaveAcceleratorTable() {
+  m_MenuBarAcceleratorTable = new wxAcceleratorTable;
+  m_MenuBarAcceleratorTable->Ref(*m_MenuBar->GetAcceleratorTable());
+}
 
-  event.Skip();
+void ToolMapFrame::DisableAcceleratorTable(wxCommandEvent &event) {
+  SaveAcceleratorTable();
+  m_MenuBar->SetAcceleratorTable(wxNullAcceleratorTable);
+}
+
+void ToolMapFrame::EnableAcceleratorTable(wxCommandEvent &event) {
+  m_MenuBar->SetAcceleratorTable(*m_MenuBarAcceleratorTable);
 }
 
 void ToolMapFrame::OnQuit(wxCommandEvent &event) {

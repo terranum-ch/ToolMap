@@ -104,6 +104,10 @@ class AttribObjType_PANEL : public ManagedAuiWnd {
 
   void OnEditStop(wxCommandEvent &event);
 
+  void SetFocusTextCtrl(wxFocusEvent &event);
+
+  void KillFocusTextCtrl(wxFocusEvent &event);
+
   void FilterPointList(wxCommandEvent &event);
 
   void FilterPolyList(wxCommandEvent &event);

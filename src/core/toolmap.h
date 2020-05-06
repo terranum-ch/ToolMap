@@ -310,7 +310,11 @@ class ToolMapFrame : public wxFrame {
   TocWindowDlgGen *m_TocWindow;
   wxArrayString m_Perspectives;
 
-  void HandleCharHookEvent(wxKeyEvent &event);
+  void SaveAcceleratorTable();
+
+  void DisableAcceleratorTable(wxCommandEvent &event);
+
+  void EnableAcceleratorTable(wxCommandEvent &event);
 
   void OnQuit(wxCommandEvent &event);
 
