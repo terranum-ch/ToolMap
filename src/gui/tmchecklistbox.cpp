@@ -90,19 +90,7 @@ bool tmCheckListBox::CreateStandardMenu() {
   return true;
 }
 
-/***************************************************************************/ /**
-  @brief Called when user right click an item
-  @author Lucien Schreiber (c) CREALP 2008
-  @date 15 May 2008
-  *******************************************************************************/
-void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent &event) {
-  if (GetPopupMenu() == nullptr) {
-    return;
-  }
-
-  if (GetCount() <= 0 || GetSelection() == wxNOT_FOUND) {
-    return;
-  }
+void tmCheckListBox::EnableRelevantMenuEntries() {
 
   // enable all
   GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_UP, true);
@@ -128,7 +116,24 @@ void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent &event) {
     GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_DOWN, false);
     GetPopupMenu()->Enable(tmCHECK_MENU_MOVE_BOTTOM, false);
   }
+}
 
+/***************************************************************************/ /**
+  @brief Called when user right click an item
+  @author Lucien Schreiber (c) CREALP 2008
+  @date 15 May 2008
+  *******************************************************************************/
+void tmCheckListBox::OnDisplayPopupMenu(wxMouseEvent &event) {
+  if (GetPopupMenu() == nullptr) {
+    return;
+  }
+
+  if (GetCount() <= 0 || GetSelection() == wxNOT_FOUND) {
+    return;
+  }
+
+  EnableRelevantMenuEntries();
+  
   // show the menu
   PopupMenu(GetPopupMenu());
   event.Skip();
