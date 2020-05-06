@@ -99,7 +99,21 @@ bool tmCheckListBoxRank::AddToMenu() {
 
   GetPopupMenu()->AppendSeparator();
   GetPopupMenu()->Append(tmCHECK_MENU_SAVE_RANK, _("Save order"));
+
   return TRUE;
+}
+
+void tmCheckListBoxRank::EnableRelevantMenuEntries() {
+
+  tmCheckListBox::EnableRelevantMenuEntries();
+
+  // enable
+  GetPopupMenu()->Enable(tmCHECK_MENU_SAVE_RANK, true);
+
+  // disable if filtered
+  if (m_IsFiltered) {
+    GetPopupMenu()->Enable(tmCHECK_MENU_SAVE_RANK, false);
+  }
 }
 
 /***************************************************************************/ /**
@@ -151,20 +165,6 @@ void tmCheckListBoxRank::OnSaveOrder(wxCommandEvent &event) {
   }
 
   wxLogDebug(_T("Saving rank"));
-}
-
-/***************************************************************************/ /**
-  @brief Get the actual order from the list
-  @details Every item's id from the list is returned in the same order as they
-  appear in the list now
-  @param id The array of long containing id values in the same order as in the
-  list
-  @return  TRUE if the list isn't empty
-  @author Lucien Schreiber (c) CREALP 2008
-  @date 20 May 2008
-  *******************************************************************************/
-bool tmCheckListBoxRank::GetOrder(wxArrayLong &id) {
-  return TRUE;
 }
 
 /***************************************************************************/ /**

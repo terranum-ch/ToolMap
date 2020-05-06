@@ -58,8 +58,9 @@ class tmCheckListBoxRank : public tmCheckListBox {
   void OnSaveOrder(wxCommandEvent &event);
 
  protected:
-  bool GetOrder(wxArrayLong &id);  // unused ???
   bool PrepareOrderStatement(wxString &sqlstatement);
+
+  void EnableRelevantMenuEntries();
 
  public:
   ~tmCheckListBoxRank();

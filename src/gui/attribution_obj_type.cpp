@@ -61,22 +61,28 @@ AttribObjType_PANEL::AttribObjType_PANEL(wxWindow *parent, wxAuiManager *AuiMana
   AddManagedPane(ContentFrame, mPaneInfo);
 
   // Connect events
-  m_textCtrlPoints->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList),
-                            nullptr, this);
-  m_textCtrlPoly->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), nullptr,
-                          this);
-  m_textCtrlLines->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), nullptr,
-                           this);
+  m_textCtrlPoints->Connect(wxEVT_SET_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::SetFocusTextCtrl), nullptr, this);
+  m_textCtrlPoints->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::KillFocusTextCtrl), nullptr, this);
+  m_textCtrlPoints->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList), nullptr, this);
+  m_textCtrlPoly->Connect(wxEVT_SET_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::SetFocusTextCtrl), nullptr, this);
+  m_textCtrlPoly->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::KillFocusTextCtrl), nullptr, this);
+  m_textCtrlPoly->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), nullptr, this);
+  m_textCtrlLines->Connect(wxEVT_SET_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::SetFocusTextCtrl), nullptr, this);
+  m_textCtrlLines->Connect(wxEVT_KILL_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::KillFocusTextCtrl), nullptr, this);
+  m_textCtrlLines->Connect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), nullptr, this);
 }
 
 AttribObjType_PANEL::~AttribObjType_PANEL() {
   // Disconnect events
-  m_textCtrlPoints->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList),
-                               nullptr, this);
-  m_textCtrlPoly->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList),
-                             nullptr, this);
-  m_textCtrlLines->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList),
-                              nullptr, this);
+  m_textCtrlPoints->Disconnect(wxEVT_SET_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::SetFocusTextCtrl), nullptr, this);
+  m_textCtrlPoints->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::KillFocusTextCtrl), nullptr, this);
+  m_textCtrlPoints->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPointList), nullptr, this);
+  m_textCtrlPoly->Disconnect(wxEVT_SET_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::SetFocusTextCtrl), nullptr, this);
+  m_textCtrlPoly->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::KillFocusTextCtrl), nullptr, this);
+  m_textCtrlPoly->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterPolyList), nullptr, this);
+  m_textCtrlLines->Disconnect(wxEVT_SET_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::SetFocusTextCtrl), nullptr, this);
+  m_textCtrlLines->Disconnect(wxEVT_KILL_FOCUS, wxFocusEventHandler(AttribObjType_PANEL::KillFocusTextCtrl), nullptr, this);
+  m_textCtrlLines->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler(AttribObjType_PANEL::FilterLineList), nullptr, this);
 
   m_ParentEvt->PopEventHandler(FALSE);
 }
@@ -332,6 +338,19 @@ void AttribObjType_PANEL::OnEditStart(wxCommandEvent &event) {
 
 void AttribObjType_PANEL::OnEditStop(wxCommandEvent &event) {
   SetAttributeBtn(m_NbFeaturesSelected, false);
+  event.Skip();
+}
+
+void AttribObjType_PANEL::SetFocusTextCtrl(wxFocusEvent &event) {
+  wxCommandEvent evt(tmEVT_DISABLE_ACCELERATORS, wxID_ANY);
+  QueueEvent(evt.Clone());
+  //GetParent()->GetEventHandler()->QueueEvent(evt.Clone());
+  event.Skip();
+}
+
+void AttribObjType_PANEL::KillFocusTextCtrl(wxFocusEvent &event) {
+  wxCommandEvent evt(tmEVT_ENABLE_ACCELERATORS, wxID_ANY);
+  QueueEvent(evt.Clone());
   event.Skip();
 }
 
