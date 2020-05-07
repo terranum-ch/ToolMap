@@ -310,7 +310,11 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString &header, wxArrayStrin
 
   wxASSERT(m_Project);
   wxASSERT(m_Toc);
-  wxASSERT(oid != wxNOT_FOUND);
+
+  if (oid == wxNOT_FOUND) {
+    wxLogError(_T("No object ID found."));
+    return false;
+  }
 
   tmLayerProperties *itemProp = m_Toc->GetSelectionLayer();
   if (!itemProp) {
@@ -530,7 +534,7 @@ void tmSelectionInfoCtrl::UpdateSelection() {
   DeleteChildren(GetFirstRoot());
 
   wxArrayLong *mySelVal = m_Selected->GetSelectedValues();
-  if (mySelVal == nullptr) {
+  if (!mySelVal) {
     // Thaw();
     return;
   }

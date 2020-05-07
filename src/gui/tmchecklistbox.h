@@ -60,7 +60,6 @@ class tmCheckListBox : public wxCheckListBox {
   wxArrayString m_originalLabels;
   wxArrayShort m_originalChecks;
   wxMenu *m_PopupMenu;
-  bool m_IsFiltered;
 
   bool CreateStandardMenu();
 
@@ -72,6 +71,7 @@ class tmCheckListBox : public wxCheckListBox {
   void OnToggleFrequent(wxCommandEvent &event);
 
  protected:
+  bool m_IsFiltered;
   // wxArrayInt m_Selections;
 
   void Init() {
@@ -82,6 +82,8 @@ class tmCheckListBox : public wxCheckListBox {
   wxMenu *GetPopupMenu() {
     return m_PopupMenu;
   }
+
+  virtual void EnableRelevantMenuEntries();
 
  public:
   // ctor

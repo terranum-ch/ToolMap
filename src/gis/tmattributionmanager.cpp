@@ -552,7 +552,7 @@ tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
   *******************************************************************************/
 void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
   tmAttributionData *myAttrib = CreateAttributionData(m_TOC->GetEditLayer()->GetType());
-  if (myAttrib == nullptr) return;
+  if (!myAttrib) return;
 
   // init
   wxArrayLong *mySelectedValues = (wxArrayLong *)event.GetClientData();
