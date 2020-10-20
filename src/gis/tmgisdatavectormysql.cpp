@@ -654,6 +654,10 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid) {
   }
   wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
   wxASSERT(myObjVal.GetCount() == myLayers.GetCount());
+  if (myObjVal.GetCount() != myObjCode.GetCount() || myObjVal.GetCount() != myLayers.GetCount()) {
+    wxLogError(_("Missmatch between the number of layers and the values."));
+    return false;
+  }
 
   for (unsigned int i = 0; i < myObjCode.GetCount(); i++) {
     values.Add(myObjCode.Item(i));

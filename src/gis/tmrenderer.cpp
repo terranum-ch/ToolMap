@@ -308,6 +308,10 @@ void tmRenderer::OnPaint(wxPaintEvent &event) {
   wxAutoBufferedPaintDC dc(this);
   wxGCDC gcdc(dc);
 
+  if (!gcdc.IsOk()) {
+    return;
+  }
+
   if (m_bmp && m_bmp->IsOk()) {
     dc.SetBackground(*wxWHITE);
     dc.Clear();
