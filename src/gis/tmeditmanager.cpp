@@ -1030,32 +1030,25 @@ bool tmEditManager::_LoadSnappingStatus() {
       }
 
       // Search if vertex are snapped
-      switch (mySnapStatus) {
-        case tmSNAPPING_VERTEX:
-          for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v++) {
-            // TODO Implement IsPointSnapped for Shapefiles
-            if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID)) {
-              int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
-              if (myItemIndex == wxNOT_FOUND) {
-                m_ArcSnappedPointsIndexes.Add(v);
-              }
+      if (mySnapStatus == tmSNAPPING_BEGIN_END) {
+        for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v += m_ArcPoints.GetCount() - 1) {
+          if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID)) {
+            int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
+            if (myItemIndex == wxNOT_FOUND) {
+              m_ArcSnappedPointsIndexes.Add(v);
             }
           }
-          break;
-
-        case tmSNAPPING_BEGIN_END:
-          for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v += m_ArcPoints.GetCount() - 1) {
-            if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID)) {
-              int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
-              if (myItemIndex == wxNOT_FOUND) {
-                m_ArcSnappedPointsIndexes.Add(v);
-              }
+        }
+      } else {
+        for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v++) {
+          // TODO Implement IsPointSnapped for Shapefiles
+          if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID)) {
+            int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
+            if (myItemIndex == wxNOT_FOUND) {
+              m_ArcSnappedPointsIndexes.Add(v);
             }
           }
-          break;
-
-        default:
-          break;
+        }
       }
 
       wxDELETE(myActualGISData);

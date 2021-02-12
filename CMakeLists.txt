@@ -1,6 +1,6 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) LUCIEN SCHREIBER CREALP 2007
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
 
 ## POLICY FOR WINDOWS ONLY ???
 #if(COMMAND cmake_policy)

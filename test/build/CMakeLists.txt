@@ -2,7 +2,7 @@
 # USE AND MYSQL AND WXWIDGETS (CONSOLE)
 # PART OF QA FOR TOOLMAP 2
 # (c) LUCIEN SCHREIBER CREALP 2009
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 3.0)
 
 include(ExternalProject)
 set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
