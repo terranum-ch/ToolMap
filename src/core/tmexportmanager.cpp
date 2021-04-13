@@ -937,7 +937,7 @@ void tmExportSelected_DLG::OnUpdateUICheckReplace(wxUpdateUIEvent &event) {
 
 void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers) {
   // Load preference
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
   myConfig->SetPath("EXPORT");
 
@@ -1064,7 +1064,7 @@ tmExportSelected_DLG::tmExportSelected_DLG(wxWindow *parent, const wxArrayString
 
 tmExportSelected_DLG::~tmExportSelected_DLG() {
   // Save preference
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
   myConfig->SetPath("EXPORT");
   myConfig->Write("overwrite_files", m_OverwriteFilesCtrl->GetValue());
@@ -1109,4 +1109,3 @@ bool tmExportSelected_DLG::UseFastExport() {
 bool tmExportSelected_DLG::DoExportAttributeCode() {
   return m_ExportAttribCodeCtrl->GetValue();
 }
-       

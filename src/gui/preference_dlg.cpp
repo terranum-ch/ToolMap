@@ -125,55 +125,41 @@ void PreferenceDLG::_CreateControls() {
 }
 
 bool PreferenceDLG::TransferDataToWindow() {
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("UPDATE");
-  bool bCheckStartup = myConfig->ReadBool("check_on_start", true);
-  wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
-  myConfig->SetPath("..");
+  bool bCheckStartup = myConfig->ReadBool("UPDATE/check_on_start", true);
+  wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
 
-  myConfig->SetPath("GENERAL");
-  wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
-  bool mySelHalo = myConfig->ReadBool("selection_halo", false);
-  bool myRelPath = myConfig->ReadBool("relative_path", true);
-  myConfig->SetPath("..");
+  wxString mySelColorText = myConfig->Read("GENERAL/selection_color", wxEmptyString);
+  bool mySelHalo = myConfig->ReadBool("GENERAL/selection_halo", false);
+  bool myRelPath = myConfig->ReadBool("GENERAL/relative_path", true);
 
   wxColour mySelColor = *wxRED;
   if (mySelColorText != wxEmptyString) {
     mySelColor.Set(mySelColorText);
   }
 
-  myConfig->SetPath("SPATIAL_INDEX");
-  bool bCreateIndex = myConfig->ReadBool("create_index", true);
-  myConfig->SetPath("..");
+  bool bCreateIndex = myConfig->ReadBool("SPATIAL_INDEX/create_index", true);
 
   m_BuildOverviewCtrl->SetValue(bCreateIndex);
-
   m_SelColourCtrl->SetColour(mySelColor);
   m_SelOutlineCtrl->SetValue(mySelHalo);
   m_RelPathCtrl->SetValue(myRelPath);
-
   m_UpdateCheckCtrl->SetValue(bCheckStartup);
   m_ProxyInfoCtrl->SetValue(myProxyInfo);
   return true;
 }
 
 bool PreferenceDLG::TransferDataFromWindow() {
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("UPDATE");
-  myConfig->Write("check_on_start", m_UpdateCheckCtrl->GetValue());
-  myConfig->Write("proxy_info", m_ProxyInfoCtrl->GetValue());
-  myConfig->SetPath("..");
+  myConfig->Write("UPDATE/check_on_start", m_UpdateCheckCtrl->GetValue());
+  myConfig->Write("UPDATE/proxy_info", m_ProxyInfoCtrl->GetValue());
 
-  myConfig->SetPath("GENERAL");
-  myConfig->Write("selection_color", m_SelColourCtrl->GetColour().GetAsString());
-  myConfig->Write("selection_halo", m_SelOutlineCtrl->GetValue());
-  myConfig->Write("relative_path", m_RelPathCtrl->GetValue());
-  myConfig->SetPath("..");
+  myConfig->Write("GENERAL/selection_color", m_SelColourCtrl->GetColour().GetAsString());
+  myConfig->Write("GENERAL/selection_halo", m_SelOutlineCtrl->GetValue());
+  myConfig->Write("GENERAL/relative_path", m_RelPathCtrl->GetValue());
 
-  myConfig->SetPath("SPATIAL_INDEX");
-  myConfig->Write("create_index", m_BuildOverviewCtrl->GetValue());
-  myConfig->SetPath("..");
+  myConfig->Write("SPATIAL_INDEX/create_index", m_BuildOverviewCtrl->GetValue());
   return true;
 }

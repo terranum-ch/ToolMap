@@ -97,11 +97,9 @@ void ToolMapApp::OnFatalException() {
     return;
   }
 
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("UPDATE");
-  wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
-  myConfig->SetPath("..");
+  wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
 
   if (!myCrashReport.SendReportWeb(_T("https://www.terranum.ch/toolmap/crash-reports/upload_file.php"), myProxyInfo)) {
     wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
@@ -364,8 +362,11 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   m_LogWindow = new wxLogWindow(this, g_ProgName + _(" Log"), false);
   wxLogDebug(_("Debug mode enabled"));
 
-  wxConfigBase::Set(new wxFileConfig(g_ProgName));
-  wxLogDebug("Config file : %s", wxFileConfig::GetLocalFile(g_ProgName).GetFullPath());
+  wxFileName filePath = wxFileConfig::GetLocalFile(g_ProgName, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
+  filePath.Mkdir(wxS_DIR_DEFAULT, wxPATH_MKDIR_FULL);
+  wxFileConfig *pConfig = new wxFileConfig(g_ProgName, wxEmptyString, filePath.GetFullPath(), wxEmptyString, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
+  wxFileConfig::Set(pConfig);
+  wxLogDebug("Config file : %s", filePath.GetFullPath());
 
   // create the UI
   wxBoxSizer *bSizer2;
@@ -509,6 +510,9 @@ ToolMapFrame::~ToolMapFrame() {
   // finish the GEOS library
   wxLogDebug(_T("Clearing GEOS library"));
   // tmGISData::finishGEOS();
+
+  wxFileConfig::Get()->Flush();
+  delete wxFileConfig::Set((wxFileConfig *) nullptr);
 }
 
 void ToolMapFrame::SaveAcceleratorTable() {
@@ -1149,14 +1153,10 @@ void ToolMapFrame::OnExportProjectModel(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::_LoadPreference(bool reload) {
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-
-  myConfig->SetPath("GENERAL");
-  wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
-  bool mySelHalo = myConfig->ReadBool("selection_halo", false);
-
-  myConfig->SetPath("..");
+  wxString mySelColorText = myConfig->Read("GENERAL/selection_color", wxEmptyString);
+  bool mySelHalo = myConfig->ReadBool("GENERAL/selection_halo", false);
 
   wxColour mySelColor = *wxRED;
   if (mySelColorText != wxEmptyString) {
@@ -1220,12 +1220,10 @@ void ToolMapFrame::OnLayoutHorizontal(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::_CheckUpdates(bool ismanual) {
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("UPDATE");
-  bool bCheckStartup = myConfig->ReadBool("check_on_start", true);
-  wxString myProxyInfo = myConfig->Read("proxy_info", wxEmptyString);
-  myConfig->SetPath("..");
+  bool bCheckStartup = myConfig->ReadBool("UPDATE/check_on_start", true);
+  wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
 
   if (!bCheckStartup && !ismanual) {
     return;

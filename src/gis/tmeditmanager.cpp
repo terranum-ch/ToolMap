@@ -1320,11 +1320,9 @@ void tmEditManager::OnOrientedPtsUp(wxCommandEvent &event) {
   @date 03 February 2009
   *******************************************************************************/
 void tmEditManager::OnEditStart(wxCommandEvent &event) {
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("GENERAL");
-  wxString mySelColorText = myConfig->Read("selection_color", wxEmptyString);
-  myConfig->SetPath("..");
+  wxString mySelColorText = myConfig->Read("GENERAL/selection_color", wxEmptyString);
 
   if (mySelColorText != wxEmptyString) {
     m_SelectionColour.Set(mySelColorText);

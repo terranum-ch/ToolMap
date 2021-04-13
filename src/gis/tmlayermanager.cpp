@@ -185,11 +185,9 @@ void tmLayerManager::FillTOCArray() {
   wxASSERT_MSG(m_DB != nullptr, _T("Database pointer is empty... error"));
 
   // load preference
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("GENERAL");
-  bool myRelativePath = myConfig->ReadBool("relative_path", true);
-  myConfig->SetPath("..");
+  bool myRelativePath = myConfig->ReadBool("GENERAL/relative_path", true);
 
   tmLayerProperties *lyrproptemp = nullptr;
   while (1) {
@@ -235,11 +233,9 @@ bool tmLayerManager::SaveTOCStatus(bool isClosing) {
 
   // load preference
   if (isClosing) {
-    wxConfigBase *myConfig = wxConfigBase::Get(false);
+    wxConfigBase *myConfig = wxFileConfig::Get();
     wxASSERT(myConfig);
-    myConfig->SetPath("GENERAL");
-    myRelativePath = myConfig->ReadBool("relative_path", true);
-    myConfig->SetPath("..");
+    myRelativePath = myConfig->ReadBool("GENERAL/relative_path", true);
   }
 
   wxString sSentence = _T("");
@@ -595,11 +591,9 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
 
 void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData *layer, const wxString &displayname) {
   // build pyramids and spatial index ??
-  wxConfigBase *myConfig = wxConfigBase::Get(false);
+  wxConfigBase *myConfig = wxFileConfig::Get();
   wxASSERT(myConfig);
-  myConfig->SetPath("SPATIAL_INDEX");
-  bool bCreateIndex = myConfig->ReadBool("create_index", true);
-  myConfig->SetPath("..");
+  bool bCreateIndex = myConfig->ReadBool("SPATIAL_INDEX/create_index", true);
   if (bCreateIndex) {
     if (layer->IsRaster() == 1) {
       tmGISDataRaster *myRaster = (tmGISDataRaster *)layer;

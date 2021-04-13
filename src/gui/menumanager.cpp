@@ -58,8 +58,8 @@ MenuManager::~MenuManager() {
   *******************************************************************************/
 void MenuManager::InitializeRecentFilesHistory() {
   TerminateRecentFilesHistory();
-  wxFileConfig myConfigFile;
-  myConfigFile.SetPath(_T("RECENT_PRJ"));
+  wxConfigBase* pconfig = wxFileConfig::Get();
+  pconfig->SetPath("RECENT_PRJ");
 
   if (m_MenuBar) {
     wxMenuItem *miFound = m_MenuBar->FindItem(ID_MENU_RECENT);
@@ -67,12 +67,13 @@ void MenuManager::InitializeRecentFilesHistory() {
       wxMenu *menu = miFound->GetSubMenu();
       if (menu) {
         m_pFilesHistory = new wxFileHistory(5);
-        m_pFilesHistory->Load(myConfigFile);
+        m_pFilesHistory->Load(*pconfig);
         m_pFilesHistory->UseMenu(menu);
         m_pFilesHistory->AddFilesToMenu();
       }
     }
   }
+  pconfig->SetPath("..");
 }
 
 /***************************************************************************/ /**
@@ -85,15 +86,16 @@ void MenuManager::InitializeRecentFilesHistory() {
 void MenuManager::TerminateRecentFilesHistory() {
   // save the recent to the config file and delete
   // the object.
-  wxFileConfig myConfigFile;
-  myConfigFile.SetPath(_T("RECENT_PRJ"));
+  wxConfigBase* pconfig = wxFileConfig::Get();
+  pconfig->SetPath("RECENT_PRJ");
 
   if (m_pFilesHistory) {
-    m_pFilesHistory->Save(myConfigFile);
+    m_pFilesHistory->Save(*pconfig);
 
     delete m_pFilesHistory;
     m_pFilesHistory = 0;
   }
+  pconfig->SetPath("..");
 }
 
 /***************************************************************************/ /**

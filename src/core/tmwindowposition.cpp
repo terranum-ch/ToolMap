@@ -18,8 +18,7 @@
 
 #include "tmwindowposition.h"
 
-tmWindowPosition::tmWindowPosition(const wxString &appname) {
-  m_ConfigAppName = appname;
+tmWindowPosition::tmWindowPosition() {
   WP_LoadScreenSize();
 }
 
@@ -46,13 +45,12 @@ bool tmWindowPosition::LoadPosition(const wxString &wndname, wxRect &pos) {
 }
 
 bool tmWindowPosition::LoadPosition(const wxString &wndname, wxString &postext) {
-  wxFileConfig myConfig(m_ConfigAppName);
-  myConfig.SetPath(_T("WINDOW_POSITION"));
-  if (!myConfig.Read(wndname, &postext)) {
+  wxConfigBase *pConfig = wxFileConfig::Get();
+  wxASSERT(pConfig);
+  if (!pConfig->Read("WINDOW_POSITION/" + wndname, &postext)) {
     wxLogMessage(_("No position stored for windows %s"), wndname.c_str());
     return false;
   }
-
   return true;
 }
 
@@ -85,14 +83,12 @@ bool tmWindowPosition::SavePosition(const wxString &wndname, wxRect pos) {
 
 bool tmWindowPosition::SavePosition(const wxString &wndname, const wxString &postext) {
   wxString myStringPosition = wxEmptyString;
-  wxFileConfig myConfig(m_ConfigAppName);
-
-  myConfig.SetPath(_T("WINDOW_POSITION"));
-  if (!myConfig.Write(wndname, postext)) {
+  wxConfigBase *pConfig = wxFileConfig::Get();
+  wxASSERT(pConfig);
+  if (!pConfig->Write("WINDOW_POSITION/" + wndname, postext)) {
     wxLogDebug(_T("Unable to write to config file"));
     return false;
   }
-
   return true;
 }
 

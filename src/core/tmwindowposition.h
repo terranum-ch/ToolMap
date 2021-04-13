@@ -33,12 +33,7 @@
 class tmWindowPosition : public wxObject {
  private:
   wxSize m_OldScreenSize;
-  wxString m_ConfigAppName;
-  // wxSize m_ScreenSize;
-  // wxFileConfig m_Config;
 
-  // void InitMemberValues();
-  // bool WP_IsInited();
   wxString WP_PositionToString(wxRect pos);
 
   wxRect WP_StringToPosition(const wxString &posstring);
@@ -49,12 +44,9 @@ class tmWindowPosition : public wxObject {
 
   wxRect WP_GetActualScreenSize();
 
- protected:
  public:
-  tmWindowPosition(const wxString &appname = wxEmptyString);
+  tmWindowPosition();
 
-  // tmWindowPosition(wxSize screensize);
-  // void Create (wxSize screensize);
   ~tmWindowPosition();
 
   bool LoadPosition(const wxString &wndname, wxRect &pos);
