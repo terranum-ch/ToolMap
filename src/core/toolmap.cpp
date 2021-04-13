@@ -357,9 +357,10 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   _CreateMenu();
   _CreateToolBar();
 
-  wxLog *myDlgLog = new tmLogGuiSeverity(wxLOG_Warning);
-  delete wxLog::SetActiveTarget(myDlgLog);
-  m_LogWindow = new wxLogWindow(this, g_ProgName + _(" Log"), false);
+  // chain log window and logging warning and error to dialogs
+  m_LogWindow = new wxLogWindow(NULL, g_ProgName + _(" Log"), false, false);
+  wxLog::SetActiveTarget(m_LogWindow);
+  wxLogChain * log_chain = new wxLogChain(new tmLogGuiSeverity(wxLOG_Warning));
   wxLogDebug(_("Debug mode enabled"));
 
   wxFileName filePath = wxFileConfig::GetLocalFile(g_ProgName, wxCONFIG_USE_LOCAL_FILE | wxCONFIG_USE_SUBDIR);
@@ -498,7 +499,7 @@ ToolMapFrame::~ToolMapFrame() {
   wxDELETE(m_AttribObjPanel);
   wxDELETE(m_TocWindow);
 
-  delete m_LogWindow;
+
   delete m_AuiManager;
   delete m_MManager;
   delete m_PManager;
@@ -509,6 +510,8 @@ ToolMapFrame::~ToolMapFrame() {
 
   // finish the GEOS library
   wxLogDebug(_T("Clearing GEOS library"));
+  // clear the logging chain.
+  delete wxLog::SetActiveTarget(NULL);
   // tmGISData::finishGEOS();
 
   wxFileConfig::Get()->Flush();
@@ -534,13 +537,14 @@ void ToolMapFrame::OnQuit(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::OnClose(wxCloseEvent &event) {
+  // Ensure we are the top window (#see 465)
+  Raise();
+
   // saving window postion
   tmWindowPosition myPos;
   myPos.SavePosition(GetName(), GetRect());
   myPos.SavePosition(_T("AUI_PANES"), m_AuiManager->SavePerspective());
   myPos.SaveScreenPosition();
-
-  wxLog::SetActiveTarget(nullptr);
   event.Skip();
 }
 
@@ -1882,8 +1886,9 @@ void ToolMapFrame::OnUpdateMenuShowTOC(wxUpdateUIEvent &event) {
 }
 
 void ToolMapFrame::OnUpdateMenuShowLog(wxUpdateUIEvent &event) {
-  wxASSERT(m_LogWindow);
-  event.Check(m_LogWindow->GetFrame()->IsShown());
+  if (m_LogWindow != nullptr) {
+    event.Check(m_LogWindow->GetFrame()->IsShown());
+  }
 }
 
 void ToolMapFrame::OnUpdateMenuShowInfo(wxUpdateUIEvent &event) {
