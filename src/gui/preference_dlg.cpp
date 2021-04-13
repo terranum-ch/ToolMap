@@ -173,6 +173,9 @@ bool PreferenceDLG::TransferDataToWindow() {
   m_RelPathCtrl->SetValue(myRelPath);
   m_UpdateCheckCtrl->SetValue(bCheckStartup);
   m_ProxyInfoCtrl->SetValue(myProxyInfo);
+
+  m_ctrl_debug_error->SetValue(myConfig->ReadBool("DEBUG/log_mysql_errors", false));
+  m_ctrl_debug_query->SetValue(myConfig->ReadBool("DEBUG/log_mysql_queries", false));
   return true;
 }
 
@@ -187,5 +190,8 @@ bool PreferenceDLG::TransferDataFromWindow() {
   myConfig->Write("GENERAL/relative_path", m_RelPathCtrl->GetValue());
 
   myConfig->Write("SPATIAL_INDEX/create_index", m_BuildOverviewCtrl->GetValue());
+
+  myConfig->Write("DEBUG/log_mysql_errors", m_ctrl_debug_error->GetValue());
+  myConfig->Write("DEBUG/log_mysql_queries", m_ctrl_debug_query->GetValue());
   return true;
 }

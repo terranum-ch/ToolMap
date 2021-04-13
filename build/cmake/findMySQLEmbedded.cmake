@@ -69,10 +69,6 @@ ELSE (WIN32)
     MESSAGE(STATUS "${MYSQL_CONFIG_CXFLAGS}")
 ENDIF (WIN32)
 
-
-## DEFINE LOGGING OR NOT
-SET(MYSQL_IS_LOGGING CACHE BOOL "Should MySQL log all commands to a text file in the document folder ?, not compatible with unit testing")
-
 FIND_PATH(DATABASE_PROJ_SOURCE_DIR database-config.h.in
         ${PROJECT_SOURCE_DIR}
         ${PROJECT_SOURCE_DIR}/../include
@@ -83,16 +79,6 @@ FIND_PATH(DATABASE_PROJ_SOURCE_DIR database-config.h.in
         ${PROJECT_SOURCE_DIR}../../../src/database/
         ${PROJECT_SOURCE_DIR}../../../../src/database/
         )
-
-IF (DATABASE_PROJ_SOURCE_DIR)
-    CONFIGURE_FILE("${DATABASE_PROJ_SOURCE_DIR}/database-config.h.in"
-            "${PROJECT_BINARY_DIR}/database-config.h")
-
-
-ELSE (DATABASE_PROJ_SOURCE_DIR)
-    MESSAGE(FATAL_ERROR "database-config.h.in not found, logging will not be defined")
-ENDIF (DATABASE_PROJ_SOURCE_DIR)
-
 
 MARK_AS_ADVANCED(
         MYSQL_LIBRARY

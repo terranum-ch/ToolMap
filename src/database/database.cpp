@@ -37,7 +37,6 @@
 #include <wx/filename.h>  // to create the database path and name.
 #include <wx/stdpaths.h>  // std path for logging too.
 
-#include "database-config.h"  // for logging
 #include "database.h"
 #include "databaseresult.h"
 
@@ -72,14 +71,8 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
   wxFileName f(wxStandardPaths::Get().GetExecutablePath());
   wxFileName windows_msg_path(f.GetPath(), "mysql", "");
 
-  // init library
-  wxString myDatadir = _T("--datadir=") + myValidPath.GetPath(wxPATH_GET_VOLUME, wxPATH_NATIVE);
-#ifdef MYSQL_IS_LOGGING
-  wxFileName myLogDirName(wxStandardPaths::Get().GetAppDocumentsDir(), _T("toolmap_mysql_log.sql"));
-  wxString myLogDirString = _T("--general-log-file=");
-  myLogDirString.Append(myLogDirName.GetFullPath());
-#endif
-  wxString mylanguagedir = wxEmptyString;
+  // init library parameters
+  wxString mylanguagedir;
   if (m_ErrMsgPath != wxEmptyString) {
     mylanguagedir = _T("--lc-messages-dir=") + m_ErrMsgPath;
   } else {
@@ -97,25 +90,41 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
 #endif
   }
 
-  char const *server_args[] = {
-    "this_program", /* this string is not used*/
-    myDatadir.mb_str(wxConvUTF8),
-    mylanguagedir.mb_str(wxConvUTF8),
-    "--character-set-server=utf8",
-    "--default-storage-engine=MyISAM",
-    "--default_tmp_storage_engine=MyISAM"
+  wxFileName my_debug_log_filename(wxStandardPaths::Get().GetAppDocumentsDir(), _T("toolmap_mysql_log.sql"));
+  wxFileName my_debug_err_filename(wxStandardPaths::Get().GetAppDocumentsDir(), _T("toolmap_mysql_err.err"));
 
-#if defined(MYSQL_IS_LOGGING)
-    ,
-    "--general-log=1",
-    myLogDirString.mb_str(wxConvUTF8)
-#endif
-  };
+  wxConfigBase *pconfig = wxFileConfig::Get();
+  wxASSERT(pconfig);
+
+  // server settings
+  wxArrayString server_args_array;
+  server_args_array.Add("this_program");  // this string is not used but mandatory
+  server_args_array.Add("--datadir=" + myValidPath.GetPath(wxPATH_GET_VOLUME, wxPATH_NATIVE));
+  server_args_array.Add(mylanguagedir);
+  server_args_array.Add("--character-set-server=utf8");
+  server_args_array.Add("--default-storage-engine=MyISAM");
+
+  // debug : log queries
+  if (pconfig->ReadBool("DEBUG/log_mysql_queries", false)) {
+    server_args_array.Add("--general-log=1");
+    server_args_array.Add("--general-log-file=" + my_debug_log_filename.GetFullPath());
+    wxLogMessage("Log queries path: %s", my_debug_log_filename.GetFullPath());
+  }
+
+  // debug : log errors
+  if (pconfig->ReadBool("DEBUG/log_mysql_errors", false)) {
+    server_args_array.Add("--log-error=" + my_debug_err_filename.GetFullPath());
+    wxLogMessage("Log errors path: %s", my_debug_err_filename.GetFullPath());
+  }
+
+  // convert server arguments array to char
+  char *my_args[server_args_array.GetCount()];
+  for (int i = 0; i < server_args_array.GetCount(); i++) {
+    my_args[i] = const_cast<char *>((const char *)server_args_array[i].mb_str());
+  }
 
   char const *server_groups[] = {"embedded", "server", "this_program_SERVER", (char *)nullptr};
-
-  int num_elements = (sizeof(server_args) / sizeof(char *));
-  int myReturn = mysql_library_init(num_elements, const_cast<char **>(server_args), const_cast<char **>(server_groups));
+  int myReturn = mysql_library_init(server_args_array.GetCount(), &my_args[0], const_cast<char **>(server_groups));
   if (myReturn != 0) {
     wxLogError(DataBaseGetLastError());
     return false;
