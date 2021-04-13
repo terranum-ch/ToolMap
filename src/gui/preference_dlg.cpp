@@ -104,6 +104,32 @@ void PreferenceDLG::_CreateControls() {
   bSizer6->Fit(m_panel3);
   m_notebook2->AddPage(m_panel3, _("Updates"), false);
 
+  // DEBUG PANEL
+  wxPanel *m_panel_debug = new wxPanel(m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+  wxBoxSizer *bSizer51;
+  bSizer51 = new wxBoxSizer(wxVERTICAL);
+
+  m_ctrl_debug_error =
+      new wxCheckBox(m_panel_debug, wxID_ANY, _("Log database errors"), wxDefaultPosition, wxDefaultSize, 0);
+  bSizer51->Add(m_ctrl_debug_error, 0, wxALL, 5);
+
+  m_ctrl_debug_query = new wxCheckBox(m_panel_debug, wxID_ANY, _("Log database queries (may slow down ToolMap)"),
+                                      wxDefaultPosition, wxDefaultSize, 0);
+  bSizer51->Add(m_ctrl_debug_query, 0, wxALL, 5);
+
+  bSizer51->Add(0, 0, 1, wxEXPAND, 5);
+
+  wxStaticText *m_staticText51;
+  m_staticText51 = new wxStaticText(m_panel_debug, wxID_ANY, _("Restart ToolMap for these options to take effect."),
+                                    wxDefaultPosition, wxDefaultSize, 0);
+  m_staticText51->Wrap(-1);
+  bSizer51->Add(m_staticText51, 0, wxALL, 5);
+
+  m_panel_debug->SetSizer(bSizer51);
+  m_panel_debug->Layout();
+  bSizer51->Fit(m_panel_debug);
+  m_notebook2->AddPage(m_panel_debug, _("Debug"), false);
+
   bSizer5->Add(m_notebook2, 1, wxEXPAND | wxALL, 5);
 
   wxStdDialogButtonSizer *m_sdbSizer2;
