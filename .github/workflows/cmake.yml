@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install libraries
-      run: sudo apt-get -qq update && sudo apt-get install -y git cmake libcurl4-openssl-dev libgeos-dev libaio-dev libnuma-dev libwebkitgtk-dev libwrap0-dev cxxtest libwxgtk3.0-gtk3-dev libproj-dev libgdal-dev
+      run: sudo apt-get -qq update && sudo apt-get install -y git cmake libcurl4-openssl-dev libgeos-dev libaio-dev libnuma-dev libwebkitgtk-dev libwrap0-dev cxxtest libwebkit2gtk-4.0-dev libproj-dev libgdal-dev
     
     - name: Configure CMake
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
