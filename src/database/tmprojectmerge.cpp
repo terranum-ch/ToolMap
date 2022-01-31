@@ -275,20 +275,39 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
     wxLogMessage(_("%d Old ID retrieved in '%s'"), (int)myOldIds.GetCount(), geomtablename);
   }
 
-  // get highest ID in master
-  if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
+  // Count objects in master
+  if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT COUNT(OBJECT_ID) AS NumberOfObjects FROM %s.%s"),
                                             m_MasterFileName.GetFullName(), geomtablename), true)) {
     return false;
   }
 
-  long myMaxSlaveID = myOldIds[myOldIds.GetCount() - 1];
-  long myMaxMasterID = wxNOT_FOUND;
-  if (!m_DB->DataBaseGetNextResult(myMaxMasterID)) {
+  long myMasterObjectsCount = 0;
+  if (!m_DB->DataBaseGetNextResult(myMasterObjectsCount)) {
     m_DB->DataBaseClearResults();
-    m_Errors.Add(_("Unable to get max ID!"));
+    m_Errors.Add(_("Unable to get the number of objects!"));
     return false;
   }
   m_DB->DataBaseClearResults();
+
+  long myMaxSlaveID = myOldIds[myOldIds.GetCount() - 1];
+  long myMaxMasterID = wxNOT_FOUND;
+
+  if (myMasterObjectsCount == 0) {
+    myMaxMasterID = 0;
+  } else {
+    // Get highest ID in master
+    if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
+                                              m_MasterFileName.GetFullName(), geomtablename), true)) {
+      return false;
+    }
+
+    if (!m_DB->DataBaseGetNextResult(myMaxMasterID)) {
+      m_DB->DataBaseClearResults();
+      m_Errors.Add(_("Unable to get max ID!"));
+      return false;
+    }
+    m_DB->DataBaseClearResults();
+  }
 
   // if slave ID is > master, we need to change autoincrement
   long myUsedMaxID = myMaxMasterID;
