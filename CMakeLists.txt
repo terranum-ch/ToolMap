@@ -86,6 +86,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # Includes
+INCLUDE("build/cmake/FindwxWidgets.cmake")
 INCLUDE("build/cmake/findMySQLEmbedded.cmake")
 INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
 INCLUDE("build/cmake/findwxpdfdocument.cmake")
