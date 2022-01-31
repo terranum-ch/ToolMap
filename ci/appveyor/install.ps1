@@ -106,14 +106,9 @@ if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc\include") -Or $REBUILD_WXPDF) {
   cd "$TMP_DIR\wxpdfdoc-*\build"
   $Env:WXWIN = "$LIB_DIR/wxwidgets"
   MSBuild.exe wxpdfdoc_vc${VS_VER_NB}.sln /p:Configuration=Release /p:Platform="Win64" -target:wxpdfdoc
-
-
-
-
-
-
-  move "$TMP_DIR\wxpdfdoc\include" "$LIB_DIR\wxpdfdoc\include"
-  move "$TMP_DIR\wxpdfdoc\lib" "$LIB_DIR\wxpdfdoc\lib"
+  MSBuild.exe wxpdfdoc_vc${VS_VER_NB}.sln /p:Configuration=Debug /p:Platform="Win64" -target:wxpdfdoc
+  move ".\include" "$LIB_DIR\wxpdfdoc\include"
+  move ".\lib" "$LIB_DIR\wxpdfdoc\lib"
 } else {
   Write-Host "`nwxPDFDocument already in cache" -ForegroundColor Yellow
 }
