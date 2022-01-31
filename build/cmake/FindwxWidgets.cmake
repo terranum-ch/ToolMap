@@ -134,6 +134,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wx wxmsw wxmsw26 wxmsw27 wxmsw28 wxmsw29 wxmsw28u wxmsw29u wxmsw30u wxmsw31u
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static release build library")
 
@@ -141,6 +142,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxd wxmswd wxmsw26d wxmsw27d wxmsw28d wxmsw29 wxmsw28ud wxmsw29ud wxmsw30ud wxmsw31ud
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug build library")
 
@@ -167,6 +169,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wx_gl wxmsw_gl wxmsw26_gl wxmsw28u_gl wxmsw28_gl wxmsw29_gl wxmsw30u_gl wxmsw31u_gl
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static release build GL library")
 
@@ -174,6 +177,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxd_gl wxmswd_gl wxmsw26d_gl wxmsw28ud_gl wxmsw28d_gl wxmsw28d_gl wxmsw30ud_gl wxmsw31ud_gl
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug build GL library")
 
@@ -182,6 +186,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxpngd
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug png library")
 
@@ -189,6 +194,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxpng
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static png library")
 
@@ -196,6 +202,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxtiffd
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug tiff library")
 
@@ -203,6 +210,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxtiff
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static tiff library")
 
@@ -210,6 +218,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxjpegd wxjpgd
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug jpeg library")
 
@@ -217,6 +226,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxjpeg wxjpg
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static jpeg library")
 
@@ -224,6 +234,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxzlibd
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug zlib library")
 
@@ -231,6 +242,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxzlib
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static zib library")
 
@@ -238,6 +250,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxregexd wxregexud
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static debug regex library")
 
@@ -245,6 +258,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxregex wxregexu
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows static regex library")
 
@@ -253,6 +267,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxexpatd wxexpatud
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows expat (XML) library")
 
@@ -260,6 +275,7 @@ IF (WIN32_STYLE_FIND)
                 NAMES wxexpat wxexpatu
                 PATHS
                 "${WXWINDOWS_ROOT_DIR}/lib/vc_lib"
+                "${WXWINDOWS_ROOT_DIR}/lib/vc_x64_lib"
                 ${WXWINDOWS_POSSIBLE_LIB_PATHS}
                 DOC "wxWindows expat XML library")
 
