@@ -6,8 +6,8 @@ SET(PROJ_DESTINATION "share/proj")
 IF (WIN32)
     find_path(PROJ_SHARE_PATH
             NAMES epsg ntv1_can.dat esri.extra proj.db
-            HINTS ${SEARCH_PROJ_PATH}
-            PATH_SUFFIXES share share/proj
+            HINTS ${CONAN_RES_DIRS_PROJ}
+            PATH_SUFFIXES res share share/proj
             NO_DEFAULT_PATH)
     if (NOT PROJ_SHARE_PATH)
         message(SEND_ERROR "PROJ share not found.")

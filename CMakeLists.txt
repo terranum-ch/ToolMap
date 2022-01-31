@@ -81,12 +81,13 @@ LIST(REMOVE_AT SRC_FILES ${MYFOUND})
 FILE(GLOB_RECURSE HEAD_FILES "src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
+# Conan deps
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
 # Includes
-INCLUDE("build/cmake/FindwxWidgets.cmake")
 INCLUDE("build/cmake/findMySQLEmbedded.cmake")
-INCLUDE("build/cmake/findGISLib.cmake")
 INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
-INCLUDE("build/cmake/FindCURL.cmake")
 INCLUDE("build/cmake/findwxpdfdocument.cmake")
 INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
 INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
