@@ -1,8 +1,8 @@
 # Options
 if ($env:APPVEYOR) {
-  $MSC_VER=1923
-  $VS_VER_NB="16"
-  $VS_VER_YR="2019"
+  $MSC_VER=1925
+  $VS_VER_NB="17"
+  $VS_VER_YR="2022"
   $CMAKE_GENERATOR="-Ax64"
   $TMP_DIR="C:\projects\tmp"
   $LIB_DIR="C:\projects\libs"
@@ -10,9 +10,9 @@ if ($env:APPVEYOR) {
   $CXXTEST_DIR="C:\projects\cxxtest"
   $PATCH_DIR="C:\projects\toolmap\ci\appveyor\patches"
 } else {
-  $MSC_VER=1923
-  $VS_VER_NB="16"
-  $VS_VER_YR="2019"
+  $MSC_VER=1925
+  $VS_VER_NB="17"
+  $VS_VER_YR="2022"
   $CMAKE_GENERATOR="-Ax64"
   $TMP_DIR="$env:UserProfile\Downloads\tmp"
   $LIB_DIR="$env:UserProfile\ToolMap-libs"
@@ -20,6 +20,8 @@ if ($env:APPVEYOR) {
   $CXXTEST_DIR="$LIB_DIR\cxxtest"
   $PATCH_DIR="D:\Development\ToolMap\ci\appveyor\patches"
 }
+
+$TARGET_CPU="x64"
 
 $WITH_DEBUG_LIBS=$false
 $MYSQL_BUILD_TYPE="RelWithDebInfo"
@@ -38,19 +40,23 @@ $stopwatchlibs = [system.diagnostics.stopwatch]::StartNew()
 
 # Set Visual Studio version
 $VS_VER="Visual Studio $VS_VER_NB $VS_VER_YR Win64"
+$PROGRAM_FILES="Program Files (x86)"
 if ($VS_VER_YR -ge "2019") {
   $VS_VER="Visual Studio $VS_VER_NB $VS_VER_YR"
+}
+if ($VS_VER_YR -ge "2022") {
+  $PROGRAM_FILES="Program Files"
 }
 
 # Setup VS environment
 # https://stackoverflow.com/questions/2124753/how-can-i-use-powershell-with-the-visual-studio-command-prompt
-pushd "C:\Program Files (x86)\Microsoft Visual Studio\$VS_VER_YR\Community\VC\Auxiliary\Build"
+pushd "C:\$PROGRAM_FILES\Microsoft Visual Studio\$VS_VER_YR\Community\VC\Auxiliary\Build"
 cmd /c "vcvars64.bat&set" |
-foreach {
-  if ($_ -match "=") {
-    $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
-  }
-}
+        foreach {
+          if ($_ -match "=") {
+            $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
+          }
+        }
 popd
 Write-Host "`nVisual Studio $VS_VER_YR Command Prompt variables set." -ForegroundColor Yellow
 
@@ -92,7 +98,7 @@ if(-not (Test-Path -Path "$LIB_DIR\wxwidgets\include") -Or $REBUILD_WX) {
     Remove-Item "$LIB_DIR\wxwidgets" -Force -Recurse
   }
   mkdir "$LIB_DIR\wxwidgets" > $null
-  $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.2/wxWidgets-3.1.2.zip"
+  $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.5/wxWidgets-3.1.5.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $WX_URL -FileName wxwidgets.zip > $null
   } else {
@@ -103,9 +109,9 @@ if(-not (Test-Path -Path "$LIB_DIR\wxwidgets\include") -Or $REBUILD_WX) {
   nmake -f makefile.vc BUILD=release UNICODE=1 MONOLITHIC=1 > $null
   nmake -f makefile.vc BUILD=debug UNICODE=1 MONOLITHIC=1 > $null
   move "$TMP_DIR\wxwidgets\include" "$LIB_DIR\wxwidgets\include"
-  copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
+  copy "$TMP_DIR\wxwidgets\lib\vc_${TARGET_CPU}_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
   move "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h_old"
-  copy "$TMP_DIR\wxwidgets\lib\vc_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
+  copy "$TMP_DIR\wxwidgets\lib\vc_${TARGET_CPU}_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
   move "$TMP_DIR\wxwidgets\lib" "$LIB_DIR\wxwidgets\lib"
 } else {
   Write-Host "`nwxWidgets already in cache" -ForegroundColor Yellow
@@ -153,21 +159,22 @@ if(-not (Test-Path -Path "$LIB_DIR\curl\include") -Or $REBUILD_CURL) {
     Remove-Item "$LIB_DIR\curl" -Force -Recurse
   }
   mkdir "$LIB_DIR\curl" > $null
-  $CURL_URL="https://github.com/curl/curl/archive/curl-7_64_1.zip"
+  $CURL_URL="https://github.com/curl/curl/releases/download/curl-7_80_0/curl-7.80.0.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $CURL_URL -FileName curl.zip > $null
   } else {
     Invoke-WebRequest -Uri $CURL_URL -OutFile curl.zip
   }
   7z x curl.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\curl-*" "$TMP_DIR\curl"
-  cd "$TMP_DIR\curl"
+  cd "$TMP_DIR\curl-*"
   .\buildconf.bat
-  cd "$TMP_DIR\curl\winbuild"
-  nmake -f Makefile.vc mode=dll DEBUG=NO MACHINE=x64 > $null
-  Copy-Item "$TMP_DIR\curl\builds\libcurl-vc-x64-release-dll-ipv6-sspi-winssl\bin" -Destination "$LIB_DIR\curl\bin" -Recurse
-  Copy-Item "$TMP_DIR\curl\builds\libcurl-vc-x64-release-dll-ipv6-sspi-winssl\include" -Destination "$LIB_DIR\curl\include" -Recurse
-  Copy-Item "$TMP_DIR\curl\builds\libcurl-vc-x64-release-dll-ipv6-sspi-winssl\lib" -Destination "$LIB_DIR\curl\lib" -Recurse
+  cd winbuild
+  nmake -f Makefile.vc mode=dll DEBUG=NO MACHINE=${TARGET_CPU} > $null
+  cd ..
+
+  Copy-Item "builds\libcurl-vc-${TARGET_CPU}-release-dll-ipv6-sspi-schannel\bin" "$LIB_DIR\curl\bin" -recurse -force
+  Copy-Item "builds\libcurl-vc-${TARGET_CPU}-release-dll-ipv6-sspi-schannel\include" "$LIB_DIR\curl\include" -recurse -force
+  Copy-Item "builds\libcurl-vc-${TARGET_CPU}-release-dll-ipv6-sspi-schannel\lib" "$LIB_DIR\curl\lib" -recurse -force
 } else {
   Write-Host "`ncurl already in cache" -ForegroundColor Yellow
 }
@@ -187,9 +194,9 @@ if(-not (Test-Path -Path "$LIB_DIR\sqlite\include") -Or $REBUILD_CURL) {
     mkdir "$LIB_DIR\sqlite\bin" > $null
     mkdir "$LIB_DIR\sqlite\lib" > $null
     mkdir "$LIB_DIR\sqlite\include" > $null
-    $SQLITE_SRC_URL="https://www.sqlite.org/2019/sqlite-amalgamation-3270200.zip"
-    $SQLITE_DLL_URL="https://www.sqlite.org/2019/sqlite-dll-win64-x64-3270200.zip"
-    $SQLITE_TOOLS_URL="https://www.sqlite.org/2019/sqlite-tools-win32-x86-3270200.zip"
+    $SQLITE_SRC_URL="https://www.sqlite.org/2021/sqlite-amalgamation-3370000.zip"
+    $SQLITE_DLL_URL="https://www.sqlite.org/2021/sqlite-dll-win64-x64-3370000.zip"
+    $SQLITE_TOOLS_URL="https://www.sqlite.org/2021/sqlite-tools-win32-x86-3370000.zip"
     if ($env:APPVEYOR) {
         appveyor DownloadFile $SQLITE_SRC_URL -FileName sqlite_src.zip > $null
         appveyor DownloadFile $SQLITE_DLL_URL -FileName sqlite_dll.zip > $null
@@ -226,15 +233,14 @@ if(-not (Test-Path -Path "$LIB_DIR\proj\include") -Or $REBUILD_PROJ) {
     Remove-Item "$LIB_DIR\proj" -Force -Recurse
   }
   mkdir "$LIB_DIR\proj" > $null
-  $PROJ_URL="https://github.com/OSGeo/PROJ/releases/download/6.2.1/proj-6.2.1.zip"
+  $PROJ_URL="https://github.com/OSGeo/PROJ/releases/download/8.2.0/proj-8.2.0.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $PROJ_URL -FileName proj.zip > $null
   } else {
     Invoke-WebRequest -Uri $PROJ_URL -OutFile proj.zip
   }
   7z x proj.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\proj-*" "$TMP_DIR\proj"
-  cd "$TMP_DIR\proj"
+  cd "$TMP_DIR\proj-*"
   mkdir build
   cd build
   cmake -G"$VS_VER" $CMAKE_GENERATOR -DCMAKE_PREFIX_PATH="$LIB_DIR\sqlite" -DPROJ_TESTS=OFF -DBUILD_PROJINFO=OFF -DBUILD_CCT=OFF -DBUILD_CS2CS=OFF -DBUILD_GEOD=OFF -DBUILD_GIE=OFF -DBUILD_PROJ=OFF -DBUILD_PROJINFO=OFF -DBUILD_LIBPROJ_SHARED=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$LIB_DIR\proj" .. > $null
@@ -265,17 +271,13 @@ if(-not (Test-Path -Path "$LIB_DIR\geos\include") -Or $REBUILD_GEOS) {
   }
   7z x geos.tar.bz2 -o"$TMP_DIR" > $null
   7z x geos.tar -o"$TMP_DIR" > $null
-  move "$TMP_DIR\geos-*" "$TMP_DIR\geos"
-  rm "$TMP_DIR\geos\nmake.opt"
-  copy "$PATCH_DIR\geos-3.6.1-nmake.opt" "$TMP_DIR\geos\nmake.opt"
-  cd "$TMP_DIR\geos"
+  cd "$TMP_DIR\geos-*"
+  rm "nmake.opt"
+  copy "$PATCH_DIR\geos-3.6.1-nmake.opt" ".\nmake.opt"
   nmake -f makefile.vc WIN64=YES > $null
-  if ($WITH_DEBUG_LIBS) {
-    nmake -f makefile.vc WIN64=YES BUILD_DEBUG=YES > $null
-  }
-  move "$TMP_DIR\geos\src" "$LIB_DIR\geos\src"
-  move "$TMP_DIR\geos\include" "$LIB_DIR\geos\include"
-  move "$TMP_DIR\geos\capi" "$LIB_DIR\geos\capi"
+  move ".\src" "$LIB_DIR\geos\src"
+  move ".\include" "$LIB_DIR\geos\include"
+  move ".\capi" "$LIB_DIR\geos\capi"
 } else {
   Write-Host "`nGeos already in cache" -ForegroundColor Yellow
 }
@@ -292,15 +294,14 @@ if(-not (Test-Path -Path "$LIB_DIR\gdal\include") -Or $REBUILD_GDAL) {
     Remove-Item "$LIB_DIR\gdal" -Force -Recurse
   }
   mkdir "$LIB_DIR\gdal" > $null
-  $GDAL_URL="https://github.com/OSGeo/gdal/releases/download/v3.0.2/gdal302.zip"
+  $GDAL_URL="https://github.com/OSGeo/gdal/releases/download/v3.4.0/gdal340.zip"
   if ($env:APPVEYOR) {
     appveyor DownloadFile $GDAL_URL -FileName gdal.zip > $null
   } else {
     Invoke-WebRequest -Uri $GDAL_URL -OutFile gdal.zip
   }
   7z x gdal.zip -o"$TMP_DIR" > $null
-  move "$TMP_DIR\gdal-*" "$TMP_DIR\gdal"
-  cd "$TMP_DIR\gdal"
+  cd "$TMP_DIR\gdal-*"
   $LIB_DIR_REV=$LIB_DIR -replace '\\','/'
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB > $null
   nmake -f makefile.vc MSVC_VER=$MSC_VER WIN64=1 GDAL_HOME="$LIB_DIR\gdal" PROJ_INCLUDE="-I$LIB_DIR_REV/proj/include" PROJ_LIBRARY="$LIB_DIR_REV/proj/lib/proj_6_2.lib" GEOS_DIR="$LIB_DIR_REV/geos" GEOS_CFLAGS="-I$LIB_DIR_REV/geos/capi -I$LIB_DIR_REV/geos/include -DHAVE_GEOS" GEOS_LIB="$LIB_DIR_REV/geos/src/geos_c_i.lib" CURL_DIR="$LIB_DIR\curl" CURL_INC="-I$LIB_DIR_REV/curl/include" CURL_LIB="$LIB_DIR_REV/curl/lib/libcurl.lib wsock32.lib wldap32.lib winmm.lib" CURL_CFLAGS=-DCURL_STATICLIB install > $null
