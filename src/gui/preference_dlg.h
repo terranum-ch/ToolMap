@@ -27,6 +27,7 @@
 
 #include <wx/clrpicker.h>
 #include <wx/config.h>
+#include <wx/fileconf.h>
 #include <wx/notebook.h>
 
 class PreferenceDLG : public wxDialog {

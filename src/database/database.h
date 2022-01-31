@@ -44,6 +44,7 @@
 #include <wx/dir.h>      // directory operation (size)
 #include <wx/tokenzr.h>  // tokenizer of string
 #include <wx/config.h>
+#include <wx/fileconf.h>
 
 WX_DEFINE_ARRAY_LONG(unsigned long, tmArrayULong);
 
