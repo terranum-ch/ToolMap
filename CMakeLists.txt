@@ -121,8 +121,9 @@ IF (APPLE)
     SET(MAIN_SRC_FILE ${MAIN_SRC_FILE} "art/toolmap2.icns")
 ENDIF (APPLE)
 
-TARGET_LINK_LIBRARIES("${CMAKE_PROJECT_NAME}_lib" ${LSVERSION_NAME})
-TARGET_LINK_LIBRARIES("${CMAKE_PROJECT_NAME}_lib" ${LSCRASHREPORT_NAME})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSVERSION_NAME})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSCRASHREPORT_NAME})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
 
 # conditionnal compilation if windows needs ressource
 IF (WIN32)
