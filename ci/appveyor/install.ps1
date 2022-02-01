@@ -88,6 +88,37 @@ $env:Path += ";$CXXTEST_DIR"
 Write-Host "`nContent of the cache:" -ForegroundColor Yellow
 Get-ChildItem "$LIB_DIR"
 
+# Install wxWidgets
+if(-not (Test-Path -Path "$LIB_DIR\wxwidgets\include") -Or $REBUILD_WX) {
+  Write-Host "`nBuilding wxWidgets" -ForegroundColor Yellow
+  cd $TMP_DIR
+  if(Test-Path -Path "$LIB_DIR\wxwidgets") {
+    Remove-Item "$LIB_DIR\wxwidgets" -Force -Recurse
+  }
+  mkdir "$LIB_DIR\wxwidgets" > $null
+  $WX_URL="https://github.com/wxWidgets/wxWidgets/releases/download/v3.1.5/wxWidgets-3.1.5.zip"
+  if ($env:APPVEYOR) {
+    appveyor DownloadFile $WX_URL -FileName wxwidgets.zip > $null
+  } else {
+    Invoke-WebRequest -Uri $WX_URL -OutFile wxwidgets.zip
+  }
+  7z x wxwidgets.zip -o"$TMP_DIR\wxwidgets" > $null
+  cd "$TMP_DIR\wxwidgets\build\msw"
+  nmake -f makefile.vc BUILD=release UNICODE=1 MONOLITHIC=0 SHARED=0 > $null
+  move "$TMP_DIR\wxwidgets\include" "$LIB_DIR\wxwidgets\include"
+  copy "$TMP_DIR\wxwidgets\lib\vc_${TARGET_CPU}_lib\mswu\wx\setup.h" "$LIB_DIR\wxwidgets\include\wx\setup.h"
+  move "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h_old"
+  copy "$TMP_DIR\wxwidgets\lib\vc_${TARGET_CPU}_lib\mswu\wx\msw\rcdefs.h" "$LIB_DIR\wxwidgets\include\wx\msw\rcdefs.h"
+  move "$TMP_DIR\wxwidgets\lib" "$LIB_DIR\wxwidgets\lib"
+} else {
+  Write-Host "`nwxWidgets already in cache" -ForegroundColor Yellow
+}
+$env:WXWIN = "$LIB_DIR\wxwidgets"
+# List files
+Get-ChildItem "$LIB_DIR/wxwidgets"
+
+if ($stopwatchlibs.Elapsed.TotalMinutes -gt 40) { return }
+
 # Install wxPDFDocument
 if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc\include") -Or $REBUILD_WXPDF) {
   Write-Host "`nBuilding wxPDFDocument" -ForegroundColor Yellow
