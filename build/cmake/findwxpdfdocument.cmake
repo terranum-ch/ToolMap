@@ -20,17 +20,29 @@ IF (NOT WXPDFDOCUMENT_INCLUDE)
 ENDIF (NOT WXPDFDOCUMENT_INCLUDE)
 
 IF (WIN32)
+    FIND_LIBRARY(WXPDFDOCUMENT_LIBRARY_DEBUG
+            NAMES wxcode_msw31d_pdfdoc wxcode_msw31ud_pdfdoc
+            wxcode_msw30d_pdfdoc wxcode_msw30ud_pdfdoc
+            wxcode_msw29d_pdfdoc wxcode_msw29ud_pdfdoc
+            wxpdfdocd
+            PATHS ${SEARCH_WXPDFDOCUMENT_PATH}/lib/vc14x_x64_lib)
 
-    FIND_LIBRARY(WXPDFDOCUMENT_LIBRARY
+    FIND_LIBRARY(WXPDFDOCUMENT_LIBRARY_RELEASE
             NAMES wxcode_msw31u_pdfdoc wxcode_msw31_pdfdoc
             wxcode_msw30u_pdfdoc wxcode_msw30_pdfdoc
             wxcode_msw29_pdfdoc wxcode_msw29u_pdfdoc
             wxpdfdoc
             PATHS ${SEARCH_WXPDFDOCUMENT_PATH}/lib/vc14x_x64_lib)
 
-    IF (NOT WXPDFDOCUMENT_LIBRARY)
-        MESSAGE(FATAL_ERROR "Unable to find wxPDFDocument libraries!")
-    ENDIF (NOT WXPDFDOCUMENT_LIBRARY)
+    IF (NOT WXPDFDOCUMENT_LIBRARY_DEBUG OR NOT WXPDFDOCUMENT_LIBRARY_RELEASE)
+        MESSAGE(STATUS "WXPDFDOCUMENT_LIBRARY_DEBUG: ${WXPDFDOCUMENT_LIBRARY_DEBUG}")
+        MESSAGE(STATUS "WXPDFDOCUMENT_LIBRARY_RELEASE: ${WXPDFDOCUMENT_LIBRARY_RELEASE}")
+        MESSAGE(FATAL_ERROR "Unable to find wxPDFDocument libraries (both debug and release needed)!")
+    ENDIF (NOT WXPDFDOCUMENT_LIBRARY_DEBUG OR NOT WXPDFDOCUMENT_LIBRARY_RELEASE)
+
+    SET(WXPDFDOCUMENT_LIBRARY ${WXPDFDOCUMENT_LIBRARY}
+            debug ${WXPDFDOCUMENT_LIBRARY_DEBUG}
+            optimized ${WXPDFDOCUMENT_LIBRARY_RELEASE})
 
 ELSE (WIN32)
     SET(WXPDFDOCUMENT_LIBRARY WXPDFDOCUMENT_LIBRARY-NOTFOUND)

@@ -138,6 +138,7 @@ if(-not (Test-Path -Path "$LIB_DIR\wxpdfdoc\include") -Or $REBUILD_WXPDF) {
   $Env:WXWIN = "$LIB_DIR/wxwidgets"
   MSBuild.exe wxpdfdoc_vc${VS_VER_NB}.sln /p:Configuration=Release /p:Platform="Win64" -target:wxpdfdoc
   MSBuild.exe wxpdfdoc_vc${VS_VER_NB}.sln /p:Configuration=Debug /p:Platform="Win64" -target:wxpdfdoc
+  cd ..
   move ".\include" "$LIB_DIR\wxpdfdoc\include"
   move ".\lib" "$LIB_DIR\wxpdfdoc\lib"
 } else {

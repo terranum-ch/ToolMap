@@ -91,8 +91,10 @@ conan_basic_setup()
 # wxWidgets
 set(wxWidgets_USE_UNICODE TRUE)
 set(wxWidgets_USE_STATIC TRUE)
-find_package(wxWidgets REQUIRED core base adv xml net)
-#include("${wxWidgets_USE_FILE}")
+set(wxWidgets_USE_REL_AND_DBG TRUE)
+set(wxWidgets_with_GUI TRUE)
+find_package(wxWidgets REQUIRED core base adv xml net scintilla html qa xrc aui propgrid ribbon richtext media stc webview gl)
+include("${wxWidgets_USE_FILE}")
 include_directories(${wxWidgets_INCLUDE_DIRS})
 link_libraries(${wxWidgets_LIBRARIES})
 
