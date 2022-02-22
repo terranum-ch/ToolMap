@@ -174,10 +174,26 @@ INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
 # INCLUDE("build/cmake/copyprojfiles.cmake")
 INCLUDE("build/cmake/copywebfiles.cmake")
 
+
+
+
 ## UNIT TEST PROGRAM
 #IF (USE_UNITTEST)
 #    ADD_SUBDIRECTORY("test/build" "${PROJECT_BINARY_DIR}/test")
 #ENDIF (USE_UNITTEST)
+
+
+# Install step for copying *dylib into application bundle on OSX and for changing their reference from
+# absolute to relative
+IF (APPLE)
+    # change cmake_install_prefix from /usr/local to the binary directory
+    set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
+    set(APPS ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_PROJECT_NAME}.app)  # paths to executables
+    INSTALL(CODE "
+   include(BundleUtilities)
+   fixup_bundle(\"${APPS}\"   \"\"   \"\")
+   " COMPONENT Runtime)
+ENDIF (APPLE)
 
 # create installer using CPACK
 #include("build/cpack/cpack_installer.cmake")

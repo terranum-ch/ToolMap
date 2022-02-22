@@ -21,13 +21,19 @@ class Toolmap(ConanFile):
         self.options["gdal"].shared = True
 
     def imports(self):
+        # copy libraries
         self.copy("*.dll", dst="bin", src="bin")  # From bin to bin
-        self.copy("*.dylib*", dst=os.path.join("bin", "ToolMap.app", "Contents", "lib"), src="lib")  # From lib to bin
+        # Don't copy dylib on OSX, bundle is created on cmake install . step
+
+        # copy errmsg.sys on different places
+        if self.settings.os == "Windows":
+            self.copy("errmsg.sys", dst="bin/mysql", src="share/english")
+        if self.settings.os == "Macos":
+            self.copy("errmsg.sys", dst="bin/ToolMap.app/Contents/mysql", src="share/english")
 
     def build(self):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+        cmake.install()
 
-    def package(self):
-        print (self.build_folder)
