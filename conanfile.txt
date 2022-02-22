@@ -1,8 +1,0 @@
-[requires]
-gdal/3.3.3
-libtiff/4.3.0
-openssl/3.0.1
-#wxwidgets/3.1.5@bincrafters/stable
-
-[generators]
-cmake

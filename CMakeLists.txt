@@ -12,64 +12,72 @@ set(VERSION_MAJOR "3")
 set(VERSION_MINOR "2")
 set(VERSION_PATCH "0") # will be modified later during cmake process
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(KEEP_RPATHS)
+
+if (APPLE)
+    set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
+else()
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
+endif()
+set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+
 #Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add custom modules
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/build/cmake ${CMAKE_MODULE_PATH})
-
-#Use O2 optimisation
-IF (APPLE)
-    MESSAGE(STATUS "REPLACING O3 WITH O2")
-    STRING(REPLACE "O3" "O2" CMAKE_C_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-    STRING(REPLACE "O3" "O2" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-    MESSAGE(STATUS "CMAKE_C_FLAGS_RELEASE: ${CMAKE_C_FLAGS_RELEASE}")
-    MESSAGE(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
-
-    # add no optimization level to Debug version. Otherwise debugging didn't work correctly
-    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
-    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
-    MESSAGE(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
-    MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG: ${CMAKE_C_FLAGS_DEBUG}")
-ENDIF (APPLE)
+#set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/build/cmake ${CMAKE_MODULE_PATH})
+#
+##Use O2 optimisation
+#IF (APPLE)
+#    MESSAGE(STATUS "REPLACING O3 WITH O2")
+#    STRING(REPLACE "O3" "O2" CMAKE_C_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
+#    STRING(REPLACE "O3" "O2" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+#    MESSAGE(STATUS "CMAKE_C_FLAGS_RELEASE: ${CMAKE_C_FLAGS_RELEASE}")
+#    MESSAGE(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
+#
+#    # add no optimization level to Debug version. Otherwise debugging didn't work correctly
+#    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
+#    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+#    MESSAGE(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
+#    MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG: ${CMAKE_C_FLAGS_DEBUG}")
+#ENDIF (APPLE)
 
 # Enable tests
 SET(USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
 
 # Enable code coverage
-if (USE_UNITTEST AND CMAKE_COMPILER_IS_GNUCXX)
-    option(USE_CODECOV "Sould we do code coverage with lcov ?" OFF)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fprofile-arcs -ftest-coverage")
-else (CMAKE_COMPILER_IS_GNUCXX)
-    set(USE_CODECOV OFF)
-endif ()
+#if (USE_UNITTEST AND CMAKE_COMPILER_IS_GNUCXX)
+#    option(USE_CODECOV "Sould we do code coverage with lcov ?" OFF)
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fprofile-arcs -ftest-coverage")
+#else (CMAKE_COMPILER_IS_GNUCXX)
+#    set(USE_CODECOV OFF)
+#endif ()
 
-# Enable output of compile commands (for Sourcetrail)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# External projects
-include(ExternalProject)
-set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
-set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${EXTERNAL_DIR}")
-include_directories(${EXTERNAL_DIR}/include)
-link_directories(${EXTERNAL_DIR}/lib)
-link_directories(${EXTERNAL_DIR}/lib64)
-
-# Path to MySQL
-set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
-
-# Option to get ToolBasView
-set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
-
-# Add ToolBasView as external project
-if (WITH_TOOLBASVIEW)
-    ExternalProject_Add(ToolBasView
-            GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
-            UPDATE_COMMAND ""
-            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DSEARCH_WXWIDGETS_PATH=${SEARCH_WXWIDGETS_PATH} -DWXWINDOWS_ROOT_DIR=${WXWINDOWS_ROOT_DIR} -DSEARCH_GDAL_PATH=${SEARCH_GDAL_PATH} -DSEARCH_PROJ_PATH=${SEARCH_PROJ_PATH} -DSEARCH_GEOS_PATH=${SEARCH_GEOS_PATH} -DSEARCH_SQLITE_PATH=${SEARCH_SQLITE_PATH} -DSEARCH_CURL_PATH=${SEARCH_CURL_PATH} -DMYSQL_MAIN_DIR=${MYSQL_MAIN_DIR} -DSEARCH_GEOS=1 -DSEARCH_GDAL=1
-            BUILD_COMMAND ${CMAKE_COMMAND} --build .
-            )
-endif ()
+## External projects
+#include(ExternalProject)
+#set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
+#set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${EXTERNAL_DIR}")
+#include_directories(${EXTERNAL_DIR}/include)
+#link_directories(${EXTERNAL_DIR}/lib)
+#link_directories(${EXTERNAL_DIR}/lib64)
+#
+## Path to MySQL
+#set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
+#
+## Option to get ToolBasView
+#set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
+#
+## Add ToolBasView as external project
+#if (WITH_TOOLBASVIEW)
+#    ExternalProject_Add(ToolBasView
+#            GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
+#            UPDATE_COMMAND ""
+#            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DSEARCH_WXWIDGETS_PATH=${SEARCH_WXWIDGETS_PATH} -DWXWINDOWS_ROOT_DIR=${WXWINDOWS_ROOT_DIR} -DSEARCH_GDAL_PATH=${SEARCH_GDAL_PATH} -DSEARCH_PROJ_PATH=${SEARCH_PROJ_PATH} -DSEARCH_GEOS_PATH=${SEARCH_GEOS_PATH} -DSEARCH_SQLITE_PATH=${SEARCH_SQLITE_PATH} -DSEARCH_CURL_PATH=${SEARCH_CURL_PATH} -DMYSQL_MAIN_DIR=${MYSQL_MAIN_DIR} -DSEARCH_GEOS=1 -DSEARCH_GDAL=1
+#            BUILD_COMMAND ${CMAKE_COMMAND} --build .
+#            )
+#endif ()
 
 # Sources and headers 
 FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
@@ -84,33 +92,31 @@ LIST(REMOVE_AT SRC_FILES ${MYFOUND})
 FILE(GLOB_RECURSE HEAD_FILES "src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
-# Conan deps
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
 
-# wxWidgets
-set(wxWidgets_USE_UNICODE TRUE)
-set(wxWidgets_USE_STATIC TRUE)
-set(wxWidgets_USE_REL_AND_DBG TRUE)
-set(wxWidgets_with_GUI TRUE)
-find_package(wxWidgets REQUIRED core base adv xml net scintilla html qa xrc aui propgrid ribbon richtext media stc webview gl)
-include("${wxWidgets_USE_FILE}")
-include_directories(${wxWidgets_INCLUDE_DIRS})
-link_libraries(${wxWidgets_LIBRARIES})
+
+## wxWidgets
+#set(wxWidgets_USE_UNICODE TRUE)
+#set(wxWidgets_USE_STATIC TRUE)
+#set(wxWidgets_USE_REL_AND_DBG TRUE)
+#set(wxWidgets_with_GUI TRUE)
+#find_package(wxWidgets REQUIRED core base adv xml net scintilla html qa xrc aui propgrid ribbon richtext media stc webview gl)
+#include("${wxWidgets_USE_FILE}")
+#include_directories(${wxWidgets_INCLUDE_DIRS})
+#link_libraries(${wxWidgets_LIBRARIES})
 
 # Includes
-INCLUDE("build/cmake/findMySQLEmbedded.cmake")
+#INCLUDE("build/cmake/findMySQLEmbedded.cmake")
 INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
-INCLUDE("build/cmake/findwxpdfdocument.cmake")
+#INCLUDE("build/cmake/findwxpdfdocument.cmake")
 INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
 INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 
-if (UNIX AND NOT APPLE)
-    SET(USE_APPIMAGE FALSE CACHE BOOL "Should we use AppImage to create an installer on Linux ?")
-    if (USE_APPIMAGE)
-        INCLUDE("build/cmake/LinuxAppImageBuild.cmake")
-    endif ()
-endif ()
+#if (UNIX AND NOT APPLE)
+#    SET(USE_APPIMAGE FALSE CACHE BOOL "Should we use AppImage to create an installer on Linux ?")
+#    if (USE_APPIMAGE)
+#        INCLUDE("build/cmake/LinuxAppImageBuild.cmake")
+#    endif ()
+#endif ()
 
 # CREATE A LIBRARY WITH ALL SRC
 ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES} ${HEAD_FILES})
@@ -121,9 +127,9 @@ IF (APPLE)
     SET(MAIN_SRC_FILE ${MAIN_SRC_FILE} "art/toolmap2.icns")
 ENDIF (APPLE)
 
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSVERSION_NAME})
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSCRASHREPORT_NAME})
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSVERSION_NAME} ${CONAN_LIBS})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSCRASHREPORT_NAME} ${CONAN_LIBS})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS} ${CONAN_LIBS})
 
 # conditionnal compilation if windows needs ressource
 IF (WIN32)
@@ -158,21 +164,21 @@ IF (MSVC)
     MESSAGE(STATUS "Adding multiprocessor support for Visual Studio (/MP Flag)")
 ENDIF (MSVC)
 
-INCLUDE("build/cmake/installMacGISLIB.cmake")
-INCLUDE("build/cmake/installMacLibTiff.cmake")
-INCLUDE("build/cmake/Use_wingdiplus.cmake")
-INCLUDE("build/cmake/Use_visualstudioMT.cmake")
-INCLUDE("build/cmake/useMySQLEmbedded.cmake")
-INCLUDE("build/cmake/GDALCopyLibs.cmake")
+#INCLUDE("build/cmake/installMacGISLIB.cmake")
+#INCLUDE("build/cmake/installMacLibTiff.cmake")
+#INCLUDE("build/cmake/Use_wingdiplus.cmake")
+#INCLUDE("build/cmake/Use_visualstudioMT.cmake")
+#INCLUDE("build/cmake/useMySQLEmbedded.cmake")
+#INCLUDE("build/cmake/GDALCopyLibs.cmake")
 INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
-INCLUDE("build/cmake/copyprojfiles.cmake")
+# INCLUDE("build/cmake/copyprojfiles.cmake")
 INCLUDE("build/cmake/copywebfiles.cmake")
 
-# UNIT TEST PROGRAM
-IF (USE_UNITTEST)
-    ADD_SUBDIRECTORY("test/build" "${PROJECT_BINARY_DIR}/test")
-ENDIF (USE_UNITTEST)
+## UNIT TEST PROGRAM
+#IF (USE_UNITTEST)
+#    ADD_SUBDIRECTORY("test/build" "${PROJECT_BINARY_DIR}/test")
+#ENDIF (USE_UNITTEST)
 
 # create installer using CPACK
-include("build/cpack/cpack_installer.cmake")
+#include("build/cpack/cpack_installer.cmake")
 

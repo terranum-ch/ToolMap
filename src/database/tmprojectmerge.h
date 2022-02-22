@@ -50,7 +50,7 @@ class tmProjectMerge {
 
   bool _IsReady();
 
-  bool tmProjectMerge::_GetIdMax(const wxString &dbName, const wxString &tableName, long &idMax);
+  bool _GetIdMax(const wxString &dbName, const wxString &tableName, long &idMax);
 
  public:
   tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase *database = nullptr);
