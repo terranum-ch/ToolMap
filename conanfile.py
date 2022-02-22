@@ -11,6 +11,7 @@ class Toolmap(ConanFile):
                 "geos/3.10.2",
                 "proj/8.2.1",
                 "libtiff/4.0.9",
+                "libcurl/7.80.0"
                 ]
 
     generators = "cmake", "gcc", "txt"

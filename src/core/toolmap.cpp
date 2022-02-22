@@ -43,12 +43,13 @@
 #include "../img/misc_bmp.h"
 #include "../img/toolbar_bmp.h"
 #include "lscrashreport.h"
-#include "lsversion_dlg.h"
+// #include "lsversion_dlg.h"
 #include "lsversion_param.h"
 #include "pdfdocument.h"
 #include "pdfexportwizard.h"
 #include "tmstats.h"
 #include "tmstatsevent.h"
+#include "../gui/framecomponent.h"
 
 IMPLEMENT_APP(ToolMapApp);
 
@@ -1097,10 +1098,12 @@ void ToolMapFrame::OnContactUs(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::OnComponentsInfo(wxCommandEvent &event) {
-  lsVersionDlg myDlg(this, wxID_ANY, _("Components"));
-  myDlg.SetBitmapLogo(*_img_icon_toolmap);
-  myDlg.SetCopyright(wxString::Format("(c) TERRANUM, %d", wxDateTime::Now().GetYear()));
+  FrameComponents myDlg(this);
   myDlg.ShowModal();
+//  lsVersionDlg myDlg(this, wxID_ANY, _("Components"));
+//  myDlg.SetBitmapLogo(*_img_icon_toolmap);
+//  myDlg.SetCopyright(wxString::Format("(c) TERRANUM, %d", wxDateTime::Now().GetYear()));
+//  myDlg.ShowModal();
 }
 
 void ToolMapFrame::OnUserManual(wxCommandEvent &event) {

@@ -1,5 +1,5 @@
 # CMAKE BUILD FILE FOR ToolMap 2
-# (c) LUCIEN SCHREIBER CREALP 2007
+# (c) TERRANUM 2022
 cmake_minimum_required(VERSION 3.0)
 
 ## POLICY FOR WINDOWS ONLY ???
@@ -8,19 +8,20 @@ cmake_minimum_required(VERSION 3.0)
 #endif(COMMAND cmake_policy)
 
 PROJECT("ToolMap")
-set(VERSION_MAJOR "3")
-set(VERSION_MINOR "2")
-set(VERSION_PATCH "0") # will be modified later during cmake process
+
+# using git version
+set(${PROJECT_NAME}_MAJOR_VERSION "3")
+set(${PROJECT_NAME}_MINOR_VERSION "2")
+include(cmake_modules/version.cmake)
+
+# defining cmake version for installer mainly
+set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
+set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
+set(CMAKE_PROJECT_VERSION_PATCH ${GIT_NUMBER})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(KEEP_RPATHS)
-
-if (APPLE)
-    set(CMAKE_INSTALL_RPATH "@executable_path/../lib")
-else()
-    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib")
-endif()
-set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+conan_basic_setup()
 
 #Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -108,8 +109,11 @@ SOURCE_GROUP(header FILES ${HEAD_FILES})
 #INCLUDE("build/cmake/findMySQLEmbedded.cmake")
 INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
 #INCLUDE("build/cmake/findwxpdfdocument.cmake")
-INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
-INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
+# INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
+# INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
+
+INCLUDE_DIRECTORIES(plugins/lscrashreport/src)
+ADD_SUBDIRECTORY(plugins/lscrashreport)
 
 #if (UNIX AND NOT APPLE)
 #    SET(USE_APPIMAGE FALSE CACHE BOOL "Should we use AppImage to create an installer on Linux ?")
@@ -118,45 +122,51 @@ INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 #    endif ()
 #endif ()
 
-# CREATE A LIBRARY WITH ALL SRC
-ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES} ${HEAD_FILES})
 
-IF (APPLE)
-    # copy icon
-    SET_SOURCE_FILES_PROPERTIES("art/toolmap2.icns" PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
-    SET(MAIN_SRC_FILE ${MAIN_SRC_FILE} "art/toolmap2.icns")
-ENDIF (APPLE)
+# osx icon
+set(MACOSX_BUNDLE_ICON_FILE art/toolmap2.icns)
+set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/toolmap2.icns")
+set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSVERSION_NAME} ${CONAN_LIBS})
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${LSCRASHREPORT_NAME} ${CONAN_LIBS})
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS} ${CONAN_LIBS})
+# Create a library with all sources files mainly for unit testing
+ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
 
-# conditionnal compilation if windows needs ressource
-IF (WIN32)
-    SOURCE_GROUP(resource FILES src/resource.rc)
-    ADD_EXECUTABLE("${CMAKE_PROJECT_NAME}" WIN32 ${MAIN_SRC_FILE} src/gui/resource.rc)
-    TARGET_LINK_LIBRARIES("${CMAKE_PROJECT_NAME}" ${WXWINDOWS_LIBS} "${CMAKE_PROJECT_NAME}_lib")
-ELSE (WIN32)
-    ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${MAIN_SRC_FILE} ${HEAD_FILES})
-    IF (APPLE)
-        TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "${CMAKE_PROJECT_NAME}_lib")
-    ELSE (APPLE)
-        #LINUX
-        TARGET_LINK_LIBRARIES(${LSVERSION_NAME} fontconfig)
-        TARGET_LINK_LIBRARIES(${LSCRASHREPORT_NAME} fontconfig)
-        TARGET_LINK_LIBRARIES("${CMAKE_PROJECT_NAME}_lib" fontconfig)
-        TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "${CMAKE_PROJECT_NAME}_lib" fontconfig)
-    ENDIF (APPLE)
-ENDIF (WIN32)
+# Create the Toolmap binary
+ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
+        MACOSX_BUNDLE WIN32
+        ${MAIN_SRC_FILE}
+        ${ICON_PATH}
+        src/gui/resource.rc
+        ${CMAKE_BINARY_DIR}/version.cpp
+        )
+TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib lscrashreport)
+
+#IF (WIN32)
+#    SOURCE_GROUP(resource FILES src/resource.rc)
+#    ADD_EXECUTABLE("${CMAKE_PROJECT_NAME}" WIN32 ${MAIN_SRC_FILE} src/gui/resource.rc)
+#    TARGET_LINK_LIBRARIES("${CMAKE_PROJECT_NAME}" ${WXWINDOWS_LIBS} "${CMAKE_PROJECT_NAME}_lib")
+#ELSE (WIN32)
+#    ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE ${MAIN_SRC_FILE} ${HEAD_FILES})
+#    IF (APPLE)
+#        TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "${CMAKE_PROJECT_NAME}_lib")
+#    ELSE (APPLE)
+#        #LINUX
+#        TARGET_LINK_LIBRARIES(${LSVERSION_NAME} fontconfig)
+#        TARGET_LINK_LIBRARIES(${LSCRASHREPORT_NAME} fontconfig)
+#        TARGET_LINK_LIBRARIES("${CMAKE_PROJECT_NAME}_lib" fontconfig)
+#        TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} "${CMAKE_PROJECT_NAME}_lib" fontconfig)
+#    ENDIF (APPLE)
+#ENDIF (WIN32)
 
 if (UNIX)
     add_definitions(-std=c++11)
 endif (UNIX)
 
-IF (APPLE)
-    # Copy plist to ToolMap (should be after add executable!
-    set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/build/custominfo.plist)
-ENDIF (APPLE)
+# IF (APPLE)
+# Copy plist to ToolMap (should be after add executable!
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/build/custominfo.plist)
+# ENDIF (APPLE)
 
 # adding multi-core support for Visual Studio Compiler
 IF (MSVC)

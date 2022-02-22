@@ -15,7 +15,7 @@
 
 #include "lscrashreport.h"
 
-#include "lscrashreport_param.h"
+// #include "lscrashreport_param.h"
 
 void lsCrashReport_DLG::OnLinkClicked(wxHyperlinkEvent &event) {
   // wxLogWarning(_("Not implemented :-P directory is: %s"), m_CrashDirectory);
