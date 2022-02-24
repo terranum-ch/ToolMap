@@ -8,10 +8,11 @@ class Toolmap(ConanFile):
                 "wxpdfdocument/1.0.5@terranum-conan+wxpdfdocument/stable",
                 "mysql/5.6.56@terranum-conan+mysql/stable",
                 "gdal/3.3.3",
-                "geos/3.10.2",
-                "proj/8.2.1",
-                "libtiff/4.0.9",
-                "libcurl/7.80.0"
+                "geos/3.9.1",
+                "proj/8.1.1",
+                "libtiff/4.3.0",
+                "libcurl/7.80.0",
+                "libgeotiff/1.7.0"
                 ]
 
     generators = "cmake", "gcc", "txt"
@@ -19,7 +20,8 @@ class Toolmap(ConanFile):
     def configure(self):
         if self.settings.os == "Linux":
             self.options["wxwidgets"].webview = False # webview control isn't available on linux.
-        self.options["gdal"].shared = True
+        if self.settings.os == "Macos":
+            self.options["gdal"].shared = True
 
     def imports(self):
         # copy libraries

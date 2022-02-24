@@ -29,14 +29,17 @@ else ()
 endif ()
 
 set(VERSION
-        "const char* ${PROJECT_NAME}_MAJOR_VERSION=\"${${PROJECT_NAME}_MAJOR_VERSION}\";
-        const char* ${PROJECT_NAME}_MINOR_VERSION=\"${${PROJECT_NAME}_MINOR_VERSION}\";
-        const char* GIT_REV=\"${GIT_REV}\";
-        const char* GIT_TAG=\"${GIT_TAG}\";
-        const char* GIT_BRANCH=\"${GIT_BRANCH}\";
-        const char* GIT_NUMBER=\"${GIT_NUMBER}\";")
+        "#ifndef _VERSION_H_
+        #define _VERSION_H_
+        const char* const ${PROJECT_NAME}_MAJOR_VERSION=\"${${PROJECT_NAME}_MAJOR_VERSION}\";
+        const char* const ${PROJECT_NAME}_MINOR_VERSION=\"${${PROJECT_NAME}_MINOR_VERSION}\";
+        const char* const GIT_REV=\"${GIT_REV}\";
+        const char* const GIT_TAG=\"${GIT_TAG}\";
+        const char* const GIT_BRANCH=\"${GIT_BRANCH}\";
+        const char* const GIT_NUMBER=\"${GIT_NUMBER}\";
+        #endif")
 
-set(VERSION_FILEPATH ${CMAKE_CURRENT_BINARY_DIR}/version.cpp)
+set(VERSION_FILEPATH ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 if (EXISTS ${VERSION_FILEPATH})
     file(READ ${VERSION_FILEPATH} VERSION_)

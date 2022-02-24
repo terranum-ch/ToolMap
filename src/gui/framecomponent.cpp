@@ -1,4 +1,5 @@
 #include "framecomponent.h"
+#include "version.h"
 
 #include "../img/misc_bmp.h"
 

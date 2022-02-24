@@ -14,6 +14,7 @@ set(${PROJECT_NAME}_MAJOR_VERSION "3")
 set(${PROJECT_NAME}_MINOR_VERSION "2")
 include(cmake_modules/version.cmake)
 
+
 # defining cmake version for installer mainly
 set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
 set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
@@ -138,7 +139,6 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
         ${MAIN_SRC_FILE}
         ${ICON_PATH}
         src/gui/resource.rc
-        ${CMAKE_BINARY_DIR}/version.cpp
         )
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib lscrashreport)
 

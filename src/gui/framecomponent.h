@@ -6,12 +6,6 @@
 #include "wx/wx.h"
 #endif
 
-extern const char* ToolMap_MAJOR_VERSION;
-extern const char* ToolMap_MINOR_VERSION;
-extern const char* GIT_TAG;
-extern const char* GIT_REV;
-extern const char* GIT_BRANCH;
-extern const char* GIT_NUMBER;
 
 class FrameComponents : public wxDialog {
  public:

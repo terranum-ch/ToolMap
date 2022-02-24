@@ -22,7 +22,8 @@
 
 // image
 #include "../img/misc_bmp.h"
-#include "lsversion_param.h"
+//#include "lsversion_param.h"
+#include "version.h"
 
 BEGIN_EVENT_TABLE(tmAboutDLG, wxDialog)
 EVT_BUTTON(ID_ABOUT_BTN, tmAboutDLG::OnButton)
@@ -37,8 +38,8 @@ tmAboutDLG::tmAboutDLG(wxWindow *parent, wxWindowID id, const wxString &title, c
 tmAboutDLG::~tmAboutDLG() {}
 
 wxString tmAboutDLG::GetVersionText() {
-  wxString myVersion = _("version ") + VERSION_MAJOR + "." + VERSION_MINOR + ".";
-  myVersion.Append(lsVERSION_SOFT_VERSION);
+  wxString myVersion = _("version ") + ToolMap_MAJOR_VERSION  + "." + ToolMap_MINOR_VERSION + ".";
+  myVersion.Append(GIT_NUMBER);
   myVersion.Append(_T(" - "));
   myVersion.Append(g_CodeName);
   return myVersion;
