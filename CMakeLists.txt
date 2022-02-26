@@ -24,6 +24,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+
 #Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -199,9 +200,10 @@ IF (APPLE)
     # change cmake_install_prefix from /usr/local to the binary directory
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
     set(APPS ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_PROJECT_NAME}.app)  # paths to executables
+    set(DIRS ${CMAKE_INSTALL_PREFIX}/bin/)  # paths to executables
     INSTALL(CODE "
    include(BundleUtilities)
-   fixup_bundle(\"${APPS}\"   \"\"   \"\")
+   fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
    " COMPONENT Runtime)
 ENDIF (APPLE)
 

@@ -4,15 +4,16 @@ import os
 
 class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-    requires = ["wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
+    requires = [
+          "wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
                 "wxpdfdocument/1.0.5@terranum-conan+wxpdfdocument/stable",
                 "mysql/5.6.56@terranum-conan+mysql/stable",
                 "gdal/3.3.3",
                 "geos/3.9.1",
                 "proj/8.1.1",
-                "libtiff/4.3.0",
+                #"libtiff/4.3.0",
                 "libcurl/7.80.0",
-                "libgeotiff/1.7.0"
+                #"libgeotiff/1.7.0"
                 ]
 
     generators = "cmake", "gcc", "txt"
@@ -26,6 +27,7 @@ class Toolmap(ConanFile):
     def imports(self):
         # copy libraries
         self.copy("*.dll", dst="bin", src="bin")  # From bin to bin
+        self.copy("*.dylib", dst="bin", src="lib")
         # Don't copy dylib on OSX, bundle is created on cmake install . step
 
         # copy errmsg.sys on different places
