@@ -7,7 +7,7 @@ class Toolmap(ConanFile):
     requires = [
           "wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
                 "wxpdfdocument/1.0.5@terranum-conan+wxpdfdocument/stable",
-                "mysql/5.6.56@terranum-conan+mysql/stable",
+                "mysql/5.6.36@terranum-conan+mysql/stable",
                 "gdal/3.3.3",
                 "geos/3.9.1",
                 "proj/8.1.1",
@@ -21,6 +21,7 @@ class Toolmap(ConanFile):
     def configure(self):
         if self.settings.os == "Linux":
             self.options["wxwidgets"].webview = False # webview control isn't available on linux.
+            self.options["gdal"].shared = True
         if self.settings.os == "Macos":
             self.options["gdal"].shared = True
 
@@ -31,7 +32,7 @@ class Toolmap(ConanFile):
         # Don't copy dylib on OSX, bundle is created on cmake install . step
 
         # copy errmsg.sys on different places
-        if self.settings.os == "Windows":
+        if self.settings.os == "Windows" or self.settings.os == "Linux":
             self.copy("errmsg.sys", dst="bin/mysql", src="share/english")
         if self.settings.os == "Macos":
             self.copy("errmsg.sys", dst="bin/ToolMap.app/Contents/mysql", src="share/english")
