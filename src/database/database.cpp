@@ -103,6 +103,8 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
   server_args_array.Add(mylanguagedir);
   server_args_array.Add("--character-set-server=utf8");
   server_args_array.Add("--default-storage-engine=MyISAM");
+  server_args_array.Add("--default-tmp-storage-engine=MyISAM");
+  server_args_array.Add("--skip-innodb");
 
   // debug : log queries
   if (pconfig->ReadBool("DEBUG/log_mysql_queries", false)) {
