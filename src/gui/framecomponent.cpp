@@ -2,6 +2,10 @@
 #include "version.h"
 
 #include "../img/misc_bmp.h"
+#include "gdal_priv.h"
+#include "geos_c.h"
+#include "curl/curl.h"
+#include "mysql.h"
 
 FrameComponents::FrameComponents(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                        long style)
@@ -16,12 +20,16 @@ FrameComponents::FrameComponents(wxWindow* parent, wxWindowID id, const wxString
             << "Branch: " << GIT_BRANCH << "\n";
 
   // libs version
-
-
   myVersion << wxVERSION_STRING << "\n";
 #ifdef _OPENMP
   myVersion << "OpenMP: " << _OPENMP << "\n";
 #endif
+
+  myVersion << _("Gdal: ") << GDAL_RELEASE_NAME << "\n";
+  myVersion << _("Geos: ") << GEOS_VERSION << "\n";
+  myVersion << _("Libcurl: ") << LIBCURL_VERSION << "\n";
+  myVersion << _("MySQL: ") << mysql_get_client_info() << "\n";
+  
   myVersion << wxGetOsDescription();
   m_ctrl_txt->SetValue(myVersion);
 
