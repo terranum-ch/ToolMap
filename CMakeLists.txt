@@ -12,7 +12,7 @@ PROJECT("ToolMap")
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "3")
 set(${PROJECT_NAME}_MINOR_VERSION "2")
-include(cmake_modules/version.cmake)
+include(build/cmake/version.cmake)
 
 # defining cmake version for installer mainly
 set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
@@ -163,7 +163,7 @@ ENDIF (MSVC)
 #INCLUDE("build/cmake/GDALCopyLibs.cmake")
 #INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
 # INCLUDE("build/cmake/copyprojfiles.cmake")
-INCLUDE("build/cmake/copywebfiles.cmake")
+#INCLUDE("build/cmake/copywebfiles.cmake")
 
 
 
