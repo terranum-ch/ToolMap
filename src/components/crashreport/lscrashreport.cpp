@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "lscrashreport.h"
+#include "version.h"
 
-// #include "lscrashreport_param.h"
 
 void lsCrashReport_DLG::OnLinkClicked(wxHyperlinkEvent &event) {
   // wxLogWarning(_("Not implemented :-P directory is: %s"), m_CrashDirectory);
@@ -442,25 +442,14 @@ wxString lsCrashReport::_CreateGeneralInfo() {
                                  <p>%s</p> \
                                  <h2>Software version</h2> \
                                  <p>%s</p> \
-                                 <h2>Components version</h2> \
-                                 <p>%s</p> \
                                  </body> \
                                  </html>");
 
-  wxString mySoftVersion = wxEmptyString;
-  wxString mySoftComponent = wxEmptyString;
-
-#ifdef USE_VERSION
-  lsVersion myVersion;
-  mySoftVersion << myVersion.GetSoftGIT();
-  mySoftComponent << myVersion.GetAllModules();
-  mySoftComponent.Replace(_T("\n"), _T("<br>"));
-
-#endif
+  wxString mySoftVersion;
+  mySoftVersion << ToolMap_MAJOR_VERSION << "." << ToolMap_MINOR_VERSION << "." << GIT_NUMBER;
 
   return wxString::Format(myGeneralInfo, wxDateTime::Now().FormatISOCombined('-'), m_SoftName, wxGetOsDescription(),
-                          wxGetFreeMemory().ToString(), wxGetHostName(), wxGetUserId(), wxGetUserName(), mySoftVersion,
-                          mySoftComponent);
+                          wxGetFreeMemory().ToString(), wxGetHostName(), wxGetUserId(), wxGetUserName(), mySoftVersion);
 }
 
 wxString lsCrashReport::_CreateAddInfo(const wxString &email, const wxString &description) {

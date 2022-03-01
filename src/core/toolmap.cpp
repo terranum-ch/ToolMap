@@ -42,7 +42,7 @@
 #include "../gui/preference_dlg.h"
 #include "../img/misc_bmp.h"
 #include "../img/toolbar_bmp.h"
-#include "lscrashreport.h"
+#include "../components/crashreport/lscrashreport.h"
 // #include "lsversion_dlg.h"
 // #include "lsversion_param.h"
 #include "pdfdocument.h"

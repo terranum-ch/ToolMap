@@ -14,7 +14,6 @@ set(${PROJECT_NAME}_MAJOR_VERSION "3")
 set(${PROJECT_NAME}_MINOR_VERSION "2")
 include(cmake_modules/version.cmake)
 
-
 # defining cmake version for installer mainly
 set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
 set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
@@ -24,27 +23,8 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-
 #Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-# Add custom modules
-#set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/build/cmake ${CMAKE_MODULE_PATH})
-#
-##Use O2 optimisation
-#IF (APPLE)
-#    MESSAGE(STATUS "REPLACING O3 WITH O2")
-#    STRING(REPLACE "O3" "O2" CMAKE_C_FLAGS_RELEASE ${CMAKE_C_FLAGS_RELEASE})
-#    STRING(REPLACE "O3" "O2" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
-#    MESSAGE(STATUS "CMAKE_C_FLAGS_RELEASE: ${CMAKE_C_FLAGS_RELEASE}")
-#    MESSAGE(STATUS "CMAKE_CXX_FLAGS_RELEASE: ${CMAKE_CXX_FLAGS_RELEASE}")
-#
-#    # add no optimization level to Debug version. Otherwise debugging didn't work correctly
-#    SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
-#    SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
-#    MESSAGE(STATUS "CMAKE_CXX_FLAGS_DEBUG: ${CMAKE_CXX_FLAGS_DEBUG}")
-#    MESSAGE(STATUS "CMAKE_C_FLAGS_DEBUG: ${CMAKE_C_FLAGS_DEBUG}")
-#ENDIF (APPLE)
 
 # Enable tests
 SET(USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
@@ -114,8 +94,8 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 # INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
 # INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 
-INCLUDE_DIRECTORIES(plugins/lscrashreport/src)
-ADD_SUBDIRECTORY(plugins/lscrashreport)
+#INCLUDE_DIRECTORIES(plugins/lscrashreport/src)
+#ADD_SUBDIRECTORY(plugins/lscrashreport)
 
 #if (UNIX AND NOT APPLE)
 #    SET(USE_APPIMAGE FALSE CACHE BOOL "Should we use AppImage to create an installer on Linux ?")
@@ -141,7 +121,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
         ${ICON_PATH}
         src/gui/resource.rc
         )
-TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib lscrashreport)
+TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib)
 
 #IF (WIN32)
 #    SOURCE_GROUP(resource FILES src/resource.rc)
@@ -181,7 +161,7 @@ ENDIF (MSVC)
 #INCLUDE("build/cmake/Use_visualstudioMT.cmake")
 #INCLUDE("build/cmake/useMySQLEmbedded.cmake")
 #INCLUDE("build/cmake/GDALCopyLibs.cmake")
-INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
+#INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
 # INCLUDE("build/cmake/copyprojfiles.cmake")
 INCLUDE("build/cmake/copywebfiles.cmake")
 
