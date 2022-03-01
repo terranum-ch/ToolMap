@@ -29,7 +29,7 @@ FrameComponents::FrameComponents(wxWindow* parent, wxWindowID id, const wxString
   myVersion << _("Geos: ") << GEOS_VERSION << "\n";
   myVersion << _("Libcurl: ") << LIBCURL_VERSION << "\n";
   myVersion << _("MySQL: ") << mysql_get_client_info() << "\n";
-  
+
   myVersion << wxGetOsDescription();
   m_ctrl_txt->SetValue(myVersion);
 
