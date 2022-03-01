@@ -7,7 +7,7 @@ class Toolmap(ConanFile):
     requires = [
           "wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
                 "wxpdfdocument/1.0.5@terranum-conan+wxpdfdocument/stable",
-                "mysql/5.6.36@terranum-conan+mysql/stable",
+                "mysql/5.6.51@terranum-conan+mysql/stable",
                 "gdal/3.3.3",
                 "geos/3.9.1",
                 "proj/8.1.1",
