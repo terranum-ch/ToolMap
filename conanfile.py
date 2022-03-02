@@ -28,7 +28,8 @@ class Toolmap(ConanFile):
         # copy libraries
         self.copy("*.dll", dst="bin", src="bin")  # From bin to bin
         self.copy("*.dylib", dst="bin", src="lib")
-        # Don't copy dylib on OSX, bundle is created on cmake install . step
+        if self.settings.os == "Linux":
+            self.copy("*.so*", dst="bin", src="lib")
 
         # copy errmsg.sys on different places
         if self.settings.os == "Windows" or self.settings.os == "Linux":
@@ -42,10 +43,13 @@ class Toolmap(ConanFile):
         if self.settings.os == "Macos":
             self.copy("*", dst="bin/ToolMap.app/Contents/share/proj", src="res", root_package="proj")
 
-        # copy webfiles on different places
+        # copy xml webfiles
         _source_folder = os.path.join(os.getcwd(), "..")
         if self.settings.os == "Macos":
             self.copy("*.xml", dst="bin/ToolMap.app/Contents/share/toolmap",
+                      src=os.path.join(_source_folder, "resource", "web"))
+        else:
+            self.copy("*.xml", dst="share/toolmap",
                       src=os.path.join(_source_folder, "resource", "web"))
 
     def build(self):
