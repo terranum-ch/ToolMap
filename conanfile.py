@@ -38,7 +38,7 @@ class Toolmap(ConanFile):
 
         # copy proj library datum
         if self.settings.os == "Windows" or self.settings.os == "Linux":
-            self.copy("*", dst="bin/share/proj", src="res", root_package="proj")
+            self.copy("*", dst="bin", src="res", root_package="proj")
         if self.settings.os == "Macos":
             self.copy("*", dst="bin/ToolMap.app/Contents/share/proj", src="res", root_package="proj")
 
