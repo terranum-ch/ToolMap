@@ -8,7 +8,7 @@ class Toolmap(ConanFile):
         "wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
         "wxpdfdocument/1.0.5@terranum-conan+wxpdfdocument/stable",
         "mysql/5.6.51@terranum-conan+mysql/stable",
-        "gdal/3.3.3",
+        "gdal/3.4.1@terranum-conan+gdal/stable",
         "geos/3.9.1",
         "proj/8.1.1",
         "libcurl/7.80.0",
@@ -18,11 +18,9 @@ class Toolmap(ConanFile):
 
     def configure(self):
         self.options["gdal"].with_curl = True # for xml support
+        self.options["gdal"].shared = True
         if self.settings.os == "Linux":
             self.options["wxwidgets"].webview = False  # webview control isn't available on linux.
-            self.options["gdal"].shared = True
-        if self.settings.os == "Macos":
-            self.options["gdal"].shared = True
 
     def imports(self):
         # copy libraries
