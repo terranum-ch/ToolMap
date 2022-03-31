@@ -4,6 +4,7 @@ import os
 
 class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
+
     requires = [
         "wxwidgets/3.1.4@terranum-conan+wxwidgets/stable",
         "wxpdfdocument/1.0.5@terranum-conan+wxpdfdocument/stable",
@@ -12,8 +13,8 @@ class Toolmap(ConanFile):
         "geos/3.9.1",
         "proj/8.1.1",
         "libcurl/7.80.0",
+        "libdeflate/1.9"
     ]
-
     generators = "cmake", "gcc", "txt"
 
     def configure(self):
