@@ -2,11 +2,6 @@
 # (c) TERRANUM 2022
 cmake_minimum_required(VERSION 3.0)
 
-## POLICY FOR WINDOWS ONLY ???
-#if(COMMAND cmake_policy)
-#  cmake_policy(SET CMP0003 NEW)
-#endif(COMMAND cmake_policy)
-
 PROJECT("ToolMap")
 
 # using git version
@@ -50,8 +45,8 @@ SET(USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PRO
 #set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
 #
 ## Option to get ToolBasView
-#set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
-#
+set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
+
 ## Add ToolBasView as external project
 #if (WITH_TOOLBASVIEW)
 #    ExternalProject_Add(ToolBasView
@@ -88,9 +83,7 @@ SOURCE_GROUP(header FILES ${HEAD_FILES})
 #link_libraries(${wxWidgets_LIBRARIES})
 
 # Includes
-#INCLUDE("build/cmake/findMySQLEmbedded.cmake")
 INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
-#INCLUDE("build/cmake/findwxpdfdocument.cmake")
 # INCLUDE("plugins/lsversion/build/use_lsversion.cmake")
 # INCLUDE("plugins/lscrashreport/build/use_lscrashreport.cmake")
 
@@ -154,18 +147,6 @@ IF (MSVC)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
     MESSAGE(STATUS "Adding multiprocessor support for Visual Studio (/MP Flag)")
 ENDIF (MSVC)
-
-#INCLUDE("build/cmake/installMacGISLIB.cmake")
-#INCLUDE("build/cmake/installMacLibTiff.cmake")
-#INCLUDE("build/cmake/Use_wingdiplus.cmake")
-#INCLUDE("build/cmake/Use_visualstudioMT.cmake")
-#INCLUDE("build/cmake/useMySQLEmbedded.cmake")
-#INCLUDE("build/cmake/GDALCopyLibs.cmake")
-#INCLUDE("plugins/lscrashreport/build/CURLCopyLibs.cmake")
-# INCLUDE("build/cmake/copyprojfiles.cmake")
-#INCLUDE("build/cmake/copywebfiles.cmake")
-
-
 
 
 ## UNIT TEST PROGRAM
