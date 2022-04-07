@@ -19,6 +19,7 @@
 #include "test_param.h"
 #include "../../src/database/database.h"
 
+
 class TestDatabase : public ::testing::Test {
  protected:
   DataBase* m_db = nullptr;
@@ -63,14 +64,14 @@ TEST_F(TestDatabase, ResultString) {
   m_db->DataBaseClearResults();
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT OBJECT_DESC FROM dmn_layer_object WHERE OBJECT_ID = 16")));
   EXPECT_TRUE(m_db->DataBaseGetNextResult(myReturnedString));
-  EXPECT_TRUE(myReturnedString == _T("delimitation tassement"));  // oid = 17
+  EXPECT_EQ(myReturnedString, _T("delimitation tassement"));  // oid = 17
   EXPECT_FALSE(m_db->DataBaseGetNextResult(myReturnedString));
-  EXPECT_TRUE(myReturnedString == wxEmptyString);
+  EXPECT_EQ(myReturnedString, wxEmptyString);
   m_db->DataBaseClearResults();
 
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17777")));
   EXPECT_TRUE(!m_db->DataBaseGetNextResult(myReturnedString));
-  EXPECT_TRUE(myReturnedString == wxEmptyString);
+  EXPECT_EQ(myReturnedString, wxEmptyString);
 }
 
 TEST_F(TestDatabase, ResultArrayString) {
@@ -80,7 +81,7 @@ TEST_F(TestDatabase, ResultArrayString) {
 
   EXPECT_TRUE(m_db->DataBaseGetNextResult(myResults));
   EXPECT_EQ(myResults.GetCount(), 9);  // 9 cols in dmn_layer_object
-  EXPECT_TRUE(myResults.Item(4) == _T("delimitation tassement"));
+  EXPECT_EQ(myResults.Item(4), _T("delimitation tassement"));
   m_db->DataBaseClearResults();
 
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17")));
@@ -171,7 +172,7 @@ TEST_F(TestDatabase, ColResultsString) {
   wxArrayString myResults;
   EXPECT_TRUE(m_db->DataBaseGetResults(myResults));
   EXPECT_EQ(myResults.GetCount(), 2);
-  EXPECT_TRUE(myResults.Item(1) == _T("Ceci est un test pour un max de caracteres ke lonp"));
+  EXPECT_EQ(myResults.Item(1), _T("Ceci est un test pour un max de caracteres ke lonp"));
   EXPECT_FALSE(m_db->DataBaseGetResults(myResults));
   EXPECT_EQ(myResults.GetCount(), 0);
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT TestText FROM layer_at1 ORDER BY OBJECT_ID")));
@@ -197,17 +198,17 @@ TEST_F(TestDatabase, ColResultsDouble) {
 }
 
 TEST_F(TestDatabase, PathName) {
-  EXPECT_TRUE(m_db->DataBaseGetName() == wxEmptyString);
-  EXPECT_TRUE(m_db->DataBaseGetPath() == wxEmptyString);
+  EXPECT_EQ(m_db->DataBaseGetName(), wxEmptyString);
+  EXPECT_EQ(m_db->DataBaseGetPath(), wxEmptyString);
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
 
-  EXPECT_TRUE(m_db->DataBaseGetName() == g_TestPrj_Fields);
-  EXPECT_TRUE(m_db->DataBaseGetPath() == g_TestPathPRJ);
+  EXPECT_EQ(m_db->DataBaseGetName(), g_TestPrj_Fields);
+  EXPECT_EQ(m_db->DataBaseGetPath(), g_TestPathPRJ);
 
   wxString myFalseName = g_TestPrj_Fields + _T("ssss");
   ASSERT_TRUE(!m_db->DataBaseOpen(g_TestPathPRJ, myFalseName));
-  EXPECT_TRUE(m_db->DataBaseGetName() == wxEmptyString);
-  EXPECT_TRUE(m_db->DataBaseGetPath() == wxEmptyString);
+  EXPECT_EQ(m_db->DataBaseGetName(), wxEmptyString);
+  EXPECT_EQ(m_db->DataBaseGetPath(), wxEmptyString);
 }
 
 TEST_F(TestDatabase, QueriesNumber) {
@@ -230,7 +231,7 @@ TEST_F(TestDatabase, CreateNewDatabase) {
 TEST_F(TestDatabase, GetDataBaseSize) {
   wxString myFailMsg = _("Not available");
   wxString myDBSize = m_db->DataBaseGetSize(2, myFailMsg);
-  EXPECT_TRUE(myDBSize == myFailMsg);
+  EXPECT_EQ(myDBSize, myFailMsg);
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_MyTest));
   myDBSize = m_db->DataBaseGetSize(2, myFailMsg);
   wxLogMessage(myDBSize);
@@ -265,7 +266,7 @@ TEST_F(TestDatabase, GetRawRow) {
   EXPECT_TRUE(myRow != nullptr);
   EXPECT_TRUE(myLength.GetCount() != 0);
   EXPECT_FALSE(m_db->DataBaseGetNextRowResult(myRow, myLength));
-  EXPECT_TRUE(myRow == nullptr);
+  EXPECT_EQ(myRow, nullptr);
   EXPECT_EQ(myLength.GetCount(), 0);
 }
 
