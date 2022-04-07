@@ -21,14 +21,14 @@
 #include "../../src/database/database_tm.h"
 
 
-class AdvAttribManager : public ::testing::Test {
+class TestAdvAttribManager : public ::testing::Test {
  protected:
   DataBaseTM *m_db = nullptr;
   PrjDefMemManage *m_prj = nullptr;
 
   virtual void SetUp() {
     m_db = new DataBaseTM();
-    wxASSERT(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
+    ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
     m_prj = m_db->GetProjectDataFromDB();
     wxASSERT(m_prj);
   }
@@ -38,7 +38,7 @@ class AdvAttribManager : public ::testing::Test {
   }
 };
 
-TEST_F(AdvAttribManager, CreatorDtor) {
+TEST_F(TestAdvAttribManager, CreatorDtor) {
   tmSelectedDataMemory mySelData;
   mySelData.SetLayerID(0);
   wxArrayLong *mySelected = new wxArrayLong;
@@ -52,7 +52,7 @@ TEST_F(AdvAttribManager, CreatorDtor) {
   EXPECT_TRUE(myManager.IsOk());
 }
 
-TEST_F(AdvAttribManager, GettingTypes) {
+TEST_F(TestAdvAttribManager, GettingTypes) {
   tmSelectedDataMemory mySelData;
   mySelData.SetLayerID(0);
   wxArrayLong *mySelected = new wxArrayLong;
@@ -79,17 +79,9 @@ TEST_F(AdvAttribManager, GettingTypes) {
   EXPECT_EQ(myObjects[1]->m_ObjectName, _T("Border of Hazards_PLG"));
   EXPECT_EQ(myNumber[1], 3);
   EXPECT_EQ(myLayerId[1], 2);
-
-  /*for (unsigned int i = 0; i< myObjects.GetCount(); i++) {
-                  wxLogMessage(_T("%ld - %s (%d) - %ld"),
-                                           myObjects.Item(i)->m_ObjectID,
-                                           myObjects.Item(i)->m_ObjectName.c_str(),
-                                           myNumber.Item(i),
-                                           myLayerId.Item(i));
-          }*/
 }
 
-TEST_F(AdvAttribManager, GettingFields) {
+TEST_F(TestAdvAttribManager, GettingFields) {
   tmSelectedDataMemory mySelData;
   mySelData.SetLayerID(0);
   wxArrayLong *mySelected = new wxArrayLong;
@@ -103,13 +95,6 @@ TEST_F(AdvAttribManager, GettingFields) {
   // Field 1 is TectoBound_L
   PrjMemFieldArray myFields;
   EXPECT_TRUE(myManager.GetFields(1, myFields));
-
-  /*for (unsigned int i = 0; i< myFields.GetCount(); i++) {
-          wxLogMessage(_T("%d - %s"),
-                                   myFields.Item(i)->m_FieldID,
-                                   myFields.Item(i)->m_Fieldname.c_str());
-  }*/
-
   EXPECT_EQ(myFields[0]->m_FieldID, 1);
   EXPECT_EQ(myFields[0]->m_Fieldname, _T("TYPE"));
   EXPECT_EQ(myFields.GetCount(), 1);
@@ -120,9 +105,7 @@ TEST_F(AdvAttribManager, GettingFields) {
   EXPECT_EQ(myFields.GetCount(), 0);
 }
 
-TEST_F(AdvAttribManager, Attribute) {
-  // wxLogMessage(_T("Testing attribute from Advanced batch attribution"));
-
+TEST_F(TestAdvAttribManager, Attribute) {
   tmSelectedDataMemory mySelData;
   mySelData.SetLayerID(0);  // line ??
   wxArrayLong *mySelected = new wxArrayLong;
