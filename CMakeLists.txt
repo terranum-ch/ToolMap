@@ -22,7 +22,7 @@ conan_basic_setup()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Enable tests
-SET(USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PROJECT_NAME}")
+SET(USE_UNITTEST CACHE BOOL "Should we create the tests for ${CMAKE_PROJECT_NAME}")
 
 # Enable code coverage
 #if (USE_UNITTEST AND CMAKE_COMPILER_IS_GNUCXX)
@@ -138,10 +138,10 @@ IF (MSVC)
 ENDIF (MSVC)
 
 
-## UNIT TEST PROGRAM
-#IF (USE_UNITTEST)
-#    ADD_SUBDIRECTORY("test/build" "${PROJECT_BINARY_DIR}/test")
-#ENDIF (USE_UNITTEST)
+## UNIT TEST
+IF (USE_UNITTEST)
+    ADD_SUBDIRECTORY(test)
+ENDIF (USE_UNITTEST)
 
 
 # Install step for copying *dylib into application bundle on OSX and for changing their reference from

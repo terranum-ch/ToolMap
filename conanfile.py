@@ -16,7 +16,13 @@ class Toolmap(ConanFile):
         "libdeflate/1.9",
         "zlib/1.2.12"
     ]
+
+    options = {"unit_test": [True, False]}
     generators = "cmake", "gcc", "txt"
+
+    def requirements(self):
+        if self.options.unit_test:
+            self.requires("gtest/1.11.0")
 
     def configure(self):
         self.options["gdal"].with_curl = True # for xml support
@@ -36,6 +42,8 @@ class Toolmap(ConanFile):
             self.copy("errmsg.sys", dst="bin/mysql", src="share/english")
         if self.settings.os == "Macos":
             self.copy("errmsg.sys", dst="bin/ToolMap.app/Contents/mysql", src="share/english")
+            if self.options.unit_test:
+                self.copy("errmsg.sys", dst="mysql", src="share/english")
 
         # copy proj library datum
         if self.settings.os == "Windows" or self.settings.os == "Linux":
@@ -54,6 +62,8 @@ class Toolmap(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        if self.options.unit_test:
+            cmake.definitions["USE_UNITTEST"] = "ON"
         cmake.configure()
         cmake.build()
         cmake.install()
