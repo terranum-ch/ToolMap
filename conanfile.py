@@ -47,10 +47,10 @@ class Toolmap(ConanFile):
         _source_folder = os.path.join(os.getcwd(), "..")
         if self.settings.os == "Macos":
             self.copy("*.xml", dst="bin/ToolMap.app/Contents/share/toolmap",
-                      src=os.path.join(_source_folder, "resource", "web"))
+                      src=os.path.join(_source_folder, "resources", "web"))
         else:
             self.copy("*.xml", dst="share/toolmap",
-                      src=os.path.join(_source_folder, "resource", "web"))
+                      src=os.path.join(_source_folder, "resources", "web"))
 
     def build(self):
         cmake = CMake(self)
