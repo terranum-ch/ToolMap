@@ -18,7 +18,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
-#Export for sourcetrail
+# Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Enable tests
@@ -70,17 +70,6 @@ LIST(REMOVE_AT SRC_FILES ${MYFOUND})
 FILE(GLOB_RECURSE HEAD_FILES "src/*.h")
 SOURCE_GROUP(header FILES ${HEAD_FILES})
 
-
-
-## wxWidgets
-#set(wxWidgets_USE_UNICODE TRUE)
-#set(wxWidgets_USE_STATIC TRUE)
-#set(wxWidgets_USE_REL_AND_DBG TRUE)
-#set(wxWidgets_with_GUI TRUE)
-#find_package(wxWidgets REQUIRED core base adv xml net scintilla html qa xrc aui propgrid ribbon richtext media stc webview gl)
-#include("${wxWidgets_USE_FILE}")
-#include_directories(${wxWidgets_INCLUDE_DIRS})
-#link_libraries(${wxWidgets_LIBRARIES})
 
 # Includes
 INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.cmake")
