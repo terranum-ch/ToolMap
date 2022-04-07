@@ -34,28 +34,28 @@ SET(USE_UNITTEST CACHE BOOL "Should we Create the Unit Test (XP) for ${CMAKE_PRO
 
 
 ## External projects
-#include(ExternalProject)
-#set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
-#set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${EXTERNAL_DIR}")
-#include_directories(${EXTERNAL_DIR}/include)
-#link_directories(${EXTERNAL_DIR}/lib)
-#link_directories(${EXTERNAL_DIR}/lib64)
-#
-## Path to MySQL
-#set(MYSQL_MAIN_DIR CACHE PATH "Path to MySQL main directory.")
-#
+include(ExternalProject)
+set(EXTERNAL_DIR ${CMAKE_BINARY_DIR}/external)
+set(CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH};${EXTERNAL_DIR}")
+include_directories(${EXTERNAL_DIR}/include)
+link_directories(${EXTERNAL_DIR}/lib)
+link_directories(${EXTERNAL_DIR}/lib64)
+
 ## Option to get ToolBasView
 set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
 
 ## Add ToolBasView as external project
-#if (WITH_TOOLBASVIEW)
-#    ExternalProject_Add(ToolBasView
-#            GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
-#            UPDATE_COMMAND ""
-#            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DSEARCH_WXWIDGETS_PATH=${SEARCH_WXWIDGETS_PATH} -DWXWINDOWS_ROOT_DIR=${WXWINDOWS_ROOT_DIR} -DSEARCH_GDAL_PATH=${SEARCH_GDAL_PATH} -DSEARCH_PROJ_PATH=${SEARCH_PROJ_PATH} -DSEARCH_GEOS_PATH=${SEARCH_GEOS_PATH} -DSEARCH_SQLITE_PATH=${SEARCH_SQLITE_PATH} -DSEARCH_CURL_PATH=${SEARCH_CURL_PATH} -DMYSQL_MAIN_DIR=${MYSQL_MAIN_DIR} -DSEARCH_GEOS=1 -DSEARCH_GDAL=1
-#            BUILD_COMMAND ${CMAKE_COMMAND} --build .
-#            )
-#endif ()
+if (WITH_TOOLBASVIEW)
+    ExternalProject_Add(ToolBasView
+            GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
+            GIT_TAG origin/feature/build-improvement
+            UPDATE_COMMAND ""
+            CONFIGURE_COMMAND conan install ../ToolBasView -s build_type=${CMAKE_BUILD_TYPE} --build=missing
+            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+            BUILD_COMMAND conan build ../ToolBasView
+            INSTALL_COMMAND ""
+            )
+endif ()
 
 # Sources and headers 
 FILE(GLOB_RECURSE SRC_FILES src/*.cpp)
