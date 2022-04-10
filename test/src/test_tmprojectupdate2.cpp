@@ -14,17 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TM_TEST_PROJECT_UPDATE2_H_
-#define _TM_TEST_PROJECT_UPDATE2_H_
+#include "gtest/gtest.h"
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <cxxtest/TestSuite.h>
-
-#include "../../src/core/tmprojectupdater.h"
 #include "test_param.h"
+#include "../../src/core/tmprojectupdater.h"
+
 
 // =================================================================
 bool CopyDir2(wxString from, wxString to) {
@@ -107,89 +101,70 @@ bool CopyDir2(wxString from, wxString to) {
 }
 // =================================================================
 
-class TEST_tmProjectUpdater2 : public CxxTest::TestSuite {
- public:
-  // DataBaseTM * m_OriginalDB;
-  DataBaseTM *m_CopyDB;
+class TestProjectUpdater2 : public ::testing::Test {
+ protected:
+  DataBaseTM *m_CopyDB = nullptr;
 
-  TEST_tmProjectUpdater2(bool bTest) {
-    wxApp::SetInstance(new wxAppConsole());
+  virtual void SetUp() {
     // remove if exists
     wxFileName myDir2(g_TestPathPRJ + g_TestMigre222 + _T("_tmp"), _T(""));
     if (wxDir::Exists(myDir2.GetFullPath())) {
       wxLogMessage(_T("Removing temporary project '%s'"), myDir2.GetFullPath());
       myDir2.Rmdir(wxPATH_RMDIR_RECURSIVE);
     }
-    TS_ASSERT(!wxDir::Exists(myDir2.GetFullPath()));
+    ASSERT_TRUE(!wxDir::Exists(myDir2.GetFullPath()));
 
     // copy project
     CopyDir2(g_TestPathPRJ + g_TestMigre222, g_TestPathPRJ + g_TestMigre222 + _T("_tmp"));
     m_CopyDB = new DataBaseTM();
-    TS_ASSERT(m_CopyDB->OpenTMDatabase(g_TestPathPRJ + g_TestMigre222 + _T("_tmp")));
+    ASSERT_TRUE(m_CopyDB->OpenTMDatabase(g_TestPathPRJ + g_TestMigre222 + _T("_tmp")));
   }
-
-  virtual ~TEST_tmProjectUpdater2() {
+  virtual void TearDown() {
     wxDELETE(m_CopyDB);
-  }
-
-  static TEST_tmProjectUpdater2 *createSuite() {
-    return new TEST_tmProjectUpdater2(true);
-  }
-  static void destroySuite(TEST_tmProjectUpdater2 *suite) {
-    delete suite;
-  }
-
-  void setUp() {}
-
-  void tearDown() {}
-
-  void testName() {
-    wxLogMessage(_T("------------------------------------"));
-    wxLogMessage(_T("------- TESTING TMPROJECTUPDATER2----"));
-    wxLogMessage(_T("------------------------------------"));
-  }
-
-  ProjectDefMemoryFieldsCodedVal *ReadProjectData(PrjDefMemManage *prjdef, const wxString &valuetoread) {
-    TS_ASSERT(prjdef);
-    ProjectDefMemoryLayers *myLayer = prjdef->GetNextLayer();
-    TS_ASSERT(myLayer);
-    TS_ASSERT_EQUALS(myLayer->m_LayerName, _T("Boreholes_PT"));
-
-    ProjectDefMemoryFields *myField = prjdef->GetNextField();
-    TS_ASSERT(myField);
-    TS_ASSERT_EQUALS(myField->m_Fieldname, _T("D_C_UNDERG"));
-
-    ProjectDefMemoryFieldsCodedVal *myVal = myField->m_pCodedValueArray.Item(1);
-    TS_ASSERT(myVal);
-    TS_ASSERT_EQUALS(myVal->m_ValueCode, valuetoread);
-    TS_ASSERT_EQUALS(myVal->m_ValueName, _T("non"));
-    return myVal;
-  }
-
-  void testUpdateMigreProject() {
-    PrjDefMemManage *myPrjDef = m_CopyDB->GetProjectDataFromDB();
-
-    // read project
-    ProjectDefMemoryFieldsCodedVal *myVal = ReadProjectData(myPrjDef, _T("2"));
-    TS_ASSERT(myVal);
-
-    // update val
-    myVal->m_ValueCode = _T("45a");
-
-    // update project
-    m_CopyDB->UpdateDataBaseProject(myPrjDef);
-    wxDELETE(myPrjDef);
-    TS_ASSERT(myPrjDef == nullptr);
-
-    // reread project
-    wxLogMessage(_T("Re-reading project"));
-    myPrjDef = m_CopyDB->GetProjectDataFromDB();
-    TS_ASSERT(myPrjDef);
-
-    ReadProjectData(myPrjDef, _T("45a"));
-
-    wxDELETE(myPrjDef);
   }
 };
 
-#endif
+TEST_F(TestProjectUpdater2, UpdateMigreProject) {
+  PrjDefMemManage *myPrjDef = m_CopyDB->GetProjectDataFromDB();
+
+  // read project
+  ASSERT_TRUE(myPrjDef != nullptr);
+  ProjectDefMemoryLayers *myLayer = myPrjDef->GetNextLayer();
+  ASSERT_TRUE(myLayer != nullptr);
+  ASSERT_EQ(myLayer->m_LayerName, _T("Boreholes_PT"));
+
+  ProjectDefMemoryFields *myField = myPrjDef->GetNextField();
+  ASSERT_TRUE(myField != nullptr);
+  ASSERT_EQ(myField->m_Fieldname, _T("D_C_UNDERG"));
+
+  ProjectDefMemoryFieldsCodedVal *myVal = myField->m_pCodedValueArray.Item(1);
+  ASSERT_TRUE(myVal != nullptr);
+  ASSERT_EQ(myVal->m_ValueCode, _T("2"));
+  ASSERT_EQ(myVal->m_ValueName, _T("non"));
+
+  // update val
+  myVal->m_ValueCode = _T("45a");
+
+  // update project
+  m_CopyDB->UpdateDataBaseProject(myPrjDef);
+  wxDELETE(myPrjDef);
+  ASSERT_TRUE(myPrjDef == nullptr);
+
+  // reread project
+  wxLogMessage(_T("Re-reading project"));
+  myPrjDef = m_CopyDB->GetProjectDataFromDB();
+  ASSERT_TRUE(myPrjDef != nullptr);
+
+  ProjectDefMemoryLayers *myLayer2 = myPrjDef->GetNextLayer();
+  ASSERT_TRUE(myLayer2 != nullptr);
+
+  ProjectDefMemoryFields *myField2 = myPrjDef->GetNextField();
+  ASSERT_TRUE(myField != nullptr);
+
+  ProjectDefMemoryFieldsCodedVal *myVal2 = myField->m_pCodedValueArray.Item(1);
+  ASSERT_TRUE(myVal2 != nullptr);
+  ASSERT_EQ(myVal2->m_ValueCode, _T("45a"));
+  ASSERT_EQ(myVal2->m_ValueName, _T("non"));
+
+  wxDELETE(myPrjDef);
+}

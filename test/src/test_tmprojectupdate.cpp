@@ -14,17 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _TM_TEST_PROJECT_UPDATE_H_
-#define _TM_TEST_PROJECT_UPDATE_H_
+#include "gtest/gtest.h"
 
-#include <wx/wxprec.h>
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif
-#include <cxxtest/TestSuite.h>
-
-#include "../../src/core/tmprojectupdater.h"
 #include "test_param.h"
+#include "../../src/core/tmprojectupdater.h"
+
 
 // =================================================================
 bool CopyDir(wxString from, wxString to) {
@@ -107,59 +101,37 @@ bool CopyDir(wxString from, wxString to) {
 }
 // =================================================================
 
-class TEST_tmProjectUpdater : public CxxTest::TestSuite {
- public:
-  // DataBaseTM * m_OriginalDB;
-  DataBaseTM *m_CopyDB;
+class TestProjectUpdater : public ::testing::Test {
+ protected:
+  DataBaseTM *m_CopyDB = nullptr;
 
-  TEST_tmProjectUpdater(bool bTest) {
-    wxApp::SetInstance(new wxAppConsole());
+  virtual void SetUp() {
     // remove if exists
     wxFileName myDir(g_TestPathPRJ + _T("tmp_testprjupdate"), _T(""));
     if (wxDir::Exists(myDir.GetFullPath())) {
       wxLogMessage(_T("Removing tempory project: '%s'"), myDir.GetFullPath());
       myDir.Rmdir(wxPATH_RMDIR_RECURSIVE);
     }
-    TS_ASSERT(!wxDir::Exists(myDir.GetFullPath()));
+    ASSERT_FALSE(wxDir::Exists(myDir.GetFullPath()));
 
     // copy project
     CopyDir(g_TestPathPRJ + g_TestPrj_PrjUpdate, g_TestPathPRJ + _T("tmp_testprjupdate"));
     m_CopyDB = new DataBaseTM();
-    TS_ASSERT(m_CopyDB->OpenTMDatabase(g_TestPathPRJ + _T("tmp_testprjupdate")));
+    ASSERT_TRUE(m_CopyDB->OpenTMDatabase(g_TestPathPRJ + _T("tmp_testprjupdate")));
   }
-
-  virtual ~TEST_tmProjectUpdater() {
+  virtual void TearDown() {
     wxDELETE(m_CopyDB);
-  }
-
-  static TEST_tmProjectUpdater *createSuite() {
-    return new TEST_tmProjectUpdater(true);
-  }
-  static void destroySuite(TEST_tmProjectUpdater *suite) {
-    delete suite;
-  }
-
-  void setUp() {}
-
-  void tearDown() {}
-
-  void testName() {
-    wxLogMessage(_T("------------------------------------"));
-    wxLogMessage(_T("------- TESTING TMPROJECTUPDATER----"));
-    wxLogMessage(_T("------------------------------------"));
-  }
-
-  void testIsUpdateNeeded1() {
-    tmProjectUpdater myPrjUpd(m_CopyDB);
-    TS_ASSERT(!myPrjUpd.IsCorrectVersion());
-  }
-
-  void testUpdateOK() {
-    tmProjectUpdater myPrjUpd(m_CopyDB);
-    TS_ASSERT(!myPrjUpd.IsCorrectVersion());
-    TS_ASSERT_EQUALS(myPrjUpd.DoUpdate(), tmPRJ_UPD_ERROR_OK);
-    TS_ASSERT(myPrjUpd.IsCorrectVersion());
   }
 };
 
-#endif
+TEST_F(TestProjectUpdater, IsUpdateNeeded) {
+  tmProjectUpdater myPrjUpd(m_CopyDB);
+  ASSERT_FALSE(myPrjUpd.IsCorrectVersion());
+}
+
+TEST_F(TestProjectUpdater, UpdateOK) {
+  tmProjectUpdater myPrjUpd(m_CopyDB);
+  ASSERT_FALSE(myPrjUpd.IsCorrectVersion());
+  ASSERT_EQ(myPrjUpd.DoUpdate(), tmPRJ_UPD_ERROR_OK);
+  ASSERT_TRUE(myPrjUpd.IsCorrectVersion());
+}
