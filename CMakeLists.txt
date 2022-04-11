@@ -48,7 +48,7 @@ set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolM
 if (WITH_TOOLBASVIEW)
     ExternalProject_Add(ToolBasView
             GIT_REPOSITORY https://github.com/terranum-ch/ToolBasView
-            GIT_TAG origin/feature/build-improvement
+            GIT_TAG v1.4.225
             UPDATE_COMMAND ""
             CONFIGURE_COMMAND conan install ../ToolBasView -s build_type=${CMAKE_BUILD_TYPE} --build=missing
             CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
