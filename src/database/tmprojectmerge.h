@@ -40,7 +40,7 @@ class tmProjectMerge {
 
   bool _HasSameNumberRecords(DataBase *db, const wxString &tablename);
 
-  bool _HasDifferenceResults(DataBase *db, const wxString &query, long &errnumber);
+  bool _HasSameRecords(DataBase *db, const wxString &query, long &errnumber, long &firstId, bool raiseError);
 
   bool _HasSimilarResults(DataBase *db, const wxString &query, long &errnumber);
 
@@ -49,6 +49,8 @@ class tmProjectMerge {
   bool _MergeGeom(const wxString &geomtablename, const wxString &aatablename, int geomtype);
 
   bool _IsReady();
+
+  bool _GetIdMax(const wxString &dbName, const wxString &tableName, long &idMax);
 
  public:
   tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase *database = nullptr);

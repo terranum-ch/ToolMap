@@ -103,6 +103,8 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
   server_args_array.Add(mylanguagedir);
   server_args_array.Add("--character-set-server=utf8");
   server_args_array.Add("--default-storage-engine=MyISAM");
+  server_args_array.Add("--default-tmp-storage-engine=MyISAM");
+  server_args_array.Add("--skip-innodb");
 
   // debug : log queries
   if (pconfig->ReadBool("DEBUG/log_mysql_queries", false)) {
@@ -118,7 +120,11 @@ bool DataBase::DBLibraryInit(const wxString &datadir) {
   }
 
   // convert server arguments array to char
-  char *my_args[server_args_array.GetCount()];
+  if (server_args_array.GetCount() >= 255) {
+    wxLogError("The number of arguments is superior to 255. Please contact the developper.");
+    return false;
+  }
+  char *my_args[255];
   for (int i = 0; i < server_args_array.GetCount(); i++) {
     my_args[i] = const_cast<char *>((const char *)server_args_array[i].mb_str());
   }

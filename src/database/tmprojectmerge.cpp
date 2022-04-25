@@ -96,7 +96,7 @@ bool tmProjectMerge::_HasSameNumberRecords(DataBase *db, const wxString &tablena
   return true;
 }
 
-bool tmProjectMerge::_HasDifferenceResults(DataBase *db, const wxString &query, long &errnumber) {
+bool tmProjectMerge::_HasSameRecords(DataBase *db, const wxString &query, long &errnumber, long &firstId, bool raiseError = true) {
   errnumber = 0;
   wxASSERT(db);
 
@@ -106,6 +106,12 @@ bool tmProjectMerge::_HasDifferenceResults(DataBase *db, const wxString &query, 
 
   wxArrayString myResults;
   while (db->DataBaseGetNextResult(myResults)) {
+    if (firstId == 0) {
+      myResults[0].ToLong(&firstId);
+    }
+    if (!raiseError) {
+      continue;
+    }
     errnumber++;
     wxString myErrorTxt = wxEmptyString;
     for (unsigned int i = 0; i < myResults.GetCount(); i++) {
@@ -267,7 +273,7 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
   }
 
   if (!m_DB->DataBaseGetResults(myOldIds)) {
-    wxLogWarning(_("No data retrieved from table %s."), geomtablename);
+    wxLogMessage(_("No data retrieved from table %s."), geomtablename);
     return true;
   }
 
@@ -275,20 +281,39 @@ bool tmProjectMerge::_MergeGeom(const wxString &geomtablename, const wxString &a
     wxLogMessage(_("%d Old ID retrieved in '%s'"), (int)myOldIds.GetCount(), geomtablename);
   }
 
-  // get highest ID in master
-  if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
+  // Count objects in master
+  if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT COUNT(OBJECT_ID) AS NumberOfObjects FROM %s.%s"),
                                             m_MasterFileName.GetFullName(), geomtablename), true)) {
     return false;
   }
 
-  long myMaxSlaveID = myOldIds[myOldIds.GetCount() - 1];
-  long myMaxMasterID = wxNOT_FOUND;
-  if (!m_DB->DataBaseGetNextResult(myMaxMasterID)) {
+  long myMasterObjectsCount = 0;
+  if (!m_DB->DataBaseGetNextResult(myMasterObjectsCount)) {
     m_DB->DataBaseClearResults();
-    m_Errors.Add(_("Unable to get max ID!"));
+    m_Errors.Add(_("Unable to get the number of objects!"));
     return false;
   }
   m_DB->DataBaseClearResults();
+
+  long myMaxSlaveID = myOldIds[myOldIds.GetCount() - 1];
+  long myMaxMasterID = wxNOT_FOUND;
+
+  if (myMasterObjectsCount == 0) {
+    myMaxMasterID = 0;
+  } else {
+    // Get highest ID in master
+    if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
+                                              m_MasterFileName.GetFullName(), geomtablename), true)) {
+      return false;
+    }
+
+    if (!m_DB->DataBaseGetNextResult(myMaxMasterID)) {
+      m_DB->DataBaseClearResults();
+      m_Errors.Add(_("Unable to get max ID!"));
+      return false;
+    }
+    m_DB->DataBaseClearResults();
+  }
 
   // if slave ID is > master, we need to change autoincrement
   long myUsedMaxID = myMaxMasterID;
@@ -387,6 +412,23 @@ bool tmProjectMerge::_IsReady() {
   return true;
 }
 
+bool tmProjectMerge::_GetIdMax(const wxString &dbName, const wxString &tableName, long &idMax) {
+
+  idMax = wxNOT_FOUND;
+  if (!m_DB->DataBaseQuery(wxString::Format(_T("SELECT OBJECT_ID FROM %s.%s ORDER BY OBJECT_ID DESC LIMIT 1"),
+                                            dbName, tableName), true)) {
+    return false;
+  }
+  if (!m_DB->DataBaseGetNextResult(idMax)) {
+    m_DB->DataBaseClearResults();
+    m_Errors.Add(wxString::Format(_("Unable to get max ID from %s (in %s)"), tableName, dbName));
+    return true;
+  }
+  m_DB->DataBaseClearResults();
+
+  return true;
+}
+
 bool tmProjectMerge::CheckSimilar() {
   // some generic checks
   if (!_IsReady()) {
@@ -420,23 +462,21 @@ bool tmProjectMerge::CheckSimilar() {
   }
 
   long myErrorLayers = 0;
+  long firstFailingIdLayers = 0;
   wxString myQuery = wxString::Format(
       _T("SELECT c.LAYER_INDEX, c.LAYER_NAME, d.LAYER_NAME, c.TYPE_CD, d.TYPE_CD FROM %s.thematic_layers c, ")
       _T("%s.thematic_layers d WHERE c.LAYER_INDEX = d.LAYER_INDEX AND (c.LAYER_NAME <> d.LAYER_NAME OR c.TYPE_CD <> ")
       _T("d.TYPE_CD)"),
       m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
 
-  if (!_HasDifferenceResults(m_DB, myQuery, myErrorLayers)) {
+  if (!_HasSameRecords(m_DB, myQuery, myErrorLayers, firstFailingIdLayers)) {
     m_Errors.Add(wxString::Format(_("%ld layers error found"), myErrorLayers));
     return false;
   }
 
-  // are objects similar ?
-  if (!_HasSameNumberRecords(m_DB, _T("dmn_layer_object"))) {
-    return false;
-  }
-
+  // Are objects similar ?
   long myErrorObjects = 0;
+  long firstFailingIdObjects = 0;
   myQuery = wxString::Format(
       _T("SELECT c.OBJECT_ID, c.OBJECT_DESC_0, d.OBJECT_DESC_0, c.OBJECT_CD, d.OBJECT_CD, c.OBJECT_TYPE_CD, ")
       _T("d.OBJECT_TYPE_CD, c.THEMATIC_LAYERS_LAYER_INDEX, d.THEMATIC_LAYERS_LAYER_INDEX FROM %s.dmn_layer_object c, ")
@@ -445,9 +485,90 @@ bool tmProjectMerge::CheckSimilar() {
       _T("d.THEMATIC_LAYERS_LAYER_INDEX)"),
       m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
 
-  if (!_HasDifferenceResults(m_DB, myQuery, myErrorObjects)) {
-    m_Errors.Add(wxString::Format(_("%ld object error found"), myErrorObjects));
-    return false;
+  if (!_HasSameNumberRecords(m_DB, _T("dmn_layer_object")) |
+      !_HasSameRecords(m_DB, myQuery, myErrorObjects, firstFailingIdObjects, false)) {
+
+    long myMaxMasterID = wxNOT_FOUND;
+    if (!_GetIdMax(m_MasterFileName.GetFullName(), "dmn_layer_object", myMaxMasterID)) {
+      return false;
+    }
+
+    long myMaxSlaveID = wxNOT_FOUND;
+    if (!_GetIdMax(m_SlaveFileName.GetFullName(), "dmn_layer_object", myMaxSlaveID)) {
+      return false;
+    }
+
+    // Get IDs of all entries with issues from the slave table
+    myQuery = wxString::Format(
+        _T("SELECT OBJECT_ID FROM %s.dmn_layer_object WHERE OBJECT_ID >= %ld"),
+        m_SlaveFileName.GetFullName(), firstFailingIdObjects);
+
+    if (!m_DB->DataBaseQuery(myQuery, true)) {
+      return false;
+    }
+
+    wxArrayLong issuesIds;
+    if (!m_DB->DataBaseGetResults(issuesIds)) {
+      m_DB->DataBaseClearResults();
+      return false;
+    }
+    m_DB->DataBaseClearResults();
+
+    // Tables and entries to act on
+    const wxString arrayTables[] = { "dmn_layer_object", "generic_pat", "generic_lat", "generic_aat", "shortcut_list"};
+    wxArrayString tables = wxArrayString(sizeof(arrayTables), *arrayTables);
+    const wxString arrayFields[] = { "OBJECT_ID", "OBJECT_VAL_ID", "OBJECT_VAL_ID", "OBJECT_VAL_ID", "OBJECT_ID"};
+    wxArrayString fields = wxArrayString(sizeof(arrayFields), *arrayFields);
+
+    // Change IDs to values out of range to avoid conflicts
+    for (int i = 0; i < issuesIds.GetCount(); i++) {
+      long originalId = issuesIds[i];
+      long newId = wxMax(myMaxMasterID, myMaxSlaveID) + 1 + i;
+
+      for (int j = 0; j < tables.GetCount(); j++) {
+        myQuery = wxString::Format(
+            _T("UPDATE %s.%s SET %s = %ld WHERE %s = %ld"),
+            m_SlaveFileName.GetFullName(), tables.Item(j), fields.Item(j),newId, fields.Item(j),originalId);
+        if (!m_DB->DataBaseQueryNoResults(myQuery, true)) {
+          return false;
+        }
+      }
+    }
+
+    // Look for equivalence in the main table
+    for (int i = 0; i < issuesIds.GetCount(); i++) {
+      long originalId = wxMax(myMaxMasterID, myMaxSlaveID) + 1 + i;
+      long newId = 0;
+
+      myQuery = wxString::Format(
+          _T("SELECT c.OBJECT_ID, c.OBJECT_DESC_0, d.OBJECT_DESC_0, c.OBJECT_CD, d.OBJECT_CD, c.OBJECT_TYPE_CD, ")
+          _T("d.OBJECT_TYPE_CD, c.THEMATIC_LAYERS_LAYER_INDEX, d.THEMATIC_LAYERS_LAYER_INDEX FROM %s.dmn_layer_object c, ")
+          _T("%s.dmn_layer_object d WHERE d.OBJECT_ID = %ld AND (c.OBJECT_DESC_0 = d.OBJECT_DESC_0 AND ")
+          _T("c.OBJECT_CD = d.OBJECT_CD AND c.OBJECT_TYPE_CD = d.OBJECT_TYPE_CD AND c.THEMATIC_LAYERS_LAYER_INDEX = ")
+          _T("d.THEMATIC_LAYERS_LAYER_INDEX)"),
+          m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName(), originalId);
+
+      if (!m_DB->DataBaseQuery(myQuery, true)) {
+        continue;
+      }
+
+      wxArrayString myResults;
+      if (!m_DB->DataBaseGetNextResult(myResults)) {
+        m_DB->DataBaseClearResults();
+        continue;
+      }
+      myResults[0].ToLong(&newId);
+      m_DB->DataBaseClearResults();
+
+      for (int j = 0; j < tables.GetCount(); j++) {
+        myQuery = wxString::Format(
+            _T("UPDATE %s.%s SET %s = %ld WHERE %s = %ld"),
+            m_SlaveFileName.GetFullName(), tables.Item(j), fields.Item(j),newId, fields.Item(j),originalId);
+        if (!m_DB->DataBaseQueryNoResults(myQuery, true)) {
+          return false;
+        }
+      }
+    }
   }
 
   // are layers_at similar
@@ -468,12 +589,13 @@ bool tmProjectMerge::CheckSimilar() {
   }
 
   long myErrorsCatalog = 0;
+  long firstFailingIdCatalog = 0;
   myQuery = wxString::Format(
       _T("SELECT c.CATALOG_ID, c.CODE, c.DESCRIPTION_0, d.CATALOG_ID, d.CODE, d.DESCRIPTION_0 FROM %s.dmn_catalog c, ")
       _T("%s.dmn_catalog d WHERE c.CATALOG_ID = d.CATALOG_ID AND (c.CODE <> d.CODE OR c.DESCRIPTION_0 <> ")
       _T("d.DESCRIPTION_0)"),
       m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
-  if (!_HasDifferenceResults(m_DB, myQuery, myErrorsCatalog)) {
+  if (!_HasSameRecords(m_DB, myQuery, myErrorsCatalog, firstFailingIdCatalog)) {
     m_Errors.Add(wxString::Format(_("%ld catalog error found"), myErrorsCatalog));
     return false;
   }
@@ -482,14 +604,15 @@ bool tmProjectMerge::CheckSimilar() {
   if (!_HasSameNumberRecords(m_DB, _T("dmn_layer_attribut"))) {
     return false;
   }
-  long myErrorLayerAttribut = 0;
+  long myErrorLayerAttribute = 0;
+  long firstFailingIdAttribute = 0;
   myQuery = wxString::Format(
       _T("SELECT c.ATTRIBUT_ID, c.LAYER_INDEX, c.ATTRIBUT_NAME, d.ATTRIBUT_ID, d.LAYER_INDEX, d.ATTRIBUT_NAME FROM ")
       _T("%s.dmn_layer_attribut c, %s.dmn_layer_attribut d WHERE c.ATTRIBUT_ID = d.ATTRIBUT_ID AND (c.LAYER_INDEX <> ")
       _T("d.LAYER_INDEX or c.ATTRIBUT_NAME <> d.ATTRIBUT_NAME)"),
       m_MasterFileName.GetFullName(), m_SlaveFileName.GetFullName());
-  if (!_HasDifferenceResults(m_DB, myQuery, myErrorLayerAttribut)) {
-    m_Errors.Add(wxString::Format(_("%ld layer attributs error found"), myErrorLayerAttribut));
+  if (!_HasSameRecords(m_DB, myQuery, myErrorLayerAttribute, firstFailingIdAttribute)) {
+    m_Errors.Add(wxString::Format(_("%ld layer attributs error found"), myErrorLayerAttribute));
     return false;
   }
 
@@ -522,9 +645,7 @@ bool tmProjectMerge::MergeIntoMaster() {
   }
 
   // merge TOC
-  wxString myQuery =
-      _T(
-            "INSERT INTO %s.prj_toc (TYPE_CD, CONTENT_PATH, CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, RANK, SYMBOLOGY, VERTEX_FLAGS) SELECT a.TYPE_CD, a.CONTENT_PATH, a.CONTENT_NAME, a.CONTENT_STATUS, a.GENERIC_LAYERS, a.RANK, a.SYMBOLOGY, a.VERTEX_FLAGS FROM %s.prj_toc a, %s.prj_toc b WHERE a.CONTENT_PATH <> b.CONTENT_PATH AND a.CONTENT_NAME <> b.CONTENT_NAME  AND a.CONTENT_ID > 5 GROUP BY a.CONTENT_ID ");
+  wxString myQuery = _T("INSERT INTO %s.prj_toc (TYPE_CD, CONTENT_PATH, CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, RANK, SYMBOLOGY, VERTEX_FLAGS) SELECT a.TYPE_CD, a.CONTENT_PATH, a.CONTENT_NAME, a.CONTENT_STATUS, a.GENERIC_LAYERS, a.RANK, a.SYMBOLOGY, a.VERTEX_FLAGS FROM %s.prj_toc a, %s.prj_toc b WHERE a.CONTENT_PATH <> b.CONTENT_PATH AND a.CONTENT_NAME <> b.CONTENT_NAME  AND a.CONTENT_ID > 5 GROUP BY a.CONTENT_ID ");
   if (!m_DB->DataBaseQueryNoResults(wxString::Format(myQuery, m_MasterFileName.GetFullName(),
                                                      m_SlaveFileName.GetFullName(), m_MasterFileName.GetFullName()),
                                     true)) {

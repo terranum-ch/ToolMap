@@ -42,13 +42,15 @@
 #include "../gui/preference_dlg.h"
 #include "../img/misc_bmp.h"
 #include "../img/toolbar_bmp.h"
-#include "lscrashreport.h"
-#include "lsversion_dlg.h"
-#include "lsversion_param.h"
+#include "../components/crashreport/lscrashreport.h"
+// #include "lsversion_dlg.h"
+// #include "lsversion_param.h"
 #include "pdfdocument.h"
 #include "pdfexportwizard.h"
 #include "tmstats.h"
 #include "tmstatsevent.h"
+#include "../gui/framecomponent.h"
+#include "version.h"
 
 IMPLEMENT_APP(ToolMapApp);
 
@@ -1097,10 +1099,12 @@ void ToolMapFrame::OnContactUs(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::OnComponentsInfo(wxCommandEvent &event) {
-  lsVersionDlg myDlg(this, wxID_ANY, _("Components"));
-  myDlg.SetBitmapLogo(*_img_icon_toolmap);
-  myDlg.SetCopyright(wxString::Format("(c) TERRANUM, %d", wxDateTime::Now().GetYear()));
+  FrameComponents myDlg(this);
   myDlg.ShowModal();
+//  lsVersionDlg myDlg(this, wxID_ANY, _("Components"));
+//  myDlg.SetBitmapLogo(*_img_icon_toolmap);
+//  myDlg.SetCopyright(wxString::Format("(c) TERRANUM, %d", wxDateTime::Now().GetYear()));
+//  myDlg.ShowModal();
 }
 
 void ToolMapFrame::OnUserManual(wxCommandEvent &event) {
@@ -1236,7 +1240,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
   // clean svn number. may be
   // 1234 or 1234:1245 or 1234M or 1234S or event 1234:1245MS
   long mySvnVersion = 0;
-  wxString mySvnText(lsVERSION_SOFT_VERSION);
+  wxString mySvnText(GIT_NUMBER);
   while (wxStrpbrk(mySvnText, _T("MS")) != nullptr) {
     mySvnText.RemoveLast();
   }

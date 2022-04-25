@@ -18,10 +18,15 @@ install:
   - ps: ci/appveyor/install.ps1
   
 build_script:
-  - echo Running cmake...
+  - echo Installing conan
+  - pip install conan
+  - conan remote add bincrafters https://bincrafters.jfrog.io/artifactory/api/conan/public-conan
+  - conan config set general.revisions_enabled=1
   - cd C:\projects\toolmap
   - mkdir bin
   - cd bin
+  - conan install .. --build=missing
+  - echo Running cmake...
   - cmake -G "Visual Studio 16 2019" -Ax64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWXWINDOWS_ROOT_DIR=C:\projects\libs\wxwidgets -DSEARCH_GDAL_PATH=C:\projects\libs\gdal -DSEARCH_GEOS_PATH=C:\projects\libs\geos -DSEARCH_PROJ_PATH=C:\projects\libs\proj -DSEARCH_SQLITE_PATH=C:\projects\libs\sqlite -DSEARCH_CURL_PATH=C:\projects\libs\curl -DMYSQL_MAIN_DIR=C:\projects\libs\mysql -DSEARCH_WXPDFDOCUMENT_PATH=C:\projects\libs\wxpdfdoc -DSEARCH_GEOS=1 -DSEARCH_GDAL=1 -DUSE_UNITTEST=1 -DCXXTEST_INCLUDE_DIR=C:\projects\cxxtest -DCXXTEST_PYTHON_TESTGEN_EXECUTABLE=C:\projects\cxxtest\bin\cxxtestgen ..
   - cmake --build . --config relwithdebinfo #> nul
 
