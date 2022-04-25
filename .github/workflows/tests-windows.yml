@@ -3,7 +3,7 @@ name: Tests-Windows
 on: [ push ]
 
 env:
-  BUILD_TYPE: RelWithDebInfo
+  BUILD_TYPE: Release
 
 jobs:
   build:
@@ -30,9 +30,6 @@ jobs:
       with:
         path: C:/Users/runneradmin/.conan
         key: ${{ runner.os }}-conan
-
-    - name: Working dir
-      run: echo ${{github.workspace}}
 
     - name: Install Conan
       run: |

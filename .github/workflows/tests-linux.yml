@@ -3,7 +3,7 @@ name: Tests-Linux
 on: [ push ]
 
 env:
-  BUILD_TYPE: RelWithDebInfo
+  BUILD_TYPE: Release
 
 jobs:
   build:
