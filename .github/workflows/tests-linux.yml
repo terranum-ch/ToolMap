@@ -11,6 +11,9 @@ jobs:
     
     runs-on: ubuntu-latest
 
+    env:
+      PROJ_LIB: ${{github.workspace}}/bin/bin
+
     steps:
     - uses: actions/checkout@v2
       with:
