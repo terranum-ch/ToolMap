@@ -24,6 +24,16 @@ jobs:
       with:
         python-version: 3.8
 
+    - name: Cache Conan
+      id: cache-conan
+      uses: actions/cache@v3
+      with:
+        path: C:/Users/runneradmin/.conan
+        key: ${{ runner.os }}-conan
+
+    - name: Working dir
+      run: echo ${{github.workspace}}
+
     - name: Install Conan
       run: |
         python -m pip install --upgrade pip
