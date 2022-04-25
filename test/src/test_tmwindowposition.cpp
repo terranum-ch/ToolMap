@@ -19,7 +19,7 @@
 #include "test_param.h"
 #include "../../src/core/tmwindowposition.h"
 
-
+/*
 TEST(TestWindowPosition, SavePosition) {
   tmWindowPosition wnd;
   EXPECT_TRUE(wnd.SavePosition(_T("MyWindow"), wxRect(10, 10, 300, 300)));
@@ -60,3 +60,4 @@ TEST(TestWindowPosition, LoadPosition2) {
   EXPECT_TRUE(wnd.LoadPosition(_T("TESTWND"), myPostext));
   EXPECT_TRUE(myPostext == _T("coucou123"));
 }
+*/
