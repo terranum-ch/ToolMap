@@ -48,8 +48,10 @@ class Toolmap(ConanFile):
                 self.copy("errmsg.sys", dst="mysql", src="share/english")
 
         # copy proj library datum
-        if self.settings.os == "Windows" or self.settings.os == "Linux":
+        if self.settings.os == "Windows":
             self.copy("*", dst="bin", src="res", root_package="proj")
+        if self.settings.os == "Linux":
+            self.copy("*", dst="share/proj", src="res", root_package="proj")
         if self.settings.os == "Macos":
             self.copy("*", dst="bin/ToolMap.app/Contents/share/proj", src="res", root_package="proj")
 
