@@ -18,6 +18,8 @@ class Toolmap(ConanFile):
     ]
 
     options = {"unit_test": [True, False]}
+    default_options = {"unit_test": False}
+
     generators = "cmake", "gcc", "txt"
 
     def requirements(self):

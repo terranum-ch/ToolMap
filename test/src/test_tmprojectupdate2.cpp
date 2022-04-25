@@ -161,7 +161,7 @@ TEST_F(TestProjectUpdater2, UpdateMigreProject) {
   ProjectDefMemoryFields *myField2 = myPrjDef->GetNextField();
   ASSERT_TRUE(myField != nullptr);
 
-  ProjectDefMemoryFieldsCodedVal *myVal2 = myField->m_pCodedValueArray.Item(1);
+  ProjectDefMemoryFieldsCodedVal *myVal2 = myField2->m_pCodedValueArray.Item(1);
   ASSERT_TRUE(myVal2 != nullptr);
   ASSERT_EQ(myVal2->m_ValueCode, _T("45a"));
   ASSERT_EQ(myVal2->m_ValueName, _T("non"));

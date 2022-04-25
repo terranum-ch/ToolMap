@@ -32,7 +32,7 @@ class TestQueries : public ::testing::Test {
 
   virtual void SetUp() {
     m_pDB = new DataBaseTM();
-    ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ricken));
+    ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_NewQueries));
 
     // set up query for layers
     m_DataLayer = new QueriesData();
@@ -186,8 +186,8 @@ TEST_F(TestQueries, ListObjectValue) {
   PrjMemObjectsArray myTypes;
 
   // lignes n.231 (Faille et Border of Rocks_PLG)
-  EXPECT_TRUE(m_DataSelected->GetObjectsForSelection(m_pDB, myTypes));
-  EXPECT_EQ(myTypes.GetCount(), 2);
+  ASSERT_TRUE(m_DataSelected->GetObjectsForSelection(m_pDB, myTypes));
+  ASSERT_EQ(myTypes.GetCount(), 2);
   EXPECT_EQ(myTypes.Item(1)->m_ObjectName, _T("faille"));
   EXPECT_EQ(myTypes.Item(1)->m_ObjectID, 32);
 }
@@ -232,7 +232,7 @@ TEST_F(TestQueries, CreateSelectionWithoutAttribution) {
   long myLayerID = wxNOT_FOUND;
   EXPECT_TRUE(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
   EXPECT_NE(myLayerID, -1);
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, m_DataSelected->m_QueryFields,
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, m_DataSelected->m_QueryFields,
                                               m_DataSelected->m_QueryFieldsValues));
   EXPECT_TRUE(myBuilder.IsOk());
   EXPECT_TRUE(myBuilder.Create(m_pDB));
@@ -254,9 +254,9 @@ TEST_F(TestQueries, CreateSelectionQueryAttribut) {
   EXPECT_FALSE(myBuilder.IsOk());
 
   long myLayerID = wxNOT_FOUND;
-  EXPECT_TRUE(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
+  ASSERT_TRUE(m_DataSelected->GetParentLayer(m_pDB, myLayerID));
   EXPECT_NE(myLayerID, -1);
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, m_DataSelected->m_QueryFields,
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, m_DataSelected->m_QueryFields,
                                             m_DataSelected->m_QueryFieldsValues));
   EXPECT_TRUE(myBuilder.IsOk());
   EXPECT_TRUE(myBuilder.Create(m_pDB));
@@ -275,12 +275,12 @@ TEST_F(TestQueries, GetValues) {
   long myLayerID2 = 4;  // GlacStruct, pas de champs
   PrjMemFieldArray myFields;
 
-  EXPECT_FALSE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID2, myFields, myValues));
+  ASSERT_FALSE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID2, myFields, myValues));
   EXPECT_EQ(myFields.GetCount(), 0);
   EXPECT_EQ(myValues.GetCount(), 0);
 
   // getting fields and values
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, myFields, myValues));
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, myLayerID, myFields, myValues));
   EXPECT_EQ(myFields.GetCount(), 4);
   EXPECT_EQ(myValues.GetCount(), 4);
   EXPECT_EQ(myValues.Item(3), wxEmptyString);
@@ -292,8 +292,8 @@ TEST_F(TestQueries, GetAttribValues) {
   wxArrayString myValues;
   PrjMemFieldArray myFields;
 
-  // fields availlable
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues));
+  // fields available
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues));
   EXPECT_EQ(myFields.GetCount(), 4);
   EXPECT_EQ(myValues.GetCount(), 4);
   EXPECT_EQ(myValues.Item(0), _T("probable"));  // probable
@@ -302,7 +302,7 @@ TEST_F(TestQueries, GetAttribValues) {
   EXPECT_EQ(myValues.Item(3), _T("1"));         // 1
 
   // deuxième fois
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues));
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, myFields, myValues));
   EXPECT_EQ(myFields.GetCount(), 4);
   EXPECT_EQ(myValues.GetCount(), 4);
   EXPECT_EQ(myValues.Item(0), _T("probable"));  // probable
@@ -313,14 +313,14 @@ TEST_F(TestQueries, GetAttribValues) {
 
 TEST_F(TestQueries, GetParentLayer) {
   long layerid = 0;
-  EXPECT_TRUE(m_DataSelected->GetParentLayer(m_pDB, layerid));
+  ASSERT_TRUE(m_DataSelected->GetParentLayer(m_pDB, layerid));
   EXPECT_EQ(layerid, 7);
   m_DataSelected->m_QueryObjectID = 50;  // n'existe pas
-  EXPECT_FALSE(m_DataSelected->GetParentLayer(m_pDB, layerid));
+  ASSERT_FALSE(m_DataSelected->GetParentLayer(m_pDB, layerid));
   EXPECT_EQ(layerid, wxNOT_FOUND);
 
   m_DataSelected->m_QueryObjectID = 41;  // moraine -> layer 8
-  EXPECT_TRUE(m_DataSelected->GetParentLayer(m_pDB, layerid));
+  ASSERT_TRUE(m_DataSelected->GetParentLayer(m_pDB, layerid));
   EXPECT_EQ(layerid, 8);
 }
 
@@ -330,10 +330,10 @@ TEST_F(TestQueries, DeleteFields) {
 
   // load fields
   m_DataSelected->m_QueryObjectGeomID = 140;  // faille avec attrib avancés
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
                                               m_DataSelected->m_QueryFieldsValues));
 
-  EXPECT_TRUE(m_DataSelected->DeleteFieldsValue(2));
+  ASSERT_TRUE(m_DataSelected->DeleteFieldsValue(2));
   EXPECT_EQ(m_DataSelected->m_QueryFieldsValues.GetCount(), 3);
   EXPECT_EQ(m_DataSelected->m_QueryFields.GetCount(), 3);
   EXPECT_EQ(m_DataSelected->m_QueryFieldsValues.Item(2), _T("1"));
@@ -345,12 +345,12 @@ TEST_F(TestQueries, AllAttribsEmpty) {
 
   // all fields empty
   // m_DataSelected->m_QueryUseFields = true;
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
                                               m_DataSelected->m_QueryFieldsValues));
   EXPECT_EQ(m_DataSelected->HasFieldsValues(), false);
 
   m_DataSelected->m_QueryObjectGeomID = 140;  // faille avec attrib avancés
-  EXPECT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
+  ASSERT_TRUE(m_DataSelected->GetFieldsValues(m_pDB, 7, m_DataSelected->m_QueryFields,
                                               m_DataSelected->m_QueryFieldsValues));
   EXPECT_EQ(m_DataSelected->HasFieldsValues(), true);
 }
