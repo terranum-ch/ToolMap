@@ -101,11 +101,11 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o unit_test=True
+        conan install .. -o code_coverage=True
 
     - name: Build
       working-directory: ${{github.workspace}}/bin
-      run: conan build .. -o code_coverage=True
+      run: conan build ..
 
     - name: Run tests
       working-directory: ${{github.workspace}}/bin

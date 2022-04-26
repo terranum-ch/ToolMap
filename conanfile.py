@@ -27,6 +27,8 @@ class Toolmap(ConanFile):
             self.requires("gtest/1.11.0")
 
     def configure(self):
+        if self.options.code_coverage:
+            self.options.unit_test = True
         self.options["gdal"].with_curl = True # for xml support
         self.options["gdal"].shared = True
         if self.settings.os == "Linux":
