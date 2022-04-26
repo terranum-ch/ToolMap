@@ -17,13 +17,13 @@ class Toolmap(ConanFile):
         "zlib/1.2.12"
     ]
 
-    options = {"unit_test": [True, False]}
-    default_options = {"unit_test": False}
+    options = {"unit_test": [True, False], "code_coverage": [True, False]}
+    default_options = {"unit_test": False, "code_coverage": False}
 
     generators = "cmake", "gcc", "txt"
 
     def requirements(self):
-        if self.options.unit_test:
+        if self.options.unit_test or self.options.code_coverage:
             self.requires("gtest/1.11.0")
 
     def configure(self):
@@ -66,6 +66,9 @@ class Toolmap(ConanFile):
         cmake = CMake(self)
         if self.options.unit_test:
             cmake.definitions["USE_UNITTEST"] = "ON"
+        if self.options.code_coverage:
+            cmake.definitions["USE_UNITTEST"] = "ON"
+            cmake.definitions["USE_CODECOV"] = "ON"
         cmake.configure()
         cmake.build()
         if self.settings.os == "Macos":
