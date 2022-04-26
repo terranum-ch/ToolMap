@@ -3,7 +3,7 @@ name: Tests-Linux
 on: [ push ]
 
 jobs:
-  build:
+  test:
     name: Linux testing
     
     env:
@@ -59,7 +59,7 @@ jobs:
       working-directory: ${{github.workspace}}/bin
       run: bin/UnitTests
 
-  build:
+  codecov:
     name: Code coverage
     
     env:
