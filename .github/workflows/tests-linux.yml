@@ -6,12 +6,10 @@ jobs:
   test:
     name: Linux testing
     
-    env:
-      BUILD_TYPE: Release
-    
     runs-on: ubuntu-latest
 
     env:
+      BUILD_TYPE: Release
       PROJ_LIB: ${{github.workspace}}/bin/bin
 
     steps:
@@ -62,12 +60,10 @@ jobs:
   codecov:
     name: Code coverage
     
-    env:
-      BUILD_TYPE: Debug
-    
     runs-on: ubuntu-latest
 
     env:
+      BUILD_TYPE: Release
       PROJ_LIB: ${{github.workspace}}/bin/bin
 
     steps:

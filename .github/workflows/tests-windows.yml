@@ -2,9 +2,6 @@ name: Tests-Windows
 
 on: [ push ]
 
-env:
-  BUILD_TYPE: Release
-
 jobs:
   test:
     name: Windows testing
@@ -12,6 +9,7 @@ jobs:
     runs-on: windows-2022
 
     env:
+      BUILD_TYPE: Release
       PROJ_LIB: ${{github.workspace}}/bin/bin
 
     steps:
