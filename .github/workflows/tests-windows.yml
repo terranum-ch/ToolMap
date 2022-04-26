@@ -41,6 +41,7 @@ jobs:
         
         # create default profile with libstdc++11
         conan profile new default --detect
+        conan profile update settings.compiler.cppstd=17 default
 
     - name: Install libraries
       run: |
