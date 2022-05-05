@@ -481,7 +481,7 @@ void tmLayerManager::AddWebLayer() {
   myWebPagePathText.Replace(_T("/"), _T("\\"));
 #endif
   wxFileName myWebPath(wxStandardPaths::Get().GetExecutablePath() + myWebPagePathText);
-  myWebPath.Normalize();
+  myWebPath.Normalize(wxPATH_NORM_ABSOLUTE);
 
   if (!myWebPath.Exists()) {
     wxLogError(_("WMS directory didn't exists! Try re-installing ToolMap"));

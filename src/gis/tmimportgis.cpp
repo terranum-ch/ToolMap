@@ -94,7 +94,7 @@ bool tmImportGIS::Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressD
     if (myGeomType == wkbMultiPoint || myGeomType == wkbMultiLineString) {
       // import multi objects
       auto *myCollection = dynamic_cast<OGRGeometryCollection *>(myGeom);
-      for (unsigned int i = 0; i < myCollection->getNumGeometries(); i++) {
+      for (int i = 0; i < myCollection->getNumGeometries(); i++) {
         OGRGeometry *myCollGeom = myCollection->getGeometryRef(i);
         long oid = myGeomDB->AddGeometry(myCollGeom, -1, GetTarget());
         if (oid == wxNOT_FOUND) {

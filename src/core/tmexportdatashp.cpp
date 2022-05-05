@@ -466,7 +466,7 @@ bool tmExportDataSHP::AddConcatAttributs(ProjectDefMemoryLayers *layer, PrjDefMe
       DataBaseResult myResult;
       m_pDB->DataBaseGetResults(&myResult);
       myResult.NextRow();
-      for (unsigned int c = 0; c < myResult.GetColCount(); c++) {
+      for (int c = 0; c < myResult.GetColCount(); c++) {
         ProjectDefMemoryFields *myField = myLayer->m_pLayerFieldArray.Item(c);
         wxASSERT(myField);
         wxString myFieldValueTxt;

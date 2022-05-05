@@ -80,10 +80,10 @@ bool TableExport::ExportCSV(const wxString &tablename, const wxFileName &path, i
   }
 
   // export content
-  for (unsigned long row = 0; row < myResult.GetRowCount(); row++) {
+  for (long row = 0; row < myResult.GetRowCount(); row++) {
     myFile.Write("\n");
     myResult.NextRow();
-    for (unsigned long col = 0; col < myResult.GetColCount(); col++) {
+    for (int col = 0; col < myResult.GetColCount(); col++) {
       wxString myText = "";
       myResult.GetValue(col, myText);
       if (m_Encoding != wxEmptyString) {

@@ -248,7 +248,7 @@ bool tmProjectUpdater::_221to222() {
       _T("\"")
       _T(" AND  table_name IN (SELECT TABLE_NAME FROM")
       _T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +
-      TABLE_NAME_LAYER_AT + _T("\%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
+      TABLE_NAME_LAYER_AT + _T("%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
   if (!m_pDB->DataBaseQuery(sSentence)) {
     return false;
   }

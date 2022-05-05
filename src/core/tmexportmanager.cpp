@@ -1046,7 +1046,7 @@ void tmExportSelected_DLG::_CreateControls(const wxArrayString &layers) {
 
 void tmExportSelected_DLG::_SelectLastExported(const wxArrayString &selected) {
   for (int i = 0; i < selected.GetCount(); ++i) {
-    for (int j = 0; j < m_ListLayersCtrl->GetCount(); ++j) {
+    for (unsigned int j = 0; j < m_ListLayersCtrl->GetCount(); ++j) {
       if (selected.Item(i).IsSameAs(m_ListLayersCtrl->GetString(j))) {
         m_ListLayersCtrl->Check(j);
         break;

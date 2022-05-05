@@ -1195,7 +1195,7 @@ int DataBaseTM::GetFieldsFromDB(PrjDefMemManage *myPrj) {
       _T("\"")
       _T(" AND  table_name IN (SELECT TABLE_NAME FROM")
       _T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +
-      TABLE_NAME_LAYER_AT + _T("\%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
+      TABLE_NAME_LAYER_AT + _T("%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
 
   if (!DataBaseQuery(sSentence)) {
     wxLogDebug(_T("Error gettings fields from database : %s"), sSentence.c_str());
@@ -1532,7 +1532,7 @@ bool DataBaseTM::DeleteFields(int iLayer) {
   DataBaseResult *myResult = new DataBaseResult();
   DataBaseGetResults(myResult);
   wxArrayLong myAttributIDs;
-  for (unsigned int i = 0; i < myResult->GetRowCount(); i++) {
+  for (long i = 0; i < myResult->GetRowCount(); i++) {
     myResult->NextRow();
     long myAttributID = wxNOT_FOUND;
     myResult->GetValue(0, myAttributID);

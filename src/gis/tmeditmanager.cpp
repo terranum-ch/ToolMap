@@ -432,7 +432,7 @@ void tmEditManager::ArcVertexInsertUp(const wxPoint &mousepos) {
   OGRLineString segment;
   OGRLineString myLineModified;
   bool bFoundIntersection = false;
-  for (unsigned int i = 1; i < myLine->getNumPoints(); i++) {
+  for (int i = 1; i < myLine->getNumPoints(); i++) {
     myLine->getPoint(i - 1, &p1);
     myLine->getPoint(i, &p2);
     segment.addPoint(&p1);
@@ -490,7 +490,7 @@ void tmEditManager::ArcVertexDeleteUp(const wxPoint &mousePos) {
 
   bool bVertexDeleted = false;
   OGRLineString *myLine = static_cast<OGRLineString *>(myGeometry);
-  for (unsigned int i = 0; i < myLine->getNumPoints(); i++) {
+  for (int i = 0; i < myLine->getNumPoints(); i++) {
     wxPoint myPt = m_Scale->RealToPixel(wxRealPoint(myLine->getX(i), myLine->getY(i)));
     if (myRect.Contains(myPt) && !bVertexDeleted) {
       bVertexDeleted = true;
@@ -994,7 +994,7 @@ bool tmEditManager::_LoadSnappingStatus() {
     if (IsLayerSpatialType(LAYER_SPATIAL_LINE)) {
       auto *myLine = dynamic_cast<OGRLineString *>(myGeometry);
       wxASSERT(myLine);
-      for (unsigned int i = 0; i < myLine->getNumPoints(); i++) {
+      for (int i = 0; i < myLine->getNumPoints(); i++) {
         m_ArcPoints.push_back(new wxRealPoint(myLine->getX(i), myLine->getY(i)));
       }
       OGRGeometryFactory::destroyGeometry(myGeometry);

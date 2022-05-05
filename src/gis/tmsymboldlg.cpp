@@ -72,7 +72,7 @@ void tmSymbolDLG::_LoadQueries(wxChoice *choicectrl, TOC_GENERIC_NAME toctarget)
   }
 
   wxASSERT(myResults->GetColCount() == 2);
-  for (unsigned int i = 0; i < myResults->GetRowCount(); i++) {
+  for (long i = 0; i < myResults->GetRowCount(); i++) {
     myResults->NextRow();
     wxString myQueryValue = wxEmptyString;
     long myQueryId = wxNOT_FOUND;
