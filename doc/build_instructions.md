@@ -20,24 +20,32 @@ From the Toolmap directory create a build folder :
 
 Install the required libraries with Conan
 
-        conan install .. 
-
-or 
-
-        conan install .. -o build_type=Debug
-
-if a library is missing, add the `--build=missing` option.
+        conan install ..
 
 Build using the following command
 
         conan build ..
 
-If using an IDE, use the cmake and build from the IDE instead of the `conan build ..` command. In this case, run the following
-command on OSX to fix the bundle with the correct dynamic library path
+## Build options
+
+The following options are supported by `conan install ..` :
+
+| Option              | CMAKE equivalent  | Description                                                     |
+|---------------------|-------------------|-----------------------------------------------------------------|
+| -s build_type=Debug | ---               | Use the libraries and create the project in debug mode          |
+| --build-missing     | ---               | Build the missing libraries                                     |
+| -o unit_test=True   | -DUSE_UNITTEST=ON | Install the necessary libraries for the unit tests and run them |
+
+## Working from an IDE
+
+If using an IDE, use the cmake and build from the IDE instead of the `conan build ..` command.
+
+On OSX, run the following command  to fix the bundle with the correct dynamic library path
 
         cmake --install .
 
 This step isn't needed when building using `conan build ..`.
+
 
 
 
