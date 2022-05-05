@@ -21,6 +21,11 @@ conan_basic_setup()
 # Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# disable CRT warnings on Windows
+if (MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif ()
+
 # Enable tests
 SET(USE_UNITTEST CACHE BOOL "Should we create the tests for ${CMAKE_PROJECT_NAME}")
 
