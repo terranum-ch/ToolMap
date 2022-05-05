@@ -52,6 +52,8 @@ class Toolmap(ConanFile):
             self.copy("*", dst="bin", src="res", root_package="proj")
         if self.settings.os == "Macos":
             self.copy("*", dst="bin/ToolMap.app/Contents/share/proj", src="res", root_package="proj")
+            if self.options.unit_test:
+                self.copy("*", dst="bin", src="res", root_package="proj")
 
         # copy xml webfiles
         _source_folder = os.path.join(os.getcwd(), "..")
