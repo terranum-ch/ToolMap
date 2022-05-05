@@ -2,39 +2,25 @@ name: Tests-Windows
 
 on: [ push ]
 
-env:
-  BUILD_TYPE: RelWithDebInfo
-
 jobs:
   build:
     name: Windows testing
     
-    runs-on: windows-2022
-
-    env:
-      PROJ_LIB: ${{github.workspace}}/bin/bin
+    runs-on: windows-2019
 
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-
     - name: Install Conan
       run: |
         python -m pip install --upgrade pip
-        pip install wheel conan
+        pip install conan
+        conan config set general.revisions_enabled=1
         
         # gitlab support (wxwidgets, mysql, gdal)
         conan remote add gitlab https://gitlab.com/api/v4/packages/conan
-        
-        # create default profile with libstdc++11
-        conan profile new default --detect
-        conan profile update settings.compiler.libcxx=libstdc++11 default
 
     - name: Install libraries
       run: |
