@@ -6,6 +6,7 @@
 #include "geos_c.h"
 #include "curl/curl.h"
 #include "mysql.h"
+#include "proj.h"
 
 FrameComponents::FrameComponents(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
                        long style)
@@ -27,6 +28,7 @@ FrameComponents::FrameComponents(wxWindow* parent, wxWindowID id, const wxString
 
   myVersion << _("Gdal: ") << GDAL_RELEASE_NAME << "\n";
   myVersion << _("Geos: ") << GEOS_VERSION << "\n";
+  myVersion << _("Proj: ") << PROJ_VERSION_MAJOR << "." << PROJ_VERSION_MINOR << "." << PROJ_VERSION_PATCH << "\n";
   myVersion << _("Libcurl: ") << LIBCURL_VERSION << "\n";
   myVersion << _("MySQL: ") << mysql_get_client_info() << "\n";
 
