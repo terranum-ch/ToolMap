@@ -1,8 +1,12 @@
 # ToolMap 
-[![Build status](https://ci.appveyor.com/api/projects/status/o69xjiiwt08ykpwt/branch/master?svg=true)](https://ci.appveyor.com/project/pascalhorton/toolmap/branch/master)
-[![Build Status](https://travis-ci.org/terranum-ch/ToolMap.svg?branch=master)](https://travis-ci.org/terranum-ch/ToolMap)
-[![Coverity Scan Build Status](https://scan.coverity.com/projects/13166/badge.svg)](https://scan.coverity.com/projects/terranum-ch-toolmap)
+![example workflow](https://github.com/terranum-ch/ToolMap/actions/workflows/tests-linux.yml/badge.svg)
+![example workflow](https://github.com/terranum-ch/ToolMap/actions/workflows/tests-windows.yml/badge.svg)
 
 ToolMap is a cost-free, open-source software dedicated for digitizing data and producing complex multi-layer GIS projects.
 
 The user documentation can be found here: http://toolmap.readthedocs.io
+
+![toolmap screenshot](doc/doc_images/screenshot.jpg "ToolMap screenshot")
+
+
+Build instruction : [doc/build_instructions.md](doc/build_instructions.md)
