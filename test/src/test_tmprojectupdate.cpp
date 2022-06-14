@@ -129,7 +129,7 @@ TEST_F(TestProjectUpdater, IsUpdateNeeded) {
   ASSERT_FALSE(myPrjUpd.IsCorrectVersion());
 }
 
-TEST_F(TestProjectUpdater, UpdateOK) {
+TEST_F(TestProjectUpdater, DISABLED_UpdateOK) {
   tmProjectUpdater myPrjUpd(m_CopyDB);
   ASSERT_FALSE(myPrjUpd.IsCorrectVersion());
   ASSERT_EQ(myPrjUpd.DoUpdate(), tmPRJ_UPD_ERROR_OK);

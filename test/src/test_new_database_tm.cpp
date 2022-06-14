@@ -90,7 +90,8 @@ TEST_F(TestNewDatabaseTM, GetProjectInMemory) {
   wxDELETE(myPrjMem);
 }
 
-TEST_F(TestNewDatabaseTM, UpdateProject) {
+
+TEST_F(TestNewDatabaseTM, DISABLED_UpdateProject) {
   // load project
   EXPECT_TRUE(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_222));
   PrjDefMemManage* myPrjMem = m_DB->GetProjectDataFromDB();

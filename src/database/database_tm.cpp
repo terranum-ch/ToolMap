@@ -1186,19 +1186,42 @@ int DataBaseTM::GetFieldsFromDB(PrjDefMemManage *myPrj) {
     return -1;
   }
 
-  // getting data from database
-  wxString sSentence =
-      _T("SELECT CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,")
-      _T("COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS")
-      _T(" WHERE table_schema = \"") +
-      DataBaseGetName() +
-      _T("\"")
-      _T(" AND  table_name IN (SELECT TABLE_NAME FROM")
-      _T(" INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \"") +
-      TABLE_NAME_LAYER_AT + _T("%\") AND COLUMN_NAME NOT IN ( 'OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX");
+  // splitting field request (bug 473)
+  wxString sql1 =
+      _T("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME LIKE \""
+         + TABLE_NAME_LAYER_AT + "%\" AND TABLE_SCHEMA=\""
+         + DataBaseGetName() +
+         "\"");
+  if (!DataBaseQuery(sql1)){
+    wxLogError("Unable to get fields!: '%s'", sql1);
+    return -1;
+  }
+  wxArrayString mylayers_table;
+  if(!DataBaseGetResults(mylayers_table)){
+    wxLogDebug("No layers!!");
+    return -1;
+  }
+  wxString mylayers_table_string;
+  for (int i = 0;i<mylayers_table.GetCount(); i++){
+    mylayers_table_string += "\"";
+    mylayers_table_string += mylayers_table.Item(i);
+    mylayers_table_string += "\",";
+  }
+  mylayers_table_string.RemoveLast();
 
-  if (!DataBaseQuery(sSentence)) {
-    wxLogDebug(_T("Error gettings fields from database : %s"), sSentence.c_str());
+  wxString sql2 =
+      _T("SELECT"
+         " CAST(SUBSTR(TABLE_NAME FROM 9) AS UNSIGNED) LAYER_INDEX,COLUMN_NAME, COLUMN_TYPE, COLUMN_COMMENT"
+         " FROM INFORMATION_SCHEMA.COLUMNS"
+         " WHERE TABLE_NAME IN ("
+         + mylayers_table_string +
+         ")"
+         " AND TABLE_SCHEMA = \""
+         + DataBaseGetName() +
+         "\" AND COLUMN_NAME NOT IN ('OBJECT_ID', 'LAYER_AT_ID') ORDER BY LAYER_INDEX;");
+
+  if (!DataBaseQuery(sql2)) {
+    wxLogDebug(_T("Error gettings fields from database : %s"), sql2.c_str());
     return -1;
   }
 
