@@ -33,7 +33,7 @@ The following options are supported by `conan install ..` :
 | Option              | CMAKE equivalent  | Description                                                     |
 |---------------------|-------------------|-----------------------------------------------------------------|
 | -s build_type=Debug | ---               | Use the libraries and create the project in debug mode          |
-| --build-missing     | ---               | Build the missing libraries                                     |
+| --build=missing     | ---               | Build the missing libraries                                     |
 | -o unit_test=True   | -DUSE_UNITTEST=ON | Install the necessary libraries for the unit tests and run them |
 
 ## Working from an IDE
