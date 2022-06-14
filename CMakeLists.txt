@@ -47,7 +47,7 @@ link_directories(${EXTERNAL_DIR}/lib)
 link_directories(${EXTERNAL_DIR}/lib64)
 
 ## Option to get ToolBasView
-set(WITH_TOOLBASVIEW ON CACHE BOOL "Should we build ToolBasView along with ToolMap?")
+set(WITH_TOOLBASVIEW OFF CACHE BOOL "Should we build ToolBasView along with ToolMap?")
 
 ## Add ToolBasView as external project
 if (WITH_TOOLBASVIEW)
