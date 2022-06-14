@@ -2,16 +2,14 @@ name: Tests-Linux
 
 on: [ push ]
 
-env:
-  BUILD_TYPE: RelWithDebInfo
-
 jobs:
-  build:
+  test:
     name: Linux testing
     
     runs-on: ubuntu-latest
 
     env:
+      BUILD_TYPE: Release
       PROJ_LIB: ${{github.workspace}}/bin/bin
 
     steps:
@@ -55,10 +53,63 @@ jobs:
       working-directory: ${{github.workspace}}/bin
       run: conan build ..
 
-    - name: List directory content
-      working-directory: ${{github.workspace}}
-      run: tree .
-
     - name: Run tests
       working-directory: ${{github.workspace}}/bin
       run: bin/UnitTests
+
+  codecov:
+    name: Code coverage
+    
+    runs-on: ubuntu-latest
+
+    env:
+      BUILD_TYPE: Release
+      PROJ_LIB: ${{github.workspace}}/bin/bin
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install Conan
+      run: |
+        python -m pip install --upgrade pip
+        pip install wheel conan
+        
+        # gitlab support (wxwidgets, mysql, gdal)
+        conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+        
+        # create default profile with libstdc++11
+        conan profile new default --detect
+        conan profile update settings.compiler.libcxx=libstdc++11 default
+
+    - name: Install system libs
+      run: |
+        sudo apt-get update
+        sudo apt-get install libgtk2.0-dev
+        sudo apt-get install libgl1-mesa-dev
+
+        # needed for MySQL
+        sudo apt-get install libncurses5-dev libssl-dev libx11-dev libx11-xcb-dev libfontenc-dev libice-dev libsm-dev libxau-dev libxaw7-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxdmcp-dev libxext-dev libxfixes-dev libxft-dev libxi-dev libxinerama-dev libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev uuid-dev libxcb-util-dev
+
+    - name: Install libraries
+      run: |
+        mkdir ${{github.workspace}}/bin
+        cd ${{github.workspace}}/bin
+        conan install .. -o code_coverage=True
+
+    - name: Build
+      working-directory: ${{github.workspace}}/bin
+      run: conan build ..
+
+    - name: Run tests
+      working-directory: ${{github.workspace}}/bin
+      run: |
+        lcov --directory .. --capture --output-file coverage.info &> /dev/null
+        lcov --remove coverage.info '/usr/*' 'test/*' 'bin/*' '*/lib/*' '*/include/*' --output-file coverage.info --quiet > /dev/null
+        bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports" 

@@ -3,15 +3,31 @@ name: Tests-Windows
 on: [ push ]
 
 jobs:
-  build:
+  test:
     name: Windows testing
     
     runs-on: windows-2019
+
+    env:
+      BUILD_TYPE: Release
+      PROJ_LIB: ${{github.workspace}}/bin/bin
 
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Cache Conan
+      id: cache-conan
+      uses: actions/cache@v3
+      with:
+        path: C:/Users/runneradmin/.conan
+        key: ${{ runner.os }}-conan
 
     - name: Install Conan
       run: |
@@ -21,20 +37,20 @@ jobs:
         
         # gitlab support (wxwidgets, mysql, gdal)
         conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+        
+        # create default profile with libstdc++11
+        conan profile new default --detect
+        conan profile update settings.compiler.cppstd=17 default
 
     - name: Install libraries
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o unit_test=True
+        conan install .. -o unit_test=True --build=missing
 
     - name: Build
       working-directory: ${{github.workspace}}/bin
       run: conan build ..
-
-    - name: List directory content
-      working-directory: ${{github.workspace}}
-      run: tree .
 
     - name: Run tests
       working-directory: ${{github.workspace}}/bin/bin
