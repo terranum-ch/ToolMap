@@ -6,15 +6,13 @@ class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
 
     requires = [
-        "wxwidgets/3.1.6@terranum-conan+wxwidgets/stable",
+        "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
+        "mariadb/10.6.10@terranum-conan+mariadb/stable",
+        "gdal/3.5.1@terranum-conan+gdal/stable",
+        "libtiff/4.4.0",
+        "libdeflate/1.12",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
-        "mysql/5.6.51@terranum-conan+mysql/stable",
-        "gdal/3.4.1@terranum-conan+gdal/stable",
-        "geos/3.10.2",
-        "proj/9.0.0",
         "libcurl/7.80.0",
-        "libdeflate/1.9",
-        "zlib/1.2.12"
     ]
 
     options = {"unit_test": [True, False], "code_coverage": [True, False]}
@@ -31,8 +29,10 @@ class Toolmap(ConanFile):
             self.options.unit_test = True
         self.options["gdal"].with_curl = True # for xml support
         self.options["gdal"].shared = True
-        if self.settings.os == "Linux":
-            self.options["wxwidgets"].webview = False  # webview control isn't available on linux.
+
+        # Not needed anymore with wxWidgets 3.2.1
+        # if self.settings.os == "Linux":
+        #    self.options["wxwidgets"].webview = False  # webview control isn't available on linux.
 
     def imports(self):
         # copy libraries
