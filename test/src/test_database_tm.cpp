@@ -17,22 +17,11 @@
 #include "gtest/gtest.h"
 
 #include "test_param.h"
-#include "../../src/database/database_tm.h"
+#include "test_database_handle.h"
 
 
-class TestDatabaseTM : public ::testing::Test {
- protected:
-  DataBaseTM *m_db = nullptr;
-  
-  virtual void SetUp() {
-    m_db = new DataBaseTM();
-  }
-  virtual void TearDown() {
-    wxDELETE(m_db);
-  }
-};
 
-TEST_F(TestDatabaseTM, TableExist) {
+TEST_F(DatabaseHandle, TableExist) {
   EXPECT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
   EXPECT_TRUE(m_db->TableExist(_T("generic_lines")));
   EXPECT_FALSE(m_db->TableExist(_T("generic_linesss")));
@@ -40,12 +29,12 @@ TEST_F(TestDatabaseTM, TableExist) {
   EXPECT_TRUE(m_db->TableExist(_T("prj_settings")));
 }
 
-TEST_F(TestDatabaseTM, ToolMapVersion) {
+TEST_F(DatabaseHandle, ToolMapVersion) {
   EXPECT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
   EXPECT_EQ(m_db->GetDatabaseToolMapVersion(), TM_DATABASE_VERSION);
 }
 
-TEST_F(TestDatabaseTM, CreateNewTMDatabase) {
+TEST_F(DatabaseHandle, CreateNewTMDatabase) {
   EXPECT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
   // deleting if existing
   if (m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit13)) {
@@ -66,7 +55,7 @@ TEST_F(TestDatabaseTM, CreateNewTMDatabase) {
                    tmDB_OPEN_OK);
 }
 
-TEST_F(TestDatabaseTM, OpenTMDatabase) {
+TEST_F(DatabaseHandle, OpenTMDatabase) {
   EXPECT_EQ(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Edit), tmDB_OPEN_OK);
   EXPECT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_MyTest) >= tmDB_OPEN_FAILED_NOT_TM_DB);
   int myStatus = m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_LuganoTM);
@@ -75,7 +64,7 @@ TEST_F(TestDatabaseTM, OpenTMDatabase) {
   EXPECT_TRUE(m_db->GetDatabaseToolMapVersion() != TM_DATABASE_VERSION);
 }
 
-TEST_F(TestDatabaseTM, ConvertPath) {
+TEST_F(DatabaseHandle, ConvertPath) {
   EXPECT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
   wxString myPath = _T("C:\\Test\\");
   wxString myUnixPath = _T("User/share/test");

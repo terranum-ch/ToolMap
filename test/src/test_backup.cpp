@@ -14,19 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
-
-#include "test_param.h"
 #include "../../src/core/backupmanager.h"
-#include "../../src/database/database_tm.h"
+#include "gtest/gtest.h"
+#include "test_database_handle.h"
+#include "test_param.h"
 
-
-class TestBackup : public ::testing::Test {
+class TestBackup : public DatabaseHandle {
  protected:
-  DataBaseTM *m_db = nullptr;
 
   virtual void SetUp() {
-    m_db = new DataBaseTM();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_CombioulaCorrect));
   }
   virtual void TearDown() {

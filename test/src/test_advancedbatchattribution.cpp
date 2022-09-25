@@ -14,26 +14,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "gtest/gtest.h"
-
-#include "test_param.h"
 #include "../../src/core/tmaattribbatchmanager.h"
-#include "../../src/database/database_tm.h"
+#include "gtest/gtest.h"
+#include "test_database_handle.h"
+#include "test_param.h"
 
-
-class TestAdvAttribManager : public ::testing::Test {
+class TestAdvAttribManager : public DatabaseHandle {
  protected:
-  DataBaseTM *m_db = nullptr;
   PrjDefMemManage *m_prj = nullptr;
 
   virtual void SetUp() {
-    m_db = new DataBaseTM();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
     m_prj = m_db->GetProjectDataFromDB();
     wxASSERT(m_prj);
   }
   virtual void TearDown() {
-    wxDELETE(m_db);
     wxDELETE(m_prj);
   }
 };
