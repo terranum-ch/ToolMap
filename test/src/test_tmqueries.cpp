@@ -31,6 +31,7 @@ class TestQueries : public ::testing::Test {
   QueriesData *m_DataGeomNode;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_NewQueries));
 
@@ -86,6 +87,7 @@ class TestQueries : public ::testing::Test {
   }
 
   virtual void TearDown() {
+    GTEST_SKIP();
     wxDELETE(m_pDB);
     wxDELETE(m_DataLayer);
     wxDELETE(m_DataSelected);

@@ -27,6 +27,7 @@ class TestPDF : public ::testing::Test {
   PrjDefMemManage *m_PrjDef = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_db = new DataBaseTM();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_221));
     // load project Data

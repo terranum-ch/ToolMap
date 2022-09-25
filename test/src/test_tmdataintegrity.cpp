@@ -26,6 +26,7 @@ class TestDataIntegrity : public ::testing::Test {
   DataBaseTM *m_pDB = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ricken));
   }

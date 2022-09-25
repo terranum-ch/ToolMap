@@ -28,6 +28,7 @@ class TestBackup : public ::testing::Test {
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_CombioulaCorrect));
   }
   virtual void TearDown() {
+    GTEST_SKIP();
     wxDELETE(m_db);
   }
 };

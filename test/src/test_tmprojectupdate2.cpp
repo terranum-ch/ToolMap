@@ -106,6 +106,7 @@ class TestProjectUpdater2 : public ::testing::Test {
   DataBaseTM *m_CopyDB = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     // remove if exists
     wxFileName myDir2(g_TestPathPRJ + g_TestMigre222 + _T("_tmp"), _T(""));
     if (wxDir::Exists(myDir2.GetFullPath())) {

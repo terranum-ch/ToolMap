@@ -27,12 +27,14 @@ class TestToolDanglingNodes : public ::testing::Test {
   DataBaseTM* m_DB = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_DBPathName = g_TestPathPRJ + g_TestPrj_Dangling;
     m_DB = new DataBaseTM();
     m_DB->OpenTMDatabase(m_DBPathName);
     m_DN = new ToolDanglingNodes(m_DB);
   }
   virtual void TearDown() {
+    GTEST_SKIP();
     wxDELETE(m_DN);
     wxDELETE(m_DB);
   }

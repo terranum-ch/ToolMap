@@ -28,6 +28,7 @@ class TestExportData : public ::testing::Test {
   tmGISScale *m_ExportScale = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ambri));
 
@@ -48,6 +49,7 @@ class TestExportData : public ::testing::Test {
     m_ExportScale->SetWidthDistanceInM(1);
   }
   virtual void TearDown() {
+    GTEST_SKIP();
     // reset path to old value
     ASSERT_TRUE(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 

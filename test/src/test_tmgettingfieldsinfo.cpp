@@ -26,6 +26,7 @@ class TestGettingFieldsInfo : public ::testing::Test {
   PrjDefMemManage *m_Proj = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
     tmGISData::InitGISDrivers(true, true);
@@ -33,6 +34,7 @@ class TestGettingFieldsInfo : public ::testing::Test {
     ASSERT_TRUE(m_Proj != nullptr);
   }
   virtual void TearDown() {
+    GTEST_SKIP();
     wxDELETE(m_pDB);
     wxDELETE(m_Proj);
   }

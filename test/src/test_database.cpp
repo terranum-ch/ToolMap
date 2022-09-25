@@ -25,8 +25,8 @@ class TestDatabase : public ::testing::Test {
  protected:
   DataBase* m_db = DatabaseEnvironment::m_db;
 
-  virtual void SetUp() {}
-  virtual void TearDown() {}
+  virtual void SetUp() {GTEST_SKIP();}
+  virtual void TearDown() {GTEST_SKIP();}
 };
 
 TEST_F(TestDatabase, DatabaseOpen) {

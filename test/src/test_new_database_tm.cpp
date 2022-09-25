@@ -25,9 +25,11 @@ class TestNewDatabaseTM : public ::testing::Test {
   DataBaseTM* m_DB = nullptr;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     m_DB = new DataBaseTM();
   }
   virtual void TearDown() {
+    GTEST_SKIP();
     wxDELETE(m_DB);
   }
 };
