@@ -25,8 +25,8 @@ class TestDatabase : public ::testing::Test {
  protected:
   DataBase* m_db = DatabaseEnvironment::m_db;
 
-  virtual void SetUp() {GTEST_SKIP();}
-  virtual void TearDown() {GTEST_SKIP();}
+  virtual void SetUp() {;}
+  virtual void TearDown() {;}
 };
 
 TEST_F(TestDatabase, DatabaseOpen) {
@@ -68,8 +68,9 @@ TEST_F(TestDatabase, ResultString) {
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17777")));
   EXPECT_TRUE(!m_db->DataBaseGetNextResult(myReturnedString));
   EXPECT_EQ(myReturnedString, wxEmptyString);
+  m_db->DataBaseClearResults();
 }
-/*
+
 TEST_F(TestDatabase, ResultArrayString) {
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_CombioulaCorrect));
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT * FROM dmn_layer_object WHERE OBJECT_ID = 16")));
@@ -105,6 +106,7 @@ TEST_F(TestDatabase, CountResults) {
   EXPECT_TRUE(m_db->DataBaseGetResultSize(&myCols, &myRows));
   EXPECT_EQ(myRows, 1);
   EXPECT_EQ(myCols, 9);
+  m_db->DataBaseClearResults();
 }
 
 TEST_F(TestDatabase, ResultLong) {
@@ -113,6 +115,7 @@ TEST_F(TestDatabase, ResultLong) {
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SELECT OBJECT_ID FROM dmn_layer_object WHERE OBJECT_ID = 17")));
   EXPECT_TRUE(m_db->DataBaseGetNextResult(myResult));
   EXPECT_EQ(myResult, 17);
+  m_db->DataBaseClearResults();
 }
 
 TEST_F(TestDatabase, ResultArrayLong) {
@@ -144,6 +147,7 @@ TEST_F(TestDatabase, ResultArrayLong) {
   EXPECT_TRUE(m_db->DataBaseGetResultSize(&myCols, &myRows));
   EXPECT_EQ(myCols, 1);
   EXPECT_EQ(myRows, 17);
+  m_db->DataBaseClearResults();
 }
 
 TEST_F(TestDatabase, ResultDouble) {
@@ -152,6 +156,8 @@ TEST_F(TestDatabase, ResultDouble) {
   wxDouble myValue = 0;
   EXPECT_TRUE(m_db->DataBaseGetNextResult(myValue));
   EXPECT_EQ(myValue, 8.99);
+  m_db->DataBaseClearResults();
+
 }
 
 TEST_F(TestDatabase, ResultArrayDouble) {
@@ -160,6 +166,8 @@ TEST_F(TestDatabase, ResultArrayDouble) {
   wxArrayDouble values;
   EXPECT_TRUE(m_db->DataBaseGetNextResult(values));
   EXPECT_EQ(values.Item(0), 8.99);
+  m_db->DataBaseClearResults();
+
 }
 
 TEST_F(TestDatabase, ColResultsString) {
@@ -182,6 +190,7 @@ TEST_F(TestDatabase, ColResultsLong) {
   EXPECT_TRUE(m_db->DataBaseGetResults(myResults));
   EXPECT_EQ(myResults.GetCount(), 2);
   EXPECT_EQ(myResults.Item(1), 4);
+  m_db->DataBaseClearResults();
 }
 
 TEST_F(TestDatabase, ColResultsDouble) {
@@ -191,11 +200,10 @@ TEST_F(TestDatabase, ColResultsDouble) {
   EXPECT_TRUE(m_db->DataBaseGetResults(myResults));
   EXPECT_EQ(myResults.GetCount(), 2);
   EXPECT_EQ(myResults.Item(1), 6.00);
+  m_db->DataBaseClearResults();
 }
 
 TEST_F(TestDatabase, PathName) {
-  EXPECT_EQ(m_db->DataBaseGetName(), wxEmptyString);
-  EXPECT_EQ(m_db->DataBaseGetPath(), wxEmptyString);
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
 
   EXPECT_EQ(m_db->DataBaseGetName(), g_TestPrj_Fields);
@@ -215,21 +223,20 @@ TEST_F(TestDatabase, QueriesNumber) {
 }
 
 TEST_F(TestDatabase, Version) {
-  EXPECT_TRUE(DataBase::DataBaseGetVersion() == _T("5.6.51"));
+  EXPECT_TRUE(DataBase::DataBaseGetVersion() == _T("10.6.10-MariaDB"));
 }
 
 TEST_F(TestDatabase, CreateNewDatabase) {
   EXPECT_FALSE(m_db->DataBaseCreateNew(g_TestPathPRJ, g_TestPrj_MyTest));
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_MyTest));
   EXPECT_TRUE(m_db->DataBaseQuery(_T("SHOW TABLES FROM mytest1")));
+  m_db->DataBaseClearResults();
 }
 
 TEST_F(TestDatabase, GetDataBaseSize) {
   wxString myFailMsg = _("Not available");
-  wxString myDBSize = m_db->DataBaseGetSize(2, myFailMsg);
-  EXPECT_EQ(myDBSize, myFailMsg);
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_MyTest));
-  myDBSize = m_db->DataBaseGetSize(2, myFailMsg);
+  wxString myDBSize = m_db->DataBaseGetSize(2, myFailMsg);
   wxLogMessage(myDBSize);
   EXPECT_FALSE(myDBSize == myFailMsg);
 
@@ -243,7 +250,7 @@ TEST_F(TestDatabase, GetLastInsertID) {
   ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
   long myIID = m_db->DataBaseGetLastInsertedID();
   EXPECT_EQ(myIID, wxNOT_FOUND);
-  EXPECT_TRUE(m_db->DataBaseQueryNoResults(_T("INSERT INTO dmn_layer_object (OBJECT_CD) VALUES (1)")));
+  EXPECT_TRUE(m_db->DataBaseQueryNoResults(_T("INSERT INTO dmn_layer_object (OBJECT_CD, OBJECT_TYPE_CD, THEMATIC_LAYERS_LAYER_INDEX, OBJECT_DESC) VALUES (1, 0, 1, 'test')")));
 
   myIID = m_db->DataBaseGetLastInsertedID();
   EXPECT_TRUE(myIID != wxNOT_FOUND);
@@ -264,7 +271,9 @@ TEST_F(TestDatabase, GetRawRow) {
   EXPECT_FALSE(m_db->DataBaseGetNextRowResult(myRow, myLength));
   EXPECT_EQ(myRow, nullptr);
   EXPECT_EQ(myLength.GetCount(), 0);
+  m_db->DataBaseClearResults();
 }
+
 
 TEST_F(TestDatabase, DeleteDB) {
   // ensure database testedit_12 didn't exists
@@ -273,10 +282,11 @@ TEST_F(TestDatabase, DeleteDB) {
     wxLogMessage(_T("Removed testedit_12 allready existing"));
   }
 
-  EXPECT_FALSE(m_db->DataBaseDelete());
+  //EXPECT_FALSE(m_db->DataBaseDelete());
   EXPECT_TRUE(m_db->DataBaseCreateNew(g_TestPathPRJ, _T("testedit_12")));
   EXPECT_TRUE(m_db->DataBaseDelete());
 }
+
 
 TEST_F(TestDatabase, EscapeString) {
   wxLogDebug(_T("Escaping special character"));
@@ -288,4 +298,3 @@ TEST_F(TestDatabase, EscapeString) {
   wxLogDebug(_T("before : %s - after : %s"), myBefore.c_str(), myAfter.c_str());
   EXPECT_EQ(myAfter, _T("SELECT coucou\\'toi"));
 }
-*/
