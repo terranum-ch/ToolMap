@@ -4,7 +4,6 @@ import os
 
 class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
-
     requires = [
         "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
@@ -12,25 +11,31 @@ class Toolmap(ConanFile):
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
         "libtiff/4.4.0",
         "libdeflate/1.12",
-        # "libcurl/7.80.0"
     ]
 
-    options = {"unit_test": [True, False], "code_coverage": [True, False]}
-    default_options = {"unit_test": False, "code_coverage": False}
+    options = {
+        "unit_test": [True, False],
+        "code_coverage": [True, False]}
+
+    default_options = {
+        "unit_test": False,
+        "code_coverage": False}
 
     generators = "cmake", "gcc", "txt"
 
     def requirements(self):
         if self.options.unit_test or self.options.code_coverage:
-            self.requires("gtest/1.11.0")
+            self.requires("gtest/cci.20210126")
 
     def configure(self):
         if self.options.code_coverage:
             self.options.unit_test = True
-        self.options["gdal"].with_curl = True  # for xml support
+        
+        self.options["gdal"].with_curl = True # for xml support
         self.options["gdal"].shared = True
 
-        # Not needed anymore with wxWidgets 3.2.1
+
+        # this isn't needed anymore with wxWidgets 3.2.1
         # if self.settings.os == "Linux":
         #    self.options["wxwidgets"].webview = False  # webview control isn't available on linux.
 
@@ -73,7 +78,9 @@ class Toolmap(ConanFile):
         if self.options.code_coverage:
             cmake.definitions["USE_UNITTEST"] = "ON"
             cmake.definitions["USE_CODECOV"] = "ON"
+
         cmake.configure()
         cmake.build()
+
         if self.settings.os == "Macos":
             cmake.install()
