@@ -9,10 +9,10 @@ class Toolmap(ConanFile):
         "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
         "gdal/3.5.1@terranum-conan+gdal/stable",
+        "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
         "libtiff/4.4.0",
         "libdeflate/1.12",
-        "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
-        "libcurl/7.80.0",
+        # "libcurl/7.80.0"
     ]
 
     options = {"unit_test": [True, False], "code_coverage": [True, False]}
@@ -27,7 +27,7 @@ class Toolmap(ConanFile):
     def configure(self):
         if self.options.code_coverage:
             self.options.unit_test = True
-        self.options["gdal"].with_curl = True # for xml support
+        self.options["gdal"].with_curl = True  # for xml support
         self.options["gdal"].shared = True
 
         # Not needed anymore with wxWidgets 3.2.1
