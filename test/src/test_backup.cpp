@@ -16,13 +16,15 @@
 
 #include "../../src/core/backupmanager.h"
 #include "gtest/gtest.h"
-#include "test_database_handle.h"
+#include "database_environnement.h"
 #include "test_param.h"
 
-class TestBackup : public DatabaseHandle {
+class TestBackup : public ::testing::Test {
  protected:
+  DataBaseTM * m_db = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
+    GTEST_SKIP();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_CombioulaCorrect));
   }
   virtual void TearDown() {

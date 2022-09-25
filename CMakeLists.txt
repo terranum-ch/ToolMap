@@ -93,7 +93,7 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 
 # Adding fontconfig for Linux (this is needed for wxPdfDocument)
 SET(ADDED_LIBS "")
-if (UNIX)
+if (UNIX AND NOT APPLE)
     SET(ADDED_LIBS "fontconfig")
 endif()
 

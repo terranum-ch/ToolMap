@@ -16,12 +16,13 @@
 
 #include "../../src/core/tmaattribbatchmanager.h"
 #include "gtest/gtest.h"
-#include "test_database_handle.h"
 #include "test_param.h"
+#include "database_environnement.h"
 
-class TestAdvAttribManager : public DatabaseHandle {
+class TestAdvAttribManager : public ::testing::Test {
  protected:
   PrjDefMemManage *m_prj = nullptr;
+  DataBaseTM * m_db = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
