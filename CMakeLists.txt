@@ -91,6 +91,11 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 #    endif ()
 #endif ()
 
+# Adding fontconfig for Linux (this is needed for wxPdfDocument)
+SET(ADDED_LIBS "")
+if (UNIX)
+    SET(ADDED_LIBS "fontconfig")
+endif()
 
 # osx icon
 set(MACOSX_BUNDLE_ICON_FILE art/toolmap2.icns)
@@ -99,7 +104,7 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Reso
 
 # Create a library with all sources files mainly for unit testing
 ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES})
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS} ${ADDED_LIBS})
 
 # Create the Toolmap binary
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
