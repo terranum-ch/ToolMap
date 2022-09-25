@@ -53,9 +53,10 @@ jobs:
       working-directory: ${{github.workspace}}/bin
       run: conan build ..
 
-    - name: Run tests
-      working-directory: ${{github.workspace}}/bin
-      run: bin/UnitTests
+# disabling unit test for now on
+#    - name: Run tests
+#      working-directory: ${{github.workspace}}/bin
+#      run: bin/UnitTests
 
   codecov:
     name: Code coverage
