@@ -18,18 +18,17 @@
 
 #include "test_param.h"
 #include "../../src/core/tmexportmanager.h"
+#include "database_environnement.h"
 
 
 class TestExportData : public ::testing::Test {
  protected:
-  DataBaseTM *m_pDB = nullptr;
+  DataBaseTM *m_pDB = DatabaseEnvironment::m_db;
   PrjDefMemManage *m_PrjDef = nullptr;
   wxString *m_RealExportPath = nullptr;
   tmGISScale *m_ExportScale = nullptr;
 
   virtual void SetUp() {
-    GTEST_SKIP();
-    m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Ambri));
 
     // load project Data
@@ -49,11 +48,9 @@ class TestExportData : public ::testing::Test {
     m_ExportScale->SetWidthDistanceInM(1);
   }
   virtual void TearDown() {
-    GTEST_SKIP();
     // reset path to old value
     ASSERT_TRUE(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 
-    wxDELETE(m_pDB);
     if (m_PrjDef != nullptr) {
       wxDELETE(m_PrjDef);
     }

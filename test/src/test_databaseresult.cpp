@@ -17,22 +17,18 @@
 #include "gtest/gtest.h"
 
 #include "test_param.h"
-#include "../../src/database/database_tm.h"
 #include "../../src/database/databaseresult.h"
+#include "database_environnement.h"
 
 
 class TestDatabaseResults : public ::testing::Test {
  protected:
-  DataBaseTM* m_db = nullptr;
+  DataBaseTM* m_db = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
-    m_db = new DataBaseTM();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
   }
-  virtual void TearDown() {
-    GTEST_SKIP();
-    wxDELETE(m_db);
+  virtual void TearDown() {;
   }
 };
 
