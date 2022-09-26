@@ -331,6 +331,7 @@ bool tmSymbolRuleManager::Serialize(tmSerialize &s) {
     s >> m_DlgSelectedFieldname;
     int myCount = 0;
     s >> myCount;
+    m_Rules.Clear();
     for (int i = 0; i < myCount; i++) {
       tmSymbolRule *myRule = new tmSymbolRule(m_LayerProperties->GetSpatialType(), nullptr);
       wxString myRuleName;
