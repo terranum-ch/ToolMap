@@ -18,17 +18,14 @@
 
 #include "test_param.h"
 #include "../../src/core/pdfdocument.h"
-#include "../../src/database/database_tm.h"
-
+#include "database_environnement.h"
 
 class TestPDF : public ::testing::Test {
  protected:
-  DataBaseTM* m_db = nullptr;
+  DataBaseTM* m_db = DatabaseEnvironment::m_db;
   PrjDefMemManage *m_PrjDef = nullptr;
 
   virtual void SetUp() {
-    GTEST_SKIP();
-    m_db = new DataBaseTM();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_221));
     // load project Data
     m_PrjDef = m_db->GetProjectDataFromDB();
@@ -36,7 +33,6 @@ class TestPDF : public ::testing::Test {
     ASSERT_NE(m_PrjDef->GetCountLayers(), 0);
   }
   virtual void TearDown() {
-    wxDELETE(m_db);
     wxDELETE(m_PrjDef);
   }
 };
