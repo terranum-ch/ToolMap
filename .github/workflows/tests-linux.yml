@@ -64,7 +64,9 @@ jobs:
 
     - name: Run tests
       working-directory: ${{github.workspace}}/bin
-      run: bin/UnitTests
+      run: |
+        cd bin
+        ./UnitTests
 
 
 
