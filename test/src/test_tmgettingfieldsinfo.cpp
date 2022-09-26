@@ -17,25 +17,20 @@
 #include "gtest/gtest.h"
 
 #include "test_param.h"
-#include "../../src/database/database_tm.h"
-
+#include "database_environnement.h"
 
 class TestGettingFieldsInfo : public ::testing::Test {
  protected:
-  DataBaseTM *m_pDB = nullptr;
+  DataBaseTM *m_pDB = DatabaseEnvironment::m_db;
   PrjDefMemManage *m_Proj = nullptr;
 
   virtual void SetUp() {
-    GTEST_SKIP();
-    m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_AdvAttribution));
     tmGISData::InitGISDrivers(true, true);
     m_Proj = m_pDB->GetProjectDataFromDB();
     ASSERT_TRUE(m_Proj != nullptr);
   }
   virtual void TearDown() {
-    GTEST_SKIP();
-    wxDELETE(m_pDB);
     wxDELETE(m_Proj);
   }
 };

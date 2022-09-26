@@ -18,15 +18,14 @@
 
 #include "test_param.h"
 #include "../../src/gis/tmpointorientattrib.h"
-
+#include "database_environnement.h"
 
 class TestPointOrientAttrib : public ::testing::Test {
  protected:
   wxPoint myPt1, myPt90, myPt180, myPt270, myPt45, myPt235, myPtd0;
-  DataBaseTM* m_DB = nullptr;
+  DataBaseTM* m_DB = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     myPt1 = wxPoint(20, 20);
     myPt90 = wxPoint(30, 20);
     myPt180 = wxPoint(20, 30);
@@ -35,11 +34,9 @@ class TestPointOrientAttrib : public ::testing::Test {
     myPt235 = wxPoint(0, 40);
     myPtd0 = wxPoint(20, 0);
 
-    m_DB = new DataBaseTM();
     m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Export);
   }
-  virtual void TearDown() {
-    wxDELETE(m_DB);
+  virtual void TearDown() {;
   }
 };
 

@@ -27,14 +27,12 @@ class TestDrawerEditLine : public ::testing::Test {
   wxArrayPoints m_Pts;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     m_DL = new tmDrawerEditLine();
     m_Pts.Add(wxPoint(598, 110));
     m_Pts.Add(wxPoint(520, 111));
     m_Pts.Add(wxPoint(600, 112));
   }
   virtual void TearDown() {
-    wxDELETE(m_DL);
     m_Pts.Clear();
   }
 };

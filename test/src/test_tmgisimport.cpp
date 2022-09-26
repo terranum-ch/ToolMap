@@ -17,24 +17,20 @@
 #include "gtest/gtest.h"
 
 #include "test_param.h"
-#include "../../src/database/database_tm.h"
 #include "../../src/gis/tmgisdatavector.h"
 #include "../../src/gis/tmimportcsv.h"
 #include "../../src/gis/tmimportgis.h"
-
+#include "database_environnement.h"
 
 class TestGISImport : public ::testing::Test {
  protected:
-  DataBaseTM* m_db = nullptr;
+  DataBaseTM* m_db = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     tmGISData::InitGISDrivers(true, true);
-    m_db = new DataBaseTM();
     ASSERT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Fields));
   }
-  virtual void TearDown() {
-    wxDELETE(m_db);
+  virtual void TearDown() {;
   }
 };
 

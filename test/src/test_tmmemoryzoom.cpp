@@ -25,12 +25,11 @@ class TestMemoryZoom : public ::testing::Test {
   tmZoomExtent m_Z1;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     wxApp::SetInstance(new wxAppConsole());
     m_Z1.m_TopLeftPosition = wxPoint2DDouble(15.6, 118.1);
     m_Z1.m_ZoomFactor = 1.77;
   }
-  virtual void TearDown() {
+  virtual void TearDown() {;
   }
 };
 
