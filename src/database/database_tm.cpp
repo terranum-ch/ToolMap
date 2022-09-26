@@ -73,7 +73,7 @@ bool DataBaseTM::CreateTMDatabase(PrjDefMemManage *pPrjDefinition) {
 
 /*************************** GENERAL DATABASE FUNCTION ****************************/
 bool DataBaseTM::CreateEmptyTMDatabase() {
-  wxString myNewPrjSentence =
+  wxString myNewPrjSentence1 =
       _T("CREATE  TABLE `dmn_layer_type` (")
       _T("  `TYPE_CD` INT UNSIGNED NOT NULL COMMENT 'Layer type code' ,")
       _T("  `TYPE_DESCRIPTION` VARCHAR(20) NOT NULL COMMENT 'Layer type description' ,")
@@ -173,7 +173,9 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
       _T("CREATE  TABLE `generic_dmn` (")
       _T("  `CODE` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Code value' ,")
       _T("  `DESCRIPTION` VARCHAR(255) NULL COMMENT 'Code description' ,")
-      _T("  PRIMARY KEY (`CODE`) );")
+      _T("  PRIMARY KEY (`CODE`) );");
+
+  wxString myNewPrjSentence2 =
 
       _T("CREATE  TABLE `prj_toc` (")
       _T("  `CONTENT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
@@ -183,7 +185,7 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
       _T("  `CONTENT_STATUS` BOOLEAN NULL DEFAULT 1 ,")
       _T("  `GENERIC_LAYERS` TINYINT NULL DEFAULT 100 ,")
       _T("  `RANK` INT NULL ,")
-      _T("  `SYMBOLOGY` VARCHAR(65535) NULL ,")
+      _T("  `SYMBOLOGY` TEXT(65535) NULL ,")
       _T("  `VERTEX_FLAGS` TINYINT NULL  ,")
       _T("  `LABEL_VISIBLE` tinyint(1) DEFAULT '0',")
       _T("  `LABEL_DEF` mediumtext,")
@@ -309,7 +311,13 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
       _T("   PRIMARY KEY (`LAYER_INDEX`));");
 
   // wxArrayString myArray = DataBaseCutRequest(myNewPrjSentence);
-  if (!DataBaseQueryNoResults(myNewPrjSentence)) return false;
+  if (!DataBaseQueryNoResults(myNewPrjSentence1)) {
+    return false;
+  }
+
+  if (!DataBaseQueryNoResults(myNewPrjSentence2)){
+    return false;
+  }
 
   // pass field data to the database
   if (!FillLayerTableTypeData()) {
@@ -393,6 +401,7 @@ bool DataBaseTM::FillDefaultScaleData() {
 
   if (!bReturnValue) {
     wxLogError(_T("Error filling scale table. Already filled of request error ?"));
+    wxLogError(DataBaseGetLastError());
   }
 
   return bReturnValue;

@@ -23,8 +23,8 @@ class TestDatabaseTM : public ::testing::Test {
  protected:
   DataBaseTM * m_db = DatabaseEnvironment::m_db;
 
-  virtual void SetUp() {GTEST_SKIP();}
-  virtual void TearDown() {GTEST_SKIP();}
+  virtual void SetUp() {;}
+  virtual void TearDown() {;}
 };
 
 TEST_F(TestDatabaseTM, TableExist) {
@@ -41,7 +41,7 @@ TEST_F(TestDatabaseTM, ToolMapVersion) {
 }
 
 TEST_F(TestDatabaseTM, CreateNewTMDatabase) {
-  EXPECT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
+  //EXPECT_TRUE(m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit));
   // deleting if existing
   if (m_db->DataBaseOpen(g_TestPathPRJ, g_TestPrj_Edit13)) {
     wxLogDebug(wxT("Deleting database : %s"), m_db->DataBaseGetName().c_str());
@@ -60,6 +60,7 @@ TEST_F(TestDatabaseTM, CreateNewTMDatabase) {
   EXPECT_EQ(m_db->OpenTMDatabase(myPrjdef.m_PrjPath + wxFileName::GetPathSeparator() + myPrjdef.m_PrjName),
                    tmDB_OPEN_OK);
 }
+
 
 TEST_F(TestDatabaseTM, OpenTMDatabase) {
   EXPECT_EQ(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Edit), tmDB_OPEN_OK);
