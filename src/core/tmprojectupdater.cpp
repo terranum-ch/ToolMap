@@ -159,6 +159,15 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
     }
   }
 
+  if (myActualDBVersion == 231) {
+    if (!_231to232()) {
+      _SetVersion(231);
+      return tmPRJ_UPD_ERROR_PROJECT;
+    } else {
+      myActualDBVersion = 232;
+    }
+  }
+
   _SetVersion(myActualDBVersion);
   return tmPRJ_UPD_ERROR_OK;
 }
@@ -487,5 +496,13 @@ bool tmProjectUpdater::_229to230() {
 
 bool tmProjectUpdater::_230to231() {
   wxString myQuery = _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_LAST_EXPORTED` TEXT NULL AFTER `PRJ_EXPORT_TYPE`; ");
+  return m_pDB->DataBaseQueryNoResults(myQuery);
+}
+
+bool tmProjectUpdater::_231to232() {
+  wxString myQuery =
+      _T("alter table generic_labels modify column `OBJECT_GEOMETRY` point NOT NULL;")
+      _T("alter table generic_points modify column `OBJECT_GEOMETRY` point NOT NULL;");
+      _T("alter table generic_notes modify column `OBJECT_GEOMETRY` point NOT NULL;");
   return m_pDB->DataBaseQueryNoResults(myQuery);
 }

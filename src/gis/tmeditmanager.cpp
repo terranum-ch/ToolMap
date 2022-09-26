@@ -1390,6 +1390,7 @@ long tmEditManager::_SaveToDatabase() {
   OGRGeometry *myGeom = nullptr;
   OGRLineString myLineString;
   OGRPoint myPoint;
+  OGRMultiPoint myMultiPoint;
   if (layerprop->GetSpatialType() == LAYER_SPATIAL_LINE) {
     if (m_ArcPoints.GetCount() <= 1) {
       return wxNOT_FOUND;

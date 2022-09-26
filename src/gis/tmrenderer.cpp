@@ -353,6 +353,9 @@ void tmRenderer::OnMouseDown(wxMouseEvent &event) {
 
   // draw
   if (m_ActualTool == tmTOOL_DRAW) {
+    if (m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_POLYGON) || m_EditManager->IsLayerSpatialType(LAYER_SPATIAL_POINT)){
+      ReleaseMouse();
+    }
     m_EditManager->ArcClick(event.GetPosition());
   }
 

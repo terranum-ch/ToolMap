@@ -118,12 +118,12 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
 
       _T("CREATE  TABLE `generic_points` (")
       _T("  `OBJECT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Feature identifier' ,")
-      _T("  `OBJECT_GEOMETRY` MULTIPOINT NOT NULL COMMENT 'Feature geometry' ,")
+      _T("  `OBJECT_GEOMETRY` POINT NOT NULL COMMENT 'Feature geometry' ,")
       _T("  PRIMARY KEY (`OBJECT_ID`) );")
 
       _T("CREATE  TABLE `generic_labels` (")
       _T("  `OBJECT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
-      _T("  `OBJECT_GEOMETRY` MULTIPOINT NOT NULL ,")
+      _T("  `OBJECT_GEOMETRY` POINT NOT NULL ,")
       _T("  PRIMARY KEY (`OBJECT_ID`) );")
 
       _T("CREATE  TABLE `generic_lines` (")
@@ -247,7 +247,7 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
 
       _T("CREATE  TABLE `generic_notes` (")
       _T("  `OBJECT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
-      _T("  `OBJECT_GEOMETRY` MULTIPOINT NOT NULL ,")
+      _T("  `OBJECT_GEOMETRY` POINT NOT NULL ,")
       _T("  `PRIORITY_CD` TINYINT NULL DEFAULT 0 ,")
       _T("  `CODE_CD` TINYINT NULL DEFAULT 0 ,")
       _T("  `AUTHOR` VARCHAR(255) NULL ,")
