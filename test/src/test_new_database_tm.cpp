@@ -17,20 +17,15 @@
 #include "gtest/gtest.h"
 
 #include "test_param.h"
-#include "../../src/database/database_tm.h"
-
+#include "database_environnement.h"
 
 class TestNewDatabaseTM : public ::testing::Test {
  protected:
-  DataBaseTM* m_DB = nullptr;
+  DataBaseTM* m_DB = DatabaseEnvironment::m_db;
 
-  virtual void SetUp() {
-    GTEST_SKIP();
-    m_DB = new DataBaseTM();
+  virtual void SetUp() {;
   }
-  virtual void TearDown() {
-    GTEST_SKIP();
-    wxDELETE(m_DB);
+  virtual void TearDown() {;
   }
 };
 
