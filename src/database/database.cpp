@@ -224,9 +224,13 @@ bool DataBase::DataBaseOpen(const wxString &datadir, const wxString &name) {
   }
 
   // check that datadir didn't change from the first initialization (MariaDB limitation)
-  if (m_DBPath != wxEmptyString && datadir != m_DBPath) {
-    wxLogError(_("Unable to open a database in another path than: '%s'\nrestart the program!"), m_DBPath);
-    return false;
+  if (m_DBPath != wxEmptyString){
+    wxFileName myPreviousPath (m_DBPath, "");
+    wxFileName myActualPath (datadir, name);
+    if (myPreviousPath.GetPath() != myActualPath.GetPath()) {
+      wxLogError(_("Unable to open a database in another path than: '%s'\nrestart the program!"), m_DBPath);
+      return false;
+    }
   }
 
   // check if database path exists

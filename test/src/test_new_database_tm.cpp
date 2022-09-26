@@ -48,7 +48,7 @@ TEST_F(TestNewDatabaseTM, CreateNewTMDatabase) {
 }
 
 TEST_F(TestNewDatabaseTM, AddingLayerData) {
-  EXPECT_TRUE(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_222));
+  ASSERT_EQ(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_222), tmDB_OPEN_OK); // path is converted to backslash
   EXPECT_TRUE(m_DB->DataBaseGetName() == g_TestPrj_222);
 
   ProjectDefMemoryLayers myLayer;
@@ -71,7 +71,7 @@ TEST_F(TestNewDatabaseTM, AddingLayerData) {
 }
 
 TEST_F(TestNewDatabaseTM, GetProjectInMemory) {
-  EXPECT_TRUE(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_222));
+  EXPECT_EQ(m_DB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_222), tmDB_OPEN_OK);
   PrjDefMemManage* myPrjMem = m_DB->GetProjectDataFromDB();
   EXPECT_TRUE(myPrjMem != NULL);
 
