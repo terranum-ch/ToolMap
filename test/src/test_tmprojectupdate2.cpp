@@ -18,7 +18,7 @@
 
 #include "test_param.h"
 #include "../../src/core/tmprojectupdater.h"
-
+#include "database_environnement.h"
 
 // =================================================================
 bool CopyDir2(wxString from, wxString to) {
@@ -103,10 +103,9 @@ bool CopyDir2(wxString from, wxString to) {
 
 class TestProjectUpdater2 : public ::testing::Test {
  protected:
-  DataBaseTM *m_CopyDB = nullptr;
+  DataBaseTM *m_CopyDB = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     // remove if exists
     wxFileName myDir2(g_TestPathPRJ + g_TestMigre222 + _T("_tmp"), _T(""));
     if (wxDir::Exists(myDir2.GetFullPath())) {
@@ -117,11 +116,9 @@ class TestProjectUpdater2 : public ::testing::Test {
 
     // copy project
     CopyDir2(g_TestPathPRJ + g_TestMigre222, g_TestPathPRJ + g_TestMigre222 + _T("_tmp"));
-    m_CopyDB = new DataBaseTM();
     ASSERT_TRUE(m_CopyDB->OpenTMDatabase(g_TestPathPRJ + g_TestMigre222 + _T("_tmp")));
   }
-  virtual void TearDown() {
-    wxDELETE(m_CopyDB);
+  virtual void TearDown() {;
   }
 };
 

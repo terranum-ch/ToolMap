@@ -18,25 +18,22 @@
 
 #include "test_param.h"
 #include "../../src/gis/tooldanglingnodes.h"
+#include "database_environnement.h"
 
 
 class TestToolDanglingNodes : public ::testing::Test {
  protected:
   ToolDanglingNodes* m_DN = nullptr;
   wxString m_DBPathName;
-  DataBaseTM* m_DB = nullptr;
+  DataBaseTM* m_DB = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     m_DBPathName = g_TestPathPRJ + g_TestPrj_Dangling;
-    m_DB = new DataBaseTM();
     m_DB->OpenTMDatabase(m_DBPathName);
     m_DN = new ToolDanglingNodes(m_DB);
   }
   virtual void TearDown() {
-    GTEST_SKIP();
     wxDELETE(m_DN);
-    wxDELETE(m_DB);
   }
 };
 

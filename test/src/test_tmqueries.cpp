@@ -18,10 +18,11 @@
 #include "../../src/core/queriesdata.h"
 #include "gtest/gtest.h"
 #include "test_param.h"
+#include "database_environnement.h"
 
 class TestQueries : public ::testing::Test {
  protected:
-  DataBaseTM *m_pDB;
+  DataBaseTM *m_pDB = DatabaseEnvironment::m_db;
   QueriesData *m_DataLayer;
   QueriesData *m_DataSelected;
   QueriesData *m_DataGeneric;
@@ -31,8 +32,6 @@ class TestQueries : public ::testing::Test {
   QueriesData *m_DataGeomNode;
 
   virtual void SetUp() {
-    GTEST_SKIP();
-    m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_NewQueries));
 
     // set up query for layers
@@ -87,8 +86,6 @@ class TestQueries : public ::testing::Test {
   }
 
   virtual void TearDown() {
-    GTEST_SKIP();
-    wxDELETE(m_pDB);
     wxDELETE(m_DataLayer);
     wxDELETE(m_DataSelected);
     wxDELETE(m_DataGeneric);

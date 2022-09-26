@@ -19,21 +19,16 @@
 #include "test_param.h"
 #include "../../src/core/tmstats.h"
 #include "../../src/core/tmstatsrecord.h"
-#include "../../src/database/database_tm.h"
-
+#include "database_environnement.h"
 
 class TestStatsRecords : public ::testing::Test {
  protected:
-  DataBaseTM *m_pDB = nullptr;
+  DataBaseTM *m_pDB = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
-    m_pDB = new DataBaseTM();
     ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Stats));
   }
-  virtual void TearDown() {
-    GTEST_SKIP();
-    wxDELETE(m_pDB);
+  virtual void TearDown() {;
   }
 };
 
