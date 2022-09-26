@@ -11,6 +11,7 @@ class Toolmap(ConanFile):
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
         "libtiff/4.4.0",
         "libdeflate/1.12",
+        "proj/9.0.0",
     ]
 
     options = {
