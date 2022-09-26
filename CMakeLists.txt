@@ -6,7 +6,7 @@ PROJECT("ToolMap")
 
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "3")
-set(${PROJECT_NAME}_MINOR_VERSION "2")
+set(${PROJECT_NAME}_MINOR_VERSION "3")
 include(build/cmake/version.cmake)
 
 # defining cmake version for installer mainly
