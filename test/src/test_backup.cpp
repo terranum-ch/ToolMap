@@ -24,12 +24,9 @@ class TestBackup : public ::testing::Test {
   DataBaseTM * m_db = DatabaseEnvironment::m_db;
 
   virtual void SetUp() {
-    GTEST_SKIP();
     ASSERT_TRUE(m_db->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_CombioulaCorrect));
   }
   virtual void TearDown() {
-    GTEST_SKIP();
-    wxDELETE(m_db);
   }
 };
 
