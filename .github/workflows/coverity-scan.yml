@@ -6,6 +6,9 @@ on:
     - coverity-scan
     - feature/*
 
+env:
+  BUILD_TYPE: RelWithDebInfo
+  
 jobs:
   coverity:
     name: Coverity scan
@@ -59,9 +62,13 @@ jobs:
         cd ${{github.workspace}}/bin
         conan install .. -o unit_test=True --build=gtk
 
+    - name: Configure
+      working-directory: ${{github.workspace}}/bin
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_UNITTEST=1
+
     - uses: vapier/coverity-scan-action@v1
       with:
         email: ${{ secrets.COVERITY_SCAN_EMAIL }}
         token: ${{ secrets.COVERITY_SCAN_TOKEN }}
         working-directory: ${{github.workspace}}/bin
-        command: 'cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DUSE_UNITTEST=1 && make -j $(nproc)'
+        command: make -j $(nproc)
