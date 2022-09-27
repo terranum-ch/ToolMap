@@ -30,13 +30,11 @@ endif ()
 SET(USE_UNITTEST CACHE BOOL "Should we create the tests for ${CMAKE_PROJECT_NAME}")
 
 # Enable code coverage
-#if (USE_UNITTEST AND CMAKE_COMPILER_IS_GNUCXX)
-#    option(USE_CODECOV "Sould we do code coverage with lcov ?" OFF)
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fprofile-arcs -ftest-coverage")
-#else (CMAKE_COMPILER_IS_GNUCXX)
-#    set(USE_CODECOV OFF)
-#endif ()
-
+if (USE_UNITTEST AND CMAKE_COMPILER_IS_GNUCXX)
+    option(USE_CODECOV "Sould we do code coverage with lcov ?" OFF)
+else (CMAKE_COMPILER_IS_GNUCXX)
+    set(USE_CODECOV OFF)
+endif ()
 
 ## External projects
 include(ExternalProject)
@@ -148,11 +146,10 @@ IF (MSVC)
 ENDIF (MSVC)
 
 
-## UNIT TEST
+## Unit tests
 IF (USE_UNITTEST)
     ADD_SUBDIRECTORY(test)
 ENDIF (USE_UNITTEST)
-
 
 # Install step for copying *dylib into application bundle on OSX and for changing their reference from
 # absolute to relative
