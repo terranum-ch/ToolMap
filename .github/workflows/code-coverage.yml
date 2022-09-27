@@ -1,15 +1,19 @@
-name: Tests Linux
+name: Code coverage
 
-on: [ push ]
+on:
+  push:
+    branches:
+    - master
 
 jobs:
-  test:
-    name: Linux testing
+  codecov:
+    name: Code coverage
     
     runs-on: ubuntu-latest
 
     env:
-      BUILD_TYPE: Release
+      BUILD_TYPE: RelWithDebInfo
+      CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918
 
     steps:
     - uses: actions/checkout@v2
@@ -36,7 +40,10 @@ jobs:
     - name: Install system libs
       run: |
         sudo apt-get update
-                
+        
+        # lcov
+        sudo apt-get install lcov
+        
         # GTK 3.0 libraries
         sudo apt-get install libgtk-3-0 libgtk-3-dev
         sudo apt-get install libx11-xcb-dev libfontenc-dev libxaw7-dev libxmu-dev libxmuu-dev libxpm-dev libxres-dev libxss-dev
@@ -56,14 +63,23 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o unit_test=True --build=gtk
+        conan install .. -o code_coverage=True --build=gtk
 
     - name: Build
       working-directory: ${{github.workspace}}/bin
       run: conan build ..
 
-    - name: Run tests
-      working-directory: ${{github.workspace}}/bin
-      run: |
-        cd bin
-        ./UnitTests
+    - name: Preparing coverage data
+      run: lcov --directory . --capture --output-file coverage.info
+
+    - name: Cleaning up coverage data
+      run: lcov --remove coverage.info "/usr/*" "*/_deps/*" "*/tests/*" --output-file coverage.info
+
+    - name: Display code coverage report
+      run: lcov --list coverage.info
+
+    - uses: codecov/codecov-action@v2
+      with:
+        files: ./coverage.info
+        fail_ci_if_error: true
+        verbose: true

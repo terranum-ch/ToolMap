@@ -32,7 +32,7 @@ IMPLEMENT_CLASS(ProjectManager, wxObject);
   *******************************************************************************/
 ProjectManager::ProjectManager(wxFrame *parent) {
   bProjectIsOpen = FALSE;
-  m_DB = nullptr;
+  m_DB = new DataBaseTM();
   m_Parent = parent;
   m_pMManager = nullptr;
   m_ParentStatus = nullptr;
@@ -57,13 +57,6 @@ ProjectManager::ProjectManager(wxFrame *parent) {
 ProjectManager::~ProjectManager() {
   wxDELETE(m_PrjMem);
   wxDELETE(m_DB);
-
-  // closing database only at the program end.
-  /*if (m_DB != nullptr)
-  {
-      delete m_DB;
-      m_DB = nullptr;
-  }*/
 }
 
 /***************************************************************************/ /**
@@ -91,7 +84,6 @@ bool ProjectManager::CreateNewProject() {
 
   // close
   CloseProject();
-  m_DB = new DataBaseTM();
 
   // Create new empty project
   {
@@ -504,7 +496,6 @@ void ProjectManager::CloseProject() {
   m_LayerManager->UnInitLayerManager();
   m_AttribManager->UnInitAttributionManager();
 
-  wxDELETE(m_DB);
   bProjectIsOpen = false;
 }
 
@@ -554,7 +545,6 @@ int ProjectManager::OpenProject(const wxString &path) {
     return tmDB_OPEN_FAILED;
   }
 
-  m_DB = new DataBaseTM();
   int mystatus = m_DB->OpenTMDatabase(path);
 
   if (mystatus != tmDB_OPEN_OK) {
