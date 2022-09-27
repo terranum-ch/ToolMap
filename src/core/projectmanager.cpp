@@ -657,11 +657,11 @@ bool ProjectManager::CheckDirectoryContent(const wxString &path) const {
   }
 
   if (wrongCapsFiles.Count() > 0) {
-    wxLogWarning(_("The following files seems to have the wrong letter case for the extension:"));
+    wxLogWarning(_("The following files do not have the correct case for the extension:"));
     for (const auto &file : wrongCapsFiles) {
       wxLogWarning(file);
     }
-    wxLogWarning(_("Wrong letter case for the extension of some files in the project directory."));
+    wxLogWarning(_("Incorrect letter case for the extension of some files in the project directory."));
 
     return false;
   }
