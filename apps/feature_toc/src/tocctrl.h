@@ -11,7 +11,9 @@
 
 #include <wx/dataview.h>
 
-class TocCtrl : public wxDataViewTreeCtrl {
+#include "tocctrlmodel.h"
+
+class TocCtrl : public wxDataViewCtrl {
 public:
     TocCtrl(wxWindow *parent, wxWindowID id);
 
@@ -21,6 +23,7 @@ public:
 //    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
 private:
     void on_dragndrop_begin(wxDataViewEvent & event);
+
 };
 
 #endif //FEATURE_TOC_TOCCTRL_H

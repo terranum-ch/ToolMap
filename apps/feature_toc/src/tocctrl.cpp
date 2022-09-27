@@ -5,10 +5,18 @@
 #include "tocctrl.h"
 #include "bitmaps.h"
 
-TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
-                                                                 wxDV_NO_HEADER | wxDV_SINGLE) {
+TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
+                                                                       wxDV_NO_HEADER | wxDV_SINGLE) {
+    // Setting model
+    wxObjectDataPtr<wxDataViewModel> my_model  (new TocCtrlModel);
+    wxDataViewCtrl::AssociateModel( my_model.get() );
+
     // Column definition
-    wxDataViewColumn col1("test", new wxDataViewCheckIconTextRenderer(), 0);
+    wxDataViewTextRenderer * renderer = new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_EDITABLE );
+    wxDataViewColumn *col1 = new wxDataViewColumn("test", renderer, 0);
+    wxDataViewCtrl::AppendColumn(col1);
+//    AppendToggleColumn(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),0);
+
 
     // Image list
     wxImageList *mylist = new wxImageList(16, 16, true, 4);
@@ -16,16 +24,18 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewTreeCtrl(parent, i
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
-    AssignImageList(mylist);
+//    AssignImageList(mylist);
 
     // events
     Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
 }
 
 void TocCtrl::add_test_data() {
-    wxDataViewItem group = AppendContainer(wxDataViewCtrl::GetTopItem(), "Group");
-    wxDataViewItem item = AppendItem(group, "Salut");
-    SetItemIcon(item, wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
+//    wxDataViewItem group = AppendContainer(wxDataViewCtrl::GetTopItem(), "Group");
+//    wxDataViewItem item = AppendItem(group, "Salut");
+//    SetItemIcon(item,
+//                wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
+
 
 //    wxTreeListItem group = add_group(GetRootItem(), "Group");
 //    wxTreeListItem item2 = add_layer(group, "Shapefile.shp", 1);
