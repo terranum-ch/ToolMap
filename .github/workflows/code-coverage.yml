@@ -76,7 +76,7 @@ jobs:
 
     - name: Display code coverage report
       working-directory: ${{github.workspace}}/bin
-      run: lcov --list hydrobricks-coverage.info
+      run: lcov --list code-coverage.info
 
     - name: Sending to Codecov
       working-directory: ${{github.workspace}}/bin
