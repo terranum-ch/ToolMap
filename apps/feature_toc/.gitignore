@@ -1,0 +1,11 @@
+# IDE
+.idea
+.vscode
+
+# build
+cmake-build-*
+
+# data
+_data
+_art
+_releases

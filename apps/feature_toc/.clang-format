@@ -1,0 +1,8 @@
+Language: Cpp
+BasedOnStyle: Google
+ColumnLimit: 120
+BreakConstructorInitializers: BeforeColon
+BreakInheritanceList: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+#AllowAllConstructorInitializersOnNextLine: false
+AllowShortFunctionsOnASingleLine: Empty

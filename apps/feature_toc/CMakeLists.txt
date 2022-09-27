@@ -20,8 +20,8 @@ set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
 set(CMAKE_PROJECT_VERSION_PATCH ${GIT_NUMBER})
 
 # osx icon
-set(MACOSX_BUNDLE_ICON_FILE bookon.icns)
-set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/bookon.icns")
+set(MACOSX_BUNDLE_ICON_FILE feature_toc.icns)
+set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/feature_toc.icns")
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
 # remove deprecated warnings on windows
@@ -35,7 +35,9 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/app.cpp
         src/framemain.cpp
+        src/bitmaps.cpp
         ${CMAKE_BINARY_DIR}/version.cpp
+        ${ICON_PATH}
         src/resource.rc)
 target_link_libraries(${CMAKE_PROJECT_NAME} ${CONAN_LIBS})
 
