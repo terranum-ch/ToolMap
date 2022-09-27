@@ -4,10 +4,12 @@ cmake_minimum_required(VERSION 3.0)
 
 PROJECT("ToolMap")
 
+set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/build/cmake ${CMAKE_MODULE_PATH})
+
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "3")
 set(${PROJECT_NAME}_MINOR_VERSION "3")
-include(build/cmake/version.cmake)
+include(version)
 
 # defining cmake version for installer mainly
 set(CMAKE_PROJECT_VERSION_MAJOR ${${PROJECT_NAME}_MAJOR_VERSION})
