@@ -140,52 +140,19 @@ void TocCtrlModel::GetValue(wxVariant &variant,
                             const wxDataViewItem &item, unsigned int col) const {
     wxASSERT(item.IsOk());
     TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
-    variant = node->m_title;
-    wxDataViewCheckIconText *myText = new wxDataViewCheckIconText(node->m_title, wxBitmapBundle::FromSVG(
-            feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)), wxCHK_CHECKED);
+    // variant = node->m_title;
+    wxDataViewCheckIconText my_data;
+    my_data.SetText(node->m_title);
+    my_data.SetCheckedState(wxCHK_CHECKED);
+    if (!node->m_checked) {
+        my_data.SetCheckedState(wxCHK_UNCHECKED);
+    }
+    my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)));
+    variant << my_data;
 
-    wxVariant *mytitle = new wxVariant(node->m_title);
-    wxVariant *mybmp = new wxVariant(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)));
-    wxVariant *mychecked = new wxVariant(wxCHK_CHECKED);
-
-//    wxVariantList myList;
-//    myList.Append(mytitle);
-//    myList.Append(mybmp);
-//    myList.Append(mychecked);
-//    variant = myList;
-
-    /*
-
-    switch (col)
-
-    cse 0:
-        variant = node->m_title;
-        break;
-    case 1:
-        variant = node->m_artist;
-        break;
-    case 2:
-        if (node->m_year != -1)
-            variant = (long) node->m_year;
-        break;
-    case 3:
-        variant = node->m_quality;
-        break;
-    case 4:
-        variant = 80L;  // all music is very 80% popular
-        break;
-    case 5:
-        if (node->m_year == -1)
-            variant = "n/a";
-        else if (node->m_year < 1900)
-            variant = "old";
-        else
-            variant = "new";
-        break;
-
-    default:
-        wxLogError( "TocCtrlModel::GetValue: wrong column %d", col );
-    }*/
+    if (col != 0) {
+        wxLogError("TocCtrlModel::GetValue: wrong column %d", col);
+    }
 }
 
 bool TocCtrlModel::SetValue(const wxVariant &variant,
@@ -194,7 +161,15 @@ bool TocCtrlModel::SetValue(const wxVariant &variant,
 
 
     TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
-    node->m_title = variant.GetString();
+    wxDataViewCheckIconText mydata;
+    mydata << variant;
+    node->m_title = mydata.GetText();
+    node->m_checked = true;
+    if (mydata.GetCheckedState() != wxCHK_CHECKED) {
+        node->m_checked = false;
+    }
+
+
     return true;
     /*
     switch (col)

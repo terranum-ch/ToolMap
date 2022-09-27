@@ -12,7 +12,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewCtrl(parent, id, w
     wxDataViewCtrl::AssociateModel( my_model.get() );
 
     // Column definition
-    wxDataViewTextRenderer * renderer = new wxDataViewTextRenderer( "string", wxDATAVIEW_CELL_EDITABLE );
+    wxDataViewCheckIconTextRenderer * renderer = new wxDataViewCheckIconTextRenderer(  );
     wxDataViewColumn *col1 = new wxDataViewColumn("test", renderer, 0);
     wxDataViewCtrl::AppendColumn(col1);
 //    AppendToggleColumn(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),0);
