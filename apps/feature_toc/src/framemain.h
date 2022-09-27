@@ -13,8 +13,9 @@
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
 #include <wx/systhemectrl.h>
-#include <wx/treelist.h>
+
 #include <wx/aboutdlg.h>
+#include "tocctrl.h"
 
 class FrameMain : public wxFrame {
 public:
@@ -41,8 +42,7 @@ private:
 //  void _update_title();
 
 
-    wxString m_soft_name = _("Bookon");
-    wxTreeListCtrl *m_TreeListCtrl;
+    TocCtrl * m_toc_ctrl;
     wxTextCtrl *m_textCtrl;
 };
 

@@ -27,15 +27,11 @@ void FrameMain::_create_controls() {
     wxBoxSizer *bSizer1;
     bSizer1 = new wxBoxSizer(wxHORIZONTAL);
 
-    m_TreeListCtrl = new wxTreeListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTL_DEFAULT_STYLE);
-    m_TreeListCtrl->AppendColumn(wxT("Column1"), wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxCOL_RESIZABLE);
-    m_TreeListCtrl->AppendColumn(wxT("Column2"), wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxCOL_RESIZABLE);
-
-    bSizer1->Add(m_TreeListCtrl, 1, wxEXPAND, 5);
+    m_toc_ctrl = new TocCtrl(this, wxID_ANY);
+    bSizer1->Add(m_toc_ctrl, 1, wxEXPAND, 5);
 
     m_textCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     bSizer1->Add(m_textCtrl, 1, wxEXPAND, 5);
-
 
     this->SetSizer(bSizer1);
     this->Layout();
@@ -71,10 +67,10 @@ void FrameMain::_create_menubar() {
     this->SetMenuBar(m_menubar);
 }
 
-void FrameMain::on_about(wxCommandEvent & event) {
- wxAboutDialogInfo aboutInfo;
+void FrameMain::on_about(wxCommandEvent &event) {
+    wxAboutDialogInfo aboutInfo;
     aboutInfo.SetName("feature toc");
-    wxString myVersion (feature_toc_MAJOR_VERSION);
+    wxString myVersion(feature_toc_MAJOR_VERSION);
     myVersion << "." << feature_toc_MINOR_VERSION;
     aboutInfo.SetVersion(myVersion);
     aboutInfo.SetDescription(_("feature toc test"));
