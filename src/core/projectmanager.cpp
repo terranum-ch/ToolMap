@@ -57,13 +57,6 @@ ProjectManager::ProjectManager(wxFrame *parent) {
 ProjectManager::~ProjectManager() {
   wxDELETE(m_PrjMem);
   wxDELETE(m_DB);
-
-  // closing database only at the program end.
-  /*if (m_DB != nullptr)
-  {
-      delete m_DB;
-      m_DB = nullptr;
-  }*/
 }
 
 /***************************************************************************/ /**
