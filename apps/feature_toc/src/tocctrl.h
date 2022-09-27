@@ -9,17 +9,16 @@
 
 #endif
 
-#include <wx/treelist.h>
 #include <wx/dataview.h>
 
-class TocCtrl : public wxTreeListCtrl {
+class TocCtrl : public wxDataViewTreeCtrl {
 public:
     TocCtrl(wxWindow *parent, wxWindowID id);
 
     void add_test_data();
 
-    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
-    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
+//    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
+//    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
 private:
     void on_dragndrop_begin(wxDataViewEvent & event);
 };

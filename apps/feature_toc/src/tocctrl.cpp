@@ -5,10 +5,10 @@
 #include "tocctrl.h"
 #include "bitmaps.h"
 
-TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
-                                                                   wxTL_CHECKBOX | wxTL_SINGLE) {
+TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
+                                                                 wxDV_NO_HEADER | wxDV_SINGLE) {
     // Column definition
-    AppendColumn(wxT("Column1"), wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxCOL_RESIZABLE);
+    wxDataViewColumn col1("test", new wxDataViewCheckIconTextRenderer(), 0);
 
     // Image list
     wxImageList *mylist = new wxImageList(16, 16, true, 4);
@@ -23,14 +23,19 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxTreeListCtrl(parent, id, w
 }
 
 void TocCtrl::add_test_data() {
-    wxTreeListItem group = add_group(GetRootItem(), "Group");
-    wxTreeListItem item2 = add_layer(group, "Shapefile.shp", 1);
-    wxTreeListItem group2 = add_group(group, "Project Layers");
-    wxTreeListItem item3 = add_layer(group2, "Line", 2);
-    wxTreeListItem item4 = add_layer(group2, "Points", 2);
-    wxTreeListItem item5 = add_layer(group, "Raster", 3);
+    wxDataViewItem group = AppendContainer(wxDataViewCtrl::GetTopItem(), "Group");
+    wxDataViewItem item = AppendItem(group, "Salut");
+    SetItemIcon(item, wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
+
+//    wxTreeListItem group = add_group(GetRootItem(), "Group");
+//    wxTreeListItem item2 = add_layer(group, "Shapefile.shp", 1);
+//    wxTreeListItem group2 = add_group(group, "Project Layers");
+//    wxTreeListItem item3 = add_layer(group2, "Line", 2);
+//    wxTreeListItem item4 = add_layer(group2, "Points", 2);
+//    wxTreeListItem item5 = add_layer(group, "Raster", 3);
 }
 
+/*
 wxTreeListItem TocCtrl::add_group(wxTreeListItem parent, const wxString &label) {
     wxTreeListItem item = AppendItem(parent, label);
     SetItemImage(item, 0);
@@ -46,7 +51,7 @@ wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, 
     wxTreeListItem item = AppendItem(parent, label);
     SetItemImage(item, type);
     return item;
-}
+}*/
 
 void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
     event.Allow();
