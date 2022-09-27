@@ -65,21 +65,24 @@ jobs:
         cd ${{github.workspace}}/bin
         conan install .. -o code_coverage=True --build=gtk
 
-    - name: Build
+    - name: Configure CMake
       working-directory: ${{github.workspace}}/bin
-      run: conan build ..
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_CODECOV=1 -DUSE_UNITTEST=1
+
+    - name: Build and run code coverage
+      working-directory: ${{github.workspace}}/bin
+      run: cmake --build . --config ${{env.BUILD_TYPE}} --target code-coverage
 
     - name: Preparing coverage data
+      working-directory: ${{github.workspace}}/bin
       run: lcov --directory . --capture --output-file coverage.info
 
-    - name: Cleaning up coverage data
-      run: lcov --remove coverage.info "/usr/*" "*/_deps/*" "*/tests/*" --output-file coverage.info
-
     - name: Display code coverage report
+      working-directory: ${{github.workspace}}/bin
       run: lcov --list coverage.info
 
     - uses: codecov/codecov-action@v2
       with:
-        files: ./coverage.info
+        files: ${{github.workspace}}/bin/coverage.info
         fail_ci_if_error: true
         verbose: true
