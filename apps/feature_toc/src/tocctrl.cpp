@@ -7,14 +7,19 @@
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxTreeListCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
                                                                    wxTL_CHECKBOX | wxTL_SINGLE) {
+    // Column definition
     AppendColumn(wxT("Column1"), wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxCOL_RESIZABLE);
 
+    // Image list
     wxImageList *mylist = new wxImageList(16, 16, true, 4);
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
     mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
     AssignImageList(mylist);
+
+    // events
+    Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
 }
 
 void TocCtrl::add_test_data() {
@@ -41,4 +46,18 @@ wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, 
     wxTreeListItem item = AppendItem(parent, label);
     SetItemImage(item, type);
     return item;
+}
+
+void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
+    event.Allow();
+//    wxLogError("testing dragndrop");
+//    wxDataViewItem dragItem = event.GetItem();
+//    if (!dragItem) {
+//        event.Veto();
+//        return;
+//    }
+//
+//    wxTextDataObject *obj = new wxTextDataObject();
+//    event.SetDataObject(obj);
+//    event.SetDragFlags(wxDrag_AllowMove);
 }
