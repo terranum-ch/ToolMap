@@ -40,6 +40,17 @@ if (MSVC)
     set_target_properties(UnitTests PROPERTIES LINK_FLAGS "/ignore:4099")
 endif ()
 
+## Code coverage
+if (USE_CODECOV)
+    include(CodeCoverage)
+    append_coverage_compiler_flags()
+    setup_target_for_coverage_lcov(
+            NAME code-coverage
+            EXECUTABLE UnitTests
+            EXCLUDE "/usr/*" "test/*" "_deps/*" "bin/*" "*/lib/*" "*/include/*"
+            DEPENDENCIES UnitTests)
+endif (USE_CODECOV)
+
 # Install step for linking *dylib to the executable_path (not a bundle here)
 IF (APPLE)
     add_custom_command(

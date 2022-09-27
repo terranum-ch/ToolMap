@@ -1,15 +1,20 @@
-name: Tests Linux
+name: Code coverage
 
-on: [ push ]
+on:
+  push:
+    branches:
+    - master
+    - feature/*
 
 jobs:
-  test:
-    name: Linux testing
+  codecov:
+    name: Code coverage
     
     runs-on: ubuntu-latest
 
     env:
-      BUILD_TYPE: Release
+      BUILD_TYPE: RelWithDebInfo
+      CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918
 
     steps:
     - uses: actions/checkout@v2
@@ -36,7 +41,10 @@ jobs:
     - name: Install system libs
       run: |
         sudo apt-get update
-                
+        
+        # lcov
+        sudo apt-get install lcov
+        
         # GTK 3.0 libraries
         sudo apt-get install libgtk-3-0 libgtk-3-dev
         sudo apt-get install libx11-xcb-dev libfontenc-dev libxaw7-dev libxmu-dev libxmuu-dev libxpm-dev libxres-dev libxss-dev
@@ -56,14 +64,20 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o unit_test=True --build=gtk
+        conan install .. -o code_coverage=True --build=gtk
 
-    - name: Build
+    - name: Configure CMake
       working-directory: ${{github.workspace}}/bin
-      run: conan build ..
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DUSE_CODECOV=1 -DUSE_UNITTEST=1
 
-    - name: Run tests
+    - name: Build and run code coverage
       working-directory: ${{github.workspace}}/bin
-      run: |
-        cd bin
-        ./UnitTests
+      run: cmake --build . --config $BUILD_TYPE --target code-coverage
+
+    - name: Display code coverage report
+      working-directory: ${{github.workspace}}/bin
+      run: lcov --list code-coverage.info
+
+    - name: Sending to Codecov
+      working-directory: ${{github.workspace}}/bin
+      run: bash <(curl -s https://codecov.io/bash) -f code-coverage.info || echo "Codecov did not collect coverage reports"

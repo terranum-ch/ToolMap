@@ -402,7 +402,7 @@ bool tmProjectUpdater::_221to222() {
 }
 
 bool tmProjectUpdater::_222to223() {
-  wxString myQuery = _T("ALTER TABLE %s MODIFY SYMBOLOGY VARCHAR(65535) NULL");
+  wxString myQuery = _T("ALTER TABLE %s MODIFY SYMBOLOGY TEXT(65535) NULL");
   if (!m_pDB->DataBaseQueryNoResults(wxString::Format(myQuery, TABLE_NAME_TOC), true)) {
     return false;
   }
@@ -457,8 +457,7 @@ bool tmProjectUpdater::_225to226() {
 
 bool tmProjectUpdater::_226to227() {
   wxString myAlterQuery =
-      _T(
-            "ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_WIDTH` FLOAT NOT NULL DEFAULT 1 AFTER `PRJ_BEZIER_APPROX`; ")
+      _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_WIDTH` FLOAT NOT NULL DEFAULT 1 AFTER `PRJ_BEZIER_APPROX`; ")
       _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_NB_VERTEX` INT NOT NULL DEFAULT 10 ; ")
       _T("ALTER TABLE prj_settings ADD COLUMN `PRJ_BEZIER_METHOD` INT NOT NULL DEFAULT 0; ");
   if (!m_pDB->DataBaseQueryNoResults(myAlterQuery)) {
@@ -482,8 +481,7 @@ bool tmProjectUpdater::_227to228() {
 bool tmProjectUpdater::_228to229() {
   // TOC_NAME_WEB is now 104 and TOC_NAME_SHP became 105.
   wxString myAlterQuery =
-      _T(
-            "UPDATE prj_toc SET GENERIC_LAYERS=105  where CONTENT_NAME like \"%.shp\" and GENERIC_LAYERS=104");
+      _T("UPDATE prj_toc SET GENERIC_LAYERS=105  where CONTENT_NAME like \"%.shp\" and GENERIC_LAYERS=104");
   return m_pDB->DataBaseQueryNoResults(myAlterQuery);
 }
 
