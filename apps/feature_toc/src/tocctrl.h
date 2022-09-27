@@ -17,6 +17,8 @@ public:
 
     void add_test_data();
 
+    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
+    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
 };
 
 #endif //FEATURE_TOC_TOCCTRL_H
