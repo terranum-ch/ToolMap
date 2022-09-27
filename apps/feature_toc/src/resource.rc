@@ -1,3 +1,3 @@
 #include "wx/msw/wx.rc"
 
-bookon ICON "../art/bookon.ico"
+feature_toc ICON "../art/feature_toc.ico"
