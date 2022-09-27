@@ -15,7 +15,7 @@ class TocCtrl : public wxTreeListCtrl {
 public:
     TocCtrl(wxWindow *parent, wxWindowID id);
 
-private:
+    void add_test_data();
 
 };
 

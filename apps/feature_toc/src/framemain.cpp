@@ -48,10 +48,7 @@ void FrameMain::_create_statusbar() {
             1);
 }
 
-/// Adding some test data to the Tree Control
-void FrameMain::_add_tree_data() {
 
-}
 
 void FrameMain::_create_menubar() {
     wxMenuBar *m_menubar;
@@ -80,4 +77,9 @@ void FrameMain::on_about(wxCommandEvent &event) {
 
 void FrameMain::_connect_events() {
     Bind(wxEVT_MENU, &FrameMain::on_about, this, wxID_ABOUT);
+}
+
+/// Adding some test data to the Tree Control
+void FrameMain::_add_tree_data() {
+    m_toc_ctrl->add_test_data();
 }
