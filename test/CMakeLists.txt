@@ -47,7 +47,7 @@ if (USE_CODECOV)
     setup_target_for_coverage_lcov(
             NAME code-coverage
             EXECUTABLE UnitTests
-            EXCLUDE "/usr/*" "${PROJECT_SOURCE_DIR}/test/src/*" "test/*" "${CMAKE_BINARY_DIR}/_deps/*" "bin/*" "*/lib/*" "*/include/*"
+            EXCLUDE "/usr/*" "test/*" "_deps/*" "bin/*" "*/lib/*" "*/include/*"
             DEPENDENCIES UnitTests)
 endif (USE_CODECOV)
 

@@ -71,13 +71,13 @@ jobs:
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DUSE_CODECOV=1 -DUSE_UNITTEST=1
 
     - name: Build and run code coverage
-      working-directory: ${{github.workspace}}/bin/bin
-      run: cmake --build .. --config $BUILD_TYPE --target code-coverage
+      working-directory: ${{github.workspace}}/bin
+      run: cmake --build . --config $BUILD_TYPE --target code-coverage
 
     - name: Display code coverage report
-      working-directory: ${{github.workspace}}/bin/bin
+      working-directory: ${{github.workspace}}/bin
       run: lcov --list hydrobricks-coverage.info
 
     - name: Sending to Codecov
-      working-directory: ${{github.workspace}}/bin/bin
+      working-directory: ${{github.workspace}}/bin
       run: bash <(curl -s https://codecov.io/bash) -f code-coverage.info || echo "Codecov did not collect coverage reports"
