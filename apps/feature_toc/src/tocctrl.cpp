@@ -15,22 +15,13 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewCtrl(parent, id, w
     wxDataViewCheckIconTextRenderer * renderer = new wxDataViewCheckIconTextRenderer(  );
     wxDataViewColumn *col1 = new wxDataViewColumn("test", renderer, 0);
     wxDataViewCtrl::AppendColumn(col1);
-//    AppendToggleColumn(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),0);
-
-
-    // Image list
-    wxImageList *mylist = new wxImageList(16, 16, true, 4);
-    mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
-    mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
-    mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
-    mylist->Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
-//    AssignImageList(mylist);
 
     // events
     Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
 }
 
 void TocCtrl::add_test_data() {
+
 //    wxDataViewItem group = AppendContainer(wxDataViewCtrl::GetTopItem(), "Group");
 //    wxDataViewItem item = AppendItem(group, "Salut");
 //    SetItemIcon(item,

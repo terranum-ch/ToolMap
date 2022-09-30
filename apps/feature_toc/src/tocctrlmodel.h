@@ -30,6 +30,7 @@ public:
         m_parent = parent;
         m_title = branch;
         m_checked = true;
+        m_image_index = 0; // folder image
         m_container = true;
     }
 
@@ -76,56 +77,44 @@ private:
 };
 
 
-
-class TocCtrlModel: public wxDataViewModel
-{
+class TocCtrlModel : public wxDataViewModel {
 public:
     TocCtrlModel();
-    ~TocCtrlModel()
-    {
+
+    ~TocCtrlModel() {
         delete m_root;
     }
 
-    // helper method for wxLog
+    void Delete(const wxDataViewItem &item);
 
-//    wxString GetTitle( const wxDataViewItem &item ) const;
-//    wxString GetArtist( const wxDataViewItem &item ) const;
-//    int GetYear( const wxDataViewItem &item ) const;
-
-    // helper methods to change the model
-
-    void Delete( const wxDataViewItem &item );
     void Clear();
-
-    // override sorting to always sort branches ascendingly
-
-    int Compare( const wxDataViewItem &item1, const wxDataViewItem &item2,
-                 unsigned int column, bool ascending ) const wxOVERRIDE;
 
     // implementation of base class virtuals to define model
 
-    virtual void GetValue( wxVariant &variant,
-                           const wxDataViewItem &item, unsigned int col ) const wxOVERRIDE;
-    virtual bool SetValue( const wxVariant &variant,
-                           const wxDataViewItem &item, unsigned int col ) wxOVERRIDE;
+    virtual void GetValue(wxVariant &variant,
+                          const wxDataViewItem &item, unsigned int col) const wxOVERRIDE;
 
-    virtual bool IsEnabled( const wxDataViewItem &item,
-                            unsigned int col ) const wxOVERRIDE;
+    virtual bool SetValue(const wxVariant &variant,
+                          const wxDataViewItem &item, unsigned int col) wxOVERRIDE;
 
-    virtual wxDataViewItem GetParent( const wxDataViewItem &item ) const wxOVERRIDE;
-    virtual bool IsContainer( const wxDataViewItem &item ) const wxOVERRIDE;
-    virtual unsigned int GetChildren( const wxDataViewItem &parent,
-                                      wxDataViewItemArray &array ) const wxOVERRIDE;
+    virtual bool IsEnabled(const wxDataViewItem &item,
+                           unsigned int col) const wxOVERRIDE;
+
+    virtual wxDataViewItem GetParent(const wxDataViewItem &item) const wxOVERRIDE;
+
+    virtual bool IsContainer(const wxDataViewItem &item) const wxOVERRIDE;
+
+    virtual unsigned int GetChildren(const wxDataViewItem &parent,
+                                     wxDataViewItemArray &array) const wxOVERRIDE;
 
 private:
-     TocCtrlModelNode *   m_root;
+    TocCtrlModelNode *m_root;
 
     // pointers to some "special" nodes of the tree:
-     TocCtrlModelNode *   m_pop;
-     TocCtrlModelNode *   m_classical;
-     TocCtrlModelNode *   m_ninth;
+//    TocCtrlModelNode *m_pop;
+//    TocCtrlModelNode *m_classical;
+//    TocCtrlModelNode *m_ninth;
 };
-
 
 
 #endif //FEATURE_TOC_TOCCTRLMODEL_H

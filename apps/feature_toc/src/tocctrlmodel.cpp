@@ -7,61 +7,12 @@
 
 TocCtrlModel::TocCtrlModel() {
     m_root = new TocCtrlModelNode(NULL, "Group");
+    TocCtrlModelNode * my_node = new TocCtrlModelNode(m_root, "Shapefile", true, 1);
+    m_root->Append(my_node);
+    TocCtrlModelNode * my_group2 = new TocCtrlModelNode(m_root, "Group2");
+    m_root->Append(my_group2);
 
-//    // setup pop music
-//    m_pop = new TocCtrlModelNode(m_root, "Pop music");
-//    m_pop->Append(
-//            new TocCtrlModelNode(m_pop, "You are not alone", "Michael Jackson", 1995));
-//    m_pop->Append(
-//            new TocCtrlModelNode(m_pop, "Yesterday", "The Beatles", -1 /* not specified */ ));
-//    m_pop->Append(
-//            new TocCtrlModelNode(m_pop, "Take a bow", "Madonna", 1994));
-//    m_root->Append(m_pop);
-//
-//    // setup classical music
-//    m_classical = new TocCtrlModelNode(m_root, "Classical music");
-//    m_ninth = new TocCtrlModelNode(m_classical, "Ninth symphony",
-//                                   "Ludwig van Beethoven", 1824);
-//    m_classical->Append(m_ninth);
-//    m_classical->Append(new TocCtrlModelNode(m_classical, "German Requiem",
-//                                             "Johannes Brahms", 1868));
-//    m_root->Append(m_classical);
-//
 }
-
-/*
-void TocCtrlModel::AddToClassical( const wxString &title, const wxString &artist,
-                                       unsigned int year )
-{
-    if (!m_classical)
-    {
-        wxASSERT(m_root);
-
-        // it was removed: restore it
-        m_classical = new TocCtrlModelNode( m_root, "Classical music" );
-        m_root->Append( m_classical );
-
-        // notify control
-        wxDataViewItem child( (void*) m_classical );
-        wxDataViewItem parent( (void*) m_root );
-        ItemAdded( parent, child );
-    }
-
-    // add to the classical music node a new node:
-    TocCtrlModelNode *child_node =
-        new TocCtrlModelNode( m_classical, title, artist, year );
-    m_classical->Append( child_node );
-
-    // FIXME: what's m_classicalMusicIsKnownToControl for?
-    if (m_classicalMusicIsKnownToControl)
-    {
-        // notify control
-        wxDataViewItem child( (void*) child_node );
-        wxDataViewItem parent( (void*) m_classical );
-        ItemAdded( parent, child );
-    }
-}
- */
 
 void TocCtrlModel::Delete(const wxDataViewItem &item) {
     TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
@@ -77,14 +28,6 @@ void TocCtrlModel::Delete(const wxDataViewItem &item) {
         return;
     }
 
-    // is the node one of those we keep stored in special pointers?
-    if (node == m_pop)
-        m_pop = NULL;
-    else if (node == m_classical)
-        m_classical = NULL;
-    else if (node == m_ninth)
-        m_ninth = NULL;
-
     // first remove the node from the parent's array of children;
     // NOTE: MyMusicTreeModelNodePtrArray is only an array of _pointers_
     //       thus removing the node from it doesn't result in freeing it
@@ -98,10 +41,6 @@ void TocCtrlModel::Delete(const wxDataViewItem &item) {
 }
 
 void TocCtrlModel::Clear() {
-    m_pop = NULL;
-    m_classical = NULL;
-    m_ninth = NULL;
-
     while (!m_root->GetChildren().IsEmpty()) {
         TocCtrlModelNode *node = m_root->GetChildren().Last();
         m_root->GetChildren().Remove(node);
@@ -109,31 +48,6 @@ void TocCtrlModel::Clear() {
     }
 
     Cleared();
-}
-
-int TocCtrlModel::Compare(const wxDataViewItem &item1, const wxDataViewItem &item2,
-                          unsigned int column, bool ascending) const {
-    wxASSERT(item1.IsOk() && item2.IsOk());
-    // should never happen
-
-    if (IsContainer(item1) && IsContainer(item2)) {
-        wxVariant value1, value2;
-        GetValue(value1, item1, 0);
-        GetValue(value2, item2, 0);
-
-        wxString str1 = value1.GetString();
-        wxString str2 = value2.GetString();
-        int res = str1.Cmp(str2);
-        if (res) return res;
-
-        // items must be different
-        wxUIntPtr litem1 = (wxUIntPtr) item1.GetID();
-        wxUIntPtr litem2 = (wxUIntPtr) item2.GetID();
-
-        return litem1 - litem2;
-    }
-
-    return wxDataViewModel::Compare(item1, item2, column, ascending);
 }
 
 void TocCtrlModel::GetValue(wxVariant &variant,
@@ -147,7 +61,24 @@ void TocCtrlModel::GetValue(wxVariant &variant,
     if (!node->m_checked) {
         my_data.SetCheckedState(wxCHK_UNCHECKED);
     }
-    my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)));
+
+    switch (node->m_image_index) {
+        case 0: // folder icon
+            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16,16)));
+            break;
+        case 1: // shapefile icon
+            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16,16)));
+            break;
+        case 2: // database icon
+            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16,16)));
+            break;
+        case 3: // image icon
+            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16,16)));
+            break;
+        default:
+            wxLogError("This image index isn't supported!");
+            break;
+    }
     variant << my_data;
 
     if (col != 0) {
