@@ -13,7 +13,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id) : wxDataViewCtrl(parent, id, w
 
     // Column definition
     wxDataViewCheckIconTextRenderer * renderer = new wxDataViewCheckIconTextRenderer(  );
-    wxDataViewColumn *col1 = new wxDataViewColumn("test", renderer, 0);
+    wxDataViewColumn *col1 = new wxDataViewColumn("test", renderer, 0, wxDVC_DEFAULT_WIDTH, wxALIGN_LEFT);
     wxDataViewCtrl::AppendColumn(col1);
 
     // events
