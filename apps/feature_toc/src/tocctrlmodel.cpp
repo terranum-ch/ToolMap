@@ -192,3 +192,10 @@ unsigned int TocCtrlModel::GetChildren(const wxDataViewItem &parent,
 
     return count;
 }
+unsigned int TocCtrlModel::GetColumnCount() const {
+  return 1;
+}
+
+wxString TocCtrlModel::GetColumnType(unsigned int) const {
+  return wxEmptyString;
+}

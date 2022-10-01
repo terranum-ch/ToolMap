@@ -107,6 +107,9 @@ public:
     virtual unsigned int GetChildren(const wxDataViewItem &parent,
                                      wxDataViewItemArray &array) const wxOVERRIDE;
 
+    virtual unsigned int GetColumnCount() const wxOVERRIDE;
+    virtual wxString GetColumnType(unsigned int) const wxOVERRIDE;
+
 private:
     TocCtrlModelNode *m_root;
 
