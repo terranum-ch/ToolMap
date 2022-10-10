@@ -18,7 +18,13 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   wxDataViewCtrl::AppendColumn(col1);
 
   // events
-  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this, id);
+  this->Bind(wxEVT_COMMAND_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
+  this->Bind(wxEVT_COMMAND_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
+  this->Bind(wxEVT_COMMAND_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::on_value_changed, this);
+#if wxUSE_DRAG_AND_DROP
+  wxLogWarning("Using DND");
+#endif
 }
 
 void TocCtrl::add_test_data() {
@@ -54,6 +60,7 @@ wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, 
 }*/
 
 void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
+  wxLogWarning("Test begin");
   wxDataViewItem item( event.GetItem() );
 
   // only allow drags for item, not containers
@@ -71,4 +78,40 @@ void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
   event.SetDragFlags(wxDrag_AllowMove); // allows both copy and move
 
   wxLogMessage("Starting dragging \"%s\"", node->m_title);
+}
+
+void TocCtrl::on_dragndrop_possible(wxDataViewEvent &event) {
+  wxLogWarning("Test drop possible");
+  if (event.GetDataFormat() != wxDF_UNICODETEXT)
+    event.Veto();
+  else
+    event.SetDropEffect(wxDragMove); // check 'move' drop effect
+}
+
+void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
+  wxDataViewItem item( event.GetItem() );
+
+  if (event.GetDataFormat() != wxDF_UNICODETEXT)
+  {
+    event.Veto();
+    return;
+  }
+
+  // Note that instead of recreating a new data object here we could also
+  // retrieve the data object from the event, using its GetDataObject()
+  // method. This would be more efficient as it would avoid copying the text
+  // one more time, but would require a cast in the code and we don't really
+  // care about efficiency here.
+  wxTextDataObject obj;
+  obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
+
+  if ( item.IsOk() )
+  {
+    wxLogWarning(_("Dropping..."));
+  }
+
+}
+
+void TocCtrl::on_value_changed(wxDataViewEvent &event) {
+  wxLogWarning("Value changed !");
 }

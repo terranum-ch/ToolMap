@@ -23,6 +23,9 @@ public:
 //    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
 private:
     void on_dragndrop_begin(wxDataViewEvent & event);
+    void on_dragndrop_possible(wxDataViewEvent & event);
+    void on_dragndrop_drop(wxDataViewEvent & event);
+    void on_value_changed(wxDataViewEvent & event);
 
 };
 
