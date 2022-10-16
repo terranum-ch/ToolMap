@@ -84,13 +84,6 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 #INCLUDE_DIRECTORIES(plugins/lscrashreport/src)
 #ADD_SUBDIRECTORY(plugins/lscrashreport)
 
-#if (UNIX AND NOT APPLE)
-#    SET(USE_APPIMAGE FALSE CACHE BOOL "Should we use AppImage to create an installer on Linux ?")
-#    if (USE_APPIMAGE)
-#        INCLUDE("build/cmake/LinuxAppImageBuild.cmake")
-#    endif ()
-#endif ()
-
 # Adding fontconfig for Linux (this is needed for wxPdfDocument)
 SET(ADDED_LIBS "")
 if (UNIX AND NOT APPLE)
@@ -182,5 +175,5 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # create installer using CPACK
-#include("build/cpack/cpack_installer.cmake")
+include("build/cpack/cpack_installer.cmake")
 
