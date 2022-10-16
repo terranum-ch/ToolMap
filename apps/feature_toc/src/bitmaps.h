@@ -7,7 +7,9 @@ class feature_toc_bitmaps {
 public:
     static wxString app_icon;
     static wxString toc_folder;
-    static wxString toc_file;
+    static wxString toc_shapefile;
+    static wxString toc_database;
+    static wxString toc_image;
 };
 
 
