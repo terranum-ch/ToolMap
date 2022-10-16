@@ -1455,6 +1455,7 @@ bool tmLayerManager::LoadProjectLayers() {
 
   // invalidate bitmap
   m_GISRenderer->SetBitmapStatus();
+  m_GISRenderer->InitSize();
   CreateEmptyBitmap(wxSize(m_Scale.GetWindowExtent().GetWidth(), m_Scale.GetWindowExtent().GetHeight()));
 
   int iRead = ReadLayerExtent(true, true);
