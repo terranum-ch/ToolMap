@@ -9,7 +9,7 @@ class Toolmap(ConanFile):
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
         "gdal/3.5.1@terranum-conan+gdal/stable",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
-        "libtiff/4.4.0",
+        "libtiff/4.3.0",
         "libdeflate/1.12",
         "proj/9.0.0",
     ]
