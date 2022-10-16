@@ -15,55 +15,24 @@ install(TARGETS ${CMAKE_PROJECT_NAME}
 install(FILES build/cpack/LICENSE.txt DESTINATION .)
 
 # search dll to install
-if (GDAL_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${GDAL_DLL_NAME})
-endif (GDAL_DLL_NAME)
+install(DIRECTORY ${CMAKE_BINARY_DIR}/share DESTINATION .)
+if (WIN32)
+    install(
+            DIRECTORY ${CMAKE_BINARY_DIR}/bin/
+            DESTINATION bin
+            FILES_MATCHING
+            PATTERN "*.dll"
+    )
+endif()
 
-if (GEOS_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${GEOS_DLL_NAME})
-endif (GEOS_DLL_NAME)
-
-if (GEOS_C_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${GEOS_C_DLL_NAME})
-endif (GEOS_C_DLL_NAME)
-
-if (PROJ_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${PROJ_DLL_NAME})
-    list(APPEND LIB_TO_INSTALL ${PROJ_DLL_NO_VER_NAME})
-endif (PROJ_DLL_NAME)
-
-if (SQLITE_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${SQLITE_DLL_NAME})
-endif (SQLITE_DLL_NAME)
-
-if (MYSQL_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${MYSQL_DLL_NAME})
-endif (MYSQL_DLL_NAME)
-
-if (CURL_DLL_NAME)
-    list(APPEND LIB_TO_INSTALL ${CURL_DLL_NAME})
-endif (CURL_DLL_NAME)
 
 if (WIN32)
-    # install program and dlls
-    install(PROGRAMS
-            ${LIB_TO_INSTALL}
-            DESTINATION bin)
-
     # install ToolBasView
     if (WITH_TOOLBASVIEW)
         install(PROGRAMS
                 ${EXTERNAL_DIR}/bin/ToolBasView.exe
                 DESTINATION bin)
     endif ()
-
-    # install errmsg.sys
-    if (NOT MYSQL_ERRMSG_FILE)
-        message(FATAL_ERROR "errmsg.sys not found ! Installer will not work!")
-    endif ()
-    install(FILES
-            ${MYSQL_ERRMSG_FILE}
-            DESTINATION bin/mysql)
 
     # install webfiles
     # this part is a partial duplicates of copywebfiles.cmake
@@ -72,7 +41,7 @@ if (WIN32)
 
     # install proj files
     install(DIRECTORY ${PROJ_SHARE_PATH} DESTINATION share)
-    install(FILES ${CMAKE_BINARY_DIR}/set-env.bat DESTINATION .)
+    install(FILES resources/set-env.bat DESTINATION .)
 
     # install Microsoft Visual Studio librairies (MSVCP140.DLL, etc.)
     include(InstallRequiredSystemLibraries)
@@ -100,7 +69,10 @@ elseif (APPLE)
 endif (WIN32)
 
 # COMMON PROPERTIES
-set(CPACK_PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${CMAKE_PROJECT_VERSION_MAJOR}")
+set(CPACK_PACKAGE_VERSION_MINOR "${CMAKE_PROJECT_VERSION_MINOR}")
+set(CPACK_PACKAGE_VERSION_PATCH "${CMAKE_PROJECT_VERSION_PATCH}")
+set(CPACK_PACKAGE_VERSION "${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH}")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ToolMap - open source tool for GIS creation")
 set(CPACK_PACKAGE_VENDOR "Terranum")
 set(CPACK_STRIP_FILES ON) # tell cpack to strip all debug symbols from all files
@@ -159,6 +131,7 @@ if (WIN32)
     set(CPACK_CREATE_DESKTOP_LINKS "ToolMap")
 
     set(CPACK_GENERATOR "NSIS")
+    set(CPACK_WIX_UPGRADE_GUID "938C138A-625D-4F79-9551-872638D1BA28")
     set(CPACK_NSIS_DISPLAY_NAME "ToolMap")
     set(CPACK_NSIS_CONTACT "Terranum toolmap@terranum.ch")
     set(CPACK_NSIS_HELP_LINK "www.terranum.ch")

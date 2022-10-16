@@ -49,23 +49,21 @@ class Toolmap(ConanFile):
 
         # copy errmsg.sys on different places
         if self.settings.os == "Windows" or self.settings.os == "Linux":
-            self.copy("errmsg.sys", dst="bin/mysql", src="share/english")
+            self.copy("errmsg.sys", dst="share/mysql", src="share/english")
         if self.settings.os == "Macos":
             self.copy("errmsg.sys", dst="bin/ToolMap.app/Contents/mysql", src="share/english")
             if self.options.unit_test:
                 self.copy("errmsg.sys", dst="mysql", src="share/english")
         if self.options.code_coverage:
-            self.copy("errmsg.sys", dst="mysql", src="share/english")
+            self.copy("errmsg.sys", dst="share/mysql", src="share/english")
 
         # copy proj library datum
         if self.settings.os == "Windows" or self.settings.os == "Linux":
-            self.copy("*", dst="bin", src="res", root_package="proj")
+            self.copy("*", dst="share/proj", src="res", root_package="proj")
         if self.settings.os == "Macos":
             self.copy("*", dst="bin/ToolMap.app/Contents/share/proj", src="res", root_package="proj")
             if self.options.unit_test:
                 self.copy("*", dst="bin", src="res", root_package="proj")
-        if self.options.code_coverage:
-            self.copy("*", dst=".", src="res", root_package="proj")
 
         # copy xml webfiles
         _source_folder = os.path.join(os.getcwd(), "..")
