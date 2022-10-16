@@ -2,6 +2,9 @@ name: Tests Windows
 
 on: [ push ]
 
+env:
+  BUILD_TYPE: RelWithDebInfo
+
 jobs:
   test:
     name: Windows testing
@@ -38,10 +41,21 @@ jobs:
         cd ${{github.workspace}}/bin
         conan install .. -o unit_test=True --build=libtiff
 
+    - name: Configure
+      working-directory: ${{github.workspace}}/bin
+      run: cmake .. -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_UNITTEST=1
+
     - name: Build
       working-directory: ${{github.workspace}}/bin
-      run: conan build ..
+      run: cmake --build . --config ${{env.BUILD_TYPE}}
 
     - name: Run tests
       working-directory: ${{github.workspace}}/bin/bin
       run: .\UnitTests
+
+    - name: CPack
+      working-directory: ${{github.workspace}}/bin
+      run: |
+        cpack -C ${{env.BUILD_TYPE}} -G ZIP
+        cpack -C ${{env.BUILD_TYPE}} -G WIX
+        for %%f in (*win64.msi) do (copy /b bin\RelWithDebInfo\ToolMap.pdb %%f.pdb)
