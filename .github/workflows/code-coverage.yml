@@ -14,7 +14,6 @@ jobs:
     env:
       BUILD_TYPE: RelWithDebInfo
       CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918
-      CONAN_SYSREQUIRES_MODE: enabled
 
     steps:
     - uses: actions/checkout@v3
@@ -37,6 +36,7 @@ jobs:
         # create default profile with libstdc++11
         conan profile new default --detect
         conan profile update settings.compiler.libcxx=libstdc++11 default
+        conan profile update tools.system.package_manager:mode install
 
     - name: Install system libs
       run: |
