@@ -77,9 +77,79 @@ void FrameMain::on_about(wxCommandEvent &event) {
 
 void FrameMain::_connect_events() {
     Bind(wxEVT_MENU, &FrameMain::on_about, this, wxID_ABOUT);
+    Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &FrameMain::on_dnd_begin, this, m_toc_ctrl->GetId());
+    Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &FrameMain::on_dnd_possible, this, m_toc_ctrl->GetId());
+    Bind(wxEVT_DATAVIEW_ITEM_DROP, &FrameMain::on_dnd_drop, this, m_toc_ctrl->GetId());
 }
 
 /// Adding some test data to the Tree Control
 void FrameMain::_add_tree_data() {
     m_toc_ctrl->add_test_data();
+}
+
+void FrameMain::on_dnd_begin(wxDataViewEvent &event) {
+    wxDataViewItem item( event.GetItem() );
+
+    auto * my_model = dynamic_cast<TocCtrlModel *>(m_toc_ctrl->GetModel());
+
+    // only allow drags for item, not containers
+    if (my_model->IsContainer( item ) )
+    {
+        wxLogMessage("Forbidding starting dragging");
+        event.Veto();
+        return;
+    }
+
+    TocCtrlModelNode * my_node = (TocCtrlModelNode*) item.GetID();
+    // MyMusicTreeModelNode *node = (MyMusicTreeModelNode*) item.GetID();
+    wxTextDataObject *obj = new wxTextDataObject;
+    obj->SetText( my_node->m_title );
+    event.SetDataObject( obj );
+    event.SetDragFlags(wxDrag_AllowMove); // allows both copy and move
+
+    wxLogMessage("Starting dragging \"%s\"", my_node->m_title);
+}
+
+void FrameMain::on_dnd_possible(wxDataViewEvent &event) {
+    if (event.GetDataFormat() != wxDF_UNICODETEXT)
+        event.Veto();
+    else
+        event.SetDropEffect(wxDragMove); // check 'move' drop effect
+}
+
+void FrameMain::on_dnd_drop(wxDataViewEvent &event) {
+    wxDataViewItem item( event.GetItem() );
+
+    if (event.GetDataFormat() != wxDF_UNICODETEXT)
+    {
+        event.Veto();
+        return;
+    }
+
+    // Note that instead of recreating a new data object here we could also
+    // retrieve the data object from the event, using its GetDataObject()
+    // method. This would be more efficient as it would avoid copying the text
+    // one more time, but would require a cast in the code and we don't really
+    // care about efficiency here.
+    wxTextDataObject obj;
+    obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
+
+    auto * my_model = dynamic_cast<TocCtrlModel *>(m_toc_ctrl->GetModel());
+
+
+    if ( item.IsOk() )
+    {
+        if (my_model->IsContainer(item))
+        {
+            wxLogMessage("Container");
+            //wxLogMessage("Text '%s' dropped in container '%s' (proposed index = %i)",
+            //             obj.GetText(), my_model->GetTitle(item), event.GetProposedDropIndex());
+        }
+        else
+            wxLogMessage("Item");
+            //wxLogMessage("Text '%s' dropped on item '%s'", obj.GetText(), my_model->GetTitle(item));
+    }
+    else
+        wxLogMessage("Background");
+        //wxLogMessage("Text '%s' dropped on background (proposed index = %i)", obj.GetText(), event.GetProposedDropIndex());
 }

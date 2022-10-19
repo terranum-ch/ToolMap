@@ -9,6 +9,8 @@ TocCtrlModel::TocCtrlModel() {
     m_root = new TocCtrlModelNode(NULL, "Group");
     TocCtrlModelNode * my_node = new TocCtrlModelNode(m_root, "Shapefile", true, 1);
     m_root->Append(my_node);
+    TocCtrlModelNode * my_node2 = new TocCtrlModelNode(m_root, "Shapefile2", true, 1);
+    m_root->Append(my_node2);
     TocCtrlModelNode * my_group2 = new TocCtrlModelNode(m_root, "Group2");
     m_root->Append(my_group2);
 

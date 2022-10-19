@@ -11,6 +11,8 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   // Setting model
   wxObjectDataPtr<wxDataViewModel> my_model(new TocCtrlModel);
   wxDataViewCtrl::AssociateModel(my_model.get());
+    EnableDragSource(wxDF_UNICODETEXT);
+    EnableDropTarget(wxDF_UNICODETEXT);
 
   // Column definition
   wxDataViewCheckIconTextRenderer *renderer = new wxDataViewCheckIconTextRenderer();
@@ -18,9 +20,9 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   wxDataViewCtrl::AppendColumn(col1);
 
   // events
-  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
+//  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
+//  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
+//  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::on_value_changed, this);
 #if wxUSE_DRAG_AND_DROP
   wxLogWarning("Using DND");

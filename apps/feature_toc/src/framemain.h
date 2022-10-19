@@ -37,6 +37,10 @@ private:
 
     void on_about(wxCommandEvent & event);
 
+    void on_dnd_begin(wxDataViewEvent & event);
+    void on_dnd_possible(wxDataViewEvent & event);
+    void on_dnd_drop(wxDataViewEvent & event);
+
 //  void _create_toolbar();
 //  void _assign_image_to_treectrl();
 //  void _update_title();
