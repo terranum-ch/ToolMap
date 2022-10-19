@@ -1,16 +1,10 @@
-//
-// Created by Lucien Schreiber on 27.09.22.
-//
-
 #include "tocctrl.h"
 
 #include "bitmaps.h"
 #include "toccustomrenderer.h"
 
-
-
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
-    : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize,  wxDV_SINGLE | wxDV_NO_HEADER) {
+    : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_SINGLE | wxDV_NO_HEADER) {
   // Setting model
   wxObjectDataPtr<wxDataViewModel> my_model(new TocCtrlModel);
   wxDataViewCtrl::AssociateModel(my_model.get());
@@ -23,11 +17,10 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   wxDataViewCtrl::AppendColumn(column5);
 
   // events
-//  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
-//  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
-//  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::on_value_changed, this);
-
 }
 
 void TocCtrl::add_test_data() {
@@ -63,39 +56,35 @@ wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, 
 }*/
 
 void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
-  wxLogWarning("Test begin");
-  wxDataViewItem item( event.GetItem() );
+  wxDataViewItem item(event.GetItem());
 
   // only allow drags for item, not containers
-  if (GetModel()->IsContainer( item ) )
-  {
+  if (GetModel()->IsContainer(item)) {
     wxLogMessage("Forbidding starting dragging");
     event.Veto();
     return;
   }
 
-  TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
-  wxTextDataObject *obj = new wxTextDataObject;
-  obj->SetText( node->m_title );
-  event.SetDataObject( obj );
-  event.SetDragFlags(wxDrag_AllowMove); // allows both copy and move
+  auto *node = (TocCtrlModelNode *)item.GetID();
+  auto *obj = new wxTextDataObject;
+  obj->SetText(node->m_title);
+  event.SetDataObject(obj);
+  event.SetDragFlags(wxDrag_AllowMove);  // allows both copy and move
 
   wxLogMessage("Starting dragging \"%s\"", node->m_title);
 }
 
 void TocCtrl::on_dragndrop_possible(wxDataViewEvent &event) {
-  wxLogWarning("Test drop possible");
   if (event.GetDataFormat() != wxDF_UNICODETEXT)
     event.Veto();
   else
-    event.SetDropEffect(wxDragMove); // check 'move' drop effect
+    event.SetDropEffect(wxDragMove);  // check 'move' drop effect
 }
 
 void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
-  wxDataViewItem item( event.GetItem() );
+  wxDataViewItem item(event.GetItem());
 
-  if (event.GetDataFormat() != wxDF_UNICODETEXT)
-  {
+  if (event.GetDataFormat() != wxDF_UNICODETEXT) {
     event.Veto();
     return;
   }
@@ -106,15 +95,22 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
   // one more time, but would require a cast in the code and we don't really
   // care about efficiency here.
   wxTextDataObject obj;
-  obj.SetData( wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer() );
+  obj.SetData(wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer());
 
-  if ( item.IsOk() )
-  {
-    wxLogWarning(_("Dropping..."));
-  }
-
+  auto *my_model = dynamic_cast<TocCtrlModel *>(GetModel());
+  if (item.IsOk()) {
+    if (my_model->IsContainer(item)) {
+      wxLogMessage("Container");
+      // wxLogMessage("Text '%s' dropped in container '%s' (proposed index = %i)",
+      //              obj.GetText(), my_model->GetTitle(item), event.GetProposedDropIndex());
+    } else
+      wxLogMessage("Item");
+    // wxLogMessage("Text '%s' dropped on item '%s'", obj.GetText(), my_model->GetTitle(item));
+  } else
+    wxLogMessage("Background");
+  // wxLogMessage("Text '%s' dropped on background (proposed index = %i)", obj.GetText(), event.GetProposedDropIndex());
 }
 
 void TocCtrl::on_value_changed(wxDataViewEvent &event) {
-  wxLogWarning("Value changed !");
+  wxLogMessage("Value changed !");
 }
