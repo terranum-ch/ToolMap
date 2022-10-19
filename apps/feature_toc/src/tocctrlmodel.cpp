@@ -158,3 +158,20 @@ unsigned int TocCtrlModel::GetColumnCount() const {
 wxString TocCtrlModel::GetColumnType(unsigned int) const {
   return "tocrenderer";
 }
+
+bool TocCtrlModel::IsChecked(const wxDataViewItem &item) const {
+  auto *node = (TocCtrlModelNode*) item.GetID();
+  if (!node){
+    return false;
+  }
+  return node->m_checked;
+}
+
+void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
+  auto *node = (TocCtrlModelNode*) item.GetID();
+  if (!node){
+    return;
+  }
+
+  node->m_checked = check;
+}

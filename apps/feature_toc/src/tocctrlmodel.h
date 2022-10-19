@@ -107,6 +107,8 @@ class TocCtrlModel : public wxDataViewModel {
   void Clear();
 
   // implementation of base class virtuals to define model
+  bool IsChecked (const wxDataViewItem &item) const;
+  void SetChecked (const wxDataViewItem &item, bool check = true);
 
   virtual void GetValue(wxVariant &variant, const wxDataViewItem &item, unsigned int col) const wxOVERRIDE;
 
