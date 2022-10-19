@@ -5,13 +5,23 @@
 
 TocCtrlModel::TocCtrlModel() {
   // TODO: Move this test code outside the model, maybe in the frame
-  m_root = new TocCtrlModelNode(NULL, "Group");
-  TocCtrlModelNode *my_node = new TocCtrlModelNode(m_root, "Shapefile", true, 1);
-  m_root->Append(my_node);
-  TocCtrlModelNode *my_node2 = new TocCtrlModelNode(m_root, "Shapefile2", true, 1);
-  m_root->Append(my_node2);
-  TocCtrlModelNode *my_group2 = new TocCtrlModelNode(m_root, "Group2");
+  m_root = new TocCtrlModelNode(NULL, "Project");
+  auto *my_group1 = new TocCtrlModelNode(m_root, "Construction");
+  m_root->Append(my_group1);
+
+  auto *my_node = new TocCtrlModelNode(my_group1, "Line", true, 2, true);
+  my_group1->Append(my_node);
+  auto *my_node2 = new TocCtrlModelNode(my_group1, "Point", false, 2, false);
+  my_group1->Append(my_node2);
+
+
+  auto *my_group2 = new TocCtrlModelNode(m_root, "Support");
   m_root->Append(my_group2);
+
+  auto *my_node3 = new TocCtrlModelNode(my_group2, "Shapefile", false, 1, false);
+  my_group2->Append(my_node3);
+  auto *my_node4 = new TocCtrlModelNode(my_group2, "Raster", true, 3, false);
+  my_group2->Append(my_node4);
 }
 
 void TocCtrlModel::Delete(const wxDataViewItem &item) {

@@ -17,13 +17,13 @@ WX_DEFINE_ARRAY_PTR(TocCtrlModelNode *, TocCtrlModelNodePtrArray);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class TocCtrlModelNode {
  public:
-  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &title, bool checked, int image) {
+  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing) {
     m_parent = parent;
     m_title = title;
     m_checked = checked;
     m_image_index = image;
     m_container = false;
-    m_editing = false;
+    m_editing = editing;
   }
 
   TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch) {
