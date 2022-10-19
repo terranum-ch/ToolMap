@@ -1,6 +1,7 @@
 #include "framemain.h"
 
 #include "bitmaps.h"
+#include "toccustomrenderer.h"
 
 extern const char *feature_toc_MAJOR_VERSION;
 extern const char *feature_toc_MINOR_VERSION;
@@ -19,6 +20,11 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
     SetIcon(wxBitmapBundle::FromSVG(feature_toc_bitmaps::app_icon, wxSize(32, 32)).GetIcon(wxSize(32, 32)));
 
     _add_tree_data();
+
+    //wxVariant myvariant (new tocRendererData());
+    //tocRendererData * my_data = (tocRendererData*) myvariant.GetData();
+
+
 }
 
 void FrameMain::_create_controls() {

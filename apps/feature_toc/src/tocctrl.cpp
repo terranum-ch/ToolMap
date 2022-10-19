@@ -8,13 +8,6 @@
 #include "toccustomrenderer.h"
 
 
-// ----------------------------------------------------------------------------
-// MyCustomRenderer
-// ----------------------------------------------------------------------------
-
-
-
-
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
     : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize,  wxDV_SINGLE | wxDV_NO_HEADER) {
@@ -26,7 +19,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
 
   // Column definition
 
-  MyCustomRenderer *cr = new MyCustomRenderer(wxDATAVIEW_CELL_ACTIVATABLE);
+  tocRenderer *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE);
   wxDataViewColumn *column5 =
       new wxDataViewColumn("custom", cr, 0, wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
   wxDataViewCtrl::AppendColumn(column5);

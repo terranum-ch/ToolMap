@@ -3,6 +3,7 @@
 //
 
 #include "tocctrlmodel.h"
+#include "toccustomrenderer.h"
 #include "bitmaps.h"
 
 TocCtrlModel::TocCtrlModel() {

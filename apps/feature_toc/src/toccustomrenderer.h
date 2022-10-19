@@ -7,32 +7,47 @@
 #endif
 #include <wx/dataview.h>
 
-class MyCustomRenderer : public wxDataViewCustomRenderer {
+class tocRendererData : public wxVariantData {
+ public:
+  tocRendererData();
+  virtual tocRendererData *Clone() const;
+  virtual bool Eq(wxVariantData &data) const;
+  virtual wxString GetType() const;
+
+  wxString m_layer_name;
+  int m_image_index;
+  bool m_is_editing;
+  bool m_is_visible;
+ protected:
+  virtual ~tocRendererData() {;}
+};
+
+
+class tocRenderer : public wxDataViewCustomRenderer {
  public:
   // This renderer can be either activatable or editable, for demonstration
   // purposes. In real programs, you should select whether the user should be
   // able to activate or edit the cell and it doesn't make sense to switch
   // between the two -- but this is just an example, so it doesn't stop us.
-  explicit MyCustomRenderer(wxDataViewCellMode mode);
-
+  explicit tocRenderer(wxDataViewCellMode mode);
 
   virtual bool Render(wxRect rect, wxDC *dc, int state) wxOVERRIDE;
 
   virtual bool ActivateCell(const wxRect &WXUNUSED(cell), wxDataViewModel *WXUNUSED(model),
                             const wxDataViewItem &WXUNUSED(item), unsigned int WXUNUSED(col),
-                            const wxMouseEvent *mouseEvent) wxOVERRIDE ;
+                            const wxMouseEvent *mouseEvent) wxOVERRIDE;
 
-  virtual wxSize GetSize() const wxOVERRIDE ;
+  virtual wxSize GetSize() const wxOVERRIDE;
 
   virtual bool SetValue(const wxVariant &value) wxOVERRIDE;
 
-  virtual bool GetValue(wxVariant &WXUNUSED(value)) const wxOVERRIDE ;
+  virtual bool GetValue(wxVariant &WXUNUSED(value)) const wxOVERRIDE;
 
-  virtual bool HasEditorCtrl() const wxOVERRIDE ;
+  virtual bool HasEditorCtrl() const wxOVERRIDE;
 
-  virtual wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect labelRect, const wxVariant &value) wxOVERRIDE ;
+  virtual wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect labelRect, const wxVariant &value) wxOVERRIDE;
 
-  virtual bool GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) wxOVERRIDE ;
+  virtual bool GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) wxOVERRIDE;
 
  private:
   wxString m_layer_name;
@@ -40,6 +55,5 @@ class MyCustomRenderer : public wxDataViewCustomRenderer {
   bool m_is_editing;
   bool m_is_visible;
 };
-
 
 #endif  // FEATURE_TOC_TOCCUSTOMRENDERER_H
