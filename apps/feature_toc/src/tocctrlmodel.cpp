@@ -67,21 +67,27 @@ void TocCtrlModel::GetValue(wxVariant &variant,
 
   switch (col) {
     case 0:
-      my_data.SetText(node->m_title);
-      my_data.SetIcon(m_image_list.GetIcon(node->m_image_index));
-      variant << my_data;
-      break;
-    case 1:
-      my_data_check.SetCheckedState(wxCHK_CHECKED);
-      if (!node->m_checked) {
-        my_data_check.SetCheckedState(wxCHK_UNCHECKED);
-      }
-      variant << my_data_check;
-      break;
-    default:
-      wxLogError("Column not managed!");
+      variant = node->m_title;
       break;
   }
+
+  //  switch (col) {
+//    case 0:
+//      my_data.SetText(node->m_title);
+//      my_data.SetIcon(m_image_list.GetIcon(node->m_image_index));
+//      variant << my_data;
+//      break;
+//    case 1:
+//      my_data_check.SetCheckedState(wxCHK_CHECKED);
+//      if (!node->m_checked) {
+//        my_data_check.SetCheckedState(wxCHK_UNCHECKED);
+//      }
+//      variant << my_data_check;
+//      break;
+//    default:
+//      wxLogError("Column not managed!");
+//      break;
+//  }
 }
 
 bool TocCtrlModel::SetValue(const wxVariant &variant,
@@ -92,30 +98,37 @@ bool TocCtrlModel::SetValue(const wxVariant &variant,
     TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
     wxDataViewIconText mydata;
     wxDataViewCheckIconText mydata_check;
+
     switch (col) {
       case 0:
-        mydata << variant;
-        node->m_title = mydata.GetText();
-        node->m_image_index = 0;
-        for (int i = 0; i < m_image_list.GetImageCount(); i++) {
-          if (m_image_list.GetIcon(i).IsSameAs(mydata.GetIcon())) {
-            node->m_image_index = i;
-          }
-        }
-        return true;
-
-      case 1:
-        mydata_check << variant;
-        node->m_checked = true;
-        if (mydata_check.GetCheckedState() != wxCHK_CHECKED) {
-          node->m_checked = false;
-        }
-        return true;
-
-      default:
-        wxLogError("Column not managed!");
-        break;
+        node->m_title = variant.GetString();
+      return true;
     }
+
+    //    switch (col) {
+//      case 0:
+//        mydata << variant;
+//        node->m_title = mydata.GetText();
+//        node->m_image_index = 0;
+//        for (int i = 0; i < m_image_list.GetImageCount(); i++) {
+//          if (m_image_list.GetIcon(i).IsSameAs(mydata.GetIcon())) {
+//            node->m_image_index = i;
+//          }
+//        }
+//        return true;
+//
+//      case 1:
+//        mydata_check << variant;
+//        node->m_checked = true;
+//        if (mydata_check.GetCheckedState() != wxCHK_CHECKED) {
+//          node->m_checked = false;
+//        }
+//        return true;
+//
+//      default:
+//        wxLogError("Column not managed!");
+//        break;
+//    }
     return false;
 }
 

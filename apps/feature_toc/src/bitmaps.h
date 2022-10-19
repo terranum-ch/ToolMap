@@ -10,6 +10,9 @@ public:
     static wxString toc_shapefile;
     static wxString toc_database;
     static wxString toc_image;
+    static wxString toc_check_on;
+    static wxString toc_check_off;
+
 };
 
 
