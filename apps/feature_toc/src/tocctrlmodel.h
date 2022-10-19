@@ -24,6 +24,7 @@ public:
         m_checked = checked;
         m_image_index = image;
         m_container = false;
+        m_editing = false;
     }
 
     TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch) {
@@ -32,6 +33,7 @@ public:
         m_checked = true;
         m_image_index = 0; // folder image
         m_container = true;
+        m_editing = false;
     }
 
     ~TocCtrlModelNode() {
@@ -59,6 +61,7 @@ public:     // public to avoid getters/setters
     wxString m_title;
     bool m_checked;
     int m_image_index;
+    bool m_editing;
 
     // TODO/FIXME:
     // the GTK version of wxDVC (in particular wxDataViewCtrlInternal::ItemAdded)

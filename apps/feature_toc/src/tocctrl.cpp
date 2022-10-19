@@ -18,20 +18,9 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   EnableDropTarget(wxDF_UNICODETEXT);
 
   // Column definition
-
-  tocRenderer *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE);
-  wxDataViewColumn *column5 =
-      new wxDataViewColumn("custom", cr, 0, wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
+  auto *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE);
+  auto *column5 = new wxDataViewColumn("custom", cr, 0, wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
   wxDataViewCtrl::AppendColumn(column5);
-
-
-//  auto *renderer = new wxDataViewIconTextRenderer();
-//  auto *col1 = new wxDataViewColumn("Layer", renderer, 0, FromDIP(150), wxALIGN_LEFT);
-//  wxDataViewCtrl::AppendColumn(col1);
-//
-//  auto * check_renderer = new wxDataViewCheckIconTextRenderer();
-//  auto * col2 = new wxDataViewColumn("Status", check_renderer, 1, FromDIP(80), wxALIGN_LEFT);
-//  wxDataViewCtrl::AppendColumn(col2);
 
   // events
 //  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
