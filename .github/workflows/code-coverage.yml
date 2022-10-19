@@ -36,7 +36,6 @@ jobs:
         # create default profile with libstdc++11
         conan profile new default --detect
         conan profile update settings.compiler.libcxx=libstdc++11 default
-        conan profile update tools.system.package_manager:mode=install default
 
     - name: Install system libs
       run: |
@@ -64,7 +63,7 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o code_coverage=True --build=gtk
+        conan install .. -o code_coverage=True --build=gtk -c tools.system.package_manager:mode=install
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/bin
