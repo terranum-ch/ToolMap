@@ -41,9 +41,11 @@ wxString tocRendererData::GetType() const{
 // purposes. In real programs, you should select whether the user should be
 // able to activate or edit the cell and it doesn't make sense to switch
 // between the two -- but this is just an example, so it doesn't stop us.
-tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("string", mode, wxALIGN_LEFT) {
-  tocRendererData * my_data = new tocRendererData();
-  wxVariant myVariant (my_data);
+tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrenderdata", mode, wxALIGN_LEFT) {
+  //tocRendererData * my_data = new tocRendererData();
+  //wxVariant myVariant (my_data);
+
+
 
   //tocRendererData my_data;
   //wxAny my_any = my_data;
@@ -89,11 +91,15 @@ wxSize tocRenderer::GetSize() const {
 }
 
 bool tocRenderer::SetValue(const wxVariant &value) {
-  m_layer_name = value.GetString();
+  tocRendererData * my_data = (tocRendererData*) value.GetData();
+  m_layer_name = my_data->m_layer_name;
+
+  //m_layer_name = value.GetString();
   return true;
 }
 
-bool tocRenderer::GetValue(wxVariant &WXUNUSED(value)) const {
+bool tocRenderer::GetValue(wxVariant & value) const {
+  value.SetData(new tocRendererData());
   return true;
 }
 
@@ -123,3 +129,4 @@ bool tocRenderer::GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) {
 
   return true;
 }
+

@@ -63,12 +63,19 @@ void TocCtrlModel::GetValue(wxVariant &variant,
                             const wxDataViewItem &item, unsigned int col) const {
   wxASSERT(item.IsOk());
   TocCtrlModelNode *node = (TocCtrlModelNode *)item.GetID();
-  wxDataViewIconText my_data;
-  wxDataViewCheckIconText my_data_check;
+  //wxDataViewIconText my_data;
+  //wxDataViewCheckIconText my_data_check;
+  tocRendererData * my_data = new tocRendererData();
+  my_data->m_layer_name = node->m_title;
+  my_data->m_image_index = node->m_image_index;
+  my_data->m_is_visible = node->m_checked;
+  my_data->m_is_editing = false;
+
 
   switch (col) {
     case 0:
-      variant = node->m_title;
+      variant.SetData(my_data);
+      //variant = node->m_title;
       break;
   }
 
@@ -97,12 +104,17 @@ bool TocCtrlModel::SetValue(const wxVariant &variant,
 
 
     TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
-    wxDataViewIconText mydata;
-    wxDataViewCheckIconText mydata_check;
+    //wxDataViewIconText mydata;
+    //wxDataViewCheckIconText mydata_check;
+    tocRendererData * my_data = (tocRendererData*) variant.GetData();
 
     switch (col) {
       case 0:
-        node->m_title = variant.GetString();
+        // node->m_title = variant.GetString();
+        node->m_title = my_data->m_layer_name;
+        node->m_checked = my_data->m_is_visible;
+        node->m_image_index = my_data->m_image_index;
+
       return true;
     }
 

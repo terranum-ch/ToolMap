@@ -18,10 +18,12 @@ class tocRendererData : public wxVariantData {
   int m_image_index;
   bool m_is_editing;
   bool m_is_visible;
- protected:
-  virtual ~tocRendererData() {;}
-};
 
+ protected:
+  virtual ~tocRendererData() {
+    ;
+  }
+};
 
 class tocRenderer : public wxDataViewCustomRenderer {
  public:
@@ -41,7 +43,7 @@ class tocRenderer : public wxDataViewCustomRenderer {
 
   virtual bool SetValue(const wxVariant &value) wxOVERRIDE;
 
-  virtual bool GetValue(wxVariant &WXUNUSED(value)) const wxOVERRIDE;
+  virtual bool GetValue(wxVariant & value) const wxOVERRIDE;
 
   virtual bool HasEditorCtrl() const wxOVERRIDE;
 
