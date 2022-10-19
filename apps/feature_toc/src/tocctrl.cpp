@@ -5,96 +5,14 @@
 #include "tocctrl.h"
 
 #include "bitmaps.h"
+#include "toccustomrenderer.h"
 
 
 // ----------------------------------------------------------------------------
 // MyCustomRenderer
 // ----------------------------------------------------------------------------
 
-class MyCustomRenderer : public wxDataViewCustomRenderer {
- public:
-  // This renderer can be either activatable or editable, for demonstration
-  // purposes. In real programs, you should select whether the user should be
-  // able to activate or edit the cell and it doesn't make sense to switch
-  // between the two -- but this is just an example, so it doesn't stop us.
-  explicit MyCustomRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("string", mode, wxALIGN_LEFT) {}
 
-  virtual bool Render(wxRect rect, wxDC *dc, int state) wxOVERRIDE {
-    int margin = 5;
-
-    dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_check_on, wxSize(16,16)).GetBitmap(wxSize(16,16)), rect.GetX(), rect.GetY());
-    dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16,16)).GetBitmap(wxSize(16,16)), rect.GetX()+margin+16, rect.GetY());
-    dc->SetBrush(*wxLIGHT_GREY_BRUSH);
-    dc->SetPen(*wxTRANSPARENT_PEN);
-
-    wxRect my_text_rect = rect;
-    my_text_rect.SetX(rect.GetX() + (2*margin) + 32);
-    my_text_rect.SetWidth(dc->GetTextExtent(m_value).GetWidth());
-
-    //rect.Deflate(2);
-    //dc->DrawRoundedRectangle(rect, 5);
-
-    RenderText(m_value,
-               0,  // no offset
-               my_text_rect, dc, state);
-    return true;
-  }
-
-  virtual bool ActivateCell(const wxRect &WXUNUSED(cell), wxDataViewModel *WXUNUSED(model),
-                            const wxDataViewItem &WXUNUSED(item), unsigned int WXUNUSED(col),
-                            const wxMouseEvent *mouseEvent) wxOVERRIDE {
-    wxString position;
-    if (mouseEvent)
-      position = wxString::Format("via mouse at %d, %d", mouseEvent->m_x, mouseEvent->m_y);
-    else
-      position = "from keyboard";
-    wxLogMessage("MyCustomRenderer ActivateCell() %s", position);
-    return false;
-  }
-
-  virtual wxSize GetSize() const wxOVERRIDE {
-    return GetView()->FromDIP(wxSize(60, 20));
-  }
-
-  virtual bool SetValue(const wxVariant &value) wxOVERRIDE {
-    m_value = value.GetString();
-    return true;
-  }
-
-  virtual bool GetValue(wxVariant &WXUNUSED(value)) const wxOVERRIDE {
-    return true;
-  }
-
-#if wxUSE_ACCESSIBILITY
-  virtual wxString GetAccessibleDescription() const wxOVERRIDE {
-    return m_value;
-  }
-#endif  // wxUSE_ACCESSIBILITY
-
-  virtual bool HasEditorCtrl() const wxOVERRIDE {
-    return true;
-  }
-
-  virtual wxWindow *CreateEditorCtrl(wxWindow *parent, wxRect labelRect, const wxVariant &value) wxOVERRIDE {
-    wxTextCtrl *text =
-        new wxTextCtrl(parent, wxID_ANY, value, labelRect.GetPosition(), labelRect.GetSize(), wxTE_PROCESS_ENTER);
-    text->SetInsertionPointEnd();
-
-    return text;
-  }
-
-  virtual bool GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) wxOVERRIDE {
-    wxTextCtrl *text = wxDynamicCast(ctrl, wxTextCtrl);
-    if (!text) return false;
-
-    value = text->GetValue();
-
-    return true;
-  }
-
- private:
-  wxString m_value;
-};
 
 
 
@@ -112,6 +30,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   wxDataViewColumn *column5 =
       new wxDataViewColumn("custom", cr, 0, wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
   wxDataViewCtrl::AppendColumn(column5);
+
 
 //  auto *renderer = new wxDataViewIconTextRenderer();
 //  auto *col1 = new wxDataViewColumn("Layer", renderer, 0, FromDIP(150), wxALIGN_LEFT);

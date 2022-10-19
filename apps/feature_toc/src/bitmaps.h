@@ -12,6 +12,7 @@ public:
     static wxString toc_image;
     static wxString toc_check_on;
     static wxString toc_check_off;
+    static wxString toc_pen;
 
 };
 
