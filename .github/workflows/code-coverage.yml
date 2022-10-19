@@ -14,6 +14,7 @@ jobs:
     env:
       BUILD_TYPE: RelWithDebInfo
       CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918
+      PROJ_LIB: ${{github.workspace}}/bin/share/proj
 
     steps:
     - uses: actions/checkout@v3
