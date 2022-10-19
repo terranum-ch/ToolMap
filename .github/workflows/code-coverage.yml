@@ -16,7 +16,7 @@ jobs:
       CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
