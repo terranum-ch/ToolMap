@@ -4,14 +4,12 @@ on: [ push ]
 
 jobs:
   build:
-    name: Linux testing
+    name: Linux build
     
     runs-on: ubuntu-20.04
 
     env:
       BUILD_TYPE: Release
-      CONAN_SYSREQUIRES_MODE: "enabled"
-      CONAN_SYSREQUIRES_SUDO: "1"
 
     steps:
     - uses: actions/checkout@v3
@@ -34,6 +32,8 @@ jobs:
         # create default profile with libstdc++11
         conan profile new default --detect
         conan profile update settings.compiler.libcxx=libstdc++11 default
+        conan profile update conf.tools.system.package_manager:mode=install default
+        conan profile update conf.tools.system.package_manager:sudo=True default
 
     - name: Install system libs
       run: |
