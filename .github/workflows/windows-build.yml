@@ -1,9 +1,13 @@
 name: Windows build
 
-on: [ push ]
+on:
+  push:
+  release:
+    types:
+      - created
 
 jobs:
-  test:
+  build:
     name: Windows testing
     
     runs-on: windows-2019
@@ -55,3 +59,33 @@ jobs:
       run: |
         cpack -C ${{env.BUILD_TYPE}} -G ZIP
         cpack -C ${{env.BUILD_TYPE}} -G WIX
+
+    - name: Upload
+      uses: actions/upload-artifact@v3
+      with:
+        path: |
+          ${{github.workspace}}/bin/*.zip
+          ${{github.workspace}}/bin/*.msi
+          ${{github.workspace}}/bin/bin/*.pdb
+
+  upload_all:
+    name: Upload if release
+    needs: [build]
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'release' && github.event.action == 'created'
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: Upload to releases
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "dist/*.zip;dist/*.msi;dist/*.pdb"
+          tags: true
+          draft: true
+          verbose: true

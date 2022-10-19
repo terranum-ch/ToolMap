@@ -3,7 +3,7 @@ name: Linux build
 on: [ push ]
 
 jobs:
-  test:
+  build:
     name: Linux testing
     
     runs-on: ubuntu-20.04
