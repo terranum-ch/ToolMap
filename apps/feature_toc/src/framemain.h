@@ -20,6 +20,7 @@
 class FrameMain : public wxFrame {
 public:
     FrameMain(const wxString &title);
+    ~FrameMain();
 
 
 private:
@@ -47,7 +48,8 @@ private:
 
 
     TocCtrl * m_toc_ctrl;
-    wxTextCtrl *m_textCtrl;
+    wxTextCtrl *m_text_ctrl;
+    wxLog *m_log_old;
 };
 
 #endif

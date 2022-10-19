@@ -21,10 +21,8 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
 
     _add_tree_data();
 
-    //wxVariant myvariant (new tocRendererData());
-    //tocRendererData * my_data = (tocRendererData*) myvariant.GetData();
-
-
+    m_log_old = wxLog::SetActiveTarget(new wxLogTextCtrl(m_text_ctrl));
+    wxLogMessage("This is the log window");
 }
 
 void FrameMain::_create_controls() {
@@ -36,8 +34,8 @@ void FrameMain::_create_controls() {
     m_toc_ctrl = new TocCtrl(this, wxID_ANY);
     bSizer1->Add(m_toc_ctrl, 1, wxEXPAND, 5);
 
-    m_textCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-    bSizer1->Add(m_textCtrl, 1, wxEXPAND, 5);
+    m_text_ctrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+    bSizer1->Add(m_text_ctrl, 1, wxEXPAND, 5);
 
     this->SetSizer(bSizer1);
     this->Layout();
@@ -158,4 +156,8 @@ void FrameMain::on_dnd_drop(wxDataViewEvent &event) {
     else
         wxLogMessage("Background");
         //wxLogMessage("Text '%s' dropped on background (proposed index = %i)", obj.GetText(), event.GetProposedDropIndex());
+}
+
+FrameMain::~FrameMain() {
+  delete wxLog::SetActiveTarget(m_log_old);
 }
