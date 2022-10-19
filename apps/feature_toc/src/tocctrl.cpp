@@ -7,26 +7,28 @@
 #include "bitmaps.h"
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
-    : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_NO_HEADER | wxDV_SINGLE) {
+    : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize,  wxDV_SINGLE) {
   // Setting model
   wxObjectDataPtr<wxDataViewModel> my_model(new TocCtrlModel);
   wxDataViewCtrl::AssociateModel(my_model.get());
-    EnableDragSource(wxDF_UNICODETEXT);
-    EnableDropTarget(wxDF_UNICODETEXT);
+  EnableDragSource(wxDF_UNICODETEXT);
+  EnableDropTarget(wxDF_UNICODETEXT);
 
   // Column definition
-  wxDataViewCheckIconTextRenderer *renderer = new wxDataViewCheckIconTextRenderer();
-  wxDataViewColumn *col1 = new wxDataViewColumn("test", renderer, 0, wxDVC_DEFAULT_WIDTH, wxALIGN_LEFT);
+  auto *renderer = new wxDataViewIconTextRenderer();
+  auto *col1 = new wxDataViewColumn("Layer", renderer, 0, FromDIP(150), wxALIGN_LEFT);
   wxDataViewCtrl::AppendColumn(col1);
+
+  auto * check_renderer = new wxDataViewCheckIconTextRenderer();
+  auto * col2 = new wxDataViewColumn("Status", check_renderer, 1, FromDIP(80), wxALIGN_LEFT);
+  wxDataViewCtrl::AppendColumn(col2);
 
   // events
 //  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
 //  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
 //  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::on_value_changed, this);
-#if wxUSE_DRAG_AND_DROP
-  wxLogWarning("Using DND");
-#endif
+
 }
 
 void TocCtrl::add_test_data() {

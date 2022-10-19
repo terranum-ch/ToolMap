@@ -6,6 +6,12 @@
 #include "bitmaps.h"
 
 TocCtrlModel::TocCtrlModel() {
+    m_image_list.Create(16,16, true, 4);
+    m_image_list.Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16,16)).GetBitmap(wxSize(16,16)));
+    m_image_list.Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16,16)).GetBitmap(wxSize(16,16)));
+    m_image_list.Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16,16)).GetBitmap(wxSize(16,16)));
+    m_image_list.Add(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16,16)).GetBitmap(wxSize(16,16)));
+
     m_root = new TocCtrlModelNode(NULL, "Group");
     TocCtrlModelNode * my_node = new TocCtrlModelNode(m_root, "Shapefile", true, 1);
     m_root->Append(my_node);
@@ -54,38 +60,28 @@ void TocCtrlModel::Clear() {
 
 void TocCtrlModel::GetValue(wxVariant &variant,
                             const wxDataViewItem &item, unsigned int col) const {
-    wxASSERT(item.IsOk());
-    TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
-    // variant = node->m_title;
-    wxDataViewCheckIconText my_data;
-    my_data.SetText(node->m_title);
-    my_data.SetCheckedState(wxCHK_CHECKED);
-    if (!node->m_checked) {
-        my_data.SetCheckedState(wxCHK_UNCHECKED);
-    }
+  wxASSERT(item.IsOk());
+  TocCtrlModelNode *node = (TocCtrlModelNode *)item.GetID();
+  wxDataViewIconText my_data;
+  wxDataViewCheckIconText my_data_check;
 
-    switch (node->m_image_index) {
-        case 0: // folder icon
-            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16,16)));
-            break;
-        case 1: // shapefile icon
-            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16,16)));
-            break;
-        case 2: // database icon
-            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16,16)));
-            break;
-        case 3: // image icon
-            my_data.SetBitmapBundle(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16,16)));
-            break;
-        default:
-            wxLogError("This image index isn't supported!");
-            break;
-    }
-    variant << my_data;
-
-    if (col != 0) {
-        wxLogError("TocCtrlModel::GetValue: wrong column %d", col);
-    }
+  switch (col) {
+    case 0:
+      my_data.SetText(node->m_title);
+      my_data.SetIcon(m_image_list.GetIcon(node->m_image_index));
+      variant << my_data;
+      break;
+    case 1:
+      my_data_check.SetCheckedState(wxCHK_CHECKED);
+      if (!node->m_checked) {
+        my_data_check.SetCheckedState(wxCHK_UNCHECKED);
+      }
+      variant << my_data_check;
+      break;
+    default:
+      wxLogError("Column not managed!");
+      break;
+  }
 }
 
 bool TocCtrlModel::SetValue(const wxVariant &variant,
@@ -94,36 +90,33 @@ bool TocCtrlModel::SetValue(const wxVariant &variant,
 
 
     TocCtrlModelNode *node = (TocCtrlModelNode *) item.GetID();
-    wxDataViewCheckIconText mydata;
-    mydata << variant;
-    node->m_title = mydata.GetText();
-    node->m_checked = true;
-    if (mydata.GetCheckedState() != wxCHK_CHECKED) {
-        node->m_checked = false;
+    wxDataViewIconText mydata;
+    wxDataViewCheckIconText mydata_check;
+    switch (col) {
+      case 0:
+        mydata << variant;
+        node->m_title = mydata.GetText();
+        node->m_image_index = 0;
+        for (int i = 0; i < m_image_list.GetImageCount(); i++) {
+          if (m_image_list.GetIcon(i).IsSameAs(mydata.GetIcon())) {
+            node->m_image_index = i;
+          }
+        }
+        return true;
+
+      case 1:
+        mydata_check << variant;
+        node->m_checked = true;
+        if (mydata_check.GetCheckedState() != wxCHK_CHECKED) {
+          node->m_checked = false;
+        }
+        return true;
+
+      default:
+        wxLogError("Column not managed!");
+        break;
     }
-
-
-    return true;
-    /*
-    switch (col)
-    {
-        case 0:
-            node->m_title = variant.GetString();
-            return true;
-        case 1:
-            node->m_artist = variant.GetString();
-            return true;
-        case 2:
-            node->m_year = variant.GetLong();
-            return true;
-        case 3:
-            node->m_quality = variant.GetString();
-            return true;
-
-        default:
-            wxLogError( "TocCtrlModel::SetValue: wrong column" );
-    }
-    return false;*/
+    return false;
 }
 
 bool TocCtrlModel::IsEnabled(const wxDataViewItem &item,
@@ -195,7 +188,7 @@ unsigned int TocCtrlModel::GetChildren(const wxDataViewItem &parent,
     return count;
 }
 unsigned int TocCtrlModel::GetColumnCount() const {
-  return 1;
+  return 2;
 }
 
 wxString TocCtrlModel::GetColumnType(unsigned int) const {

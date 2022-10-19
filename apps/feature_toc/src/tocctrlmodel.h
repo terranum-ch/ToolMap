@@ -112,6 +112,7 @@ public:
 
 private:
     TocCtrlModelNode *m_root;
+    wxImageList m_image_list;
 
     // pointers to some "special" nodes of the tree:
 //    TocCtrlModelNode *m_pop;
