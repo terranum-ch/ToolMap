@@ -12,6 +12,8 @@ class Toolmap(ConanFile):
         "libtiff/4.4.0",
         "libdeflate/1.12",
         "proj/9.0.1",
+        "libjpeg/9e",
+        "libpng/1.6.38"
     ]
 
     options = {
