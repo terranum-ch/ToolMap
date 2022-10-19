@@ -7,11 +7,11 @@ class Toolmap(ConanFile):
     requires = [
         "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
-        "gdal/3.5.1@terranum-conan+gdal/stable",
+        "gdal/3.5.2@terranum-conan+gdal/stable",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
         "libtiff/4.4.0",
         "libdeflate/1.12",
-        "proj/9.0.0",
+        "proj/9.0.1",
     ]
 
     options = {
