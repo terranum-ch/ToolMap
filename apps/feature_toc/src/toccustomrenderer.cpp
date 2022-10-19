@@ -19,64 +19,86 @@ tocRendererData *tocRendererData::Clone() const {
 }
 
 bool tocRendererData::Eq(wxVariantData &data) const {
-//  if (m_layer_name != data.m_layer_name) {
-//    return false;
-//  }
-//  if (m_image_index != data.m_image_index) {
-//    return false;
-//  }
-//  if (m_is_visible != data.m_is_visible) {
-//    return false;
-//  }
-//  if (m_is_editing != data.m_is_editing) {
-//    return false;
-//  }
+  tocRendererData *my_data = (tocRendererData *)&data;
+  if (m_layer_name != my_data->m_layer_name) {
+    return false;
+  }
+  if (m_image_index != my_data->m_image_index) {
+    return false;
+  }
+  if (m_is_visible != my_data->m_is_visible) {
+    return false;
+  }
+  if (m_is_editing != my_data->m_is_editing) {
+    return false;
+  }
   return true;
 }
-wxString tocRendererData::GetType() const{
-  return "tocrenderdata";
+
+wxString tocRendererData::GetType() const {
+  return "tocrendererdata";
 }
+
+tocRendererData::~tocRendererData() {}
 
 // This renderer can be either activatable or editable, for demonstration
 // purposes. In real programs, you should select whether the user should be
 // able to activate or edit the cell and it doesn't make sense to switch
 // between the two -- but this is just an example, so it doesn't stop us.
-tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrenderdata", mode, wxALIGN_LEFT) {
-  //tocRendererData * my_data = new tocRendererData();
-  //wxVariant myVariant (my_data);
+tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
 
-
-
-  //tocRendererData my_data;
-  //wxAny my_any = my_data;
-  //my_any.GetAs(&myVariant);
-
-  // my_any.operator=(myVariant);
 }
 
 bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
+  // rectangle and margin
   int margin = 5;
-  dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_check_on, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
-                 rect.GetX(), rect.GetY());
-  dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
-                 rect.GetX() + margin + 16, rect.GetY());
+  wxRect rect_checkbox (rect.GetX(), rect.GetY(), 16, 16);
+  wxRect rect_layer_type (rect_checkbox.GetX() + rect_checkbox.GetWidth() + margin, rect.GetY(), 16, 16);
+  wxRect rect_text (rect_layer_type.GetX() + rect_layer_type.GetWidth() + margin, rect.GetY(),dc->GetTextExtent(m_layer_name).GetWidth(), rect.GetHeight()) ;
+  wxRect rect_edit (rect_text.GetX() + rect_text.GetWidth() + margin, rect.GetY(), 16, 16);
 
-  wxRect my_text_rect = rect;
-  my_text_rect.SetX(rect.GetX() + (2 * margin) + 32);
-  my_text_rect.SetWidth(dc->GetTextExtent(m_layer_name).GetWidth());
+  // checkbox image
+  wxBitmap bmp_checkbox;
+  if (m_is_visible) {
+    bmp_checkbox = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_check_on, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+  } else {
+    bmp_checkbox = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_check_off, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+  }
 
-  dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_pen, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
-                 my_text_rect.GetX() + my_text_rect.GetWidth() + margin, rect.GetY());
+  // layer type image
+  wxBitmap bmp_layer_type;
+  switch (m_image_index) {
+    case 0: // folder
+      bmp_layer_type = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      break;
+    case 1: // shapefile
+      bmp_layer_type = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      break;
+    case 2: // shapefile
+      bmp_layer_type = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      break;
+    case 3: // shapefile
+      bmp_layer_type = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      break;
+    default:
+      wxLogError(_("Unsupported bitmap index!"));
+  }
 
-  RenderText(m_layer_name,
-             0,  // no offset
-             my_text_rect, dc, state);
+  // drawing
+  dc->DrawBitmap(bmp_checkbox, rect_checkbox.GetX(), rect_checkbox.GetY());
+  dc->DrawBitmap(bmp_layer_type, rect_layer_type.GetX(), rect_layer_type.GetY());
+  RenderText(m_layer_name, 0, rect_text, dc, state);
+
+  if (m_is_editing){
+    dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_pen, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
+                   rect_edit.GetX(), rect_edit.GetY());
+  }
   return true;
 }
 
 bool tocRenderer::ActivateCell(const wxRect &WXUNUSED(cell), wxDataViewModel *WXUNUSED(model),
-                                    const wxDataViewItem &WXUNUSED(item), unsigned int WXUNUSED(col),
-                                    const wxMouseEvent *mouseEvent) {
+                               const wxDataViewItem &WXUNUSED(item), unsigned int WXUNUSED(col),
+                               const wxMouseEvent *mouseEvent) {
   wxString position;
   if (mouseEvent)
     position = wxString::Format("via mouse at %d, %d", mouseEvent->m_x, mouseEvent->m_y);
@@ -91,15 +113,21 @@ wxSize tocRenderer::GetSize() const {
 }
 
 bool tocRenderer::SetValue(const wxVariant &value) {
-  tocRendererData * my_data = (tocRendererData*) value.GetData();
-  m_layer_name = my_data->m_layer_name;
-
-  //m_layer_name = value.GetString();
+  tocRendererData *data = (tocRendererData *)value.GetData();
+  m_layer_name = data->m_layer_name;
+  m_image_index = data->m_image_index;
+  m_is_editing = data->m_is_editing;
+  m_is_visible = data->m_is_visible;
   return true;
 }
 
-bool tocRenderer::GetValue(wxVariant & value) const {
-  value.SetData(new tocRendererData());
+bool tocRenderer::GetValue(wxVariant &value) const {
+  tocRendererData *data = new tocRendererData();
+  data->m_layer_name = m_layer_name;
+  data->m_image_index = m_image_index;
+  data->m_is_visible = m_is_visible;
+  data->m_is_editing = m_is_editing;
+  value.SetData(data);
   return true;
 }
 
@@ -129,4 +157,3 @@ bool tocRenderer::GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) {
 
   return true;
 }
-
