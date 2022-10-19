@@ -1,7 +1,3 @@
-//
-// Created by Lucien Schreiber on 27.09.22.
-//
-
 #include "tocctrlmodel.h"
 
 #include "bitmaps.h"
