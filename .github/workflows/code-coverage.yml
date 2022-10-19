@@ -36,7 +36,7 @@ jobs:
         # create default profile with libstdc++11
         conan profile new default --detect
         conan profile update settings.compiler.libcxx=libstdc++11 default
-        conan profile update tools.system.package_manager:mode install
+        conan profile update tools.system.package_manager:mode=install default
 
     - name: Install system libs
       run: |
