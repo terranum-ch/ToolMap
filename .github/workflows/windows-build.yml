@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Windows testing
+    name: Windows build
     
     runs-on: windows-2019
 
