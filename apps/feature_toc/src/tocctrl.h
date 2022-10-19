@@ -19,6 +19,9 @@ public:
 
     void add_test_data();
 
+    void ExpandAll();
+
+
 //    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
 //    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
 private:

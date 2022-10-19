@@ -115,7 +115,7 @@ bool tocRenderer::ActivateCell(const wxRect &cell, wxDataViewModel *model, const
       wxLogMessage("It's not checked!");
     }
     my_model->SetChecked(item, check);
-    // TODO: This works but didn't refresh the display...
+    my_model->ItemChanged(item);
   }
 
   wxString position;

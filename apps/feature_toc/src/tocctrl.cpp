@@ -24,6 +24,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
 }
 
 void TocCtrl::add_test_data() {
+  ExpandAll();
   //    wxDataViewItem group = AppendContainer(wxDataViewCtrl::GetTopItem(), "Group");
   //    wxDataViewItem item = AppendItem(group, "Salut");
   //    SetItemIcon(item,
@@ -113,4 +114,13 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
 
 void TocCtrl::on_value_changed(wxDataViewEvent &event) {
   wxLogMessage("Value changed !");
+}
+
+void TocCtrl::ExpandAll() {
+  wxDataViewItem my_root = dynamic_cast<TocCtrlModel*>(GetModel())->GetRoot();
+  wxDataViewItemArray my_root_childs;
+  GetModel()->GetChildren(my_root, my_root_childs);
+  for (int i = 0; i < my_root_childs.GetCount(); i++){
+    Expand(my_root_childs[i]);
+  }
 }

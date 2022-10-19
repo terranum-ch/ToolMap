@@ -22,6 +22,7 @@ TocCtrlModel::TocCtrlModel() {
   my_group2->Append(my_node3);
   auto *my_node4 = new TocCtrlModelNode(my_group2, "Raster", true, 3, false);
   my_group2->Append(my_node4);
+
 }
 
 void TocCtrlModel::Delete(const wxDataViewItem &item) {
@@ -174,4 +175,9 @@ void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
   }
 
   node->m_checked = check;
+
+}
+
+wxDataViewItem TocCtrlModel::GetRoot() const {
+  return wxDataViewItem((void *)m_root);
 }

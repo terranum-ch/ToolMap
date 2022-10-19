@@ -90,7 +90,6 @@ class TocCtrlModelNode {
   TocCtrlModelNodePtrArray m_children;
 };
 
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief Model for TocCtrl
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,13 +101,15 @@ class TocCtrlModel : public wxDataViewModel {
     delete m_root;
   }
 
+  // helper functions
+  bool IsChecked(const wxDataViewItem &item) const;
+
+  void SetChecked(const wxDataViewItem &item, bool check = true);
+
+  // model function
   void Delete(const wxDataViewItem &item);
 
   void Clear();
-
-  // implementation of base class virtuals to define model
-  bool IsChecked (const wxDataViewItem &item) const;
-  void SetChecked (const wxDataViewItem &item, bool check = true);
 
   virtual void GetValue(wxVariant &variant, const wxDataViewItem &item, unsigned int col) const wxOVERRIDE;
 
@@ -117,6 +118,8 @@ class TocCtrlModel : public wxDataViewModel {
   virtual bool IsEnabled(const wxDataViewItem &item, unsigned int col) const wxOVERRIDE;
 
   virtual wxDataViewItem GetParent(const wxDataViewItem &item) const wxOVERRIDE;
+
+  wxDataViewItem GetRoot() const;
 
   virtual bool IsContainer(const wxDataViewItem &item) const wxOVERRIDE;
 
