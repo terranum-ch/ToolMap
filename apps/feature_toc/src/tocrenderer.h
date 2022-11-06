@@ -60,6 +60,8 @@ class tocRenderer : public wxDataViewCustomRenderer {
   int m_image_index;
   bool m_is_editing;
   bool m_is_visible;
+
+  wxImageList m_image_list;
 };
 
 #endif  // FEATURE_TOC_TOCRENDERER_H

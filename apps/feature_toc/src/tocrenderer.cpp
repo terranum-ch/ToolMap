@@ -45,7 +45,28 @@ tocRendererData::~tocRendererData() {}
 // purposes. In real programs, you should select whether the user should be
 // able to activate or edit the cell and it doesn't make sense to switch
 // between the two -- but this is just an example, so it doesn't stop us.
-tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {}
+tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
+  // loading images
+  // supporting dark / white bitmaps
+  wxString my_black_names[] = {feature_toc_bitmaps::toc_folder, feature_toc_bitmaps::toc_shapefile,
+                               feature_toc_bitmaps::toc_database, feature_toc_bitmaps::toc_image, feature_toc_bitmaps::toc_web,
+                               feature_toc_bitmaps::toc_check_on, feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen };
+  wxArrayString my_bitmaps_name(sizeof (my_black_names) / sizeof (wxString), my_black_names);
+
+  wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
+  if (sys_app.IsDark()) {
+    wxLogDebug("Dark mode found!");
+    wxString my_white_name [] = {feature_toc_bitmaps::w_toc_folder, feature_toc_bitmaps::w_toc_shapefile,
+                                feature_toc_bitmaps::w_toc_database, feature_toc_bitmaps::w_toc_image, feature_toc_bitmaps::w_toc_web,
+                                feature_toc_bitmaps::w_toc_check_on, feature_toc_bitmaps::w_toc_check_off, feature_toc_bitmaps::w_toc_pen };
+    my_bitmaps_name = wxArrayString(sizeof (my_white_name) / sizeof (wxString), my_white_name);
+  }
+
+  m_image_list.Create(16,16, true, sizeof(my_black_names) / sizeof (wxString));
+  for (int i = 0; i<my_bitmaps_name.GetCount(); i++) {
+    m_image_list.Add(wxBitmapBundle::FromSVG(my_bitmaps_name[i], wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
+  }
+}
 
 bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
   // rectangle and margin
@@ -57,24 +78,24 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
   wxRect rect_edit(rect_text.GetX() + rect_text.GetWidth() + margin, rect.GetY(), 16, 16);
 
   // checkbox image
+  wxASSERT(m_image_list.GetImageCount() > 0);
+
   wxBitmap bmp_checkbox;
   if (m_is_visible) {
-    bmp_checkbox = wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_check_on, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+    bmp_checkbox = m_image_list.GetBitmap(5);
   } else {
-    bmp_checkbox =
-        wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_check_off, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+    bmp_checkbox = m_image_list.GetBitmap(6);
   }
 
   // layer type image
   wxBitmap bmp_layer_type;
   switch (m_image_index) {
     case 0:  // folder
-      bmp_layer_type =
-          wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_folder, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      bmp_layer_type = m_image_list.GetBitmap(0);
       break;
     case 1:  // shapefile
       bmp_layer_type =
-          wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+          wxBitmapBundle::FromSVG(feature_toc_bitmaps::w_toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
       break;
     case 2:  // database
       bmp_layer_type =
@@ -82,7 +103,7 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
       break;
     case 3:  // image
       bmp_layer_type =
-          wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+          wxBitmapBundle::FromSVG(feature_toc_bitmaps::w_toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
       break;
     default:
       wxLogError(_("Unsupported bitmap index!"));
@@ -94,7 +115,7 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
   RenderText(m_layer_name, 0, rect_text, dc, state);
 
   if (m_is_editing) {
-    dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_pen, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
+    dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::w_toc_pen, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
                    rect_edit.GetX(), rect_edit.GetY());
   }
   return true;
