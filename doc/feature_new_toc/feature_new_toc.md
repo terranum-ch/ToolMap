@@ -44,7 +44,7 @@ Au final la table TOC dans la base de donnée correspond à l'image ci-après
 
 [<img src="img/database_table.png" width="800"/>](img/database_table.png)
 
-# Bookon
+## Bookon
 
 Utilise également un wxTreeCtrl (le control)
 
@@ -52,3 +52,29 @@ Utilise également une classe de jonction ControlMain qui fait le lien entre la 
 
 Création d'une classe dérivée de wxTreeItemData (classe qui contient les informations sur le type
 des éléments).
+
+## Branche Feature_toc
+
+Après plusieurs essais, ce qui semble fonctionner pour le nouveau contrôle pour la TOC est architecturé comme illustré ci-après
+
+[<img src="img/tocctrl_class_rel.png" width="600"/>](img/tocctrl_class_rel.png)
+
+Le conrôle principal est un TocCtrl (basé sur wxDataViewCtrl), il intègre un TocCtrlModel dérivé de wxDataViewModel. 
+Ce modèle contient un array de TocCtrlModelNode (pas de classe parent).
+
+### Classes et responsabilités
+
+| Classe           | Description                                   |
+|------------------|-----------------------------------------------|
+| TocCtrl          | Gère le contrôle, les événements, le model    |
+| TocCtrlModel     | Contient les différents Nodes                 |
+| TocCtrlModelNode | Contient les données de chaque noeud          |
+| TocRenderer      | S'occupe de la gestion du rendu de la colonne |
+| TocRendererData  | Contient les données nécessaire pour le rendu |
+
+### Fonctionnement
+
+Les étapes suivantes sont effectuées lors de la création du TocCtrl :
+
+1. TocCtrlModel est crée et assignée au TocCtrl.
+2. Une colonne est crée, elle est assignée au TocCtrl et pour son rendu, la classe TocRender est utilisée
