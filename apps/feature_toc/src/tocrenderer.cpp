@@ -76,11 +76,11 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
       bmp_layer_type =
           wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
       break;
-    case 2:  // shapefile
+    case 2:  // database
       bmp_layer_type =
           wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
       break;
-    case 3:  // shapefile
+    case 3:  // image
       bmp_layer_type =
           wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
       break;

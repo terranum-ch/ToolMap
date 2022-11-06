@@ -106,6 +106,9 @@ class TocCtrlModel : public wxDataViewModel {
 
   void SetChecked(const wxDataViewItem &item, bool check = true);
 
+  TocCtrlModelNode * NodeAdd(TocCtrlModelNode *parent, const wxString &branch);
+  TocCtrlModelNode * NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing);
+
   // model function
   void Delete(const wxDataViewItem &item);
 

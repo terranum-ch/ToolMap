@@ -5,24 +5,15 @@
 
 TocCtrlModel::TocCtrlModel() {
   // TODO: Move this test code outside the model, maybe in the frame
-  m_root = new TocCtrlModelNode(NULL, "Project");
-  auto *my_group1 = new TocCtrlModelNode(m_root, "Construction");
-  m_root->Append(my_group1);
+  m_root = new TocCtrlModelNode(nullptr, "Project");
 
-  auto *my_node = new TocCtrlModelNode(my_group1, "Line", true, 2, true);
-  my_group1->Append(my_node);
-  auto *my_node2 = new TocCtrlModelNode(my_group1, "Point", false, 2, false);
-  my_group1->Append(my_node2);
+  auto *group_const = NodeAdd(m_root, "Construction");
+  auto * line = NodeAdd(group_const, "Line", true, 2, true);
+  auto * point = NodeAdd(group_const, "Point", false, 2, false);
 
-
-  auto *my_group2 = new TocCtrlModelNode(m_root, "Support");
-  m_root->Append(my_group2);
-
-  auto *my_node3 = new TocCtrlModelNode(my_group2, "Shapefile", false, 1, false);
-  my_group2->Append(my_node3);
-  auto *my_node4 = new TocCtrlModelNode(my_group2, "Raster", true, 3, false);
-  my_group2->Append(my_node4);
-
+  auto  * group_support = NodeAdd(m_root, "Support");
+  auto  * shape = NodeAdd(group_support, "Shapefile", false, 1, false);
+  auto  * raster = NodeAdd(group_support, "Raster", true, 3, false);
 }
 
 void TocCtrlModel::Delete(const wxDataViewItem &item) {
@@ -181,3 +172,40 @@ void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
 wxDataViewItem TocCtrlModel::GetRoot() const {
   return wxDataViewItem((void *)m_root);
 }
+
+/// Adding a branch node
+/// \param parent parent node
+/// \param branch branch name
+/// \return the newly TocCtrlModelNode or a null pointer in case of error
+TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &branch) {
+  // check that the node is a container or abort
+  if (!parent->IsContainer()){
+    wxLogError("Parent node isn't a container, adding folder not possible!");
+    return nullptr;
+  }
+
+  auto *my_group1 = new TocCtrlModelNode(parent, branch);
+  parent->Append(my_group1);
+  return my_group1;
+}
+
+/// Append an item
+/// \param parent (must be a container)
+/// \param title
+/// \param checked
+/// \param image zero based image index (0 = folder, 1 = shapefile, 2 = database, 3 = image)
+/// \param editing
+/// \return the newly TocCtrlModelNode or a null pointer in case of error
+TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
+                                        bool editing) {
+  // check that the node is a container or abort
+  if (!parent->IsContainer()){
+    wxLogError("Parent node isn't a container, adding item not possible!");
+    return nullptr;
+  }
+
+  auto * my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
+  parent->Append(my_item);
+  return my_item;
+}
+
