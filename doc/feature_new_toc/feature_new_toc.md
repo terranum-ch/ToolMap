@@ -64,13 +64,13 @@ Ce modèle contient un array de TocCtrlModelNode (pas de classe parent).
 
 ### Classes et responsabilités
 
-| Classe           | Description                                   |
-|------------------|-----------------------------------------------|
-| TocCtrl          | Gère le contrôle, les événements, le model    |
-| TocCtrlModel     | Contient les différents Nodes                 |
-| TocCtrlModelNode | Contient les données de chaque noeud          |
-| TocRenderer      | S'occupe de la gestion du rendu de la colonne |
-| TocRendererData  | Contient les données nécessaire pour le rendu |
+| Classe           | Description                                                           |
+|------------------|-----------------------------------------------------------------------|
+| TocCtrl          | Gère le contrôle, les événements, le model                            |
+| TocCtrlModel     | Contient les différents Nodes                                         |
+| TocCtrlModelNode | Contient les données de chaque noeud                                  |
+| TocRenderer      | S'occupe de la gestion du rendu de la colonne                         |
+| TocRendererData  | Contient les données nécessaire pour le rendu, basé sur wxVariantData |
 
 ### Fonctionnement
 

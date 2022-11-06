@@ -1,5 +1,5 @@
-#ifndef FEATURE_TOC_TOCCUSTOMRENDERER_H
-#define FEATURE_TOC_TOCCUSTOMRENDERER_H
+#ifndef FEATURE_TOC_TOCRENDERER_H
+#define FEATURE_TOC_TOCRENDERER_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
@@ -62,4 +62,4 @@ class tocRenderer : public wxDataViewCustomRenderer {
   bool m_is_visible;
 };
 
-#endif  // FEATURE_TOC_TOCCUSTOMRENDERER_H
+#endif  // FEATURE_TOC_TOCRENDERER_H

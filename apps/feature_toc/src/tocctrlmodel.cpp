@@ -1,7 +1,7 @@
 #include "tocctrlmodel.h"
 
 #include "bitmaps.h"
-#include "toccustomrenderer.h"
+#include "tocrenderer.h"
 
 TocCtrlModel::TocCtrlModel() {
   // TODO: Move this test code outside the model, maybe in the frame

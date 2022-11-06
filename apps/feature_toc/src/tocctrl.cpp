@@ -1,7 +1,7 @@
 #include "tocctrl.h"
 
 #include "bitmaps.h"
-#include "toccustomrenderer.h"
+#include "tocrenderer.h"
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
     : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_SINGLE | wxDV_NO_HEADER) {
