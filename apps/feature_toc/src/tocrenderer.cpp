@@ -1,6 +1,7 @@
+#include "tocrenderer.h"
+
 #include "bitmaps.h"
 #include "tocctrlmodel.h"
-#include "tocrenderer.h"
 
 tocRendererData::tocRendererData() {
   m_layer_name = wxEmptyString;
@@ -48,22 +49,24 @@ tocRendererData::~tocRendererData() {}
 tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
   // loading images
   // supporting dark / white bitmaps
-  wxString my_black_names[] = {feature_toc_bitmaps::toc_folder, feature_toc_bitmaps::toc_shapefile,
-                               feature_toc_bitmaps::toc_database, feature_toc_bitmaps::toc_image, feature_toc_bitmaps::toc_web,
-                               feature_toc_bitmaps::toc_check_on, feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen };
-  wxArrayString my_bitmaps_name(sizeof (my_black_names) / sizeof (wxString), my_black_names);
+  wxString my_black_names[] = {feature_toc_bitmaps::toc_folder,    feature_toc_bitmaps::toc_shapefile,
+                               feature_toc_bitmaps::toc_database,  feature_toc_bitmaps::toc_image,
+                               feature_toc_bitmaps::toc_web,       feature_toc_bitmaps::toc_check_on,
+                               feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen};
+  wxArrayString my_bitmaps_name(sizeof(my_black_names) / sizeof(wxString), my_black_names);
 
   wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
   if (sys_app.IsDark()) {
     wxLogDebug("Dark mode found!");
-    wxString my_white_name [] = {feature_toc_bitmaps::w_toc_folder, feature_toc_bitmaps::w_toc_shapefile,
-                                feature_toc_bitmaps::w_toc_database, feature_toc_bitmaps::w_toc_image, feature_toc_bitmaps::w_toc_web,
-                                feature_toc_bitmaps::w_toc_check_on, feature_toc_bitmaps::w_toc_check_off, feature_toc_bitmaps::w_toc_pen };
-    my_bitmaps_name = wxArrayString(sizeof (my_white_name) / sizeof (wxString), my_white_name);
+    wxString my_white_name[] = {feature_toc_bitmaps::w_toc_folder,    feature_toc_bitmaps::w_toc_shapefile,
+                                feature_toc_bitmaps::w_toc_database,  feature_toc_bitmaps::w_toc_image,
+                                feature_toc_bitmaps::w_toc_web,       feature_toc_bitmaps::w_toc_check_on,
+                                feature_toc_bitmaps::w_toc_check_off, feature_toc_bitmaps::w_toc_pen};
+    my_bitmaps_name = wxArrayString(sizeof(my_white_name) / sizeof(wxString), my_white_name);
   }
 
-  m_image_list.Create(16,16, true, sizeof(my_black_names) / sizeof (wxString));
-  for (int i = 0; i<my_bitmaps_name.GetCount(); i++) {
+  m_image_list.Create(16, 16, true, sizeof(my_black_names) / sizeof(wxString));
+  for (int i = 0; i < my_bitmaps_name.GetCount(); i++) {
     m_image_list.Add(wxBitmapBundle::FromSVG(my_bitmaps_name[i], wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
   }
 }
@@ -94,17 +97,16 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
       bmp_layer_type = m_image_list.GetBitmap(0);
       break;
     case 1:  // shapefile
-      bmp_layer_type =
-          wxBitmapBundle::FromSVG(feature_toc_bitmaps::w_toc_shapefile, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      bmp_layer_type = m_image_list.GetBitmap(1);
       break;
     case 2:  // database
-      bmp_layer_type =
-          wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_database, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      bmp_layer_type = m_image_list.GetBitmap(2);
       break;
     case 3:  // image
-      bmp_layer_type =
-          wxBitmapBundle::FromSVG(feature_toc_bitmaps::w_toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16));
+      bmp_layer_type = m_image_list.GetBitmap(3);
       break;
+    case 4:  // web image
+      bmp_layer_type = m_image_list.GetBitmap(4);
     default:
       wxLogError(_("Unsupported bitmap index!"));
   }
@@ -115,8 +117,7 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
   RenderText(m_layer_name, 0, rect_text, dc, state);
 
   if (m_is_editing) {
-    dc->DrawBitmap(wxBitmapBundle::FromSVG(feature_toc_bitmaps::w_toc_pen, wxSize(16, 16)).GetBitmap(wxSize(16, 16)),
-                   rect_edit.GetX(), rect_edit.GetY());
+    m_image_list.Draw(7, *dc, rect_edit.GetX(), rect_edit.GetY());
   }
   return true;
 }

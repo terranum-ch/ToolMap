@@ -39,15 +39,14 @@ class tocRenderer : public wxDataViewCustomRenderer {
 
   virtual bool Render(wxRect rect, wxDC *dc, int state) wxOVERRIDE;
 
-  virtual bool ActivateCell(const wxRect &cell, wxDataViewModel *model,
-                            const wxDataViewItem &item, unsigned int WXUNUSED(col),
-                            const wxMouseEvent *mouseEvent) wxOVERRIDE;
+  virtual bool ActivateCell(const wxRect &cell, wxDataViewModel *model, const wxDataViewItem &item,
+                            unsigned int WXUNUSED(col), const wxMouseEvent *mouseEvent) wxOVERRIDE;
 
   virtual wxSize GetSize() const wxOVERRIDE;
 
   virtual bool SetValue(const wxVariant &value) wxOVERRIDE;
 
-  virtual bool GetValue(wxVariant & value) const wxOVERRIDE;
+  virtual bool GetValue(wxVariant &value) const wxOVERRIDE;
 
   virtual bool HasEditorCtrl() const wxOVERRIDE;
 
