@@ -4,16 +4,7 @@
 #include "tocrenderer.h"
 
 TocCtrlModel::TocCtrlModel() {
-  // TODO: Move this test code outside the model, maybe in the frame
   m_root = new TocCtrlModelNode(nullptr, "Project");
-
-  auto *group_const = NodeAdd(m_root, "Construction");
-  auto * line = NodeAdd(group_const, "Line", true, 2, true);
-  auto * point = NodeAdd(group_const, "Point", false, 2, false);
-
-  auto  * group_support = NodeAdd(m_root, "Support");
-  auto  * shape = NodeAdd(group_support, "Shapefile", false, 1, false);
-  auto  * raster = NodeAdd(group_support, "Raster", true, 3, false);
 }
 
 void TocCtrlModel::Delete(const wxDataViewItem &item) {
@@ -152,21 +143,20 @@ wxString TocCtrlModel::GetColumnType(unsigned int) const {
 }
 
 bool TocCtrlModel::IsChecked(const wxDataViewItem &item) const {
-  auto *node = (TocCtrlModelNode*) item.GetID();
-  if (!node){
+  auto *node = (TocCtrlModelNode *)item.GetID();
+  if (!node) {
     return false;
   }
   return node->m_checked;
 }
 
 void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
-  auto *node = (TocCtrlModelNode*) item.GetID();
-  if (!node){
+  auto *node = (TocCtrlModelNode *)item.GetID();
+  if (!node) {
     return;
   }
 
   node->m_checked = check;
-
 }
 
 wxDataViewItem TocCtrlModel::GetRoot() const {
@@ -179,7 +169,7 @@ wxDataViewItem TocCtrlModel::GetRoot() const {
 /// \return the newly TocCtrlModelNode or a null pointer in case of error
 TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &branch) {
   // check that the node is a container or abort
-  if (!parent->IsContainer()){
+  if (!parent->IsContainer()) {
     wxLogError("Parent node isn't a container, adding folder not possible!");
     return nullptr;
   }
@@ -199,13 +189,12 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
 TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
                                         bool editing) {
   // check that the node is a container or abort
-  if (!parent->IsContainer()){
+  if (!parent->IsContainer()) {
     wxLogError("Parent node isn't a container, adding item not possible!");
     return nullptr;
   }
 
-  auto * my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
+  auto *my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
   parent->Append(my_item);
   return my_item;
 }
-

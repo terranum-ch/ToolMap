@@ -24,18 +24,17 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
 }
 
 void TocCtrl::add_test_data() {
-  ExpandAll();
-  //    wxDataViewItem group = AppendContainer(wxDataViewCtrl::GetTopItem(), "Group");
-  //    wxDataViewItem item = AppendItem(group, "Salut");
-  //    SetItemIcon(item,
-  //                wxBitmapBundle::FromSVG(feature_toc_bitmaps::toc_image, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
+  TocCtrlModel *model = dynamic_cast<TocCtrlModel *>(GetModel());
+  auto *my_root = (TocCtrlModelNode *)model->GetRoot().GetID();
+  auto *group_const = model->NodeAdd(my_root, "Construction");
+  auto *line = model->NodeAdd(group_const, "Line", true, 2, true);
+  auto *point = model->NodeAdd(group_const, "Point", false, 2, false);
 
-  //    wxTreeListItem group = add_group(GetRootItem(), "Group");
-  //    wxTreeListItem item2 = add_layer(group, "Shapefile.shp", 1);
-  //    wxTreeListItem group2 = add_group(group, "Project Layers");
-  //    wxTreeListItem item3 = add_layer(group2, "Line", 2);
-  //    wxTreeListItem item4 = add_layer(group2, "Points", 2);
-  //    wxTreeListItem item5 = add_layer(group, "Raster", 3);
+  auto *group_support = model->NodeAdd(my_root, "Support");
+  auto *shape = model->NodeAdd(group_support, "Shapefile", false, 1, false);
+  auto *raster = model->NodeAdd(group_support, "Raster", true, 3, false);
+
+  ExpandAll();
 }
 
 /*
@@ -117,10 +116,10 @@ void TocCtrl::on_value_changed(wxDataViewEvent &event) {
 }
 
 void TocCtrl::ExpandAll() {
-  wxDataViewItem my_root = dynamic_cast<TocCtrlModel*>(GetModel())->GetRoot();
+  wxDataViewItem my_root = dynamic_cast<TocCtrlModel *>(GetModel())->GetRoot();
   wxDataViewItemArray my_root_childs;
   GetModel()->GetChildren(my_root, my_root_childs);
-  for (int i = 0; i < my_root_childs.GetCount(); i++){
+  for (int i = 0; i < my_root_childs.GetCount(); i++) {
     Expand(my_root_childs[i]);
   }
 }
