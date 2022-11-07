@@ -205,3 +205,19 @@ bool tocRenderer::GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) {
 
   return true;
 }
+void tocRenderer::SetColour(const wxColour &normal_col, const wxColour &dark_col) {
+  if (normal_col != wxNullColour){
+    m_color_normal = normal_col;
+  }
+  if (dark_col != wxNullColour){
+    m_color_dark = dark_col;
+  }
+}
+
+wxColour tocRenderer::GetColourNormal() {
+  return m_color_normal;
+}
+
+wxColour tocRenderer::GetColourDark() {
+  return m_color_dark;
+}

@@ -123,3 +123,14 @@ void TocCtrl::ExpandAll() {
     Expand(my_root_childs[i]);
   }
 }
+
+void TocCtrl::SetColour(const wxColour &colour_normal, const wxColour & colour_dark) {
+    auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+    renderer->SetColour(colour_normal, colour_dark);
+    wxWindow::Refresh();
+}
+
+wxColour TocCtrl::GetColour() {
+  auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+
+}
