@@ -14,6 +14,7 @@
 #include <wx/splitter.h>
 #include <wx/srchctrl.h>
 #include <wx/systhemectrl.h>
+#include <wx/colordlg.h>
 
 #include "tocctrl.h"
 
@@ -34,10 +35,14 @@ class FrameMain : public wxFrame {
   void _add_tree_data();
 
   void on_about(wxCommandEvent &event);
+  void on_change_color(wxCommandEvent & event);
 
   TocCtrl *m_toc_ctrl;
   wxTextCtrl *m_text_ctrl;
   wxLog *m_log_old;
+
+  wxMenuItem *m_menu_colour;
+
 };
 
 #endif

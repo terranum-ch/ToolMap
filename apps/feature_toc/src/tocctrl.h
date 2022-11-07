@@ -21,6 +21,8 @@ public:
 
     void ExpandAll();
 
+    void SetColour(const wxColour &colour_normal = wxNullColour, const wxColour & colour_dark = wxNullColour);
+    wxColour GetColour();
 
 //    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
 //    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);

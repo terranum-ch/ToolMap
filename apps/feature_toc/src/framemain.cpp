@@ -59,6 +59,8 @@ void FrameMain::_create_menubar() {
   wxMenuItem *m_menu_about;
   m_menu_about = new wxMenuItem(m_menu_Tools, wxID_ABOUT, wxString(wxT("About...")), wxEmptyString, wxITEM_NORMAL);
   m_menu_Tools->Append(m_menu_about);
+  m_menu_colour = new wxMenuItem(m_menu_Tools, wxNewId(), _("Set Toc Colour"));
+  m_menu_Tools->Append(m_menu_colour);
 
   m_menubar->Append(m_menu_Tools, wxT("Tools"));
   this->SetMenuBar(m_menubar);
@@ -77,6 +79,7 @@ void FrameMain::on_about(wxCommandEvent &event) {
 
 void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::on_about, this, wxID_ABOUT);
+  Bind(wxEVT_MENU, &FrameMain::on_change_color, this, m_menu_colour->GetId());
 }
 
 /// Adding some test data to the Tree Control
@@ -86,4 +89,9 @@ void FrameMain::_add_tree_data() {
 
 FrameMain::~FrameMain() {
   delete wxLog::SetActiveTarget(m_log_old);
+}
+
+void FrameMain::on_change_color(wxCommandEvent &event) {
+  wxColour my_toc_colour = wxGetColourFromUser(this, wxNullColour, "Select TOC colour");
+  m_toc_ctrl->SetColour(my_toc_colour);
 }
