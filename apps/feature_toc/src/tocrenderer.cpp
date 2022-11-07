@@ -44,30 +44,29 @@ tocRendererData::~tocRendererData() {}
 
 // This renderer can be either activatable or editable, for demonstration
 // purposes. In real programs, you should select whether the user should be
-// able to activate or edit the cell and it doesn't make sense to switch
+// able to activate or edit the cell, and it doesn't make sense to switch
 // between the two -- but this is just an example, so it doesn't stop us.
 tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
   // loading images
   // supporting dark / white bitmaps
-  wxString my_black_names[] = {feature_toc_bitmaps::toc_folder,    feature_toc_bitmaps::toc_shapefile,
+  wxString my_img_names[] = {feature_toc_bitmaps::toc_folder,    feature_toc_bitmaps::toc_shapefile,
                                feature_toc_bitmaps::toc_database,  feature_toc_bitmaps::toc_image,
                                feature_toc_bitmaps::toc_web,       feature_toc_bitmaps::toc_check_on,
                                feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen};
-  wxArrayString my_bitmaps_name(sizeof(my_black_names) / sizeof(wxString), my_black_names);
+  wxArrayString my_bitmaps_name(sizeof(my_img_names) / sizeof(wxString), my_img_names);
+  wxString my_colour = "#000000"; // black
+  //wxString my_colour = "#FF0000";  // red
 
   wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
   if (sys_app.IsDark()) {
     wxLogDebug("Dark mode found!");
-    wxString my_white_name[] = {feature_toc_bitmaps::w_toc_folder,    feature_toc_bitmaps::w_toc_shapefile,
-                                feature_toc_bitmaps::w_toc_database,  feature_toc_bitmaps::w_toc_image,
-                                feature_toc_bitmaps::w_toc_web,       feature_toc_bitmaps::w_toc_check_on,
-                                feature_toc_bitmaps::w_toc_check_off, feature_toc_bitmaps::w_toc_pen};
-    my_bitmaps_name = wxArrayString(sizeof(my_white_name) / sizeof(wxString), my_white_name);
+    my_colour = "#FFFFFF";  // white
   }
 
-  m_image_list.Create(16, 16, true, sizeof(my_black_names) / sizeof(wxString));
+  m_image_list.Create(16, 16, true, sizeof(my_img_names) / sizeof(wxString));
   for (int i = 0; i < my_bitmaps_name.GetCount(); i++) {
-    m_image_list.Add(wxBitmapBundle::FromSVG(my_bitmaps_name[i], wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
+    wxString my_bitmap_text = wxString::Format(my_bitmaps_name[i], my_colour);
+    m_image_list.Add(wxBitmapBundle::FromSVG(my_bitmap_text, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
   }
 }
 
