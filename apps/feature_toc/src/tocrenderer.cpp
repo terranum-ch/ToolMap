@@ -46,16 +46,18 @@ tocRendererData::~tocRendererData() {}
 // purposes. In real programs, you should select whether the user should be
 // able to activate or edit the cell, and it doesn't make sense to switch
 // between the two -- but this is just an example, so it doesn't stop us.
-tocRenderer::tocRenderer(wxDataViewCellMode mode) : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
-  // loading images
-  // supporting dark / white bitmaps
+tocRenderer::tocRenderer(wxDataViewCellMode mode, wxDataViewTreeCtrl *parent)
+    : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
+  m_parent_ctrl = parent;
+
+  // loading images supporting dark / white bitmaps
   wxString my_img_names[] = {feature_toc_bitmaps::toc_folder,    feature_toc_bitmaps::toc_shapefile,
-                               feature_toc_bitmaps::toc_database,  feature_toc_bitmaps::toc_image,
-                               feature_toc_bitmaps::toc_web,       feature_toc_bitmaps::toc_check_on,
-                               feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen};
+                             feature_toc_bitmaps::toc_database,  feature_toc_bitmaps::toc_image,
+                             feature_toc_bitmaps::toc_web,       feature_toc_bitmaps::toc_check_on,
+                             feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen};
   wxArrayString my_bitmaps_name(sizeof(my_img_names) / sizeof(wxString), my_img_names);
-  wxString my_colour = "#000000"; // black
-  //wxString my_colour = "#FF0000";  // red
+  wxString my_colour = "#000000";  // black
+  // wxString my_colour = "#FF0000";  // red
 
   wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
   if (sys_app.IsDark()) {
@@ -81,7 +83,6 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
 
   // checkbox image
   wxASSERT(m_image_list.GetImageCount() > 0);
-
   wxBitmap bmp_checkbox;
   if (m_is_visible) {
     bmp_checkbox = m_image_list.GetBitmap(5);
@@ -124,27 +125,34 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
 
 bool tocRenderer::ActivateCell(const wxRect &cell, wxDataViewModel *model, const wxDataViewItem &item,
                                unsigned int WXUNUSED(col), const wxMouseEvent *mouseEvent) {
-  wxRect rect_checkbox(0, 0, 16, 16);
+  wxString debug_position = "from keyboard";
   auto *my_model = (TocCtrlModel *)model;
-
   bool check = false;
-  if (rect_checkbox.Contains(mouseEvent->GetPosition())) {
-    if (my_model->IsChecked(item)) {
-      wxLogMessage("It's checked");
-    } else {
+
+  if (mouseEvent) {
+    debug_position = wxString::Format("via mouse at %d, %d", mouseEvent->m_x, mouseEvent->m_y);
+    wxRect rect_checkbox(0, 0, 16, 16);
+
+    if (rect_checkbox.Contains(mouseEvent->GetPosition())) {
+      if (!my_model->IsChecked(item)) {
+        check = true;
+      }
+      my_model->SetChecked(item, check);
+      my_model->ItemChanged(item);
+      // send activate event to the parent, not needed when using keyboard
+      wxASSERT(m_parent_ctrl);
+      wxDataViewEvent my_activate_event (wxEVT_DATAVIEW_ITEM_ACTIVATED, m_parent_ctrl, item);
+      m_parent_ctrl->GetEventHandler()->ProcessEvent(my_activate_event);
+    }
+  } else {
+    if (!my_model->IsChecked(item)) {
       check = true;
-      wxLogMessage("It's not checked!");
     }
     my_model->SetChecked(item, check);
     my_model->ItemChanged(item);
   }
 
-  wxString position;
-  if (mouseEvent)
-    position = wxString::Format("via mouse at %d, %d", mouseEvent->m_x, mouseEvent->m_y);
-  else
-    position = "from keyboard";
-  wxLogMessage("tocRenderer ActivateCell() %s", position);
+  wxLogMessage("tocRenderer ActivateCell() %s", debug_position);
   return false;
 }
 

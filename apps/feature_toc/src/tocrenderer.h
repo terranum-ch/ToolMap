@@ -35,7 +35,7 @@ class tocRenderer : public wxDataViewCustomRenderer {
   // purposes. In real programs, you should select whether the user should be
   // able to activate or edit the cell and it doesn't make sense to switch
   // between the two -- but this is just an example, so it doesn't stop us.
-  explicit tocRenderer(wxDataViewCellMode mode);
+  explicit tocRenderer(wxDataViewCellMode mode, wxDataViewTreeCtrl *parent);
 
   virtual bool Render(wxRect rect, wxDC *dc, int state) wxOVERRIDE;
 
@@ -61,6 +61,7 @@ class tocRenderer : public wxDataViewCustomRenderer {
   bool m_is_visible;
 
   wxImageList m_image_list;
+  wxDataViewCtrl * m_parent_ctrl;
 };
 
 #endif  // FEATURE_TOC_TOCRENDERER_H

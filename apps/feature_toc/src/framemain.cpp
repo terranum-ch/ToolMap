@@ -21,6 +21,7 @@ FrameMain::FrameMain(const wxString &title) : wxFrame(NULL, wxID_ANY, title, wxD
   _add_tree_data();
 
   m_log_old = wxLog::SetActiveTarget(new wxLogTextCtrl(m_text_ctrl));
+  wxLog::GetActiveTarget()->SetLogLevel(wxLOG_Debug);
   wxLogMessage("This is the log window");
 }
 

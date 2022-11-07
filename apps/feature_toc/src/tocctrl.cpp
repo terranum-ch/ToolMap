@@ -12,7 +12,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   EnableDropTarget(wxDF_UNICODETEXT);
 
   // Column definition
-  auto *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE);
+  auto *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE, (wxDataViewTreeCtrl*) this);
   auto *column5 = new wxDataViewColumn("custom", cr, 0, wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
   wxDataViewCtrl::AppendColumn(column5);
 
