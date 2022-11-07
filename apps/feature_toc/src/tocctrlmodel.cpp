@@ -176,6 +176,7 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
 
   auto *my_group1 = new TocCtrlModelNode(parent, branch);
   parent->Append(my_group1);
+  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_group1));
   return my_group1;
 }
 
@@ -196,5 +197,6 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
 
   auto *my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
   parent->Append(my_item);
+  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
   return my_item;
 }
