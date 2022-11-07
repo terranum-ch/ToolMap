@@ -184,7 +184,7 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
 /// \param parent (must be a container)
 /// \param title
 /// \param checked
-/// \param image zero based image index (0 = folder, 1 = shapefile, 2 = database, 3 = image)
+/// \param image zero based image index (0 = folder, 1 = shapefile, 2 = database, 3 = image, 4= web)
 /// \param editing
 /// \return the newly TocCtrlModelNode or a null pointer in case of error
 TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,

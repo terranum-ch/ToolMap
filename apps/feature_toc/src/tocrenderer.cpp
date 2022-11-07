@@ -107,6 +107,7 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
       break;
     case 4:  // web image
       bmp_layer_type = m_image_list.GetBitmap(4);
+      break;
     default:
       wxLogError(_("Unsupported bitmap index!"));
   }

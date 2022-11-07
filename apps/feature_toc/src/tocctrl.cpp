@@ -33,7 +33,7 @@ void TocCtrl::add_test_data() {
   auto *group_support = model->NodeAdd(my_root, "Support");
   auto *shape = model->NodeAdd(group_support, "Shapefile", false, 1, false);
   auto *raster = model->NodeAdd(group_support, "Raster", true, 3, false);
-
+  auto *web = model->NodeAdd(group_support, "Web raster", true, 4, false);
   ExpandAll();
 }
 
