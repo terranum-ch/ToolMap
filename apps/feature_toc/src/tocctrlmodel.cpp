@@ -3,6 +3,93 @@
 #include "bitmaps.h"
 #include "tocrenderer.h"
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief TocCtrlModelNode
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
+                                   bool editing) {
+  m_parent = parent;
+  m_title = title;
+  m_checked = checked;
+  m_image_index = image;
+  m_container = false;
+  m_editing = editing;
+}
+
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch) {
+  m_parent = parent;
+  m_title = branch;
+  m_checked = true;
+  m_image_index = 0;  // folder image
+  m_container = true;
+  m_editing = false;
+}
+
+TocCtrlModelNode::~TocCtrlModelNode() {
+  // free all our children nodes
+  size_t count = m_children.GetCount();
+  for (size_t i = 0; i < count; i++) {
+    TocCtrlModelNode *child = m_children[i];
+    delete child;
+  }
+}
+
+void TocCtrlModelNode::GetAllChildRecursive(TocCtrlModelNodePtrArray &node_array, TocCtrlModelNode *startnode) {
+  TocCtrlModelNodePtrArray my_child_array;
+  if (startnode == nullptr) {
+    my_child_array = GetChildren();
+  } else {
+    wxASSERT(startnode);
+    my_child_array = startnode->GetChildren();
+  }
+  for (unsigned int i = 0; i < my_child_array.GetCount(); i++) {
+    TocCtrlModelNode *my_node = my_child_array[i];
+    node_array.Add(my_node);
+    if (my_node->IsContainer()) {
+      GetAllChildRecursive(node_array, my_node);
+    }
+  }
+}
+
+bool TocCtrlModelNode::IsMyChildren(TocCtrlModelNode *node) {
+  TocCtrlModelNodePtrArray my_array;
+  GetAllChildRecursive(my_array, nullptr);
+  for (unsigned int i = 0; i < my_array.GetCount(); i++) {
+    if (my_array[i] == node) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool TocCtrlModelNode::TocCtrlModelNode::IsContainer() const {
+  return m_container;
+}
+
+TocCtrlModelNode *TocCtrlModelNode::GetParent() {
+  return m_parent;
+}
+
+TocCtrlModelNodePtrArray &TocCtrlModelNode::GetChildren() {
+  return m_children;
+}
+
+void TocCtrlModelNode::Insert(TocCtrlModelNode *child, unsigned int n) {
+  m_children.Insert(child, n);
+}
+
+void TocCtrlModelNode::Append(TocCtrlModelNode *child) {
+  m_children.Add(child);
+}
+
+unsigned int TocCtrlModelNode::GetChildCount() const {
+  return m_children.GetCount();
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// @brief TocCtrlModel
+////////////////////////////////////////////////////////////////////////////////////////////////////
 TocCtrlModel::TocCtrlModel() {
   m_root = new TocCtrlModelNode(nullptr, "Project");
 }
