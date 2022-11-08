@@ -373,18 +373,13 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
 
   // moving container
   if (source->IsContainer()){
+    TocCtrlModelNode * new_container = nullptr;
     if (move_index == wxNOT_FOUND){ // add to the end
-      TocCtrlModelNode * new_container = NodeAdd(real_destination, source->m_title);
-
-      TocCtrlModelNodePtrArray my_source_array;
-      source->GetAllChildRecursive(my_source_array);
-
-
+      new_container = NodeAdd(real_destination, source->m_title);
     }else { // insert
-      TocCtrlModelNode * new_container = NodeInsert(real_destination, source->m_title);
-      // TODO: Add code for inserting
+      new_container = NodeInsert(real_destination, source->m_title);
     }
-
+    NodeAddRecursive(new_container, source);
     return true;
   }
 
@@ -399,4 +394,17 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   return true;
 }
 
-
+void TocCtrlModel::NodeAddRecursive(TocCtrlModelNode *parent, TocCtrlModelNode *start) {
+  wxASSERT(parent);
+  wxASSERT(start);
+  TocCtrlModelNodePtrArray childs = start->GetChildren();
+  for (unsigned int i = 0;i< childs.GetCount(); i++){
+    TocCtrlModelNode * item = childs[i];
+    if (!item->IsContainer()){
+      NodeAdd(parent, item->m_title, item->m_checked, item->m_image_index, item->m_editing);
+    } else {
+      TocCtrlModelNode * group = NodeAdd(parent, item->m_title);
+      NodeAddRecursive(group, item);
+    }
+  }
+}
