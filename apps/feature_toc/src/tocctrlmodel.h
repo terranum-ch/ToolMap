@@ -73,7 +73,8 @@ class TocCtrlModel : public wxDataViewModel {
   TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing,
                                int index = 0);
   bool NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index = wxNOT_FOUND);
-  void NodeAddRecursive(TocCtrlModelNode * parent, TocCtrlModelNode * start);
+  void NodeRecursiveAdd(TocCtrlModelNode * parent, TocCtrlModelNode * start);
+  void NodeRecursiveRemove(TocCtrlModelNode * start);
 
   // model function
   void Delete(const wxDataViewItem &item);
