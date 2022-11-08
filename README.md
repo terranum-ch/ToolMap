@@ -1,8 +1,8 @@
 # ToolMap 
-[![Tests Linux](https://github.com/terranum-ch/ToolMap/actions/workflows/tests-linux.yml/badge.svg)](https://github.com/terranum-ch/ToolMap/actions/workflows/tests-linux.yml)
-[![Tests Windows](https://github.com/terranum-ch/ToolMap/actions/workflows/tests-windows.yml/badge.svg)](https://github.com/terranum-ch/ToolMap/actions/workflows/tests-windows.yml)
-[![Coverity scan](https://scan.coverity.com/projects/13166/badge.svg)](href="https://scan.coverity.com/projects/terranum-ch-toolmap)
-[![codecov](https://codecov.io/gh/terranum-ch/ToolMap/branch/master/graph/badge.svg?token=J3gEOvWUJ5)](https://codecov.io/gh/terranum-ch/ToolMap)
+[![Linux build](https://github.com/terranum-ch/ToolMap/actions/workflows/linux-build.yml/badge.svg)](https://github.com/terranum-ch/ToolMap/actions/workflows/linux-build.yml)
+[![Windows build](https://github.com/terranum-ch/ToolMap/actions/workflows/windows-build.yml/badge.svg)](https://github.com/terranum-ch/ToolMap/actions/workflows/windows-build.yml)
+[![Coverity scan](https://github.com/terranum-ch/ToolMap/actions/workflows/coverity-scan.yml/badge.svg)](https://github.com/terranum-ch/ToolMap/actions/workflows/coverity-scan.yml)
+[![Doxygen generation](https://github.com/terranum-ch/ToolMap/actions/workflows/doxygen-generate.yml/badge.svg)](https://github.com/terranum-ch/ToolMap/actions/workflows/doxygen-generate.yml)
 
 ToolMap is a cost-free, open-source software dedicated for digitizing data and producing complex multi-layer GIS projects.
 
