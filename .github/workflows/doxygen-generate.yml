@@ -1,0 +1,34 @@
+name: Doxygen generation
+
+on:
+  push:
+    branches:
+      - master
+      - feature/*
+
+jobs:
+  build-doxygen:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Build the HTML documentation
+      - name: Doxygen Action
+        uses: mattnotmitt/doxygen-action@v1.1.0
+        with:
+          doxyfile-path: ./Doxyfile
+          working-directory: ./doc
+
+      # Deploy the HTML documentation to GitHub Pages
+      - name: GH Pages Deployment
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          external_repository: terranum-ch/ToolMap-dev-doc
+          publish_dir: ./doc/html/
+          destination_dir: doxygen
+          enable_jekyll: true
+          allow_empty_commit: false
+          force_orphan: true
+          publish_branch: main
