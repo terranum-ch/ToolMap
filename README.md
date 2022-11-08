@@ -11,4 +11,4 @@ The user documentation can be found here: http://toolmap.readthedocs.io
 ![toolmap screenshot](doc/doc_images/screenshot.jpg "ToolMap screenshot")
 
 
-Build instruction : [doc/build_instructions.md](doc/build_instructions.md)
+Build instruction : https://terranum-ch.github.io/ToolMap-dev-doc/instructions/build.html
