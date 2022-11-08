@@ -4,13 +4,13 @@
 
 La TOC est actuellement pilotée par tmTocCtrl (wxTreeCtrl).
 
-[<img src="img/toc.png" width="250"/>](img/toc.png)
+![](img/toc.png)
 
 ## Chargement
 
 Lors de l’ouverture d’un projet, ProjectManager::Openproject appelle tmLayerManager::InitLayerManager qui  appelle tmLayerManager::FillTOCArray. Cette fonction appelle DatabaseTM::GetNextTocEnty qui va interroger la BDD pour récupèrer les couches.
 
-[<img src="img/tmlayermanager.png" width="150"/>](img/tmlayermanager.png)
+![](img/tmlayermanager.png)
 
 La TOC est crée avec la commande SQL suivante. 
 
@@ -38,11 +38,11 @@ La TOC est crée avec la commande SQL suivante.
  C'est nécessaire pour enregistrer la Symbologie des couches*
  5. DatabaseTM::DatabaseQueryNoResults() *Met à jour la TOC*
 
-[<img src="img/savetocstatus.png" width="150"/>](img/savetocstatus.png)
+![](img/savetocstatus.png)
 
 Au final la table TOC dans la base de donnée correspond à l'image ci-après
 
-[<img src="img/database_table.png" width="800"/>](img/database_table.png)
+![](img/database_table.png)
 
 ## Bookon
 
@@ -57,9 +57,9 @@ des éléments).
 
 Après plusieurs essais, ce qui semble fonctionner pour le nouveau contrôle pour la TOC est architecturé comme illustré ci-après
 
-[<img src="img/tocctrl_class_rel.png" width="600"/>](img/tocctrl_class_rel.png)
+![](img/tocctrl_class_rel.png)
 
-Le conrôle principal est un TocCtrl (basé sur wxDataViewCtrl), il intègre un TocCtrlModel dérivé de wxDataViewModel. 
+Le contrôle principal est un TocCtrl (basé sur wxDataViewCtrl), il intègre un TocCtrlModel dérivé de wxDataViewModel. 
 Ce modèle contient un array de TocCtrlModelNode (pas de classe parent).
 
 ### Classes et responsabilités
