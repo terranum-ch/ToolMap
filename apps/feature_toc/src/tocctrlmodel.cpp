@@ -201,8 +201,22 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
   return my_item;
 }
 
+TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
+                                           bool editing, int index) {
+  // check that the node is a container or abort
+  if (!parent->IsContainer()) {
+    wxLogError("Parent node isn't a container, adding item not possible!");
+    return nullptr;
+  }
+
+  auto *my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
+  parent->Insert(my_item, index);
+  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
+  return my_item;
+}
+
 wxDataViewItem TocCtrlModel::ConvertFromTocNode(const TocCtrlModelNode *node) {
-  return wxDataViewItem((void *) node);
+  return wxDataViewItem((void *)node);
 }
 
 TocCtrlModelNode *TocCtrlModel::ConvertFromwxDataViewItem(const wxDataViewItem &item) {
@@ -213,7 +227,7 @@ TocCtrlModelNode *TocCtrlModel::ConvertFromwxDataViewItem(const wxDataViewItem &
 /// \param node
 /// \return the text for nodes and group
 wxString TocCtrlModel::NodeGetTitle(TocCtrlModelNode *node) {
-  if (node->IsContainer()){
+  if (node->IsContainer()) {
     return node->m_title;
   }
   return wxEmptyString;
@@ -224,7 +238,7 @@ wxString TocCtrlModel::NodeGetTitle(TocCtrlModelNode *node) {
 /// \param title
 /// \return true for Container, false otherwise. It makes no sense to change item title!
 bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
-  if (!node->IsContainer() || title.IsEmpty()){
+  if (!node->IsContainer() || title.IsEmpty()) {
     return false;
   }
   node->m_title = title;
@@ -235,32 +249,31 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
 /// Move a node from source to destination.
 /// \param source
 /// \param destination
-/// \param proposed_index wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the destination container
-/// \return
+/// \param proposed_index wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the
+/// destination container \return
 bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index) {
   wxASSERT(source);
   wxASSERT(destination);
 
   // ensure that destination is a container
-  TocCtrlModelNode * real_destination = destination;
-  if (!destination->IsContainer()){
+  TocCtrlModelNode *real_destination = destination;
+  if (!destination->IsContainer()) {
     real_destination = destination->GetParent();
   }
 
   // ensure index isn't out of bounds
   int move_index = proposed_index;
-  if (move_index != wxNOT_FOUND){
-    if (real_destination->GetChildCount() < move_index){
+  if (move_index != wxNOT_FOUND) {
+    if (real_destination->GetChildCount() < move_index) {
       move_index = wxNOT_FOUND;
     }
   }
 
-  if (move_index == wxNOT_FOUND){
-    NodeAdd(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing);
-    Delete(ConvertFromTocNode(source));
+  if (move_index == wxNOT_FOUND) {
+    move_index = 0;
   }
-
-
-
+  NodeInsert(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing,
+             move_index);
+  Delete(ConvertFromTocNode(source));
   return true;
 }

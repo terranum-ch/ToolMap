@@ -64,6 +64,10 @@ class TocCtrlModelNode {
     m_children.Add(child);
   }
 
+  void Insert(TocCtrlModelNode * child, int index = 0){
+    m_children.Insert(child, index);
+  }
+
   unsigned int GetChildCount() const {
     return m_children.GetCount();
   }
@@ -110,6 +114,8 @@ class TocCtrlModel : public wxDataViewModel {
 
   TocCtrlModelNode * NodeAdd(TocCtrlModelNode *parent, const wxString &branch);
   TocCtrlModelNode * NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing);
+  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing,
+                               int index = 0);
   bool NodeMove(TocCtrlModelNode * source, TocCtrlModelNode * destination, int proposed_index = wxNOT_FOUND);
 
   // model function
