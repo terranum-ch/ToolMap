@@ -49,22 +49,24 @@ tocRendererData::~tocRendererData() {}
 tocRenderer::tocRenderer(wxDataViewCellMode mode, wxDataViewTreeCtrl *parent)
     : wxDataViewCustomRenderer("tocrendererdata", mode, wxALIGN_LEFT) {
   m_parent_ctrl = parent;
+  _create_bitmaps();
+}
 
-  // loading images supporting dark / white bitmaps
+void tocRenderer::_create_bitmaps() {  // loading images supporting dark / white bitmaps
   wxString my_img_names[] = {feature_toc_bitmaps::toc_folder,    feature_toc_bitmaps::toc_shapefile,
                              feature_toc_bitmaps::toc_database,  feature_toc_bitmaps::toc_image,
                              feature_toc_bitmaps::toc_web,       feature_toc_bitmaps::toc_check_on,
                              feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen};
   wxArrayString my_bitmaps_name(sizeof(my_img_names) / sizeof(wxString), my_img_names);
-  wxString my_colour = "#000000";  // black
-  // wxString my_colour = "#FF0000";  // red
+  wxString my_colour = m_color_normal.GetAsString(wxC2S_HTML_SYNTAX);
 
   wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
   if (sys_app.IsDark()) {
     wxLogDebug("Dark mode found!");
-    my_colour = "#FFFFFF";  // white
+    my_colour = m_color_dark.GetAsString(wxC2S_HTML_SYNTAX);
   }
 
+  m_image_list.Destroy();
   m_image_list.Create(16, 16, true, sizeof(my_img_names) / sizeof(wxString));
   for (int i = 0; i < my_bitmaps_name.GetCount(); i++) {
     wxString my_bitmap_text = wxString::Format(my_bitmaps_name[i], my_colour);
@@ -202,15 +204,21 @@ bool tocRenderer::GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) {
   if (!text) return false;
 
   value = text->GetValue();
-
   return true;
 }
+
 void tocRenderer::SetColour(const wxColour &normal_col, const wxColour &dark_col) {
+  bool reload_list = false;
   if (normal_col != wxNullColour){
     m_color_normal = normal_col;
+    reload_list = true;
   }
   if (dark_col != wxNullColour){
     m_color_dark = dark_col;
+    reload_list = true;
+  }
+  if (reload_list){
+    _create_bitmaps();
   }
 }
 

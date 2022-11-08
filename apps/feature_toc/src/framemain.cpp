@@ -92,6 +92,7 @@ FrameMain::~FrameMain() {
 }
 
 void FrameMain::on_change_color(wxCommandEvent &event) {
-  wxColour my_toc_colour = wxGetColourFromUser(this, wxNullColour, "Select TOC colour");
+  wxColour my_actual_colour = m_toc_ctrl->GetColourNormal();
+  wxColour my_toc_colour = wxGetColourFromUser(this, my_actual_colour, "Select TOC colour");
   m_toc_ctrl->SetColour(my_toc_colour);
 }

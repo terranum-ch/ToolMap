@@ -68,6 +68,7 @@ class tocRenderer : public wxDataViewCustomRenderer {
   wxDataViewCtrl * m_parent_ctrl;
   wxColour m_color_normal = *wxBLACK;
   wxColour m_color_dark = *wxWHITE;
+  void _create_bitmaps();
 };
 
 #endif  // FEATURE_TOC_TOCRENDERER_H

@@ -130,7 +130,12 @@ void TocCtrl::SetColour(const wxColour &colour_normal, const wxColour & colour_d
     wxWindow::Refresh();
 }
 
-wxColour TocCtrl::GetColour() {
+wxColour TocCtrl::GetColourNormal() {
   auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+  return renderer->GetColourNormal();
+}
 
+wxColour TocCtrl::GetColourDark() {
+  auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+  return renderer->GetColourDark();
 }
