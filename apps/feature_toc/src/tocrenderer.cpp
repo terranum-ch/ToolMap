@@ -143,7 +143,7 @@ bool tocRenderer::ActivateCell(const wxRect &cell, wxDataViewModel *model, const
       my_model->ItemChanged(item);
       // send activate event to the parent, not needed when using keyboard
       wxASSERT(m_parent_ctrl);
-      wxDataViewEvent my_activate_event (wxEVT_DATAVIEW_ITEM_ACTIVATED, m_parent_ctrl, item);
+      wxDataViewEvent my_activate_event(wxEVT_DATAVIEW_ITEM_ACTIVATED, m_parent_ctrl, item);
       m_parent_ctrl->GetEventHandler()->ProcessEvent(my_activate_event);
     }
   } else {
@@ -209,15 +209,15 @@ bool tocRenderer::GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) {
 
 void tocRenderer::SetColour(const wxColour &normal_col, const wxColour &dark_col) {
   bool reload_list = false;
-  if (normal_col != wxNullColour){
+  if (normal_col != wxNullColour) {
     m_color_normal = normal_col;
     reload_list = true;
   }
-  if (dark_col != wxNullColour){
+  if (dark_col != wxNullColour) {
     m_color_dark = dark_col;
     reload_list = true;
   }
-  if (reload_list){
+  if (reload_list) {
     _create_bitmaps();
   }
 }

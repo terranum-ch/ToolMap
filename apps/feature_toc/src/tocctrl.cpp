@@ -12,7 +12,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   EnableDropTarget(wxDF_UNICODETEXT);
 
   // Column definition
-  auto *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE, (wxDataViewTreeCtrl*) this);
+  auto *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE, (wxDataViewTreeCtrl *)this);
   auto *column5 = new wxDataViewColumn("custom", cr, 0, wxCOL_WIDTH_DEFAULT, wxALIGN_LEFT, wxDATAVIEW_COL_RESIZABLE);
   wxDataViewCtrl::AppendColumn(column5);
 
@@ -124,18 +124,18 @@ void TocCtrl::ExpandAll() {
   }
 }
 
-void TocCtrl::SetColour(const wxColour &colour_normal, const wxColour & colour_dark) {
-    auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
-    renderer->SetColour(colour_normal, colour_dark);
-    wxWindow::Refresh();
+void TocCtrl::SetColour(const wxColour &colour_normal, const wxColour &colour_dark) {
+  auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+  renderer->SetColour(colour_normal, colour_dark);
+  wxWindow::Refresh();
 }
 
 wxColour TocCtrl::GetColourNormal() {
-  auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+  auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
   return renderer->GetColourNormal();
 }
 
 wxColour TocCtrl::GetColourDark() {
-  auto renderer = dynamic_cast<tocRenderer*>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
+  auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
   return renderer->GetColourDark();
 }

@@ -54,21 +54,22 @@ class tocRenderer : public wxDataViewCustomRenderer {
 
   virtual bool GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) wxOVERRIDE;
 
-  void SetColour(const wxColour & normal_col, const wxColour & dark_col);
-  wxColour GetColourNormal ();
-  wxColour GetColourDark ();
+  void SetColour(const wxColour &normal_col, const wxColour &dark_col);
+  wxColour GetColourNormal();
+  wxColour GetColourDark();
 
  private:
+  void _create_bitmaps();
+
   wxString m_layer_name;
   int m_image_index;
   bool m_is_editing;
   bool m_is_visible;
 
   wxImageList m_image_list;
-  wxDataViewCtrl * m_parent_ctrl;
+  wxDataViewCtrl *m_parent_ctrl;
   wxColour m_color_normal = *wxBLACK;
   wxColour m_color_dark = *wxWHITE;
-  void _create_bitmaps();
 };
 
 #endif  // FEATURE_TOC_TOCRENDERER_H

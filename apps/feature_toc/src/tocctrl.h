@@ -14,25 +14,24 @@
 #include "tocctrlmodel.h"
 
 class TocCtrl : public wxDataViewCtrl {
-public:
-    TocCtrl(wxWindow *parent, wxWindowID id);
+ public:
+  TocCtrl(wxWindow *parent, wxWindowID id);
 
-    void add_test_data();
+  void add_test_data();
 
-    void ExpandAll();
+  void ExpandAll();
 
-    void SetColour(const wxColour &colour_normal = wxNullColour, const wxColour & colour_dark = wxNullColour);
-    wxColour GetColourNormal();
-    wxColour GetColourDark();
+  void SetColour(const wxColour &colour_normal = wxNullColour, const wxColour &colour_dark = wxNullColour);
+  wxColour GetColourNormal();
+  wxColour GetColourDark();
 
-//    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
-//    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
-private:
-    void on_dragndrop_begin(wxDataViewEvent & event);
-    void on_dragndrop_possible(wxDataViewEvent & event);
-    void on_dragndrop_drop(wxDataViewEvent & event);
-    void on_value_changed(wxDataViewEvent & event);
-
+  //    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
+  //    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
+ private:
+  void on_dragndrop_begin(wxDataViewEvent &event);
+  void on_dragndrop_possible(wxDataViewEvent &event);
+  void on_dragndrop_drop(wxDataViewEvent &event);
+  void on_value_changed(wxDataViewEvent &event);
 };
 
-#endif //FEATURE_TOC_TOCCTRL_H
+#endif  // FEATURE_TOC_TOCCTRL_H
