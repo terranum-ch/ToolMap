@@ -31,4 +31,4 @@ jobs:
           enable_jekyll: true
           allow_empty_commit: false
           force_orphan: true
-          publish_branch: main
+          publish_branch: master
