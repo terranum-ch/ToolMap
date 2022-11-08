@@ -148,6 +148,28 @@ void FrameMain::on_add_item(wxCommandEvent &event) {
   }
 }
 
+/// Add a group to the toc. If nothing is selected, the group is added to the end,
+/// otherwise the group is added to the selected item (or the selected parent)
+/// \param event
 void FrameMain::on_add_group(wxCommandEvent &event) {
+  // get new group information
+  wxString new_group_name = wxGetTextFromUser("Node name");
+  if (new_group_name.IsEmpty()){
+    return;
+  }
 
+  // get selection
+  wxDataViewItem my_sel_item = m_toc_ctrl->GetSelection();
+  auto * my_model = m_toc_ctrl->GetTocModel();
+  if (!my_sel_item.IsOk()){
+    wxLogMessage("Nothing selected, adding group to the end of the TOC");
+    my_model->NodeAdd(TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot()), new_group_name);
+  }
+  else {
+    auto * my_node = TocCtrlModel::ConvertFromwxDataViewItem(my_sel_item);
+    if (!my_node->IsContainer()){
+      my_node = my_node->GetParent();
+    }
+    my_model->NodeAdd(my_node, new_group_name);
+  }
 }
