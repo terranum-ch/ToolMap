@@ -110,6 +110,7 @@ class TocCtrlModel : public wxDataViewModel {
 
   TocCtrlModelNode * NodeAdd(TocCtrlModelNode *parent, const wxString &branch);
   TocCtrlModelNode * NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing);
+  bool NodeMove(TocCtrlModelNode * source, TocCtrlModelNode * destination, int proposed_index = wxNOT_FOUND);
 
   // model function
   void Delete(const wxDataViewItem &item);

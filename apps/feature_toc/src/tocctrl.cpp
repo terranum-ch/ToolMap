@@ -5,11 +5,15 @@
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
     : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_SINGLE | wxDV_NO_HEADER) {
+  m_drag_node_start = nullptr;
+  m_drag_node_end = nullptr;
+
   // Setting model
   wxObjectDataPtr<wxDataViewModel> my_model(new TocCtrlModel);
   wxDataViewCtrl::AssociateModel(my_model.get());
   EnableDragSource(wxDF_UNICODETEXT);
   EnableDropTarget(wxDF_UNICODETEXT);
+
 
   // Column definition
   auto *cr = new tocRenderer(wxDATAVIEW_CELL_ACTIVATABLE, (wxDataViewTreeCtrl *)this);
@@ -57,6 +61,8 @@ wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, 
 
 void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
   wxDataViewItem item(event.GetItem());
+  m_drag_node_start = nullptr;
+  m_drag_node_end = nullptr;
 
   // only allow drags for item, not containers
   if (GetModel()->IsContainer(item)) {
@@ -64,10 +70,12 @@ void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
     event.Veto();
     return;
   }
-
   auto *node = (TocCtrlModelNode *)item.GetID();
+  m_drag_node_start = node;
+
   auto *obj = new wxTextDataObject;
   obj->SetText(node->m_title);
+
   event.SetDataObject(obj);
   event.SetDragFlags(wxDrag_AllowMove);  // allows both copy and move
 
@@ -82,7 +90,8 @@ void TocCtrl::on_dragndrop_possible(wxDataViewEvent &event) {
 }
 
 void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
-  wxDataViewItem item(event.GetItem());
+  wxDataViewItem target_item(event.GetItem());
+  m_drag_node_end = nullptr;
 
   if (event.GetDataFormat() != wxDF_UNICODETEXT) {
     event.Veto();
@@ -97,18 +106,23 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
   wxTextDataObject obj;
   obj.SetData(wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer());
 
-  auto *my_model = dynamic_cast<TocCtrlModel *>(GetModel());
-  if (item.IsOk()) {
-    if (my_model->IsContainer(item)) {
-      wxLogMessage("Container");
-      // wxLogMessage("Text '%s' dropped in container '%s' (proposed index = %i)",
-      //              obj.GetText(), my_model->GetTitle(item), event.GetProposedDropIndex());
+  auto *my_model = GetTocModel();
+  m_drag_node_end = TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot());
+  if (target_item.IsOk()) {
+    auto * target_node = TocCtrlModel::ConvertFromwxDataViewItem(target_item);
+    m_drag_node_end = target_node;
+    if (my_model->IsContainer(target_item)) {
+      wxLogMessage("Text '%s' dropped in container '%s' (proposed index = %i)", obj.GetText(),
+                   my_model->NodeGetTitle(target_node),
+                   event.GetProposedDropIndex());
     } else
-      wxLogMessage("Item");
-    // wxLogMessage("Text '%s' dropped on item '%s'", obj.GetText(), my_model->GetTitle(item));
-  } else
-    wxLogMessage("Background");
-  // wxLogMessage("Text '%s' dropped on background (proposed index = %i)", obj.GetText(), event.GetProposedDropIndex());
+      wxLogMessage("Text '%s' dropped on target_item '%s'", obj.GetText(),
+                   my_model->NodeGetTitle(target_node));
+  } else {
+    wxLogMessage("Text '%s' dropped on background (proposed index = %i)", obj.GetText(), event.GetProposedDropIndex());
+  }
+  my_model->NodeMove(m_drag_node_start, m_drag_node_end, event.GetProposedDropIndex());
+
 }
 
 void TocCtrl::on_value_changed(wxDataViewEvent &event) {

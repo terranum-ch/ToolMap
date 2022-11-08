@@ -229,4 +229,38 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
   }
   node->m_title = title;
   ItemChanged(TocCtrlModel::ConvertFromTocNode(node));
+  return true;
+}
+
+/// Move a node from source to destination.
+/// \param source
+/// \param destination
+/// \param proposed_index wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the destination container
+/// \return
+bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index) {
+  wxASSERT(source);
+  wxASSERT(destination);
+
+  // ensure that destination is a container
+  TocCtrlModelNode * real_destination = destination;
+  if (!destination->IsContainer()){
+    real_destination = destination->GetParent();
+  }
+
+  // ensure index isn't out of bounds
+  int move_index = proposed_index;
+  if (move_index != wxNOT_FOUND){
+    if (real_destination->GetChildCount() < move_index){
+      move_index = wxNOT_FOUND;
+    }
+  }
+
+  if (move_index == wxNOT_FOUND){
+    NodeAdd(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing);
+    Delete(ConvertFromTocNode(source));
+  }
+
+
+
+  return true;
 }
