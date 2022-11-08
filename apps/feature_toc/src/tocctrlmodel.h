@@ -44,6 +44,35 @@ class TocCtrlModelNode {
     }
   }
 
+  void GetAllChildRecursive(TocCtrlModelNodePtrArray & node_array, TocCtrlModelNode * startnode = nullptr){
+    TocCtrlModelNodePtrArray my_child_array;
+    if (startnode == nullptr){
+       my_child_array = GetChildren();
+    } else {
+      wxASSERT(startnode);
+      my_child_array = startnode->GetChildren();
+    }
+    for (unsigned  int i = 0; i< my_child_array.GetCount();i++) {
+      TocCtrlModelNode * my_node = my_child_array[i];
+      node_array.Add(my_node);
+      if (my_node->IsContainer()){
+        GetAllChildRecursive(node_array, my_node);
+      }
+    }
+  }
+
+  bool IsMyChildren(TocCtrlModelNode * node){
+    TocCtrlModelNodePtrArray my_array;
+    GetAllChildRecursive(my_array, nullptr);
+    for (unsigned  int i = 0; i< my_array.GetCount(); i++) {
+      if (my_array[i] == node){
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   bool IsContainer() const {
     return m_container;
   }
@@ -117,6 +146,7 @@ class TocCtrlModel : public wxDataViewModel {
   TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing,
                                int index = 0);
   bool NodeMove(TocCtrlModelNode * source, TocCtrlModelNode * destination, int proposed_index = wxNOT_FOUND);
+  
 
   // model function
   void Delete(const wxDataViewItem &item);

@@ -65,8 +65,9 @@ void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
   m_drag_node_end = nullptr;
 
   // only allow drags for item, not containers
-  if (GetModel()->IsContainer(item)) {
-    wxLogMessage("Forbidding starting dragging");
+
+  if (GetTocModel()->GetRoot() == item) {
+    wxLogMessage("Forbidding starting dragging Root");
     event.Veto();
     return;
   }
@@ -98,20 +99,24 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
     return;
   }
 
-  // Note that instead of recreating a new data object here we could also
-  // retrieve the data object from the event, using its GetDataObject()
-  // method. This would be more efficient as it would avoid copying the text
-  // one more time, but would require a cast in the code and we don't really
-  // care about efficiency here.
   wxTextDataObject obj;
   obj.SetData(wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer());
-
   auto *my_model = GetTocModel();
   m_drag_node_end = TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot());
+
   int my_proposed_drop_index = event.GetProposedDropIndex();
   if (target_item.IsOk()) {
     auto * target_node = TocCtrlModel::ConvertFromwxDataViewItem(target_item);
     m_drag_node_end = target_node;
+
+    // veto if trying to drop to a child of the container
+    if (m_drag_node_start->IsMyChildren(m_drag_node_end)){
+      wxLogError("Unable to drop on a child!");
+      event.Veto();
+      return;
+    }
+
+
     // item dropped between elements
     if (my_model->IsContainer(target_item)) {
       if (my_proposed_drop_index == wxNOT_FOUND){
