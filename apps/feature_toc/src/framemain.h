@@ -39,6 +39,7 @@ class FrameMain : public wxFrame {
   void on_add_item(wxCommandEvent & event);
   void on_add_group(wxCommandEvent & event);
   void on_remove(wxCommandEvent & event);
+  void on_change_name(wxCommandEvent & event);
 
   TocCtrl *m_toc_ctrl;
   wxTextCtrl *m_text_ctrl;
@@ -48,6 +49,7 @@ class FrameMain : public wxFrame {
   wxMenuItem* m_menu_item_add_item;
   wxMenuItem* m_menu_item_add_group;
   wxMenuItem* m_menu_item_remove_selected;
+  wxMenuItem* m_menu_item_change_name;
 };
 
 #endif

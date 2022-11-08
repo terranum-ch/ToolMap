@@ -296,6 +296,23 @@
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
                     </object>
+                    <object class="separator" expanded="1">
+                        <property name="name">m_separator2</property>
+                        <property name="permission">none</property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">Change item text...</property>
+                        <property name="name">m_menu_item_change_name</property>
+                        <property name="permission">private</property>
+                        <property name="shortcut">Ctrl+M</property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
                 </object>
             </object>
         </object>

@@ -208,3 +208,25 @@ wxDataViewItem TocCtrlModel::ConvertFromTocNode(const TocCtrlModelNode *node) {
 TocCtrlModelNode *TocCtrlModel::ConvertFromwxDataViewItem(const wxDataViewItem &item) {
   return (TocCtrlModelNode *)item.GetID();
 }
+
+/// Get The node text / title
+/// \param node
+/// \return the text for nodes and group
+wxString TocCtrlModel::NodeGetTitle(TocCtrlModelNode *node) {
+  if (node->IsContainer()){
+    return node->m_title;
+  }
+  return wxEmptyString;
+}
+
+/// Set node text / title
+/// \param node
+/// \param title
+/// \return true for Container, false otherwise. It makes no sense to change item title!
+bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
+  if (!node->IsContainer() || title.IsEmpty()){
+    return false;
+  }
+  node->m_title = title;
+  ItemChanged(TocCtrlModel::ConvertFromTocNode(node));
+}
