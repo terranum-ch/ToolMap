@@ -69,6 +69,7 @@ class TocCtrlModel : public wxDataViewModel {
 
   TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, const wxString &branch);
   TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing);
+  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &branch, int index = 0);
   TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing,
                                int index = 0);
   bool NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index = wxNOT_FOUND);

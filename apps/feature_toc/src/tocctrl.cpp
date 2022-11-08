@@ -116,7 +116,6 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
       return;
     }
 
-
     // item dropped between elements
     if (my_model->IsContainer(target_item)) {
       if (my_proposed_drop_index == wxNOT_FOUND){

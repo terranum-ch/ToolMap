@@ -288,6 +288,20 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
   return my_item;
 }
 
+TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &branch, int index) {
+  // check that the node is a container or abort
+  if (!parent->IsContainer()) {
+    wxLogError("Parent node isn't a container, adding item not possible!");
+    return nullptr;
+  }
+
+  auto *my_group1 = new TocCtrlModelNode(parent, branch);
+  parent->Insert(my_group1, index);
+  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_group1));
+  return my_group1;
+
+}
+
 TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
                                            bool editing, int index) {
   // check that the node is a container or abort
@@ -333,7 +347,7 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
   return true;
 }
 
-/// Move a node from source to destination.
+/// Move a node or a container from source to destination.
 /// \param source
 /// \param destination
 /// \param proposed_index wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the
@@ -357,6 +371,24 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
     }
   }
 
+  // moving container
+  if (source->IsContainer()){
+    if (move_index == wxNOT_FOUND){ // add to the end
+      TocCtrlModelNode * new_container = NodeAdd(real_destination, source->m_title);
+
+      TocCtrlModelNodePtrArray my_source_array;
+      source->GetAllChildRecursive(my_source_array);
+
+
+    }else { // insert
+      TocCtrlModelNode * new_container = NodeInsert(real_destination, source->m_title);
+      // TODO: Add code for inserting
+    }
+
+    return true;
+  }
+
+  // moving node
   if (move_index == wxNOT_FOUND) {
     NodeAdd(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing);
   } else {
@@ -366,3 +398,5 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   Delete(ConvertFromTocNode(source));
   return true;
 }
+
+
