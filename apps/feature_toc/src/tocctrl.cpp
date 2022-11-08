@@ -24,7 +24,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
 }
 
 void TocCtrl::add_test_data() {
-  TocCtrlModel *model = dynamic_cast<TocCtrlModel *>(GetModel());
+  TocCtrlModel *model = GetTocModel();
   auto *my_root = (TocCtrlModelNode *)model->GetRoot().GetID();
   auto *group_const = model->NodeAdd(my_root, "Construction");
   auto *line = model->NodeAdd(group_const, "Line", true, 2, true);
@@ -138,4 +138,8 @@ wxColour TocCtrl::GetColourNormal() {
 wxColour TocCtrl::GetColourDark() {
   auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
   return renderer->GetColourDark();
+}
+
+TocCtrlModel *TocCtrl::GetTocModel() {
+  return dynamic_cast<TocCtrlModel *>(GetModel());
 }

@@ -52,18 +52,35 @@ void FrameMain::_create_statusbar() {
 }
 
 void FrameMain::_create_menubar() {
-  wxMenuBar *m_menubar;
-  m_menubar = new wxMenuBar(0);
-  wxMenu *m_menu_Tools;
+  wxMenuBar* m_menubar;
+  m_menubar = new wxMenuBar( 0 );
+  wxMenu* m_menu_Tools;
   m_menu_Tools = new wxMenu();
-  wxMenuItem *m_menu_about;
-  m_menu_about = new wxMenuItem(m_menu_Tools, wxID_ABOUT, wxString(wxT("About...")), wxEmptyString, wxITEM_NORMAL);
-  m_menu_Tools->Append(m_menu_about);
-  m_menu_colour = new wxMenuItem(m_menu_Tools, wxNewId(), _("Set Toc Colour"));
-  m_menu_Tools->Append(m_menu_colour);
+  m_menu_item_colour = new wxMenuItem( m_menu_Tools, wxID_ANY, wxString( wxT("Set toc color...") ) , wxEmptyString, wxITEM_NORMAL );
+  m_menu_Tools->Append( m_menu_item_colour );
 
-  m_menubar->Append(m_menu_Tools, wxT("Tools"));
-  this->SetMenuBar(m_menubar);
+  wxMenuItem* m_menu_item_about;
+  m_menu_item_about = new wxMenuItem( m_menu_Tools, wxID_ABOUT, wxString( wxT("About...") ) , wxEmptyString, wxITEM_NORMAL );
+  m_menu_Tools->Append( m_menu_item_about );
+
+  m_menubar->Append( m_menu_Tools, wxT("Tools") );
+
+  wxMenu* m_menu_data;
+  m_menu_data = new wxMenu();
+  m_menu_item_add_item = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Add item...") ) + wxT('\t') + wxT("Ctrl+N"), wxEmptyString, wxITEM_NORMAL );
+  m_menu_data->Append( m_menu_item_add_item );
+
+  m_menu_item_add_group = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Add group...") ) + wxT('\t') + wxT("Ctrl+G"), wxEmptyString, wxITEM_NORMAL );
+  m_menu_data->Append( m_menu_item_add_group );
+
+  m_menu_data->AppendSeparator();
+
+  m_menu_item_remove_selected = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Remove selected") ) , wxEmptyString, wxITEM_NORMAL );
+  m_menu_data->Append( m_menu_item_remove_selected );
+
+  m_menubar->Append( m_menu_data, wxT("Data") );
+
+  this->SetMenuBar( m_menubar );
 }
 
 void FrameMain::on_about(wxCommandEvent &event) {
@@ -79,7 +96,9 @@ void FrameMain::on_about(wxCommandEvent &event) {
 
 void FrameMain::_connect_events() {
   Bind(wxEVT_MENU, &FrameMain::on_about, this, wxID_ABOUT);
-  Bind(wxEVT_MENU, &FrameMain::on_change_color, this, m_menu_colour->GetId());
+  Bind(wxEVT_MENU, &FrameMain::on_change_color, this, m_menu_item_colour->GetId());
+  Bind(wxEVT_MENU, &FrameMain::on_add_item, this, m_menu_item_add_item->GetId());
+  Bind(wxEVT_MENU, &FrameMain::on_add_group, this, m_menu_item_add_group->GetId());
 }
 
 /// Adding some test data to the Tree Control
@@ -95,4 +114,40 @@ void FrameMain::on_change_color(wxCommandEvent &event) {
   wxColour my_actual_colour = m_toc_ctrl->GetColourNormal();
   wxColour my_toc_colour = wxGetColourFromUser(this, my_actual_colour, "Select TOC colour");
   m_toc_ctrl->SetColour(my_toc_colour);
+}
+
+/// Add an item to the toc. If nothing selected, the item is added to the end,
+/// otherwise, the item is added to the selected node or selected parent node
+/// \param event
+void FrameMain::on_add_item(wxCommandEvent &event) {
+  // get new node information
+  wxString new_node_name = wxGetTextFromUser("Node name");
+  if (new_node_name.IsEmpty()){
+    return;
+  }
+  wxString my_layer_types [] = {"Shapefile", "Database", "Image", "Web"};
+  int my_index = wxGetSingleChoiceIndex("Select layer type", "Layer type", wxArrayString(sizeof (my_layer_types) / sizeof (wxString),my_layer_types));
+  if (my_index == -1){
+    return;
+  }
+  my_index++;
+
+  // get selected node
+  wxDataViewItem my_sel_item = m_toc_ctrl->GetSelection();
+  auto * my_model = m_toc_ctrl->GetTocModel();
+  if (!my_sel_item.IsOk()){
+    wxLogMessage("Nothing selected, adding item to the end of the TOC");
+    my_model->NodeAdd(TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot()), new_node_name, true, my_index, false);
+  }
+  else {
+    auto * my_node = TocCtrlModel::ConvertFromwxDataViewItem(my_sel_item);
+    if (!my_node->IsContainer()){
+      my_node = my_node->GetParent();
+    }
+    my_model->NodeAdd(my_node, new_node_name, true, my_index, false);
+  }
+}
+
+void FrameMain::on_add_group(wxCommandEvent &event) {
+
 }

@@ -227,11 +227,72 @@
                         <property name="checked">0</property>
                         <property name="enabled">1</property>
                         <property name="help"></property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">Set toc color...</property>
+                        <property name="name">m_menu_item_colour</property>
+                        <property name="permission">private</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
                         <property name="id">wxID_ABOUT</property>
                         <property name="kind">wxITEM_NORMAL</property>
                         <property name="label">About...</property>
-                        <property name="name">m_menu_about</property>
+                        <property name="name">m_menu_item_about</property>
                         <property name="permission">none</property>
+                        <property name="shortcut"></property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                </object>
+                <object class="wxMenu" expanded="1">
+                    <property name="label">Data</property>
+                    <property name="name">m_menu_data</property>
+                    <property name="permission">none</property>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">Add item...</property>
+                        <property name="name">m_menu_item_add_item</property>
+                        <property name="permission">private</property>
+                        <property name="shortcut">Ctrl+N</property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">Add group...</property>
+                        <property name="name">m_menu_item_add_group</property>
+                        <property name="permission">private</property>
+                        <property name="shortcut">Ctrl+G</property>
+                        <property name="unchecked_bitmap"></property>
+                    </object>
+                    <object class="separator" expanded="1">
+                        <property name="name">m_separator1</property>
+                        <property name="permission">none</property>
+                    </object>
+                    <object class="wxMenuItem" expanded="1">
+                        <property name="bitmap"></property>
+                        <property name="checked">0</property>
+                        <property name="enabled">1</property>
+                        <property name="help"></property>
+                        <property name="id">wxID_ANY</property>
+                        <property name="kind">wxITEM_NORMAL</property>
+                        <property name="label">Remove selected</property>
+                        <property name="name">m_menu_item_remove_selected</property>
+                        <property name="permission">private</property>
                         <property name="shortcut"></property>
                         <property name="unchecked_bitmap"></property>
                     </object>

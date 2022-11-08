@@ -200,3 +200,11 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
   ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
   return my_item;
 }
+
+wxDataViewItem TocCtrlModel::ConvertFromTocNode(const TocCtrlModelNode *node) {
+  return wxDataViewItem((void *) node);
+}
+
+TocCtrlModelNode *TocCtrlModel::ConvertFromwxDataViewItem(const wxDataViewItem &item) {
+  return (TocCtrlModelNode *)item.GetID();
+}

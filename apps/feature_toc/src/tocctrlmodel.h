@@ -131,6 +131,9 @@ class TocCtrlModel : public wxDataViewModel {
   virtual unsigned int GetColumnCount() const wxOVERRIDE;
   virtual wxString GetColumnType(unsigned int) const wxOVERRIDE;
 
+  static wxDataViewItem ConvertFromTocNode(const TocCtrlModelNode * node);
+  static TocCtrlModelNode * ConvertFromwxDataViewItem (const wxDataViewItem & item);
+
  private:
   TocCtrlModelNode *m_root;
   wxImageList m_image_list;
