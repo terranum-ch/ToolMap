@@ -265,15 +265,17 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   int move_index = proposed_index;
   if (move_index != wxNOT_FOUND) {
     if (real_destination->GetChildCount() < move_index) {
+      wxLogMessage("Changing index, child count = %d", real_destination->GetChildCount());
       move_index = wxNOT_FOUND;
     }
   }
 
   if (move_index == wxNOT_FOUND) {
-    move_index = 0;
+    NodeAdd(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing);
+  } else {
+    NodeInsert(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing,
+               move_index);
   }
-  NodeInsert(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing,
-             move_index);
   Delete(ConvertFromTocNode(source));
   return true;
 }

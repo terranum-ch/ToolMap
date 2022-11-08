@@ -108,20 +108,34 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
 
   auto *my_model = GetTocModel();
   m_drag_node_end = TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot());
+  int my_proposed_drop_index = event.GetProposedDropIndex();
   if (target_item.IsOk()) {
     auto * target_node = TocCtrlModel::ConvertFromwxDataViewItem(target_item);
     m_drag_node_end = target_node;
+    // item dropped between elements
     if (my_model->IsContainer(target_item)) {
-      wxLogMessage("Text '%s' dropped in container '%s' (proposed index = %i)", obj.GetText(),
+      if (my_proposed_drop_index == wxNOT_FOUND){
+        my_proposed_drop_index = 0;
+      }
+      wxLogMessage("Text '%s' dropped in container '%s' (proposed index = %d)", obj.GetText(),
                    my_model->NodeGetTitle(target_node),
-                   event.GetProposedDropIndex());
-    } else
-      wxLogMessage("Text '%s' dropped on target_item '%s'", obj.GetText(),
-                   my_model->NodeGetTitle(target_node));
-  } else {
-    wxLogMessage("Text '%s' dropped on background (proposed index = %i)", obj.GetText(), event.GetProposedDropIndex());
+                   my_proposed_drop_index);
+    } else { // item dropped on another item
+      TocCtrlModelNodePtrArray my_parent_array = target_node->GetParent()->GetChildren();
+      my_proposed_drop_index = 0;
+      for (int i = 0; i< my_parent_array.GetCount();i++) {
+        if (my_parent_array[i] == target_node){
+          my_proposed_drop_index = i;
+        }
+      }
+      wxLogMessage("Text '%s' dropped on target_item '%s', index %d", obj.GetText(),
+                   my_model->NodeGetTitle(target_node), my_proposed_drop_index);
+    }
+  } else { // item dropped on background
+    my_proposed_drop_index = wxNOT_FOUND;
+    wxLogMessage("Text '%s' dropped on background (proposed index = %d)", obj.GetText(), my_proposed_drop_index);
   }
-  my_model->NodeMove(m_drag_node_start, m_drag_node_end, event.GetProposedDropIndex());
+  my_model->NodeMove(m_drag_node_start, m_drag_node_end, my_proposed_drop_index);
 
 }
 
