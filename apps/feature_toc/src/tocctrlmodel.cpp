@@ -126,7 +126,6 @@ void TocCtrlModel::Clear() {
     m_root->GetChildren().Remove(node);
     delete node;
   }
-
   Cleared();
 }
 
@@ -154,25 +153,12 @@ bool TocCtrlModel::SetValue(const wxVariant &variant, const wxDataViewItem &item
   node->m_checked = my_data->m_is_visible;
   node->m_image_index = my_data->m_image_index;
   node->m_editing = my_data->m_is_editing;
-
   return true;
 }
 
 bool TocCtrlModel::IsEnabled(const wxDataViewItem &item, unsigned int col) const {
   wxASSERT(item.IsOk());
-
-  TocCtrlModelNode *node = (TocCtrlModelNode *)item.GetID();
-
-  //    // disable Beethoven's ratings, his pieces can only be good
-  //    if (col == 3 && node->m_artist.EndsWith("Beethoven"))
-  //        return false;
-  //
-  //    // also disable editing the year when it's not specified, this doesn't work
-  //    // because the editor needs some initial value
-  //    if (col == 2 && node->m_year == -1)
-  //        return false;
-
-  // otherwise allow editing
+  // allow editing allways
   return true;
 }
 
@@ -203,11 +189,6 @@ unsigned int TocCtrlModel::GetChildren(const wxDataViewItem &parent, wxDataViewI
     return 1;
   }
 
-  //    if (node == m_classical)
-  //    {
-  //        TocCtrlModel* model = const_cast<TocCtrlModel*>(this);
-  //    }
-
   if (node->GetChildCount() == 0) {
     return 0;
   }
@@ -222,6 +203,7 @@ unsigned int TocCtrlModel::GetChildren(const wxDataViewItem &parent, wxDataViewI
 }
 
 unsigned int TocCtrlModel::GetColumnCount() const {
+  // only one column
   return 1;
 }
 
@@ -230,7 +212,7 @@ wxString TocCtrlModel::GetColumnType(unsigned int) const {
 }
 
 bool TocCtrlModel::IsChecked(const wxDataViewItem &item) const {
-  auto *node = (TocCtrlModelNode *)item.GetID();
+  auto *node = TocCtrlModel::ConvertFromDataViewItem(item);
   if (!node) {
     return false;
   }
@@ -238,21 +220,20 @@ bool TocCtrlModel::IsChecked(const wxDataViewItem &item) const {
 }
 
 void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
-  auto *node = (TocCtrlModelNode *)item.GetID();
+  auto *node = TocCtrlModel::ConvertFromDataViewItem(item);
   if (!node) {
     return;
   }
-
   node->m_checked = check;
 }
 
 wxDataViewItem TocCtrlModel::GetRoot() const {
-  return wxDataViewItem((void *)m_root);
+  return TocCtrlModel::ConvertFromNode(m_root);
 }
 
-/// Adding a branch node
+/// Adding a container node
 /// \param parent parent node
-/// \param branch branch name
+/// \param branch container name
 /// \return the newly TocCtrlModelNode or a null pointer in case of error
 TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &branch) {
   // check that the node is a container or abort
@@ -299,7 +280,6 @@ TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxStr
   parent->Insert(my_group1, index);
   ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_group1));
   return my_group1;
-
 }
 
 TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
@@ -316,11 +296,11 @@ TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxStr
   return my_item;
 }
 
-wxDataViewItem TocCtrlModel::ConvertFromTocNode(const TocCtrlModelNode *node) {
+wxDataViewItem TocCtrlModel::ConvertFromNode(const TocCtrlModelNode *node) {
   return wxDataViewItem((void *)node);
 }
 
-TocCtrlModelNode *TocCtrlModel::ConvertFromwxDataViewItem(const wxDataViewItem &item) {
+TocCtrlModelNode *TocCtrlModel::ConvertFromDataViewItem(const wxDataViewItem &item) {
   return (TocCtrlModelNode *)item.GetID();
 }
 
@@ -343,7 +323,7 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
     return false;
   }
   node->m_title = title;
-  ItemChanged(TocCtrlModel::ConvertFromTocNode(node));
+  ItemChanged(TocCtrlModel::ConvertFromNode(node));
   return true;
 }
 
@@ -351,7 +331,8 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
 /// \param source
 /// \param destination
 /// \param proposed_index wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the
-/// destination container \return
+/// destination container
+/// \return allways true
 bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index) {
   wxASSERT(source);
   wxASSERT(destination);
@@ -372,16 +353,16 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   }
 
   // moving container
-  if (source->IsContainer()){
-    TocCtrlModelNode * new_container = nullptr;
-    if (move_index == wxNOT_FOUND){ // add to the end
+  if (source->IsContainer()) {
+    TocCtrlModelNode *new_container = nullptr;
+    if (move_index == wxNOT_FOUND) {  // add to the end
       new_container = NodeAdd(real_destination, source->m_title);
-    }else { // insert
+    } else {  // insert
       new_container = NodeInsert(real_destination, source->m_title, move_index);
     }
     NodeRecursiveAdd(new_container, source);
     NodeRecursiveRemove(source);
-    Delete(TocCtrlModel::ConvertFromTocNode(source));
+    Delete(TocCtrlModel::ConvertFromNode(source));
     return true;
   }
 
@@ -392,7 +373,7 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
     NodeInsert(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing,
                move_index);
   }
-  Delete(ConvertFromTocNode(source));
+  Delete(ConvertFromNode(source));
   return true;
 }
 
@@ -400,12 +381,12 @@ void TocCtrlModel::NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *
   wxASSERT(parent);
   wxASSERT(start);
   TocCtrlModelNodePtrArray childs = start->GetChildren();
-  for (unsigned int i = 0;i< childs.GetCount(); i++){
-    TocCtrlModelNode * item = childs[i];
-    if (!item->IsContainer()){
+  for (unsigned int i = 0; i < childs.GetCount(); i++) {
+    TocCtrlModelNode *item = childs[i];
+    if (!item->IsContainer()) {
       NodeAdd(parent, item->m_title, item->m_checked, item->m_image_index, item->m_editing);
     } else {
-      TocCtrlModelNode * group = NodeAdd(parent, item->m_title);
+      TocCtrlModelNode *group = NodeAdd(parent, item->m_title);
       NodeRecursiveAdd(group, item);
     }
   }
@@ -413,11 +394,11 @@ void TocCtrlModel::NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *
 
 void TocCtrlModel::NodeRecursiveRemove(TocCtrlModelNode *start) {
   TocCtrlModelNodePtrArray my_array = start->GetChildren();
-  for (int i = my_array.GetCount() -1; i >= 0; i--){
-    TocCtrlModelNode * item = my_array[i];
+  for (int i = my_array.GetCount() - 1; i >= 0; i--) {
+    TocCtrlModelNode *item = my_array[i];
     wxASSERT(item);
-    if (!item->IsContainer()){
-      Delete(TocCtrlModel::ConvertFromTocNode(item));
+    if (!item->IsContainer()) {
+      Delete(TocCtrlModel::ConvertFromNode(item));
     } else {
       NodeRecursiveRemove(item);
     }

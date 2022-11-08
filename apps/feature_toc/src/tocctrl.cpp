@@ -102,11 +102,11 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
   wxTextDataObject obj;
   obj.SetData(wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer());
   auto *my_model = GetTocModel();
-  m_drag_node_end = TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot());
+  m_drag_node_end = TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot());
 
   int my_proposed_drop_index = event.GetProposedDropIndex();
   if (target_item.IsOk()) {
-    auto * target_node = TocCtrlModel::ConvertFromwxDataViewItem(target_item);
+    auto * target_node = TocCtrlModel::ConvertFromDataViewItem(target_item);
     m_drag_node_end = target_node;
 
     // veto if trying to drop to a child of the container

@@ -145,10 +145,10 @@ void FrameMain::on_add_item(wxCommandEvent &event) {
   auto *my_model = m_toc_ctrl->GetTocModel();
   if (!my_sel_item.IsOk()) {
     wxLogMessage("Nothing selected, adding item to the end of the TOC");
-    my_model->NodeAdd(TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot()), new_node_name, true, my_index,
+    my_model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot()), new_node_name, true, my_index,
                       false);
   } else {
-    auto *my_node = TocCtrlModel::ConvertFromwxDataViewItem(my_sel_item);
+    auto *my_node = TocCtrlModel::ConvertFromDataViewItem(my_sel_item);
     if (!my_node->IsContainer()) {
       my_node = my_node->GetParent();
     }
@@ -171,9 +171,9 @@ void FrameMain::on_add_group(wxCommandEvent &event) {
   auto *my_model = m_toc_ctrl->GetTocModel();
   if (!my_sel_item.IsOk()) {
     wxLogMessage("Nothing selected, adding group to the end of the TOC");
-    my_model->NodeAdd(TocCtrlModel::ConvertFromwxDataViewItem(my_model->GetRoot()), new_group_name);
+    my_model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot()), new_group_name);
   } else {
-    auto *my_node = TocCtrlModel::ConvertFromwxDataViewItem(my_sel_item);
+    auto *my_node = TocCtrlModel::ConvertFromDataViewItem(my_sel_item);
     if (!my_node->IsContainer()) {
       my_node = my_node->GetParent();
     }
@@ -193,7 +193,7 @@ void FrameMain::on_remove(wxCommandEvent &event) {
 
   // remove item if it's not a container
   auto *my_model = m_toc_ctrl->GetTocModel();
-  auto *my_node = TocCtrlModel::ConvertFromwxDataViewItem(my_sel_item);
+  auto *my_node = TocCtrlModel::ConvertFromDataViewItem(my_sel_item);
   if (!my_node->IsContainer()) {
     my_model->Delete(my_sel_item);
   } else {
@@ -216,7 +216,7 @@ void FrameMain::on_change_name(wxCommandEvent &event) {
   }
 
   auto *my_model = m_toc_ctrl->GetTocModel();
-  auto *my_node = TocCtrlModel::ConvertFromwxDataViewItem(my_sel_item);
+  auto *my_node = TocCtrlModel::ConvertFromDataViewItem(my_sel_item);
   if (!my_node->IsContainer()){
     wxLogError("Changing name only works for container not for items!");
     return;
