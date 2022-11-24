@@ -88,7 +88,7 @@ void FrameMain::_create_menubar() {
   this->SetMenuBar( m_menubar );
 }
 
-void FrameMain::on_about(wxCommandEvent &event) {
+void FrameMain::OnAbout(wxCommandEvent &event) {
   wxAboutDialogInfo aboutInfo;
   aboutInfo.SetName("feature toc");
   wxString myVersion(feature_toc_MAJOR_VERSION);
@@ -100,12 +100,12 @@ void FrameMain::on_about(wxCommandEvent &event) {
 }
 
 void FrameMain::_connect_events() {
-  Bind(wxEVT_MENU, &FrameMain::on_about, this, wxID_ABOUT);
-  Bind(wxEVT_MENU, &FrameMain::on_change_color, this, m_menu_item_colour->GetId());
-  Bind(wxEVT_MENU, &FrameMain::on_add_item, this, m_menu_item_add_item->GetId());
-  Bind(wxEVT_MENU, &FrameMain::on_add_group, this, m_menu_item_add_group->GetId());
-  Bind(wxEVT_MENU, &FrameMain::on_remove, this, m_menu_item_remove_selected->GetId());
-  Bind(wxEVT_MENU, &FrameMain::on_change_name, this, m_menu_item_change_name->GetId());
+  Bind(wxEVT_MENU, &FrameMain::OnAbout, this, wxID_ABOUT);
+  Bind(wxEVT_MENU, &FrameMain::OnChangeColor, this, m_menu_item_colour->GetId());
+  Bind(wxEVT_MENU, &FrameMain::OnAddItem, this, m_menu_item_add_item->GetId());
+  Bind(wxEVT_MENU, &FrameMain::OnAddGroup, this, m_menu_item_add_group->GetId());
+  Bind(wxEVT_MENU, &FrameMain::OnRemove, this, m_menu_item_remove_selected->GetId());
+  Bind(wxEVT_MENU, &FrameMain::OnChangeName, this, m_menu_item_change_name->GetId());
 }
 
 /// Adding some test data to the Tree Control
@@ -117,7 +117,7 @@ FrameMain::~FrameMain() {
   delete wxLog::SetActiveTarget(m_log_old);
 }
 
-void FrameMain::on_change_color(wxCommandEvent &event) {
+void FrameMain::OnChangeColor(wxCommandEvent &event) {
   wxColour my_actual_colour = m_toc_ctrl->GetColourNormal();
   wxColour my_toc_colour = wxGetColourFromUser(this, my_actual_colour, "Select TOC colour");
   m_toc_ctrl->SetColour(my_toc_colour);
@@ -126,7 +126,7 @@ void FrameMain::on_change_color(wxCommandEvent &event) {
 /// Add an item to the toc. If nothing selected, the item is added to the end,
 /// otherwise, the item is added to the selected node or selected parent node
 /// \param event
-void FrameMain::on_add_item(wxCommandEvent &event) {
+void FrameMain::OnAddItem(wxCommandEvent &event) {
   // get new node information
   wxString new_node_name = wxGetTextFromUser("Node name");
   if (new_node_name.IsEmpty()) {
@@ -159,7 +159,7 @@ void FrameMain::on_add_item(wxCommandEvent &event) {
 /// Add a group to the toc. If nothing is selected, the group is added to the end,
 /// otherwise the group is added to the selected item (or the selected parent)
 /// \param event
-void FrameMain::on_add_group(wxCommandEvent &event) {
+void FrameMain::OnAddGroup(wxCommandEvent &event) {
   // get new group information
   wxString new_group_name = wxGetTextFromUser("Node name");
   if (new_group_name.IsEmpty()) {
@@ -184,7 +184,7 @@ void FrameMain::on_add_group(wxCommandEvent &event) {
 /// Remove the selected item or group.
 /// A group can only be removed if empty
 /// \param event
-void FrameMain::on_remove(wxCommandEvent &event) {
+void FrameMain::OnRemove(wxCommandEvent &event) {
   wxDataViewItem my_sel_item = m_toc_ctrl->GetSelection();
   if (!my_sel_item.IsOk()) {
     wxLogError("Nothing selected! Unable to remove item or group.");
@@ -208,7 +208,7 @@ void FrameMain::on_remove(wxCommandEvent &event) {
 /// Change the name of the selected item.
 /// This works only for Container items!
 /// \param event
-void FrameMain::on_change_name(wxCommandEvent &event) {
+void FrameMain::OnChangeName(wxCommandEvent &event) {
   wxDataViewItem my_sel_item = m_toc_ctrl->GetSelection();
   if (!my_sel_item.IsOk()) {
     wxLogError("Nothing selected! Unable to change group name.");

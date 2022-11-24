@@ -21,10 +21,10 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   wxDataViewCtrl::AppendColumn(column5);
 
   // events
-  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::on_dragndrop_begin, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::on_dragndrop_possible, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::on_dragndrop_drop, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::on_value_changed, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::OnDragndropBegin, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::OnDragndropPossible, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::OnDragndropDrop, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnValueChanged, this);
 }
 
 void TocCtrl::add_test_data() {
@@ -59,7 +59,7 @@ wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, 
     return item;
 }*/
 
-void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
+void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
   wxDataViewItem item(event.GetItem());
   m_drag_node_start = nullptr;
   m_drag_node_end = nullptr;
@@ -83,14 +83,14 @@ void TocCtrl::on_dragndrop_begin(wxDataViewEvent &event) {
   wxLogMessage("Starting dragging \"%s\"", node->m_title);
 }
 
-void TocCtrl::on_dragndrop_possible(wxDataViewEvent &event) {
+void TocCtrl::OnDragndropPossible(wxDataViewEvent &event) {
   if (event.GetDataFormat() != wxDF_UNICODETEXT)
     event.Veto();
   else
     event.SetDropEffect(wxDragMove);  // check 'move' drop effect
 }
 
-void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
+void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
   wxDataViewItem target_item(event.GetItem());
   m_drag_node_end = nullptr;
 
@@ -143,7 +143,7 @@ void TocCtrl::on_dragndrop_drop(wxDataViewEvent &event) {
 
 }
 
-void TocCtrl::on_value_changed(wxDataViewEvent &event) {
+void TocCtrl::OnValueChanged(wxDataViewEvent &event) {
   wxLogMessage("Value changed !");
 }
 

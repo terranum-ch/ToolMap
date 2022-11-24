@@ -30,10 +30,10 @@ class TocCtrl : public wxDataViewCtrl {
   //    wxTreeListItem add_group(wxTreeListItem parent, const wxString & label);
   //    wxTreeListItem add_layer(wxTreeListItem parent, const wxString &label, int type);
  private:
-  void on_dragndrop_begin(wxDataViewEvent &event);
-  void on_dragndrop_possible(wxDataViewEvent &event);
-  void on_dragndrop_drop(wxDataViewEvent &event);
-  void on_value_changed(wxDataViewEvent &event);
+  void OnDragndropBegin(wxDataViewEvent &event);
+  void OnDragndropPossible(wxDataViewEvent &event);
+  void OnDragndropDrop(wxDataViewEvent &event);
+  void OnValueChanged(wxDataViewEvent &event);
 
   TocCtrlModelNode * m_drag_node_start;
   TocCtrlModelNode * m_drag_node_end;

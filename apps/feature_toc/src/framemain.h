@@ -34,12 +34,12 @@ class FrameMain : public wxFrame {
 
   void _add_tree_data();
 
-  void on_about(wxCommandEvent &event);
-  void on_change_color(wxCommandEvent &event);
-  void on_add_item(wxCommandEvent & event);
-  void on_add_group(wxCommandEvent & event);
-  void on_remove(wxCommandEvent & event);
-  void on_change_name(wxCommandEvent & event);
+  void OnAbout(wxCommandEvent &event);
+  void OnChangeColor(wxCommandEvent &event);
+  void OnAddItem(wxCommandEvent & event);
+  void OnAddGroup(wxCommandEvent & event);
+  void OnRemove(wxCommandEvent & event);
+  void OnChangeName(wxCommandEvent & event);
 
   TocCtrl *m_toc_ctrl;
   wxTextCtrl *m_text_ctrl;
