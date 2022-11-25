@@ -339,20 +339,17 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
   }
 
   // removing
-  wxTreeItemId myItemId;
   for (unsigned int i = 0; i < myLayerToRemoveIndex.GetCount(); i++) {
-    if (!m_toc_ctrl->GetItemByID(myItemId, myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)) {
-      wxLogError(_("Item with layer id : %ld not found in the TOC"),
-                 myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID);
+    long my_item_id = myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID;
+    if (!m_toc_ctrl->GetLayerById(my_item_id)) {
+      wxLogError(_("Item with layer id : %ld not found in the TOC"),my_item_id);
       continue;
     }
-    m_toc_ctrl->RemoveLayer(myItemId, true);
-
-    if (!m_DB->RemoveTOCLayer(myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID)) {
+    m_toc_ctrl->RemoveLayer(my_item_id);
+    if (!m_DB->RemoveTOCLayer(my_item_id)) {
       wxLogError(_("Unable to remove layer : '%s'"), myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerName.c_str());
     }
   }
-
   LoadProjectLayers();
 }
 

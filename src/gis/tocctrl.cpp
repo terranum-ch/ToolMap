@@ -291,3 +291,19 @@ bool TocCtrl::UpdateLayerName(tmLayerProperties *item, const wxString &newName) 
   }
   return true;
 }
+
+bool TocCtrl::RemoveLayer(int database_layer_id) {
+  auto *model = GetTocModel();
+  auto *root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
+  wxASSERT(root);
+
+  TocCtrlModelNodePtrArray iterateNodeArray;
+  root->GetAllChildRecursive(iterateNodeArray);
+  for (auto node : iterateNodeArray) {
+    if (node->m_layer_prop->GetID() == database_layer_id){
+      model->Delete(TocCtrlModel::ConvertFromNode(node));
+      return true;
+    }
+  }
+  return false;
+}
