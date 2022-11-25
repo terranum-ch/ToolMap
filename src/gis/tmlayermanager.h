@@ -25,7 +25,7 @@
 #include <wx/regex.h>
 
 #include "tmdrawer.h"                    // for drawing into bitmaps
-#include "tmtocctrl.h"                    // class TOC ctrl
+#include "tocctrl.h"                    // class TOC ctrl
 #include "../database/database_tm.h"    // class database
 #include "tmgisdata.h"                    // for GISdata
 #include "tmgisdatavectormysql.h"        // for direct access to GIS mysql
@@ -55,7 +55,7 @@ class tmScaleCtrlCombo;
   *******************************************************************************/
 class tmLayerManager : public wxEvtHandler {
  private:
-  tmTOCCtrl *m_TOCCtrl;
+  TocCtrl *m_toc_ctrl;
   tmRenderer *m_GISRenderer;
   wxWindow *m_Parent;
   DataBaseTM *m_DB;
@@ -132,7 +132,7 @@ class tmLayerManager : public wxEvtHandler {
 
  public:
   // ctor / dtor
-  tmLayerManager(wxWindow *parent, tmTOCCtrl *tocctrl, tmRenderer *renderer, wxStatusBar *status,
+  tmLayerManager(wxWindow *parent, TocCtrl *tocctrl, tmRenderer *renderer, wxStatusBar *status,
                  tmScaleCtrlCombo *scalectrl);
 
   ~tmLayerManager();

@@ -107,7 +107,7 @@ class Queries_PANEL : public ManagedAuiWnd {
   QueriesList *m_QueriesList;
   wxWindow *m_ParentEvt;
   bool m_IsProjectOpen;
-  tmTOCCtrl *m_TOC;
+  TocCtrl *m_toc_ctrl;
 
   /// Initialises member variables
   void InitMemberValues();
@@ -140,8 +140,8 @@ class Queries_PANEL : public ManagedAuiWnd {
 
   void SetSelectedData(tmSelectedDataMemory *selected);
 
-  void SetTOCCtrl(tmTOCCtrl *toc) {
-    m_TOC = toc;
+  void SetTOCCtrl(TocCtrl *toc) {
+    m_toc_ctrl = toc;
   }
 
   bool LoadQueries(DataBaseTM *database);

@@ -3,6 +3,16 @@
 #include "tocbitmaps.h"
 #include "tocrenderer.h"
 
+DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
+DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
+DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
+DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
+DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS)
+DEFINE_EVENT_TYPE(tmEVT_LM_TOC_EDITED)
+DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_START)
+DEFINE_EVENT_TYPE(tmEVT_EM_EDIT_STOP)
+DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
+
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
     : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_SINGLE | wxDV_NO_HEADER) {
   m_drag_node_start = nullptr;
@@ -161,3 +171,16 @@ wxColour TocCtrl::GetColourDark() {
 TocCtrlModel *TocCtrl::GetTocModel() {
   return dynamic_cast<TocCtrlModel *>(GetModel());
 }
+
+tmLayerProperties *TocCtrl::GetSelectionLayer() {
+  wxDataViewItem selected = GetSelection();
+  if (!selected.IsOk()){
+    return nullptr;
+  }
+  auto *selected_node = TocCtrlModel::ConvertFromDataViewItem(selected);
+
+
+  return nullptr;
+}
+
+void TocCtrl::SetSelectedLayer(int layerID) {}

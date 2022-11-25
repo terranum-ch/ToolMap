@@ -7,6 +7,8 @@
 #endif
 
 #include <wx/dataview.h>
+#include "tmlayerproperties.h"
+
 
 class TocCtrlModelNode;
 
@@ -43,6 +45,7 @@ class TocCtrlModelNode {
   int m_image_index;
   bool m_editing;
   bool m_container;
+  tmLayerProperties * m_layer_prop;
 
  private:
   TocCtrlModelNode *m_parent;

@@ -126,7 +126,7 @@ END_EVENT_TABLE()
 
 void TocWindowDlgGen::OnPressRemoveLayers(wxCommandEvent & event)
 {
- m_TOCCtrl->OnRemoveItem(event);
+ m_toc_ctrl->OnRemoveItem(event);
 }
 
 

@@ -31,7 +31,7 @@
 #include <wx/aui/dockart.h>
 #include <wx/tglbtn.h>
 
-#include "../gis/tmtocctrl.h"
+#include "../gis/tocctrl.h"
 #include "wxflatbutton.h"
 
 #define ID_TOCWINDOW_DLG 10035
@@ -48,7 +48,7 @@ class TocWindowContent : public wxEvtHandler {
  private:
   DECLARE_DYNAMIC_CLASS(TocWindowContent);
 
-  tmTOCCtrl *m_TOCCtrl;
+  TocCtrl *m_toc_ctrl;
 
  public:
   TocWindowContent();
@@ -70,8 +70,8 @@ class TocWindowContent : public wxEvtHandler {
     return FALSE;
   }
 
-  tmTOCCtrl *GetTOCCtrl() {
-    return m_TOCCtrl;
+  TocCtrl *GetTocCtrl() {
+    return m_toc_ctrl;
   }
 };
 

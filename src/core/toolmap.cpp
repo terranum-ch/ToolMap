@@ -403,17 +403,17 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
 
   // create layer manager object
   m_LayerManager =
-      new tmLayerManager(this, m_TocWindow->GetTOCCtrl(), m_MainPanel->GetGISRenderer(), GetStatusBar(), m_ScaleCombo);
+      new tmLayerManager(this, m_TocWindow->GetTocCtrl(), m_MainPanel->GetGISRenderer(), GetStatusBar(), m_ScaleCombo);
 
-  m_AttribManager = new tmAttributionManager(this, m_TocWindow->GetTOCCtrl(), m_AttribObjPanel,
+  m_AttribManager = new tmAttributionManager(this, m_TocWindow->GetTocCtrl(), m_AttribObjPanel,
                                              m_LayerManager->GetSelectedDataMemory());
 
-  m_EditManager = new tmEditManager(this, m_TocWindow->GetTOCCtrl(), m_LayerManager->GetSelectedDataMemory(),
+  m_EditManager = new tmEditManager(this, m_TocWindow->GetTocCtrl(), m_LayerManager->GetSelectedDataMemory(),
                                     m_MainPanel->GetGISRenderer(), m_LayerManager->GetScale());
   m_MainPanel->GetGISRenderer()->SetEditManagerRef(m_EditManager);
   m_EditManager->SetSnappingMemoryRef(m_SnappingPanel->GetSnappingMemoryRef());
 
-  m_ToolManager = new tmToolManager(this, m_TocWindow->GetTOCCtrl(), m_LayerManager->GetSelectedDataMemory(),
+  m_ToolManager = new tmToolManager(this, m_LayerManager->GetSelectedDataMemory(),
                                     m_MainPanel->GetGISRenderer(), m_LayerManager->GetScale());
   m_MainPanel->GetGISRenderer()->SetToolManagerRef(m_ToolManager);
 
@@ -435,7 +435,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   m_PManager->SetStatManager(m_StatManager);
 
   m_QueriesPanel->SetSelectedData(m_LayerManager->GetSelectedDataMemory());
-  m_QueriesPanel->SetTOCCtrl(m_TocWindow->GetTOCCtrl());
+  m_QueriesPanel->SetTOCCtrl(m_TocWindow->GetTocCtrl());
 
   // loading GIS drivers
   tmGISData::InitGISDrivers(TRUE, TRUE);
@@ -445,7 +445,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   _LoadPreference(false);
 
   // DND
-  m_TocWindow->GetTOCCtrl()->SetDropTarget(new tmDropFiles(this));
+  m_TocWindow->GetTocCtrl()->SetDropTarget(new tmDropFiles(this));
 
   // connecting menu to object kind panel
   wxASSERT(m_AttribObjPanel);
@@ -1710,7 +1710,7 @@ void ToolMapFrame::OnGeometryValidity(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::OnUpdateGeometryValidity(wxUpdateUIEvent &event) {
-  tmLayerProperties *mySelLayer = m_TocWindow->GetTOCCtrl()->GetSelectionLayer();
+  tmLayerProperties *mySelLayer = m_TocWindow->GetTocCtrl()->GetSelectionLayer();
   if (mySelLayer == nullptr) {
     event.Enable(false);
     return;
@@ -1737,7 +1737,7 @@ void ToolMapFrame::OnUpdateMenuProject(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuZoomLayer(wxUpdateUIEvent &event) {
   wxASSERT(m_PManager);
   bool bEnable = false;
-  if (m_PManager->IsProjectOpen() && m_TocWindow->GetTOCCtrl()->GetSelectionLayer() != nullptr) {
+  if (m_PManager->IsProjectOpen() && m_TocWindow->GetTocCtrl()->GetSelectionLayer() != nullptr) {
     bEnable = true;
   }
   event.Enable(bEnable);
@@ -1929,8 +1929,8 @@ void ToolMapFrame::OnUpdateMenuSmoothLine(wxUpdateUIEvent &event) {
 void ToolMapFrame::OnUpdateMenuEditSharedNode(wxUpdateUIEvent &event) {
   wxASSERT(m_EditManager);
   bool bEnable = false;
-  if (m_TocWindow->GetTOCCtrl()->GetEditLayer() &&
-      m_TocWindow->GetTOCCtrl()->GetEditLayer()->GetType() == TOC_NAME_LINES) {
+  if (m_TocWindow->GetTocCtrl()->GetEditLayer() &&
+      m_TocWindow->GetTocCtrl()->GetEditLayer()->GetType() == TOC_NAME_LINES) {
     bEnable = true;
   }
   event.Enable(bEnable);
