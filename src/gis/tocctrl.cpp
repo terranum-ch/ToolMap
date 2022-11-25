@@ -217,6 +217,21 @@ tmLayerProperties *TocCtrl::GetLayerById(long layer_id) {
   return nullptr;
 }
 
+tmLayerProperties *TocCtrl::GetLayerByName(const wxString &layerName) {
+  bool bReset = true;
+  while (true){
+    tmLayerProperties *layer = IterateLayers(bReset);
+    bReset = false;
+    if (layer == nullptr){
+      break ;
+    }
+    if (layer->GetName() == layerName){
+      return layer;
+    }
+  }
+  return nullptr;
+}
+
 tmLayerProperties *TocCtrl::IterateLayers(bool ResetToLast) {
   if (ResetToLast){
     m_iterate_node_array.Clear();
