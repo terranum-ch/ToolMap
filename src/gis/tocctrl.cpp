@@ -36,6 +36,8 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::OnDragndropDrop, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnMouseClick, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TocCtrl::OnMouseRightClick, this);
+  this->Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &TocCtrl::OnLayerSelectionChanged, this);
+
 }
 
 //void TocCtrl::add_test_data() {
@@ -346,5 +348,11 @@ void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
   }
   tmTOCCtrlMenu m_menu(layer_prop, 0, 0);
   PopupMenu(&m_menu);
+  event.Skip();
+}
+
+void TocCtrl::OnLayerSelectionChanged(wxDataViewEvent &event) {
+  wxCommandEvent evt(tmEVT_TOC_SELECTION_CHANGED, wxID_ANY);
+  GetEventHandler()->QueueEvent(evt.Clone());
   event.Skip();
 }
