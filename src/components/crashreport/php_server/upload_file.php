@@ -7,10 +7,16 @@ if (isset($_POST['filename'])){
 	if (is_uploaded_file($_FILES['filecontents']['tmp_name'])) {
 		$path_parts = pathinfo($_SERVER["SCRIPT_FILENAME"]);
 		$file_name = basename($_FILES['filecontents']['name']);
+		$ext = pathinfo($file_name, PATHINFO_EXTENSION);
 
-		$uploadfile = $path_parts['dirname'] . '/' . $_POST['softname'] . '/' . $file_name;
+		/*if($ext != "zip"){
+			echo "file extension not supported!";
+			return;
+		}*/
+
+		$uploadfile = $path_parts['dirname'] . '/' . $file_name;
 		move_uploaded_file($_FILES['filecontents']['tmp_name'], $uploadfile);
-		
+
 		$upload_success = false;
                 $upload_status = "Failed!";
 		switch ($_FILES['filecontents']['error']){
@@ -31,13 +37,13 @@ if (isset($_POST['filename'])){
 			default:
 				echo "File not uploaded!";
 		}
-                
+
                 // send mail
-                if(!sendMail("lucien.schreiber@gmail.com", $_POST['softname'], $_POST['filename'], $upload_status)){
+                if(sendMail("toolmap@terranum.ch", $_POST['softname'], $_POST['filename'], $upload_status)==FALSE){
                     echo "No Mail sent!";
                 }
-                
-                
+
+
 	} else {
 		echo "'filecontents' is not defined! \r\n";
 	}
@@ -54,7 +60,7 @@ function sendMail($email, $software, $filename, $status) {
     $subject = "[CRASH] - $software";
     $header = 'MIME-Version: 1.0' . "\r\n";
     $header .= 'Content-type: text/html; charset=UTF-8' ."\r\n";
-    
+
     if (mail($email, $subject, $message, $header)== TRUE) {
         return TRUE;
     }
