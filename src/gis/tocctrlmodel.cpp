@@ -13,10 +13,10 @@ TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties *
   m_container = false;
 }
 
-TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch){
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder){
   m_parent = parent;
   m_layer_prop = new tmLayerProperties();
-  m_layer_prop->SetName(wxFileName("", branch));
+  m_layer_prop->SetName(wxFileName("", folder));
   m_layer_prop->SetType(TOC_NAME_FOLDER);
   m_container = true;
 }
