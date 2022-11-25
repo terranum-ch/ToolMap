@@ -123,6 +123,11 @@ WebUpdateThread::WebUpdateThread(wxWindow *parent, const wxString &proxy) {
     wxASSERT(myCurlError == CURLE_OK);
   }
 
+#if defined(__WIN32__)
+  // Disable certificate check (does not work on Windows)
+  myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_SSL_VERIFYPEER, false);
+#endif
+
   // prepare reception of data
   myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_WRITEFUNCTION, wxcurl_str_write);
   wxASSERT(myCurlError == CURLE_OK);

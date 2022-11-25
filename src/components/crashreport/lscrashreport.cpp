@@ -561,6 +561,10 @@ bool lsCrashReport::SendReportWeb(const wxString &serverurl, const wxString &pro
   wxStringOutputStream myBuffer;
   myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEFUNCTION, wxcurl_string_write);
   myCurlError = curl_easy_setopt(easyhandle, CURLOPT_WRITEDATA, (void *)&myBuffer);
+#if defined(__WIN32__)
+  // Disable certificate check (does not work on Windows)
+  myCurlError = curl_easy_setopt(easyhandle, CURLOPT_SSL_VERIFYPEER, false);
+#endif
 
   myCurlError = curl_easy_perform(easyhandle); /* post away! */
   if (myCurlError != CURLE_OK) {
