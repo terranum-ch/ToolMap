@@ -211,7 +211,7 @@ void tmLayerManager::FillTOCArray() {
   }
 
   wxASSERT(!m_DB->DataBaseHasResults());
-  m_toc_ctrl->ExpandAllLayers();
+  m_toc_ctrl->ExpandAll();
   wxLogDebug(_T("%d items added to TOC array"), m_toc_ctrl->GetCountLayers());
 }
 
