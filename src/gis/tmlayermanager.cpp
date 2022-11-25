@@ -128,7 +128,7 @@ bool tmLayerManager::InitLayerManager(DataBaseTM *db) {
   m_SelectedData.Clear();
 
   // 2) Init TOCCtrl
-  m_toc_ctrl->InsertProjectName(m_DB->DataBaseGetName());
+  m_toc_ctrl->SetProjectName(m_DB->DataBaseGetName());
   FillTOCArray();
 
   // 3) Init scale from database
@@ -153,7 +153,7 @@ bool tmLayerManager::InitLayerManager(DataBaseTM *db) {
   *******************************************************************************/
 bool tmLayerManager::UnInitLayerManager() {
   // saving TOC status
-  if (m_toc_ctrl->IsTOCReady()) {
+  if (IsOK()) {
     SaveTOCStatus(true);
   }
 
@@ -930,7 +930,7 @@ void tmLayerManager::OnDisplayLabels(wxCommandEvent &event) {
 
 void tmLayerManager::OnTocEdited(wxCommandEvent &event) {
   // saving TOC status
-  if (m_toc_ctrl->IsTOCReady()) {
+  if (IsOK()) {
     SaveTOCStatus(false);
   }
 }
@@ -976,7 +976,7 @@ void tmLayerManager::OnSelect() {
   *******************************************************************************/
 bool tmLayerManager::SelectedSearch(const wxRect &rect, bool shiftdown) {
   // is a project open
-  if (!m_toc_ctrl->IsTOCReady()) {
+  if (!IsOK()) {
     if (IsLoggingEnabled()) {
       wxLogMessage(_("Open a project first"));
     }
@@ -1226,7 +1226,7 @@ bool tmLayerManager::SelectByOid() {
   // - Project open
   // - Layer selected
   //
-  if (!m_toc_ctrl->IsTOCReady()) {
+  if (!IsOK()) {
     wxLogError(_("No project opened, open a project first"));
     return false;
   }

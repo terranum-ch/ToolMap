@@ -47,7 +47,7 @@ const int ID_INFORMATION_DLG = 22401;
 
 class InformationDLG : public wxDialog {
  private:
-  tmTOCCtrl *m_TOC;
+  TocCtrl *m_toc_ctrl;
   tmSelectedDataMemory *m_Selected;
   tmSelectionInfoCtrl *m_SelCtrl;
   tmLayerInfoCtrl *m_LayerCtrl;
@@ -59,7 +59,7 @@ class InformationDLG : public wxDialog {
   DECLARE_EVENT_TABLE();
 
  public:
-  InformationDLG(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
+  InformationDLG(wxWindow *parent, TocCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
                  const wxString &title = _("Informations"), const wxPoint &pos = wxDefaultPosition,
                  const wxSize &size = wxDefaultSize,
                  long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxFRAME_FLOAT_ON_PARENT);

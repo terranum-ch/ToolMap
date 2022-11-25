@@ -47,7 +47,7 @@ void InformationDLG::_CreateControls() {
   wxBoxSizer *bSizer26;
   bSizer26 = new wxBoxSizer(wxVERTICAL);
 
-  m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_TOC);
+  m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_toc_ctrl);
   bSizer26->Add(m_SelCtrl, 1, wxEXPAND, 5);
 
   m_panel5->SetSizer(bSizer26);
@@ -85,10 +85,10 @@ void InformationDLG::OnCloseDlg(wxCloseEvent &event) {
   Destroy();
 }
 
-InformationDLG::InformationDLG(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
+InformationDLG::InformationDLG(wxWindow *parent, TocCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
                                const wxString &title, const wxPoint &pos, const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
-  m_TOC = toc, m_Selected = sel;
+  m_toc_ctrl = toc, m_Selected = sel;
 
   _CreateControls();
 }
@@ -103,8 +103,8 @@ bool InformationDLG::TransferDataToWindow() {
 }
 
 void InformationDLG::UpdateLayer() {
-  wxASSERT(m_TOC);
-  m_LayerCtrl->UpdateLayer(m_TOC);
+  wxASSERT(m_toc_ctrl);
+  m_LayerCtrl->UpdateLayer(m_toc_ctrl);
 }
 
 void InformationDLG::UpdateSelection() {

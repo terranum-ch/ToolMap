@@ -30,7 +30,7 @@ class TocCtrl : public wxDataViewCtrl {
  public:
   TocCtrl(wxWindow *parent, wxWindowID id);
 
-  void add_test_data();
+  //void add_test_data();
 
   void ExpandAll();
 
@@ -43,7 +43,12 @@ class TocCtrl : public wxDataViewCtrl {
   // toc ctrl function for toolmap
   tmLayerProperties * GetSelectionLayer();
   void SetSelectedLayer(int layerID);
-
+  tmLayerProperties * GetLayerByPath(const wxString &layerPath);
+  tmLayerProperties *GetLayerById(long layer_id);
+  tmLayerProperties *IterateLayers(bool ResetToLast);
+  tmLayerProperties *GetEditLayer();
+  void SetEditLayer(tmLayerProperties *mEditingLayer);
+  void SetProjectName(const wxString &project_name);
 
  private:
   void OnDragndropBegin(wxDataViewEvent &event);
@@ -53,6 +58,10 @@ class TocCtrl : public wxDataViewCtrl {
 
   TocCtrlModelNode * m_drag_node_start;
   TocCtrlModelNode * m_drag_node_end;
+  int m_iterate_node_index = wxNOT_FOUND;
+  TocCtrlModelNodePtrArray m_iterate_node_array;
+  tmLayerProperties * m_editing_layer;
+
 };
 
 #endif  // FEATURE_TOC_TOCCTRL_H

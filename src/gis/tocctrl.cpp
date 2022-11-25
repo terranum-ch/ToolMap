@@ -36,19 +36,19 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnValueChanged, this);
 }
 
-void TocCtrl::add_test_data() {
-  TocCtrlModel *model = GetTocModel();
-  auto *my_root = (TocCtrlModelNode *)model->GetRoot().GetID();
-  auto *group_const = model->NodeAdd(my_root, "Construction");
-  auto *line = model->NodeAdd(group_const, "Line", true, 2, true);
-  auto *point = model->NodeAdd(group_const, "Point", false, 2, false);
-
-  auto *group_support = model->NodeAdd(my_root, "Support");
-  auto *shape = model->NodeAdd(group_support, "Shapefile", false, 1, false);
-  auto *raster = model->NodeAdd(group_support, "Raster", true, 3, false);
-  auto *web = model->NodeAdd(group_support, "Web raster", true, 4, false);
-  ExpandAll();
-}
+//void TocCtrl::add_test_data() {
+//  TocCtrlModel *model = GetTocModel();
+//  auto *my_root = (TocCtrlModelNode *)model->GetRoot().GetID();
+//  auto *group_const = model->NodeAdd(my_root, "Construction");
+//  auto *line = model->NodeAdd(group_const, "Line", true, 2, true);
+//  auto *point = model->NodeAdd(group_const, "Point", false, 2, false);
+//
+//  auto *group_support = model->NodeAdd(my_root, "Support");
+//  auto *shape = model->NodeAdd(group_support, "Shapefile", false, 1, false);
+//  auto *raster = model->NodeAdd(group_support, "Raster", true, 3, false);
+//  auto *web = model->NodeAdd(group_support, "Web raster", true, 4, false);
+//  ExpandAll();
+//}
 
 void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
   wxDataViewItem item(event.GetItem());
@@ -66,12 +66,12 @@ void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
   m_drag_node_start = node;
 
   auto *obj = new wxTextDataObject;
-  obj->SetText(node->m_title);
+  obj->SetText(node->m_layer_prop->GetName().GetName());
 
   event.SetDataObject(obj);
   event.SetDragFlags(wxDrag_AllowMove);  // allows both copy and move
 
-  wxLogMessage("Starting dragging \"%s\"", node->m_title);
+  wxLogMessage("Starting dragging \"%s\"", node->m_layer_prop->GetName().GetName());
 }
 
 void TocCtrl::OnDragndropPossible(wxDataViewEvent &event) {
@@ -178,9 +178,83 @@ tmLayerProperties *TocCtrl::GetSelectionLayer() {
     return nullptr;
   }
   auto *selected_node = TocCtrlModel::ConvertFromDataViewItem(selected);
+  wxASSERT(selected_node->m_layer_prop);
+  return selected_node->m_layer_prop;
+}
 
+void TocCtrl::SetSelectedLayer(int layerID) {
+    wxFAIL_MSG("Not implemented!");
+}
 
+tmLayerProperties *TocCtrl::GetLayerByPath(const wxString &layerPath) {
+  bool bReset = true;
+  wxFileName layer_filename(layerPath);
+  while (true){
+    tmLayerProperties *layer = IterateLayers(bReset);
+    bReset = false;
+    if (layer == nullptr){
+      break ;
+    }
+    if (layer->GetName() == layer_filename){
+      return layer;
+    }
+  }
   return nullptr;
 }
 
-void TocCtrl::SetSelectedLayer(int layerID) {}
+tmLayerProperties *TocCtrl::GetLayerById(long layer_id) {
+  bool bReset = true;
+  while (true){
+    tmLayerProperties *layer = IterateLayers(bReset);
+    bReset = false;
+    if (layer == nullptr){
+      break ;
+    }
+    if (layer->GetID() == layer_id){
+      return layer;
+    }
+  }
+  return nullptr;
+}
+
+tmLayerProperties *TocCtrl::IterateLayers(bool ResetToLast) {
+  if (ResetToLast){
+    m_iterate_node_array.Clear();
+    TocCtrlModelNode * root =  TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
+    root->GetAllChildRecursive(m_iterate_node_array, nullptr);
+    m_iterate_node_index = m_iterate_node_array.GetCount() -1;
+    if (m_iterate_node_index < 0){ // no data in the toc
+      return nullptr;
+    }
+    tmLayerProperties * layerprop = m_iterate_node_array.Item(m_iterate_node_index)->m_layer_prop;
+    wxASSERT(layerprop);
+    m_iterate_node_index --;
+    return layerprop;
+  }
+
+  if (m_iterate_node_index >= 0 && m_iterate_node_array.GetCount() > 0){
+    tmLayerProperties * layerprop = m_iterate_node_array.Item(m_iterate_node_index)->m_layer_prop;
+    wxASSERT(layerprop);
+    m_iterate_node_index--;
+    return layerprop;
+  }
+
+  m_iterate_node_index = wxNOT_FOUND;
+  m_iterate_node_array.Clear();
+  return nullptr;
+}
+
+tmLayerProperties *TocCtrl::GetEditLayer(){
+  return m_editing_layer;
+}
+
+void TocCtrl::SetEditLayer(tmLayerProperties *mEditingLayer) {
+  m_editing_layer = mEditingLayer;
+}
+
+void TocCtrl::SetProjectName(const wxString &project_name) {
+  // root is already defined, change name
+  auto root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
+  wxASSERT(root);
+  root->m_layer_prop->SetName(wxFileName("", project_name));
+}
