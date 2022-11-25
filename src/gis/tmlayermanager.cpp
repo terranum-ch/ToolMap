@@ -521,7 +521,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
   // check if layer exists
   bool bReset = true;
   tmLayerProperties *myLayerToReplace = NULL;
-  for (unsigned int i = 0; i < m_toc_ctrl->GetCount(); i++) {
+  while(true) {
     tmLayerProperties *myLayer = m_toc_ctrl->IterateLayers(bReset);
     bReset = false;
     if (myLayer == nullptr) {
