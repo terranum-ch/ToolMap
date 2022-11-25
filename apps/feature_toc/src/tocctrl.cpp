@@ -1,6 +1,6 @@
 #include "tocctrl.h"
 
-#include "bitmaps.h"
+#include "tocbitmaps.h"
 #include "tocrenderer.h"
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)

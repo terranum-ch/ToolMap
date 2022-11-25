@@ -1,6 +1,6 @@
 #include "tocrenderer.h"
 
-#include "bitmaps.h"
+#include "tocbitmaps.h"
 #include "tocctrlmodel.h"
 
 tocRendererData::tocRendererData() {

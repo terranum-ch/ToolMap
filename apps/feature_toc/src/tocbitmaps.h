@@ -1,5 +1,5 @@
-#ifndef FEATURE_TOC_BITMAPS_H
-#define FEATURE_TOC_BITMAPS_H
+#ifndef FEATURE_TOC_TOCBITMAPS_H
+#define FEATURE_TOC_TOCBITMAPS_H
 
 #include "wx/wx.h"
 
@@ -17,4 +17,4 @@ class feature_toc_bitmaps {
   static wxString toc_pen;
 };
 
-#endif  // FEATURE_TOC_BITMAPS_H
+#endif  // FEATURE_TOC_TOCBITMAPS_H

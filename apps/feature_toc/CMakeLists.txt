@@ -35,7 +35,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME} MACOSX_BUNDLE WIN32
         src/app.cpp
         src/framemain.cpp
-        src/bitmaps.cpp
+        src/tocbitmaps.cpp
         src/tocctrl.cpp
         src/tocctrlmodel.cpp
         src/tocrenderer.cpp

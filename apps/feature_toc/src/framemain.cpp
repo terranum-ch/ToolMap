@@ -1,6 +1,6 @@
 #include "framemain.h"
 
-#include "bitmaps.h"
+#include "tocbitmaps.h"
 
 extern const char *feature_toc_MAJOR_VERSION;
 extern const char *feature_toc_MINOR_VERSION;
