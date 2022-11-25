@@ -88,6 +88,7 @@ class lsCrashReport {
   bool SendReportWeb(const wxString &serverurl, const wxString &proxy = wxEmptyString);
 
   bool SaveReportFile(const wxString &directory);
+  wxString BuildReportBaseName() const;
 };
 
 // CALLBACK FOR CURL

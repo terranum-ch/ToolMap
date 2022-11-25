@@ -507,6 +507,10 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
     m_Report->AddFile(m_AddedFileNames[i], wxString::Format(_("user added file : %d"), i));
   }
 
+  // Report name
+  wxString baseName = BuildReportBaseName();
+  m_Report->SetCompressedFileBaseName(baseName);
+
   if (silent) {
     m_Report->Process();
     m_ReportZipName = m_Report->GetCompressedFileName();
@@ -523,6 +527,26 @@ bool lsCrashReport::PrepareReport(wxDebugReport::Context ctx, bool silent) {
   m_ReportZipName = m_Report->GetCompressedFileName();
   m_Report->Reset();
   return true;
+}
+
+wxString lsCrashReport::BuildReportBaseName() const {
+  wxString version;
+  version << ToolMap_MAJOR_VERSION << "." << ToolMap_MINOR_VERSION << "." << GIT_NUMBER;
+  wxString os = wxT("unknown");
+  wxOperatingSystemId osId = wxPlatformInfo::Get().GetOperatingSystemId();
+
+  if ( osId & wxOS_MAC )
+    os = wxT("mac");
+  else if ( osId & wxOS_WINDOWS )
+    os = wxT("win");
+  else if ( osId & wxOS_UNIX )
+    os = wxT("unix");
+
+  wxDateTime now = wxDateTime::Now();
+  wxString date = now.Format("%Y-%m-%dT%H%M");
+  wxString baseName = wxString::Format("%s_%s_%s_%s", m_SoftName, version, os, date);
+
+  return baseName;
 }
 
 bool lsCrashReport::SendReportWeb(const wxString &serverurl, const wxString &proxy) {

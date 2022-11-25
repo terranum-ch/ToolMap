@@ -9,11 +9,6 @@ if (isset($_POST['filename'])) {
         $file_name = basename($_FILES['filecontents']['name']);
         $ext = pathinfo($file_name, PATHINFO_EXTENSION);
 
-        /*if($ext != "zip"){
-            echo "file extension not supported!";
-            return;
-        }*/
-
         $upload_file = $path_parts['dirname'] . '/' . $file_name;
         move_uploaded_file($_FILES['filecontents']['tmp_name'], $upload_file);
 
@@ -54,7 +49,18 @@ if (isset($_POST['filename'])) {
 
 function sendMail($email, $software, $filename, $status)
 {
+    $version = "unknown";
+    $os = "unknown";
+
+    $props = explode("_", $filename);
+    if (count($props) >= 3) {
+        $version = $props[1];
+        $os = $props[2];
+    }
+
     $message = "<html><body><p>New crash report from '$software'</p><ul>";
+    $message .= "<li><strong>Version:</strong> $props[1] </li>";
+    $message .= "<li><strong>OS:</strong> $props[2] </li>";
     $message .= "<li><strong>Name:</strong> $filename </li>";
     $message .= "<li><strong>Status:</strong> $status </li>";
     $message .= "</ul></body></html>";
