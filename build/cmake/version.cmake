@@ -1,4 +1,4 @@
-execute_process(COMMAND git describe --always --dirty=+
+execute_process(COMMAND git rev-parse --short HEAD
         OUTPUT_VARIABLE GIT_REV
         ERROR_QUIET)
 
