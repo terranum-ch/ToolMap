@@ -40,24 +40,6 @@ void TocCtrl::add_test_data() {
   ExpandAll();
 }
 
-/*
-wxTreeListItem TocCtrl::add_group(wxTreeListItem parent, const wxString &label) {
-    wxTreeListItem item = AppendItem(parent, label);
-    SetItemImage(item, 0);
-    return item;
-}
-
-/// Add a layer to the Toc Control
-/// \param parent Tree item id of the Parent
-/// \param label String to display
-/// \param type 1 = shapefile, 2 = database, 3 = image
-/// \return id of the newly added layer
-wxTreeListItem TocCtrl::add_layer(wxTreeListItem parent, const wxString &label, int type) {
-    wxTreeListItem item = AppendItem(parent, label);
-    SetItemImage(item, type);
-    return item;
-}*/
-
 void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
   wxDataViewItem item(event.GetItem());
   m_drag_node_start = nullptr;
