@@ -38,6 +38,14 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TocCtrl::OnMouseRightClick, this);
   this->Bind(wxEVT_DATAVIEW_SELECTION_CHANGED, &TocCtrl::OnLayerSelectionChanged, this);
 
+  // contextual menu event
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuRemoveItem, this, ID_TOCMENU_REMOVE);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuShowProperties, this, ID_TOCMENU_PROPERTIES);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuPropertiesSave, this, ID_TOCMENU_PROPERTIES_SAVE);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuPropertiesLoad, this, ID_TOCMENU_PROPERTIES_LOAD);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuVertex, this, ID_TOCMENU_SHOW_VERTEX_NONE, ID_TOCMENU_SHOW_VERTEX_BEGIN_END);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuEditing, this, ID_TOCMENU_EDIT_LAYER);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuShowLabels, this, ID_TOCMENU_LABELS);
 }
 
 //void TocCtrl::add_test_data() {
@@ -356,3 +364,95 @@ void TocCtrl::OnLayerSelectionChanged(wxDataViewEvent &event) {
   GetEventHandler()->QueueEvent(evt.Clone());
   event.Skip();
 }
+
+void TocCtrl::OnMenuRemoveItem(wxCommandEvent &event) {
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    return;
+  }
+
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node->IsContainer()){
+    wxLogError("Unable to remove container");
+    return ;
+  }
+
+  tmLayerProperties * layer_prop = node->m_layer_prop;
+  wxASSERT(layer_prop);
+  if (layer_prop->GetType() < TOC_NAME_NOT_GENERIC){
+    wxLogMessage(_("Not allowed to remove generic layers from project"));
+    return ;
+  }
+
+  wxCommandEvent evt(tmEVT_LM_REMOVE, wxID_ANY);
+  evt.SetExtraLong(layer_prop->GetID());
+  if (RemoveLayer(layer_prop->GetID())) {
+    GetEventHandler()->QueueEvent(evt.Clone());
+  }
+}
+
+void TocCtrl::OnMenuShowProperties(wxCommandEvent &event) {
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    return;
+  }
+
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node->IsContainer()){
+    wxLogError("Unable to display symbology for container");
+    return ;
+  }
+
+  tmLayerProperties * layer_prop = node->m_layer_prop;
+  wxASSERT(layer_prop);
+  wxASSERT(layer_prop->GetSymbolRef());
+  wxCommandEvent Evt(tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
+  Evt.SetClientData(item);
+  GetEventHandler()->QueueEvent(Evt.Clone());
+}
+
+void TocCtrl::OnMenuPropertiesSave(wxCommandEvent &event) {}
+void TocCtrl::OnMenuPropertiesLoad(wxCommandEvent &event) {}
+
+void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    return;
+  }
+
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node->IsContainer()){
+    wxLogError("Unable to display symbology for container");
+    return ;
+  }
+
+  tmLayerProperties * layer_prop = node->m_layer_prop;
+  wxASSERT(layer_prop);
+
+  // keep old value to avoid drawing if value not changed
+  int oldflags = layer_prop->GetVertexFlags();
+  switch (event.GetId()) {
+    case ID_TOCMENU_SHOW_VERTEX_ALL:
+      layer_prop->SetVertexFlags(tmDRAW_VERTEX_ALL);
+      break;
+    case ID_TOCMENU_SHOW_VERTEX_BEGIN_END:
+      layer_prop->SetVertexFlags(tmDRAW_VERTEX_BEGIN_END);
+      break ;
+    case ID_TOCMENU_SHOW_VERTEX_NONE:
+      layer_prop->SetVertexFlags(tmDRAW_VERTEX_NONE);
+      break ;
+  }
+  if (layer_prop->GetVertexFlags() == oldflags){
+    return;
+  }
+  wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+  GetEventHandler()->QueueEvent(evt.Clone());
+
+  // TODO: Uncomment this code when saving is working...
+  // wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+  // GetEventHandler()->QueueEvent(evtSave.Clone());
+}
+
+void TocCtrl::OnMenuShowLabels(wxCommandEvent &event) {}
+
+void TocCtrl::OnMenuEditing(wxCommandEvent &event) {}

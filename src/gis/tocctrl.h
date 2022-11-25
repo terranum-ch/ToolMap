@@ -57,19 +57,30 @@ class TocCtrl : public wxDataViewCtrl {
   
 
  private:
+  // dnd actions
   void OnDragndropBegin(wxDataViewEvent &event);
   void OnDragndropPossible(wxDataViewEvent &event);
   void OnDragndropDrop(wxDataViewEvent &event);
+
+  // control actions
   void OnMouseClick(wxDataViewEvent &event);
   void OnMouseRightClick(wxDataViewEvent & event);
   void OnLayerSelectionChanged(wxDataViewEvent & event);
+
+  // contextual menu actions
+  void OnMenuRemoveItem(wxCommandEvent &event);
+  void OnMenuShowProperties(wxCommandEvent &event);
+  void OnMenuPropertiesSave(wxCommandEvent &event);
+  void OnMenuPropertiesLoad(wxCommandEvent &event);
+  void OnMenuVertex(wxCommandEvent &event);
+  void OnMenuShowLabels(wxCommandEvent &event);
+  void OnMenuEditing(wxCommandEvent &event);
 
   TocCtrlModelNode * m_drag_node_start;
   TocCtrlModelNode * m_drag_node_end;
   int m_iterate_node_index = wxNOT_FOUND;
   TocCtrlModelNodePtrArray m_iterate_node_array;
   tmLayerProperties * m_editing_layer;
-
 };
 
 #endif  // FEATURE_TOC_TOCCTRL_H
