@@ -33,7 +33,7 @@
 #include "../components/wxtreemultictrl/TreeMultiItemWindow.h"
 #include "../components/wxtreemultictrl/wxTreeMultiCtrl.h"  // for wxTreeMultiCtrl
 
-class tmTOCCtrl;
+class TocCtrl;
 
 class tmSelectedDataMemory;
 
@@ -86,7 +86,7 @@ class tmLayerInfoCtrl : public wxHtmlWindow {
 
   virtual ~tmLayerInfoCtrl();
 
-  void UpdateLayer(tmTOCCtrl *toc);
+  void UpdateLayer(TocCtrl *toc);
 };
 
 /***************************************************************************/ /**
@@ -104,7 +104,7 @@ class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
   tmSelectedDataMemory *m_Selected;
   long m_ClickedItemID;
   PrjDefMemManage *m_Project;
-  tmTOCCtrl *m_Toc;
+  TocCtrl *m_toc_ctrl;
 
   bool _GetItemByMousePos(wxTreeMultiItem &item, const wxPoint &position);
 
@@ -136,7 +136,7 @@ class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
   DECLARE_EVENT_TABLE();
 
  public:
-  tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSelectedDataMemory *sel, tmTOCCtrl *toc,
+  tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSelectedDataMemory *sel, TocCtrl *toc,
                       const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
                       long style = wxTMC_BG_ADJUST_ALL | wxTMC_SPAN_WIDTH);
 

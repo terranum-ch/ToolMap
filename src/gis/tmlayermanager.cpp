@@ -166,7 +166,7 @@ bool tmLayerManager::UnInitLayerManager() {
   m_Scale.SetMaxLayersExtent(tmRealRect(0, 0, 0, 0));
 
   // clear the ctrl
-  m_toc_ctrl->ClearAllLayers();
+  m_toc_ctrl->GetTocModel()->Clear();
 
   return true;
 }
