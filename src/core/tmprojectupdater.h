@@ -63,6 +63,8 @@ class tmProjectUpdater {
 
   bool _231to232();
 
+  bool _232to233();
+
  public:
   tmProjectUpdater(DataBaseTM *database);
 

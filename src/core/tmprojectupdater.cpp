@@ -168,6 +168,15 @@ tmPRJ_UPD_ERROR tmProjectUpdater::DoUpdate() {
     }
   }
 
+  if (myActualDBVersion == 232) {
+    if (!_232to233()) {
+      _SetVersion(232);
+      return tmPRJ_UPD_ERROR_PROJECT;
+    } else {
+      myActualDBVersion = 233;
+    }
+  }
+
   _SetVersion(myActualDBVersion);
   return tmPRJ_UPD_ERROR_OK;
 }
@@ -502,5 +511,11 @@ bool tmProjectUpdater::_231to232() {
       _T("alter table generic_labels modify column `OBJECT_GEOMETRY` point NOT NULL;")
       _T("alter table generic_points modify column `OBJECT_GEOMETRY` point NOT NULL;");
       _T("alter table generic_notes modify column `OBJECT_GEOMETRY` point NOT NULL;");
+  return m_pDB->DataBaseQueryNoResults(myQuery);
+}
+
+bool tmProjectUpdater::_232to233() {
+  wxString myQuery =
+      _T("ALTER TABLE prj_toc ADD COLUMN `PARENT_ID` INT NOT NULL DEFAULT 0; ");
   return m_pDB->DataBaseQueryNoResults(myQuery);
 }
