@@ -18,11 +18,11 @@
 
 /**************** TOC WINDOW CONTENT (BASE CLASS) ****************************/
 TocWindowContent::TocWindowContent() {
-  m_TOCCtrl = nullptr;
+  m_toc_ctrl = nullptr;
 }
 
 TocWindowContent::~TocWindowContent() {
-  delete m_TOCCtrl;
+  delete m_toc_ctrl;
 }
 
 IMPLEMENT_DYNAMIC_CLASS(TocWindowContent, wxEvtHandler)
@@ -33,17 +33,8 @@ IMPLEMENT_DYNAMIC_CLASS(TocWindowContent, wxEvtHandler)
 wxSizer *TocWindowContent::CreateControls(wxWindow *parent, bool call_fit, bool set_sizer) {
   wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-  m_TOCCtrl = new tmTOCCtrl(parent, ID_TREECTRL1, wxSize(200, -1),
-                            wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);  // | wxTR_MULTIPLE);
-  itemBoxSizer2->Add(m_TOCCtrl, 1, wxGROW | wxALL, 0);
-
-  /*wxBoxSizer* itemBoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
-  itemBoxSizer2->Add(itemBoxSizer4, 0, wxALIGN_LEFT|wxALL, 0);
- wxFlatButton * itemToggleButton5 = new wxFlatButton (parent, ID_DLGTOC_ADD, wxFLATBUTTON_TEXT_ADD);
- itemBoxSizer4->Add(itemToggleButton5, 0, wxALIGN_CENTER_VERTICAL|wxTOP|wxBOTTOM|wxLEFT, 5);
-
-  wxFlatButton * itemToggleButton6 = new wxFlatButton( parent, ID_DLGTOC_REMOVE, wxFLATBUTTON_TEXT_REMOVE);
-  itemBoxSizer4->Add(itemToggleButton6, 0, wxALIGN_CENTER_VERTICAL|wxALL, 5);*/
+  m_toc_ctrl = new TocCtrl(parent, ID_TREECTRL1);  // | wxTR_MULTIPLE);
+  itemBoxSizer2->Add(m_toc_ctrl, 1, wxGROW | wxALL, 0);
 
   if (set_sizer) {
     parent->SetSizer(itemBoxSizer2);

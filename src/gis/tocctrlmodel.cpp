@@ -7,23 +7,18 @@
 /// @brief TocCtrlModelNode
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
-                                   bool editing) {
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties * layerprop) {
   m_parent = parent;
-  m_title = title;
-  m_checked = checked;
-  m_image_index = image;
+  m_layer_prop = layerprop;
   m_container = false;
-  m_editing = editing;
 }
 
-TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch) {
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch){
   m_parent = parent;
-  m_title = branch;
-  m_checked = true;
-  m_image_index = 0;  // folder image
+  m_layer_prop = new tmLayerProperties();
+  m_layer_prop->SetName(wxFileName("", branch));
+  m_layer_prop->SetType(TOC_NAME_FOLDER);
   m_container = true;
-  m_editing = false;
 }
 
 TocCtrlModelNode::~TocCtrlModelNode() {
@@ -135,10 +130,35 @@ void TocCtrlModel::GetValue(wxVariant &variant, const wxDataViewItem &item, unsi
 
   auto *node = (TocCtrlModelNode *)item.GetID();
   auto *my_data = new tocRendererData();
-  my_data->m_layer_name = node->m_title;
-  my_data->m_image_index = node->m_image_index;
-  my_data->m_is_visible = node->m_checked;
-  my_data->m_is_editing = node->m_editing;
+  my_data->m_layer_name = node->m_layer_prop->GetName().GetName();
+  switch (node->m_layer_prop->GetType()) {
+    case TOC_NAME_FOLDER:
+      my_data->m_image_index = 0;
+      break;
+    case TOC_NAME_SHP:
+      my_data->m_image_index = 1;
+      break;
+    case TOC_NAME_LINES:
+    case TOC_NAME_POINTS:
+    case TOC_NAME_LABELS:
+    case TOC_NAME_ANNOTATIONS:
+    case TOC_NAME_FRAME:
+      my_data->m_image_index = 2;
+      break;
+    case TOC_NAME_TIFF:
+    case TOC_NAME_EGRID:
+    case TOC_NAME_JPEG:
+      my_data->m_image_index = 3;
+      break;
+    case TOC_NAME_WEB:
+      my_data->m_image_index = 4;
+      break;
+    default:
+      wxLogError("Layer type not supported!");
+      break;
+  }
+  my_data->m_is_editing = node->m_layer_prop->IsEditing();
+  my_data->m_is_visible = node->m_layer_prop->IsVisible();
   variant.SetData(my_data);
 }
 
@@ -149,10 +169,9 @@ bool TocCtrlModel::SetValue(const wxVariant &variant, const wxDataViewItem &item
   auto *node = (TocCtrlModelNode *)item.GetID();
   auto *my_data = (tocRendererData *)variant.GetData();
 
-  node->m_title = my_data->m_layer_name;
-  node->m_checked = my_data->m_is_visible;
-  node->m_image_index = my_data->m_image_index;
-  node->m_editing = my_data->m_is_editing;
+  // not usefull to change type or layer name.
+  node->m_layer_prop->SetVisible(my_data->m_is_visible);
+  node->m_layer_prop->SetEditing(my_data->m_is_editing);
   return true;
 }
 
@@ -216,7 +235,7 @@ bool TocCtrlModel::IsChecked(const wxDataViewItem &item) const {
   if (!node) {
     return false;
   }
-  return node->m_checked;
+  return node->m_layer_prop->IsVisible();
 }
 
 void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
@@ -224,7 +243,7 @@ void TocCtrlModel::SetChecked(const wxDataViewItem &item, bool check) {
   if (!node) {
     return;
   }
-  node->m_checked = check;
+  node->m_layer_prop->SetVisible(check);
 }
 
 wxDataViewItem TocCtrlModel::GetRoot() const {
@@ -255,15 +274,14 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString
 /// \param image zero based image index (0 = folder, 1 = shapefile, 2 = database, 3 = image, 4= web)
 /// \param editing
 /// \return the newly TocCtrlModelNode or a null pointer in case of error
-TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
-                                        bool editing) {
+TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerProperties * layerprop) {
   // check that the node is a container or abort
   if (!parent->IsContainer()) {
     wxLogError("Parent node isn't a container, adding item not possible!");
     return nullptr;
   }
 
-  auto *my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
+  auto *my_item = new TocCtrlModelNode(parent, layerprop);
   parent->Append(my_item);
   ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
   return my_item;
@@ -282,15 +300,14 @@ TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxStr
   return my_group1;
 }
 
-TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
-                                           bool editing, int index) {
+TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, tmLayerProperties * layerprop, int index) {
   // check that the node is a container or abort
   if (!parent->IsContainer()) {
     wxLogError("Parent node isn't a container, adding item not possible!");
     return nullptr;
   }
 
-  auto *my_item = new TocCtrlModelNode(parent, title, checked, image, editing);
+  auto *my_item = new TocCtrlModelNode(parent, layerprop);
   parent->Insert(my_item, index);
   ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
   return my_item;
@@ -309,7 +326,7 @@ TocCtrlModelNode *TocCtrlModel::ConvertFromDataViewItem(const wxDataViewItem &it
 /// \return the text for nodes and group
 wxString TocCtrlModel::NodeGetTitle(TocCtrlModelNode *node) {
   if (node->IsContainer()) {
-    return node->m_title;
+    return node->m_layer_prop->GetName().GetName();
   }
   return wxEmptyString;
 }
@@ -322,7 +339,7 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
   if (!node->IsContainer() || title.IsEmpty()) {
     return false;
   }
-  node->m_title = title;
+  node->m_layer_prop->SetName(wxFileName("", title));
   ItemChanged(TocCtrlModel::ConvertFromNode(node));
   return true;
 }
@@ -356,9 +373,9 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   if (source->IsContainer()) {
     TocCtrlModelNode *new_container = nullptr;
     if (move_index == wxNOT_FOUND) {  // add to the end
-      new_container = NodeAdd(real_destination, source->m_title);
+      new_container = NodeAdd(real_destination, source->m_layer_prop->GetName().GetName());
     } else {  // insert
-      new_container = NodeInsert(real_destination, source->m_title, move_index);
+      new_container = NodeInsert(real_destination, source->m_layer_prop->GetName().GetName(), move_index);
     }
     NodeRecursiveAdd(new_container, source);
     NodeRecursiveRemove(source);
@@ -368,10 +385,9 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
 
   // moving node
   if (move_index == wxNOT_FOUND) {
-    NodeAdd(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing);
+    NodeAdd(real_destination, source->m_layer_prop);
   } else {
-    NodeInsert(real_destination, source->m_title, source->m_checked, source->m_image_index, source->m_editing,
-               move_index);
+    NodeInsert(real_destination, source->m_layer_prop,move_index);
   }
   Delete(ConvertFromNode(source));
   return true;
@@ -384,9 +400,9 @@ void TocCtrlModel::NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *
   for (unsigned int i = 0; i < childs.GetCount(); i++) {
     TocCtrlModelNode *item = childs[i];
     if (!item->IsContainer()) {
-      NodeAdd(parent, item->m_title, item->m_checked, item->m_image_index, item->m_editing);
+      NodeAdd(parent, item->m_layer_prop);
     } else {
-      TocCtrlModelNode *group = NodeAdd(parent, item->m_title);
+      TocCtrlModelNode *group = NodeAdd(parent, item->m_layer_prop->GetName().GetName());
       NodeRecursiveAdd(group, item);
     }
   }

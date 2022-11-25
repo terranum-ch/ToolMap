@@ -19,7 +19,7 @@ WX_DEFINE_ARRAY_PTR(TocCtrlModelNode *, TocCtrlModelNodePtrArray);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class TocCtrlModelNode {
  public:
-  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing);
+  TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties * layerprop);
   TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch);
 
   ~TocCtrlModelNode();
@@ -40,10 +40,10 @@ class TocCtrlModelNode {
   unsigned int GetChildCount() const;
 
   // public to avoid getters/setters
-  wxString m_title;
-  bool m_checked;
-  int m_image_index;
-  bool m_editing;
+//  wxString m_title;
+//  bool m_checked;
+//  int m_image_index;
+//  bool m_editing;
   bool m_container;
   tmLayerProperties * m_layer_prop;
 
@@ -70,10 +70,9 @@ class TocCtrlModel : public wxDataViewModel {
   bool NodeSetTitle(TocCtrlModelNode *node, const wxString &title);
 
   TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, const wxString &branch);
-  TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing);
+  TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, tmLayerProperties * layerprop);
   TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &branch, int index = 0);
-  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &title, bool checked, int image, bool editing,
-                               int index = 0);
+  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, tmLayerProperties * layerprop, int index = 0);
   bool NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index = wxNOT_FOUND);
   void NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *start);
   void NodeRecursiveRemove(TocCtrlModelNode *start);
