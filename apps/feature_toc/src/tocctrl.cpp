@@ -129,7 +129,7 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
   my_model->NodeMove(m_drag_node_start, m_drag_node_end, my_proposed_drop_index);
 }
 
-void TocCtrl::OnValueChanged(wxDataViewEvent &event) {
+void TocCtrl::OnMouseClick(wxDataViewEvent &event) {
   wxLogMessage("Value changed !");
 }
 

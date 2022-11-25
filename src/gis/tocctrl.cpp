@@ -33,7 +33,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::OnDragndropBegin, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::OnDragndropPossible, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::OnDragndropDrop, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnValueChanged, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnMouseClick, this);
 }
 
 //void TocCtrl::add_test_data() {
@@ -139,8 +139,17 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
   my_model->NodeMove(m_drag_node_start, m_drag_node_end, my_proposed_drop_index);
 }
 
-void TocCtrl::OnValueChanged(wxDataViewEvent &event) {
-  wxLogMessage("Value changed !");
+void TocCtrl::OnMouseClick(wxDataViewEvent &event) {
+  auto node = TocCtrlModel::ConvertFromDataViewItem( event.GetItem());
+  if (node->IsContainer()){
+    wxLogError("Activation of folder isn't implemented!");
+    return;
+  }
+
+  // Send message show/hide to layermanager
+  wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+  evt.SetInt((int)node->m_layer_prop->IsVisible());
+  GetEventHandler()->QueueEvent(evt.Clone());
 }
 
 void TocCtrl::ExpandAll() {
