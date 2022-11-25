@@ -516,6 +516,6 @@ bool tmProjectUpdater::_231to232() {
 
 bool tmProjectUpdater::_232to233() {
   wxString myQuery =
-      _T("ALTER TABLE prj_toc ADD COLUMN `PARENT_ID` INT NOT NULL DEFAULT 0; ");
+      _T("ALTER TABLE prj_toc ADD COLUMN `PARENT_ID` INT UNSIGNED DEFAULT 0; ");
   return m_pDB->DataBaseQueryNoResults(myQuery);
 }

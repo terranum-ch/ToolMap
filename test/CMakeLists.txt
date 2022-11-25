@@ -15,7 +15,7 @@ IF (NOT UNIT_TESTING_PATH)
     FetchContent_Declare(
             test-files
             GIT_REPOSITORY https://github.com/terranum-ch/ToolMap-test-files
-            GIT_TAG fd74f24ef8366abd26bae7d24b96aebe1d1f5649) # database version 232
+            GIT_TAG fe91117de2cdcad4b5697890e0ca922b749c7da7) # database version 233
     FetchContent_MakeAvailable(test-files)
     set(UNIT_TESTING_PATH "${CMAKE_BINARY_DIR}/_deps/test-files-src")
 ENDIF (NOT UNIT_TESTING_PATH)
