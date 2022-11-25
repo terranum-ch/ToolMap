@@ -1,4 +1,5 @@
 #include "tocctrl.h"
+#include "tmtocctrlmenu.h"
 
 #include "tocbitmaps.h"
 #include "tocrenderer.h"
@@ -34,6 +35,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::OnDragndropPossible, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::OnDragndropDrop, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnMouseClick, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, &TocCtrl::OnMouseRightClick, this);
 }
 
 //void TocCtrl::add_test_data() {
@@ -330,4 +332,19 @@ bool TocCtrl::RemoveLayer(int database_layer_id) {
     }
   }
   return false;
+}
+
+void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
+  if (!event.GetItem().IsOk()){ // right click on invalid item
+    return;
+  }
+
+  auto layer_prop = TocCtrlModel::ConvertFromDataViewItem(event.GetItem())->m_layer_prop;
+  if (layer_prop->GetType() == TOC_NAME_FOLDER){
+    wxLogError("No menu for folder!");
+    return;
+  }
+  tmTOCCtrlMenu m_menu(layer_prop, 0, 0);
+  PopupMenu(&m_menu);
+  event.Skip();
 }

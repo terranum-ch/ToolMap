@@ -61,6 +61,7 @@ class TocCtrl : public wxDataViewCtrl {
   void OnDragndropPossible(wxDataViewEvent &event);
   void OnDragndropDrop(wxDataViewEvent &event);
   void OnMouseClick(wxDataViewEvent &event);
+  void OnMouseRightClick(wxDataViewEvent & event);
 
   TocCtrlModelNode * m_drag_node_start;
   TocCtrlModelNode * m_drag_node_end;
