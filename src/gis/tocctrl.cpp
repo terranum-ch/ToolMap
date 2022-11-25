@@ -258,3 +258,10 @@ void TocCtrl::SetProjectName(const wxString &project_name) {
   wxASSERT(root);
   root->m_layer_prop->SetName(wxFileName("", project_name));
 }
+
+bool TocCtrl::InsertLayer(tmLayerProperties *item) {
+  wxString myDisplayName = item->GetNameDisplay();
+  auto * model = GetTocModel();
+  model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), item);
+  return true;
+}
