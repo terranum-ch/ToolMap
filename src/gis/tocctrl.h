@@ -45,6 +45,7 @@ class TocCtrl : public wxDataViewCtrl {
   void SetSelectedLayer(int layerID);
   tmLayerProperties *GetLayerByPath(const wxString &layerPath);
   tmLayerProperties *GetLayerById(long layer_id);
+  tmLayerProperties *GetLayerByName(const wxString &layerName);
   tmLayerProperties *IterateLayers(bool ResetToLast);
   tmLayerProperties *GetEditLayer();
   void SetEditLayer(tmLayerProperties *mEditingLayer);
