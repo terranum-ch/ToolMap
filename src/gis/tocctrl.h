@@ -50,6 +50,7 @@ class TocCtrl : public wxDataViewCtrl {
   void SetEditLayer(tmLayerProperties *mEditingLayer);
   void SetProjectName(const wxString &project_name);
   bool InsertLayer(tmLayerProperties *item);
+  unsigned int GetCountLayers();
 
  private:
   void OnDragndropBegin(wxDataViewEvent &event);

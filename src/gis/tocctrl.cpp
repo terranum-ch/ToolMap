@@ -265,3 +265,12 @@ bool TocCtrl::InsertLayer(tmLayerProperties *item) {
   model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), item);
   return true;
 }
+
+unsigned int TocCtrl::GetCountLayers() {
+  auto * model = GetTocModel();
+  auto * root = TocCtrlModel::ConvertFromDataViewItem(model->GetRoot());
+  wxASSERT(root);
+  TocCtrlModelNodePtrArray node_array;
+  root->GetAllChildRecursive(node_array);
+  return node_array.GetCount();
+}
