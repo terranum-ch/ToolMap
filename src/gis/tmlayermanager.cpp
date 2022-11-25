@@ -412,7 +412,7 @@ void tmLayerManager::OnIncompatibleLayerWarning(wxCommandEvent &event) {
 
   if (item) {
     m_DB->RemoveTOCLayer(item->GetID());
-    m_toc_ctrl->RemoveLayer(item->GetId());
+    m_toc_ctrl->RemoveLayer(item->GetID());
   }
 }
 
