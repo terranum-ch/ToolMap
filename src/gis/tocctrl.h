@@ -41,11 +41,10 @@ class TocCtrl : public wxDataViewCtrl {
   wxColour GetColourDark();
 
   // toc ctrl function for toolmap
-  tmLayerProperties * GetSelectionLayer();
+  tmLayerProperties *GetSelectionLayer();
   void SetSelectedLayer(int layerID);
-  tmLayerProperties * GetLayerByPath(const wxString &layerPath);
-  tmLayerProperties *GetLayerById(long layer_id);
   tmLayerProperties *GetLayerByPath(const wxString &layerPath);
+  tmLayerProperties *GetLayerById(long layer_id);
   tmLayerProperties *IterateLayers(bool ResetToLast);
   tmLayerProperties *GetEditLayer();
   void SetEditLayer(tmLayerProperties *mEditingLayer);

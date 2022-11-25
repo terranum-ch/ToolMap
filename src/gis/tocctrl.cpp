@@ -217,23 +217,6 @@ tmLayerProperties *TocCtrl::GetLayerById(long layer_id) {
   return nullptr;
 }
 
-tmLayerProperties *TocCtrl::GetLayerByPath(const wxString &layerPath) {
-  auto *root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
-  wxASSERT(root);
-
-  TocCtrlModelNodePtrArray iterateNodeArray;
-  root->GetAllChildRecursive(iterateNodeArray);
-
-  for (auto node : iterateNodeArray) {
-    if (node->m_layer_prop->GetName() == wxFileName(layerPath)) {
-      return node->m_layer_prop;
-    }
-  }
-
-  wxFAIL;
-  return nullptr;
-}
-
 tmLayerProperties *TocCtrl::IterateLayers(bool ResetToLast) {
   if (ResetToLast){
     m_iterate_node_array.Clear();
