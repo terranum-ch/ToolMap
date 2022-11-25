@@ -274,3 +274,21 @@ unsigned int TocCtrl::GetCountLayers() {
   root->GetAllChildRecursive(node_array);
   return node_array.GetCount();
 }
+
+bool TocCtrl::UpdateLayerName(tmLayerProperties *item, const wxString &newName) {
+  auto *model = GetTocModel();
+  auto *root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
+  wxASSERT(root);
+
+  TocCtrlModelNodePtrArray iterateNodeArray;
+  root->GetAllChildRecursive(iterateNodeArray);
+
+  for (auto node :iterateNodeArray) {
+    if (node->m_layer_prop == item) {
+      wxFileName name = node->m_layer_prop->GetName();
+      name.SetFullName(newName);
+      node->m_layer_prop->SetName(name);
+    }
+  }
+  return true;
+}

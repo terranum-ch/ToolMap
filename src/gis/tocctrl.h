@@ -51,6 +51,7 @@ class TocCtrl : public wxDataViewCtrl {
   void SetProjectName(const wxString &project_name);
   bool InsertLayer(tmLayerProperties *item);
   unsigned int GetCountLayers();
+  bool UpdateLayerName(tmLayerProperties *item, const wxString &newName);
 
  private:
   void OnDragndropBegin(wxDataViewEvent &event);
