@@ -21,7 +21,6 @@
 #include "../core/prjdefmemmanage.h"
 #include "../gis/tmmanagerevent.h"
 #include "../gis/tmselecteddatamemory.h"
-#include "../gis/tmtocctrl.h"
 
 //#include "../gis/tmgisdata.h"
 #include <wx/clipbrd.h>
