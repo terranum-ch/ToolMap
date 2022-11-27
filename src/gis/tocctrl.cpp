@@ -455,4 +455,11 @@ void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
 
 void TocCtrl::OnMenuShowLabels(wxCommandEvent &event) {}
 
-void TocCtrl::OnMenuEditing(wxCommandEvent &event) {}
+void TocCtrl::OnMenuEditing(wxCommandEvent &event) {
+  // start editing
+  if (event.IsChecked()){
+
+  }else {
+
+  }
+}
