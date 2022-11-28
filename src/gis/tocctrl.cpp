@@ -408,8 +408,8 @@ void TocCtrl::OnMenuShowProperties(wxCommandEvent &event) {
   wxASSERT(layer_prop);
   wxASSERT(layer_prop->GetSymbolRef());
   wxCommandEvent Evt(tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
-  Evt.SetClientData(item);
-  GetEventHandler()->QueueEvent(Evt.Clone());
+  Evt.SetClientData(layer_prop);
+  ProcessEvent(Evt);
 }
 
 void TocCtrl::OnMenuPropertiesSave(wxCommandEvent &event) {}
