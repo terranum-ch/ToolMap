@@ -18,6 +18,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
     : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_SINGLE | wxDV_NO_HEADER) {
   m_drag_node_start = nullptr;
   m_drag_node_end = nullptr;
+  m_editing_layer = nullptr;
 
   // Setting model
   wxObjectDataPtr<wxDataViewModel> my_model(new TocCtrlModel);
