@@ -21,7 +21,6 @@
 #include "../core/prjdefmemmanage.h"
 #include "../gis/tmmanagerevent.h"
 #include "../gis/tmselecteddatamemory.h"
-#include "../gis/tmtocctrl.h"
 
 //#include "../gis/tmgisdata.h"
 #include <wx/clipbrd.h>
@@ -47,7 +46,7 @@ void InformationDLG::_CreateControls() {
   wxBoxSizer *bSizer26;
   bSizer26 = new wxBoxSizer(wxVERTICAL);
 
-  m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_TOC);
+  m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_toc_ctrl);
   bSizer26->Add(m_SelCtrl, 1, wxEXPAND, 5);
 
   m_panel5->SetSizer(bSizer26);
@@ -85,10 +84,10 @@ void InformationDLG::OnCloseDlg(wxCloseEvent &event) {
   Destroy();
 }
 
-InformationDLG::InformationDLG(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
+InformationDLG::InformationDLG(wxWindow *parent, TocCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
                                const wxString &title, const wxPoint &pos, const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
-  m_TOC = toc, m_Selected = sel;
+  m_toc_ctrl = toc, m_Selected = sel;
 
   _CreateControls();
 }
@@ -103,8 +102,8 @@ bool InformationDLG::TransferDataToWindow() {
 }
 
 void InformationDLG::UpdateLayer() {
-  wxASSERT(m_TOC);
-  m_LayerCtrl->UpdateLayer(m_TOC);
+  wxASSERT(m_toc_ctrl);
+  m_LayerCtrl->UpdateLayer(m_toc_ctrl);
 }
 
 void InformationDLG::UpdateSelection() {
@@ -126,7 +125,7 @@ tmLayerInfoCtrl::tmLayerInfoCtrl(wxWindow *parent, wxWindowID id, const wxPoint 
 
 tmLayerInfoCtrl::~tmLayerInfoCtrl() {}
 
-void tmLayerInfoCtrl::UpdateLayer(tmTOCCtrl *toc) {
+void tmLayerInfoCtrl::UpdateLayer(TocCtrl *toc) {
   tmLayerProperties *itemProp = toc->GetSelectionLayer();
   if (!itemProp) {
     wxLogDebug(_T("No layer selected, select a layer"));
@@ -157,13 +156,13 @@ EVT_MENU(ID_POPUP_ZOOM_TO, tmSelectionInfoCtrl::OnPopupZoom)
 EVT_MENU(wxID_COPY, tmSelectionInfoCtrl::OnPopupCopy)
 END_EVENT_TABLE()
 
-tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSelectedDataMemory *sel, tmTOCCtrl *toc,
+tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSelectedDataMemory *sel, TocCtrl *toc,
                                          const wxPoint &pos, const wxSize &size, long style)
     : wxTreeMultiCtrl(window, id, pos, size, style) {
   wxASSERT(sel);
   wxASSERT(toc);
   m_Selected = sel;
-  m_Toc = toc;
+  m_toc_ctrl = toc;
   m_ClickedItemID = wxNOT_FOUND;
   m_Project = nullptr;
   // SetBackgroundColour(*wxWHITE);
@@ -309,14 +308,14 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString &header, wxArrayStrin
   values.Clear();
 
   wxASSERT(m_Project);
-  wxASSERT(m_Toc);
+  wxASSERT(m_toc_ctrl);
 
   if (oid == wxNOT_FOUND) {
     wxLogError(_T("No object ID found."));
     return false;
   }
 
-  tmLayerProperties *itemProp = m_Toc->GetSelectionLayer();
+  tmLayerProperties *itemProp = m_toc_ctrl->GetSelectionLayer();
   if (!itemProp) {
     wxLogError(_T("No layer selected, select a layer"));
     return false;

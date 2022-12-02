@@ -35,7 +35,7 @@
 #include "tmattributiondatapoint.h"       // for point attribution
 #include "tmmanagerevent.h"               // for shared event with other manager
 #include "tmselecteddatamemory.h"         // for selection data
-#include "tmtocctrl.h"                    // for TOC ctrl
+#include "tocctrl.h"                    // for TOC ctrl
 
 class InformationDLG;
 
@@ -60,7 +60,7 @@ class tmAttributionManager : public wxEvtHandler {
   wxWindow *m_Parent;
   AttribObjType_PANEL *m_Panel;
   tmSelectedDataMemory *m_SelData;
-  tmTOCCtrl *m_TOC;
+  TocCtrl *m_toc_ctrl;
   DataBaseTM *m_pDB;
   bool m_ShortcutLoaded;
   PrjDefMemManage *m_pPrjMem;
@@ -116,7 +116,7 @@ class tmAttributionManager : public wxEvtHandler {
  protected:
  public:
   // ctor and dtor
-  tmAttributionManager(wxWindow *parent, tmTOCCtrl *toc, AttribObjType_PANEL *panel, tmSelectedDataMemory *selection);
+  tmAttributionManager(wxWindow *parent, TocCtrl *toc, AttribObjType_PANEL *panel, tmSelectedDataMemory *selection);
 
   ~tmAttributionManager();
 

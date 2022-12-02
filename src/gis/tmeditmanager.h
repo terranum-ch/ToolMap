@@ -35,7 +35,7 @@
 #include "../gui/editvertex_dlg.h"  // for editing vertex position
 #include "tmmanagerevent.h"         // for shared event with other manager
 #include "tmselecteddatamemory.h"   // for selection data
-#include "tmtocctrl.h"              // for TOC ctrl
+#include "tocctrl.h"              // for TOC ctrl
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT = 22200;
 const int tmEM_CONTEXTMENU_VERTEX_DELETE = 22201;
@@ -88,7 +88,7 @@ class tmEditManager : public wxEvtHandler {
  private:
   // defined by ctor
   ToolMapFrame *m_ParentEvt;
-  tmTOCCtrl *m_TOC;
+  TocCtrl *m_toc_ctrl;
   tmSelectedDataMemory *m_SelectedData;
   tmRenderer *m_Renderer;
   bool m_EditStarted;
@@ -190,7 +190,7 @@ class tmEditManager : public wxEvtHandler {
  protected:
  public:
   // ctor - dtor
-  tmEditManager(ToolMapFrame *parent, tmTOCCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
+  tmEditManager(ToolMapFrame *parent, TocCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
                 tmGISScale *scale);
 
   ~tmEditManager();

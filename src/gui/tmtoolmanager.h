@@ -25,7 +25,6 @@
 #include "../database/database_tm.h"      // for database
 #include "../gis/tmrenderer.h"            // for GIS rendering
 #include "../gis/tmselecteddatamemory.h"  // for selection data
-#include "../gis/tmtocctrl.h"             // for TOC ctrl
 #include "../gis/tooldanglingnodes.h"     // for computing dangling nodes (engine class)
 #include "danglingnodes_dlg.h"            // for dangling nodes dialog support
 
@@ -36,7 +35,6 @@ class tmToolManager : public wxEvtHandler {
  private:
   // defined by ctor
   wxWindow *m_Parent;
-  tmTOCCtrl *m_TOC;
   tmSelectedDataMemory *m_Selected;
   tmRenderer *m_Renderer;
   tmGISScale *m_Scale;
@@ -54,8 +52,7 @@ class tmToolManager : public wxEvtHandler {
   }
 
  public:
-  tmToolManager(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
-                tmGISScale *scale);
+  tmToolManager(wxWindow *parent, tmSelectedDataMemory *seldata, tmRenderer *renderer, tmGISScale *scale);
 
   ~tmToolManager();
 

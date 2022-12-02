@@ -17,18 +17,16 @@
 
 void tmToolManager::InitMemberValues() {
   m_Parent = nullptr;
-  m_TOC = nullptr;
   m_Selected = nullptr;
   m_Renderer = nullptr;
   m_Scale = nullptr;
   m_pDB = nullptr;
 }
 
-tmToolManager::tmToolManager(wxWindow *parent, tmTOCCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
+tmToolManager::tmToolManager(wxWindow *parent, tmSelectedDataMemory *seldata, tmRenderer *renderer,
                              tmGISScale *scale) {
   InitMemberValues();
   m_Parent = parent;
-  m_TOC = toc;
   m_Selected = seldata;
   m_Renderer = renderer;
   m_Scale = scale;

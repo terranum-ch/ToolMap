@@ -29,7 +29,8 @@
 // each string.
 static wxString TOC_GENERIC_NAME_STRING[] = {wxTRANSLATE("Lines"),  wxTRANSLATE("Points"),
                                              wxTRANSLATE("Labels"), wxTRANSLATE("Notes"),
-                                             wxTRANSLATE("Frame"),  wxTRANSLATE("Not Generic layers")};
+                                             wxTRANSLATE("Frame"), wxTRANSLATE("Folder"),
+                                             wxTRANSLATE("Not Generic layers")};
 
 // warning, max values are 127 because stored in a tiny int
 // into the database
@@ -39,6 +40,7 @@ enum TOC_GENERIC_NAME {
   TOC_NAME_LABELS,
   TOC_NAME_ANNOTATIONS,
   TOC_NAME_FRAME,
+  TOC_NAME_FOLDER,
   TOC_NAME_NOT_GENERIC = 100,
   TOC_NAME_TIFF,
   TOC_NAME_EGRID,
@@ -47,7 +49,7 @@ enum TOC_GENERIC_NAME {
   TOC_NAME_SHP,
   TOC_NAME_UNKNOWN = 120
 };
-static const int TOC_GENERIC_NAME_NUMBER = 6;
+static const int TOC_GENERIC_NAME_NUMBER = 7;
 
 enum TM_GIS_SPATIAL_TYPES {
   LAYER_SPATIAL_LINE = 0,

@@ -68,7 +68,7 @@ const wxString TABLE_NAME_GIS_ATTRIBUTION[] = {_T("generic_aat"), _T("generic_pa
                                                _T("generic_notes")};
 
 // DATABASE VERSION IS
-const int TM_DATABASE_VERSION = 232;
+const int TM_DATABASE_VERSION = 233;
 
 enum tmDB_OPEN_STATUS {
   tmDB_OPEN_FAILED = 0,

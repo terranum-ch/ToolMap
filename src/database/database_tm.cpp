@@ -179,6 +179,7 @@ bool DataBaseTM::CreateEmptyTMDatabase() {
 
       _T("CREATE  TABLE `prj_toc` (")
       _T("  `CONTENT_ID` INT UNSIGNED NOT NULL AUTO_INCREMENT ,")
+      _T("  `PARENT_ID` INT UNSIGNED DEFAULT 0,")
       _T("  `TYPE_CD` INT UNSIGNED NOT NULL ,")
       _T("  `CONTENT_PATH` VARCHAR(255) NULL ,")
       _T("  `CONTENT_NAME` VARCHAR(255) NULL ,")

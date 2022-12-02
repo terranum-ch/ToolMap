@@ -21,7 +21,6 @@
 #include <wx/config.h>
 #include <wx/fileconf.h>
 
-#include "../gis/tmtocctrl.h"
 #include "tmdataintegrity.h"
 #include "tmpercent.h"
 
