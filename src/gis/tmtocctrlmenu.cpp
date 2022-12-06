@@ -31,6 +31,7 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems) 
   } else if (m_LayerProperties->GetType() == TOC_NAME_GROUP) {
     _CreateTOCAddGroup();
     _CreateTOCRenameGroup();
+    _CreateTOCRemoveGroup();
   } else {
     _CreateTOCBasic();
     _CreateTOCShowVertex();
@@ -46,6 +47,10 @@ void tmTOCCtrlMenu::_CreateTOCAddGroup() {
 
 void tmTOCCtrlMenu::_CreateTOCRenameGroup() {
   Append(ID_TOCMENU_RENAME_GROUP, _("Rename group"));
+}
+
+void tmTOCCtrlMenu::_CreateTOCRemoveGroup() {
+  Append(ID_TOCMENU_REMOVE_GROUP, _("Remove group"));
 }
 
 void tmTOCCtrlMenu::_CreateTOCBasic() {

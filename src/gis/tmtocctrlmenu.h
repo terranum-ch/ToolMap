@@ -35,6 +35,7 @@ const int ID_TOCMENU_EDIT_LAYER = 20111;
 const int ID_TOCMENU_LABELS = 20112;
 const int ID_TOCMENU_ADD_GROUP = 20113;
 const int ID_TOCMENU_RENAME_GROUP = 20114;
+const int ID_TOCMENU_REMOVE_GROUP = 20115;
 
 class tmLayerProperties;
 
@@ -55,6 +56,8 @@ class tmTOCCtrlMenu : public wxMenu {
   void _CreateTOCAddGroup();
 
   void _CreateTOCRenameGroup();
+
+  void _CreateTOCRemoveGroup();
 
   void _CreateTOCBasic();
 

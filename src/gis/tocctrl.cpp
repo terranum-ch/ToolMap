@@ -43,6 +43,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuRemoveItem, this, ID_TOCMENU_REMOVE);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuAddGroup, this, ID_TOCMENU_ADD_GROUP);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuRenameGroup, this, ID_TOCMENU_RENAME_GROUP);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuRemoveItem, this, ID_TOCMENU_REMOVE_GROUP);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuShowProperties, this, ID_TOCMENU_PROPERTIES);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuPropertiesSave, this, ID_TOCMENU_PROPERTIES_SAVE);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuPropertiesLoad, this, ID_TOCMENU_PROPERTIES_LOAD);
@@ -370,14 +371,14 @@ void TocCtrl::OnMenuRemoveItem(wxCommandEvent &event) {
   }
 
   auto node = TocCtrlModel::ConvertFromDataViewItem(item);
-  if (node->IsContainer()){
-    wxLogError("Unable to remove container");
+  if (node->IsContainer() && node->GetChildCount() > 0){
+    wxLogError("Unable to remove group: %d child(ren) inside!", node->GetChildCount());
     return ;
   }
 
   tmLayerProperties * layer_prop = node->m_LayerProp;
   wxASSERT(layer_prop);
-  if (layer_prop->GetType() < TOC_NAME_NOT_GENERIC){
+  if (layer_prop->GetType() < TOC_NAME_GROUP){
     wxLogMessage(_("Not allowed to remove generic layers from project"));
     return ;
   }
