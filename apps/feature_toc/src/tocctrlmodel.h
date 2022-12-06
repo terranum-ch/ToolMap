@@ -17,7 +17,8 @@ WX_DEFINE_ARRAY_PTR(TocCtrlModelNode *, TocCtrlModelNodePtrArray);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class TocCtrlModelNode {
  public:
-  TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties layerprop, bool is_container);
+  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &title, bool checked, int image,
+                   bool editing);
   TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &branch);
 
   ~TocCtrlModelNode();

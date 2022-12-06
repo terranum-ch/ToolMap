@@ -23,7 +23,7 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_DATAVIEW_ITEM_BEGIN_DRAG, &TocCtrl::OnDragndropBegin, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP_POSSIBLE, &TocCtrl::OnDragndropPossible, this);
   this->Bind(wxEVT_DATAVIEW_ITEM_DROP, &TocCtrl::OnDragndropDrop, this);
-  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnValueChanged, this);
+  this->Bind(wxEVT_DATAVIEW_ITEM_ACTIVATED, &TocCtrl::OnMouseClick, this);
 }
 
 void TocCtrl::add_test_data() {
