@@ -17,7 +17,7 @@ TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &fol
   m_Parent = parent;
   m_LayerProp = new tmLayerProperties();
   m_LayerProp->SetName(wxFileName("", folder));
-  m_LayerProp->SetType(TOC_NAME_FOLDER);
+  m_LayerProp->SetType(TOC_NAME_GROUP);
   m_Container = true;
 }
 
@@ -132,7 +132,7 @@ void TocCtrlModel::GetValue(wxVariant &variant, const wxDataViewItem &item, unsi
   auto *my_data = new tocRendererData();
   my_data->m_layer_name = node->m_LayerProp->GetName().GetName();
   switch (node->m_LayerProp->GetType()) {
-    case TOC_NAME_FOLDER:
+    case TOC_NAME_GROUP:
       my_data->m_ImageIndex = 0;
       break;
     case TOC_NAME_SHP:
@@ -281,10 +281,16 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerPropert
     return nullptr;
   }
 
-  auto *my_item = new TocCtrlModelNode(parent, layerprop);
-  parent->Append(my_item);
-  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
-  return my_item;
+  TocCtrlModelNode *item = nullptr;
+  if (layerprop->GetType() == TOC_NAME_GROUP) {
+    item = new TocCtrlModelNode(parent, layerprop->GetName().GetName());
+  } else {
+    item = new TocCtrlModelNode(parent, layerprop);
+  }
+
+  parent->Append(item);
+  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)item));
+  return item;
 }
 
 TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &branch, int index) {

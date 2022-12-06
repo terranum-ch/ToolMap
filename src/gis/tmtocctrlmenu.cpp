@@ -28,7 +28,7 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems) 
   // create menu
   if (m_LayerProperties == nullptr) {
     _CreateTOCAddGroup();
-  } else if (m_LayerProperties->GetType() == TOC_NAME_FOLDER) {
+  } else if (m_LayerProperties->GetType() == TOC_NAME_GROUP) {
     _CreateTOCAddGroup();
     _CreateTOCRenameGroup();
   } else {

@@ -261,12 +261,15 @@ bool tmLayerManager::SaveTOCStatus(bool isClosing) {
       }
     }
 
-    // serialize symbology
-    tmSerialize out;
+    wxString symbology;
+    if (itemProp->GetType() != TOC_NAME_GROUP) {
+      // serialize symbology
+      tmSerialize out;
+      itemProp->GetSymbolRuleManagerRef()->Serialize(out);
+      symbology = out.GetString();
+    }
 
-    // itemProp->GetSymbolRef()->Serialize(out);
-    itemProp->GetSymbolRuleManagerRef()->Serialize(out);
-    m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, out.GetString());
+    m_DB->PrepareTOCStatusUpdate(sSentence, itemProp, iRank, symbology);
     iRank--;
 
     if (iRank < 0) {
