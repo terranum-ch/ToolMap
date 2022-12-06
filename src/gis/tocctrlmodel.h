@@ -20,7 +20,7 @@ WX_DEFINE_ARRAY_PTR(TocCtrlModelNode *, TocCtrlModelNodePtrArray);
 class TocCtrlModelNode {
  public:
   TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties * layerprop);
-  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder);
+  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder, long id = 0);
 
   ~TocCtrlModelNode();
 

@@ -13,11 +13,12 @@ TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties *
   m_Container = false;
 }
 
-TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder){
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder, long id){
   m_Parent = parent;
   m_LayerProp = new tmLayerProperties();
   m_LayerProp->SetName(wxFileName("", folder));
   m_LayerProp->SetType(TOC_NAME_GROUP);
+  m_LayerProp->SetID(id);
   m_Container = true;
 }
 
@@ -283,7 +284,7 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerPropert
 
   TocCtrlModelNode *item = nullptr;
   if (layerprop->GetType() == TOC_NAME_GROUP) {
-    item = new TocCtrlModelNode(parent, layerprop->GetName().GetName());
+    item = new TocCtrlModelNode(parent, layerprop->GetName().GetName(), layerprop->GetID());
   } else {
     item = new TocCtrlModelNode(parent, layerprop);
   }
