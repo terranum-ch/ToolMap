@@ -31,10 +31,6 @@ const int ID_TOCMENU_SHOW_VERTEX_BEGIN_END = 20103;
 const int ID_TOCMENU_PROPERTIES = 20104;
 const int ID_TOCMENU_PROPERTIES_SAVE = 20105;
 const int ID_TOCMENU_PROPERTIES_LOAD = 20106;
-const int ID_TOCMENU_MOVE_TOP = 20107;
-const int ID_TOCMENU_MOVE_UP = 20108;
-const int ID_TOCMENU_MOVE_DOWN = 20109;
-const int ID_TOCMENU_MOVE_BOTTOM = 20110;
 const int ID_TOCMENU_EDIT_LAYER = 20111;
 const int ID_TOCMENU_LABELS = 20112;
 
@@ -59,8 +55,6 @@ class tmTOCCtrlMenu : public wxMenu {
   void _CreateTOCShowVertex();
 
   void _CreateTOCProperties();
-
-  void _CreateTOCMoveMenu();
 
  public:
   tmTOCCtrlMenu() {

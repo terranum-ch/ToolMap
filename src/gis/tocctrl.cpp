@@ -355,8 +355,8 @@ void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
     wxLogError("No menu for folder!");
     return;
   }
-  tmTOCCtrlMenu m_menu(layer_prop, 0, 0);
-  PopupMenu(&m_menu);
+  tmTOCCtrlMenu menu(layer_prop, 0, 0);
+  PopupMenu(&menu);
   event.Skip();
 }
 
