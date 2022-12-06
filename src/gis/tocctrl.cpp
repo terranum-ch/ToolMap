@@ -41,6 +41,8 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
 
   // contextual menu event
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuRemoveItem, this, ID_TOCMENU_REMOVE);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuAddGroup, this, ID_TOCMENU_ADD_GROUP);
+  this->Bind(wxEVT_MENU, &TocCtrl::OnMenuRenameGroup, this, ID_TOCMENU_RENAME_GROUP);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuShowProperties, this, ID_TOCMENU_PROPERTIES);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuPropertiesSave, this, ID_TOCMENU_PROPERTIES_SAVE);
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuPropertiesLoad, this, ID_TOCMENU_PROPERTIES_LOAD);
@@ -345,16 +347,12 @@ bool TocCtrl::RemoveLayer(int database_layer_id) {
 }
 
 void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
-  if (!event.GetItem().IsOk()){ // right click on invalid item
-    return;
+  tmLayerProperties *layerProp = nullptr;
+  if (event.GetItem().IsOk()) {
+    layerProp = TocCtrlModel::ConvertFromDataViewItem(event.GetItem())->m_LayerProp;
   }
 
-  auto layer_prop = TocCtrlModel::ConvertFromDataViewItem(event.GetItem())->m_LayerProp;
-  if (layer_prop->GetType() == TOC_NAME_FOLDER){
-    wxLogError("No menu for folder!");
-    return;
-  }
-  tmTOCCtrlMenu menu(layer_prop, 0, 0);
+  tmTOCCtrlMenu menu(layerProp, 0, 0);
   PopupMenu(&menu);
   event.Skip();
 }
@@ -389,6 +387,46 @@ void TocCtrl::OnMenuRemoveItem(wxCommandEvent &event) {
   if (RemoveLayer(layer_prop->GetID())) {
     GetEventHandler()->QueueEvent(evt.Clone());
   }
+}
+
+void TocCtrl::OnMenuAddGroup(wxCommandEvent &event) {
+  wxString newGroupName = wxGetTextFromUser("Group name");
+  if (newGroupName.IsEmpty()) {
+    return;
+  }
+
+  auto *model = GetTocModel();
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    // If no node is selected, add group at the end of the TOC
+    model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), newGroupName);
+  } else {
+    auto *node = TocCtrlModel::ConvertFromDataViewItem(item);
+    if (!node->IsContainer()) {
+      node = node->GetParent();
+    }
+    model->NodeAdd(node, newGroupName);
+  }
+}
+
+void TocCtrl::OnMenuRenameGroup(wxCommandEvent &event) {
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    return;
+  }
+
+  auto *model = GetTocModel();
+  auto *node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (!node->IsContainer()){
+    wxLogError("Changing name only works for groups!");
+    return;
+  }
+
+  wxString newGroupName = wxGetTextFromUser("Group name", wxASCII_STR(wxGetTextFromUserPromptStr), model->NodeGetTitle(node));
+  if (newGroupName.IsEmpty()){
+    return;
+  }
+  model->NodeSetTitle(node, newGroupName);
 }
 
 void TocCtrl::OnMenuShowProperties(wxCommandEvent &event) {

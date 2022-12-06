@@ -33,6 +33,8 @@ const int ID_TOCMENU_PROPERTIES_SAVE = 20105;
 const int ID_TOCMENU_PROPERTIES_LOAD = 20106;
 const int ID_TOCMENU_EDIT_LAYER = 20111;
 const int ID_TOCMENU_LABELS = 20112;
+const int ID_TOCMENU_ADD_GROUP = 20113;
+const int ID_TOCMENU_RENAME_GROUP = 20114;
 
 class tmLayerProperties;
 
@@ -49,6 +51,10 @@ class tmTOCCtrlMenu : public wxMenu {
   int m_SelectedPos;
   int m_TotalLayers;
   tmLayerProperties *m_LayerProperties;
+
+  void _CreateTOCAddGroup();
+
+  void _CreateTOCRenameGroup();
 
   void _CreateTOCBasic();
 

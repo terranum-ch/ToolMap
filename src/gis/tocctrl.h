@@ -69,6 +69,8 @@ class TocCtrl : public wxDataViewCtrl {
 
   // contextual menu actions
   void OnMenuRemoveItem(wxCommandEvent &event);
+  void OnMenuAddGroup(wxCommandEvent &event);
+  void OnMenuRenameGroup(wxCommandEvent &event);
   void OnMenuShowProperties(wxCommandEvent &event);
   void OnMenuPropertiesSave(wxCommandEvent &event);
   void OnMenuPropertiesLoad(wxCommandEvent &event);

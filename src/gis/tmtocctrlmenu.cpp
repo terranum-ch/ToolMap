@@ -20,20 +20,36 @@
 
 #include "tmlayerproperties.h"
 
-tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems) : wxMenu(item->GetNameDisplay(), 0) {
+tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems) : wxMenu() {
   m_LayerProperties = item;
   m_SelectedPos = pos;
   m_TotalLayers = numberitems;
 
   // create menu
-  _CreateTOCBasic();
-  _CreateTOCShowVertex();
-  _CreateTOCProperties();
+  if (m_LayerProperties == nullptr) {
+    _CreateTOCAddGroup();
+  } else if (m_LayerProperties->GetType() == TOC_NAME_FOLDER) {
+    _CreateTOCAddGroup();
+    _CreateTOCRenameGroup();
+  } else {
+    _CreateTOCBasic();
+    _CreateTOCShowVertex();
+    _CreateTOCProperties();
+  }
 }
 
 tmTOCCtrlMenu::~tmTOCCtrlMenu() {}
 
+void tmTOCCtrlMenu::_CreateTOCAddGroup() {
+  Append(ID_TOCMENU_ADD_GROUP, _("Add new group"));
+}
+
+void tmTOCCtrlMenu::_CreateTOCRenameGroup() {
+  Append(ID_TOCMENU_RENAME_GROUP, _("Rename group"));
+}
+
 void tmTOCCtrlMenu::_CreateTOCBasic() {
+  wxASSERT(m_LayerProperties);
   if (m_LayerProperties->GetType() > TOC_NAME_NOT_GENERIC) {
     Append(ID_TOCMENU_REMOVE, _("Remove layer"));
   } else {
@@ -43,6 +59,7 @@ void tmTOCCtrlMenu::_CreateTOCBasic() {
 }
 
 void tmTOCCtrlMenu::_CreateTOCShowVertex() {
+  wxASSERT(m_LayerProperties);
   int myflags = (tmDRAWING_FLAGS)m_LayerProperties->GetVertexFlags();
   switch (m_LayerProperties->GetSpatialType()) {
     case LAYER_SPATIAL_LINE:
@@ -68,6 +85,7 @@ void tmTOCCtrlMenu::_CreateTOCShowVertex() {
 }
 
 void tmTOCCtrlMenu::_CreateTOCProperties() {
+  wxASSERT(m_LayerProperties);
   if (m_LayerProperties->GetType() == TOC_NAME_SHP) {
     Append(ID_TOCMENU_LABELS, _("Labels..."));
     AppendSeparator();
