@@ -115,7 +115,6 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
 
     // veto if trying to drop on myself
     if (m_DragNodeEnd == m_DragNodeStart) {
-      wxLogError("Unable to drop on myself!");
       event.Veto();
       return;
     }
