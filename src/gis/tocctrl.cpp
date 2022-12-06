@@ -16,9 +16,9 @@ DEFINE_EVENT_TYPE(tmEVT_TOC_SELECTION_CHANGED)
 
 TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
     : wxDataViewCtrl(parent, id, wxDefaultPosition, wxDefaultSize, wxDV_SINGLE | wxDV_NO_HEADER) {
-  m_drag_node_start = nullptr;
-  m_drag_node_end = nullptr;
-  m_editing_layer = nullptr;
+  m_DragNodeStart = nullptr;
+  m_DragNodeEnd = nullptr;
+  m_EditingLayer = nullptr;
 
   // Setting model
   wxObjectDataPtr<wxDataViewModel> my_model(new TocCtrlModel);
@@ -65,8 +65,8 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
 
 void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
   wxDataViewItem item(event.GetItem());
-  m_drag_node_start = nullptr;
-  m_drag_node_end = nullptr;
+  m_DragNodeStart = nullptr;
+  m_DragNodeEnd = nullptr;
 
   // only allow drags for item, not containers
 
@@ -76,15 +76,15 @@ void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
     return;
   }
   auto *node = (TocCtrlModelNode *)item.GetID();
-  m_drag_node_start = node;
+  m_DragNodeStart = node;
 
   auto *obj = new wxTextDataObject;
-  obj->SetText(node->m_layer_prop->GetName().GetName());
+  obj->SetText(node->m_LayerProp->GetName().GetName());
 
   event.SetDataObject(obj);
   event.SetDragFlags(wxDrag_AllowMove);  // allows both copy and move
 
-  wxLogMessage("Starting dragging \"%s\"", node->m_layer_prop->GetName().GetName());
+  wxLogMessage("Starting dragging \"%s\"", node->m_LayerProp->GetName().GetName());
 }
 
 void TocCtrl::OnDragndropPossible(wxDataViewEvent &event) {
@@ -96,7 +96,7 @@ void TocCtrl::OnDragndropPossible(wxDataViewEvent &event) {
 
 void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
   wxDataViewItem target_item(event.GetItem());
-  m_drag_node_end = nullptr;
+  m_DragNodeEnd = nullptr;
 
   if (event.GetDataFormat() != wxDF_UNICODETEXT) {
     event.Veto();
@@ -106,22 +106,22 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
   wxTextDataObject obj;
   obj.SetData(wxDF_UNICODETEXT, event.GetDataSize(), event.GetDataBuffer());
   auto *my_model = GetTocModel();
-  m_drag_node_end = TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot());
+  m_DragNodeEnd = TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot());
 
   int my_proposed_drop_index = event.GetProposedDropIndex();
   if (target_item.IsOk()) {
     auto *target_node = TocCtrlModel::ConvertFromDataViewItem(target_item);
-    m_drag_node_end = target_node;
+    m_DragNodeEnd = target_node;
 
     // veto if trying to drop on myself
-    if (m_drag_node_end == m_drag_node_start) {
+    if (m_DragNodeEnd == m_DragNodeStart) {
       wxLogError("Unable to drop on myself!");
       event.Veto();
       return;
     }
 
     // veto if trying to drop to a child of the container
-    if (m_drag_node_start->IsMyChildren(m_drag_node_end)) {
+    if (m_DragNodeStart->IsMyChildren(m_DragNodeEnd)) {
       wxLogError("Unable to drop on a child!");
       event.Veto();
       return;
@@ -149,7 +149,7 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
     my_proposed_drop_index = wxNOT_FOUND;
     wxLogMessage("Text '%s' dropped on background (proposed index = %d)", obj.GetText(), my_proposed_drop_index);
   }
-  my_model->NodeMove(m_drag_node_start, m_drag_node_end, my_proposed_drop_index);
+  my_model->NodeMove(m_DragNodeStart, m_DragNodeEnd, my_proposed_drop_index);
 }
 
 void TocCtrl::OnMouseClick(wxDataViewEvent &event) {
@@ -161,7 +161,7 @@ void TocCtrl::OnMouseClick(wxDataViewEvent &event) {
 
   // Send message show/hide to layermanager
   wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
-  evt.SetInt((int)node->m_layer_prop->IsVisible());
+  evt.SetInt((int)node->m_LayerProp->IsVisible());
   GetEventHandler()->QueueEvent(evt.Clone());
 }
 
@@ -200,8 +200,8 @@ tmLayerProperties *TocCtrl::GetSelectionLayer() {
     return nullptr;
   }
   auto *selected_node = TocCtrlModel::ConvertFromDataViewItem(selected);
-  wxASSERT(selected_node->m_layer_prop);
-  return selected_node->m_layer_prop;
+  wxASSERT(selected_node->m_LayerProp);
+  return selected_node->m_LayerProp;
 }
 
 void TocCtrl::SetSelectedLayer(int layerID) {
@@ -256,44 +256,44 @@ tmLayerProperties *TocCtrl::GetLayerByName(const wxString &layerName) {
 
 tmLayerProperties *TocCtrl::IterateLayers(bool ResetToLast) {
   if (ResetToLast){
-    m_iterate_node_array.Clear();
+    m_IterateNodeArray.Clear();
     TocCtrlModelNode * root =  TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
-    root->GetAllChildRecursive(m_iterate_node_array, nullptr);
-    m_iterate_node_index = m_iterate_node_array.GetCount() -1;
-    if (m_iterate_node_index < 0){ // no data in the toc
+    root->GetAllChildRecursive(m_IterateNodeArray, nullptr);
+    m_IterateNodeIndex = m_IterateNodeArray.GetCount() -1;
+    if (m_IterateNodeIndex < 0){ // no data in the toc
       return nullptr;
     }
-    tmLayerProperties * layerprop = m_iterate_node_array.Item(m_iterate_node_index)->m_layer_prop;
+    tmLayerProperties * layerprop = m_IterateNodeArray.Item(m_IterateNodeIndex)->m_LayerProp;
     wxASSERT(layerprop);
-    m_iterate_node_index --;
+    m_IterateNodeIndex--;
     return layerprop;
   }
 
-  if (m_iterate_node_index >= 0 && m_iterate_node_array.GetCount() > 0){
-    tmLayerProperties * layerprop = m_iterate_node_array.Item(m_iterate_node_index)->m_layer_prop;
+  if (m_IterateNodeIndex >= 0 && m_IterateNodeArray.GetCount() > 0){
+    tmLayerProperties * layerprop = m_IterateNodeArray.Item(m_IterateNodeIndex)->m_LayerProp;
     wxASSERT(layerprop);
-    m_iterate_node_index--;
+    m_IterateNodeIndex--;
     return layerprop;
   }
 
-  m_iterate_node_index = wxNOT_FOUND;
-  m_iterate_node_array.Clear();
+  m_IterateNodeIndex = wxNOT_FOUND;
+  m_IterateNodeArray.Clear();
   return nullptr;
 }
 
 tmLayerProperties *TocCtrl::GetEditLayer(){
-  return m_editing_layer;
+  return m_EditingLayer;
 }
 
 void TocCtrl::SetEditLayer(tmLayerProperties *mEditingLayer) {
-  m_editing_layer = mEditingLayer;
+  m_EditingLayer = mEditingLayer;
 }
 
 void TocCtrl::SetProjectName(const wxString &project_name) {
   // root is already defined, change name
   auto root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
   wxASSERT(root);
-  root->m_layer_prop->SetName(wxFileName("", project_name));
+  root->m_LayerProp->SetName(wxFileName("", project_name));
 }
 
 bool TocCtrl::InsertLayer(tmLayerProperties *item) {
@@ -320,10 +320,10 @@ bool TocCtrl::UpdateLayerName(tmLayerProperties *item, const wxString &newName) 
   root->GetAllChildRecursive(iterateNodeArray);
 
   for (auto node : iterateNodeArray) {
-    if (node->m_layer_prop == item) {
-      wxFileName name = node->m_layer_prop->GetName();
+    if (node->m_LayerProp == item) {
+      wxFileName name = node->m_LayerProp->GetName();
       name.SetFullName(newName);
-      node->m_layer_prop->SetName(name);
+      node->m_LayerProp->SetName(name);
     }
   }
   return true;
@@ -337,7 +337,7 @@ bool TocCtrl::RemoveLayer(int database_layer_id) {
   TocCtrlModelNodePtrArray iterateNodeArray;
   root->GetAllChildRecursive(iterateNodeArray);
   for (auto node : iterateNodeArray) {
-    if (node->m_layer_prop->GetID() == database_layer_id){
+    if (node->m_LayerProp->GetID() == database_layer_id){
       model->Delete(TocCtrlModel::ConvertFromNode(node));
       return true;
     }
@@ -350,7 +350,7 @@ void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
     return;
   }
 
-  auto layer_prop = TocCtrlModel::ConvertFromDataViewItem(event.GetItem())->m_layer_prop;
+  auto layer_prop = TocCtrlModel::ConvertFromDataViewItem(event.GetItem())->m_LayerProp;
   if (layer_prop->GetType() == TOC_NAME_FOLDER){
     wxLogError("No menu for folder!");
     return;
@@ -378,7 +378,7 @@ void TocCtrl::OnMenuRemoveItem(wxCommandEvent &event) {
     return ;
   }
 
-  tmLayerProperties * layer_prop = node->m_layer_prop;
+  tmLayerProperties * layer_prop = node->m_LayerProp;
   wxASSERT(layer_prop);
   if (layer_prop->GetType() < TOC_NAME_NOT_GENERIC){
     wxLogMessage(_("Not allowed to remove generic layers from project"));
@@ -404,7 +404,7 @@ void TocCtrl::OnMenuShowProperties(wxCommandEvent &event) {
     return ;
   }
 
-  tmLayerProperties * layer_prop = node->m_layer_prop;
+  tmLayerProperties * layer_prop = node->m_LayerProp;
   wxASSERT(layer_prop);
   wxASSERT(layer_prop->GetSymbolRef());
   wxCommandEvent Evt(tmEVT_LM_SHOW_PROPERTIES, wxID_ANY);
@@ -427,7 +427,7 @@ void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
     return ;
   }
 
-  tmLayerProperties * layer_prop = node->m_layer_prop;
+  tmLayerProperties * layer_prop = node->m_LayerProp;
   wxASSERT(layer_prop);
 
   // keep old value to avoid drawing if value not changed

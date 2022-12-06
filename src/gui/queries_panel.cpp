@@ -52,7 +52,7 @@ Queries_PANEL::Queries_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auim
 
   m_ParentEvt = parent;
   m_ParentEvt->PushEventHandler(this);
-  m_toc_ctrl = nullptr;
+  m_TocCtrl = nullptr;
 
   wxPanel *ContentFrame = new wxPanel(parent, wxID_ANY);
   CreateControls(ContentFrame);
@@ -277,9 +277,9 @@ void Queries_PANEL::OnQueryApplySymbology(wxCommandEvent &event) {
     return;
   }
 
-  wxASSERT(m_toc_ctrl);
+  wxASSERT(m_TocCtrl);
   wxString myTargetLayerName = TOC_GENERIC_NAME_STRING[myQTarget];
-  tmLayerProperties *myLayerProperties = m_toc_ctrl->GetLayerByName(myTargetLayerName);
+  tmLayerProperties *myLayerProperties = m_TocCtrl->GetLayerByName(myTargetLayerName);
   if (myLayerProperties == nullptr) {
     wxLogError(_("Layer '%s' not found"), myTargetLayerName);
     return;

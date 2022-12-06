@@ -60,7 +60,7 @@ class tmAttributionManager : public wxEvtHandler {
   wxWindow *m_Parent;
   AttribObjType_PANEL *m_Panel;
   tmSelectedDataMemory *m_SelData;
-  TocCtrl *m_toc_ctrl;
+  TocCtrl *m_TocCtrl;
   DataBaseTM *m_pDB;
   bool m_ShortcutLoaded;
   PrjDefMemManage *m_pPrjMem;

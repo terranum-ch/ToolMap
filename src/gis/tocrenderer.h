@@ -18,9 +18,9 @@ class tocRendererData : public wxVariantData {
   virtual wxString GetType() const;
 
   wxString m_layer_name;
-  int m_image_index;
-  bool m_is_editing;
-  bool m_is_visible;
+  int m_ImageIndex;
+  bool m_IsEditing;
+  bool m_IsVisible;
 
  protected:
   virtual ~tocRendererData();
@@ -59,17 +59,17 @@ class tocRenderer : public wxDataViewCustomRenderer {
   wxColour GetColourDark();
 
  private:
-  void _create_bitmaps();
+  void _CreateBitmaps();
 
   wxString m_layer_name;
-  int m_image_index;
-  bool m_is_editing;
-  bool m_is_visible;
+  int m_ImageIndex;
+  bool m_IsEditing;
+  bool m_IsVisible;
 
-  wxImageList m_image_list;
-  wxDataViewCtrl *m_parent_ctrl;
-  wxColour m_color_normal = *wxBLACK;
-  wxColour m_color_dark = *wxWHITE;
+  wxImageList m_ImageList;
+  wxDataViewCtrl *m_ParentCtrl;
+  wxColour m_ColorNormal = *wxBLACK;
+  wxColour m_ColorDark = *wxWHITE;
 };
 
 #endif  // FEATURE_TOC_TOCRENDERER_H

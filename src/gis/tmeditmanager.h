@@ -88,7 +88,7 @@ class tmEditManager : public wxEvtHandler {
  private:
   // defined by ctor
   ToolMapFrame *m_ParentEvt;
-  TocCtrl *m_toc_ctrl;
+  TocCtrl *m_TocCtrl;
   tmSelectedDataMemory *m_SelectedData;
   tmRenderer *m_Renderer;
   bool m_EditStarted;

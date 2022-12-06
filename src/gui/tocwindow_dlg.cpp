@@ -18,11 +18,11 @@
 
 /**************** TOC WINDOW CONTENT (BASE CLASS) ****************************/
 TocWindowContent::TocWindowContent() {
-  m_toc_ctrl = nullptr;
+  m_TocCtrl = nullptr;
 }
 
 TocWindowContent::~TocWindowContent() {
-  delete m_toc_ctrl;
+  delete m_TocCtrl;
 }
 
 IMPLEMENT_DYNAMIC_CLASS(TocWindowContent, wxEvtHandler)
@@ -33,8 +33,8 @@ IMPLEMENT_DYNAMIC_CLASS(TocWindowContent, wxEvtHandler)
 wxSizer *TocWindowContent::CreateControls(wxWindow *parent, bool call_fit, bool set_sizer) {
   wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-  m_toc_ctrl = new TocCtrl(parent, ID_TREECTRL1);  // | wxTR_MULTIPLE);
-  itemBoxSizer2->Add(m_toc_ctrl, 1, wxGROW | wxALL, 0);
+  m_TocCtrl = new TocCtrl(parent, ID_TREECTRL1);  // | wxTR_MULTIPLE);
+  itemBoxSizer2->Add(m_TocCtrl, 1, wxGROW | wxALL, 0);
 
   if (set_sizer) {
     parent->SetSizer(itemBoxSizer2);
@@ -117,7 +117,7 @@ END_EVENT_TABLE()
 
 void TocWindowDlgGen::OnPressRemoveLayers(wxCommandEvent & event)
 {
- m_toc_ctrl->OnRemoveItem(event);
+ m_TocCtrl->OnRemoveItem(event);
 }
 
 

@@ -48,7 +48,7 @@ class TocWindowContent : public wxEvtHandler {
  private:
   DECLARE_DYNAMIC_CLASS(TocWindowContent);
 
-  TocCtrl *m_toc_ctrl;
+  TocCtrl *m_TocCtrl;
 
  public:
   TocWindowContent();
@@ -71,7 +71,7 @@ class TocWindowContent : public wxEvtHandler {
   }
 
   TocCtrl *GetTocCtrl() {
-    return m_toc_ctrl;
+    return m_TocCtrl;
   }
 };
 

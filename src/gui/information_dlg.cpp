@@ -46,7 +46,7 @@ void InformationDLG::_CreateControls() {
   wxBoxSizer *bSizer26;
   bSizer26 = new wxBoxSizer(wxVERTICAL);
 
-  m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_toc_ctrl);
+  m_SelCtrl = new tmSelectionInfoCtrl(m_panel5, wxID_ANY, m_Selected, m_TocCtrl);
   bSizer26->Add(m_SelCtrl, 1, wxEXPAND, 5);
 
   m_panel5->SetSizer(bSizer26);
@@ -87,7 +87,7 @@ void InformationDLG::OnCloseDlg(wxCloseEvent &event) {
 InformationDLG::InformationDLG(wxWindow *parent, TocCtrl *toc, tmSelectedDataMemory *sel, wxWindowID id,
                                const wxString &title, const wxPoint &pos, const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
-  m_toc_ctrl = toc, m_Selected = sel;
+  m_TocCtrl = toc, m_Selected = sel;
 
   _CreateControls();
 }
@@ -102,8 +102,8 @@ bool InformationDLG::TransferDataToWindow() {
 }
 
 void InformationDLG::UpdateLayer() {
-  wxASSERT(m_toc_ctrl);
-  m_LayerCtrl->UpdateLayer(m_toc_ctrl);
+  wxASSERT(m_TocCtrl);
+  m_LayerCtrl->UpdateLayer(m_TocCtrl);
 }
 
 void InformationDLG::UpdateSelection() {
@@ -162,7 +162,7 @@ tmSelectionInfoCtrl::tmSelectionInfoCtrl(wxWindow *window, wxWindowID id, tmSele
   wxASSERT(sel);
   wxASSERT(toc);
   m_Selected = sel;
-  m_toc_ctrl = toc;
+  m_TocCtrl = toc;
   m_ClickedItemID = wxNOT_FOUND;
   m_Project = nullptr;
   // SetBackgroundColour(*wxWHITE);
@@ -308,14 +308,14 @@ bool tmSelectionInfoCtrl::_GetData(long oid, wxArrayString &header, wxArrayStrin
   values.Clear();
 
   wxASSERT(m_Project);
-  wxASSERT(m_toc_ctrl);
+  wxASSERT(m_TocCtrl);
 
   if (oid == wxNOT_FOUND) {
     wxLogError(_T("No object ID found."));
     return false;
   }
 
-  tmLayerProperties *itemProp = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *itemProp = m_TocCtrl->GetSelectionLayer();
   if (!itemProp) {
     wxLogError(_T("No layer selected, select a layer"));
     return false;

@@ -51,7 +51,7 @@ END_EVENT_TABLE()
 tmAttributionManager::tmAttributionManager(wxWindow *parent, TocCtrl *toc, AttribObjType_PANEL *panel,
                                            tmSelectedDataMemory *selection) {
   m_Parent = parent;
-  m_toc_ctrl = toc;
+  m_TocCtrl = toc;
   m_Panel = panel;
   m_SelData = selection;
   m_pPrjMem = nullptr;
@@ -252,7 +252,7 @@ bool tmAttributionManager::IsAttributionManagerReady() {
 
   if (!m_SelData) return false;
 
-  if (!m_toc_ctrl) return false;
+  if (!m_TocCtrl) return false;
 
   if (!m_pDB) return false;
 
@@ -296,7 +296,7 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   // some verifications :
   // A layer must be selected
   // A construction layer must be selected (< TOC_NAME_FRAME)
-  m_pLayerProperties = m_toc_ctrl->GetSelectionLayer();
+  m_pLayerProperties = m_TocCtrl->GetSelectionLayer();
   if (!m_pLayerProperties) {
     event.Skip();
     return;
@@ -308,7 +308,7 @@ void tmAttributionManager::OnSelection(wxCommandEvent &event) {
   }
 
   bool bEditMode = false;
-  if (m_toc_ctrl->GetEditLayer() != nullptr) {
+  if (m_TocCtrl->GetEditLayer() != nullptr) {
     bEditMode = true;
   }
   m_Panel->SetAttributeBtn(iSelFeatureCount, bEditMode);
@@ -554,13 +554,13 @@ tmAttributionData *tmAttributionManager::CreateAttributionData(int type) {
   @date 16 February 2009
   *******************************************************************************/
 void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
-  tmAttributionData *myAttrib = CreateAttributionData(m_toc_ctrl->GetEditLayer()->GetType());
+  tmAttributionData *myAttrib = CreateAttributionData(m_TocCtrl->GetEditLayer()->GetType());
   if (!myAttrib) return;
 
   // init
   wxArrayLong *mySelectedValues = (wxArrayLong *)event.GetClientData();
   myAttrib->Create(mySelectedValues, m_pDB);
-  myAttrib->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[m_toc_ctrl->GetEditLayer()->GetType()]);
+  myAttrib->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[m_TocCtrl->GetEditLayer()->GetType()]);
 
   // copy attribution basic
   myAttrib->CopyAttributesBasic(event.GetExtraLong());
@@ -620,7 +620,7 @@ void tmAttributionManager::OnCopyAttribution(wxCommandEvent &event) {
   *******************************************************************************/
 void tmAttributionManager::OnRunQuery(wxCommandEvent &event) {
   wxASSERT(m_pDB);
-  wxASSERT(m_toc_ctrl);
+  wxASSERT(m_TocCtrl);
   wxASSERT(m_SelData);
 
   wxLogDebug(_T("Running query"));
@@ -636,7 +636,7 @@ void tmAttributionManager::OnRunQuery(wxCommandEvent &event) {
     return;
   }
   // Selecting layer in TOC
-  m_toc_ctrl->SetSelectedLayer(myLayerID);
+  m_TocCtrl->SetSelectedLayer(myLayerID);
 
   // passing the query
   if (!m_pDB->DataBaseQuery(myQuery)) {
@@ -688,7 +688,7 @@ bool tmAttributionManager::AAttributionButtonShow() {
     wxLogError(_("This works only if one object is selected, select only one object"));
     return false;
   }
-  tmLayerProperties *myEditLayer = m_toc_ctrl->GetEditLayer();
+  tmLayerProperties *myEditLayer = m_TocCtrl->GetEditLayer();
   if (myEditLayer == nullptr) {
     wxLogError(_("You aren't in edit mode, please start editing"));
     return false;
@@ -742,7 +742,7 @@ void tmAttributionManager::AAttributionBatchShow() {
     return;
   }
 
-  tmLayerProperties *myEditLayer = m_toc_ctrl->GetEditLayer();
+  tmLayerProperties *myEditLayer = m_TocCtrl->GetEditLayer();
   if (myEditLayer == nullptr) {
     wxLogError(_("You aren't in edit mode, please start editing"));
     return;
@@ -771,7 +771,7 @@ void tmAttributionManager::DisplayInformationsWnd() {
   // search info dialog
   m_InfoDLG = (InformationDLG *)wxWindow::FindWindowById(ID_INFORMATION_DLG);
   if (m_InfoDLG == nullptr) {
-    m_InfoDLG = new InformationDLG(m_Parent, m_toc_ctrl, m_SelData, ID_INFORMATION_DLG);
+    m_InfoDLG = new InformationDLG(m_Parent, m_TocCtrl, m_SelData, ID_INFORMATION_DLG);
     m_InfoDLG->SetProject(m_pPrjMem);
     m_InfoDLG->Show();
   } else {

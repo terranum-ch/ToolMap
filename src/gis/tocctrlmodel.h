@@ -42,14 +42,14 @@ class TocCtrlModelNode {
   // public to avoid getters/setters
 //  wxString m_title;
 //  bool m_checked;
-//  int m_image_index;
+//  int m_ImageIndex;
 //  bool m_editing;
-  bool m_container;
-  tmLayerProperties * m_layer_prop;
+  bool m_Container;
+  tmLayerProperties *m_LayerProp;
 
  private:
-  TocCtrlModelNode *m_parent;
-  TocCtrlModelNodePtrArray m_children;
+  TocCtrlModelNode *m_Parent;
+  TocCtrlModelNodePtrArray m_Children;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ class TocCtrlModel : public wxDataViewModel {
   TocCtrlModel();
 
   ~TocCtrlModel() {
-    delete m_root;
+    delete m_Root;
   }
 
   bool IsChecked(const wxDataViewItem &item) const;
@@ -103,8 +103,8 @@ class TocCtrlModel : public wxDataViewModel {
   static TocCtrlModelNode *ConvertFromDataViewItem(const wxDataViewItem &item);
 
  private:
-  TocCtrlModelNode *m_root;
-  wxImageList m_image_list;
+  TocCtrlModelNode *m_Root;
+  wxImageList m_ImageList;
 };
 
 #endif  // FEATURE_TOC_TOCCTRLMODEL_H

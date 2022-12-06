@@ -55,7 +55,7 @@ class tmScaleCtrlCombo;
   *******************************************************************************/
 class tmLayerManager : public wxEvtHandler {
  private:
-  TocCtrl *m_toc_ctrl;
+  TocCtrl *m_TocCtrl;
   tmRenderer *m_GISRenderer;
   wxWindow *m_Parent;
   DataBaseTM *m_DB;

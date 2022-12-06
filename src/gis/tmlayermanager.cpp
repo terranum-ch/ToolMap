@@ -69,7 +69,7 @@ tmLayerManager::tmLayerManager(wxWindow *parent, TocCtrl *tocctrl, tmRenderer *r
                                tmScaleCtrlCombo *scalectrl) {
   InitMemberValue();
 
-  m_toc_ctrl = tocctrl;
+  m_TocCtrl = tocctrl;
   m_GISRenderer = renderer;
   m_Parent = parent;
   m_StatusBar = status;
@@ -93,7 +93,7 @@ tmLayerManager::~tmLayerManager() {
   @date 07 July 2008
   *******************************************************************************/
 void tmLayerManager::InitMemberValue() {
-  m_toc_ctrl = nullptr;
+  m_TocCtrl = nullptr;
   m_Parent = nullptr;
   m_DB = nullptr;
   m_GISRenderer = nullptr;
@@ -120,7 +120,7 @@ void tmLayerManager::InitMemberValue() {
   *******************************************************************************/
 bool tmLayerManager::InitLayerManager(DataBaseTM *db) {
   // check
-  wxASSERT_MSG(m_toc_ctrl != nullptr, _T("Toc Ctrl is null, error"));
+  wxASSERT_MSG(m_TocCtrl != nullptr, _T("Toc Ctrl is null, error"));
   wxASSERT_MSG(db != nullptr, _T("Database pointer is empty... error"));
   m_DB = db;
 
@@ -128,7 +128,7 @@ bool tmLayerManager::InitLayerManager(DataBaseTM *db) {
   m_SelectedData.Clear();
 
   // 2) Init TOCCtrl
-  m_toc_ctrl->SetProjectName(m_DB->DataBaseGetName());
+  m_TocCtrl->SetProjectName(m_DB->DataBaseGetName());
   FillTOCArray();
 
   // 3) Init scale from database
@@ -166,7 +166,7 @@ bool tmLayerManager::UnInitLayerManager() {
   m_Scale.SetMaxLayersExtent(tmRealRect(0, 0, 0, 0));
 
   // clear the ctrl
-  m_toc_ctrl->GetTocModel()->Clear();
+  m_TocCtrl->GetTocModel()->Clear();
 
   return true;
 }
@@ -204,15 +204,15 @@ void tmLayerManager::FillTOCArray() {
     }
 #endif
 
-    if (!m_toc_ctrl->InsertLayer(lyrproptemp)) {
+    if (!m_TocCtrl->InsertLayer(lyrproptemp)) {
       wxLogError(_("Adding layer: %s failed!"), lyrproptemp->GetName().GetName());
       continue;
     }
   }
 
   wxASSERT(!m_DB->DataBaseHasResults());
-  m_toc_ctrl->ExpandAll();
-  wxLogDebug(_T("%d items added to TOC array"), m_toc_ctrl->GetCountLayers());
+  m_TocCtrl->ExpandAll();
+  wxLogDebug(_T("%d items added to TOC array"), m_TocCtrl->GetCountLayers());
 }
 
 /***************************************************************************/ /**
@@ -225,9 +225,9 @@ void tmLayerManager::FillTOCArray() {
   @date 14 July 2008
   *******************************************************************************/
 bool tmLayerManager::SaveTOCStatus(bool isClosing) {
-  wxASSERT_MSG(m_toc_ctrl, _T("Error TOC ctrl not defined"));
+  wxASSERT_MSG(m_TocCtrl, _T("Error TOC ctrl not defined"));
   tmLayerProperties *itemProp = nullptr;
-  int iRank = m_toc_ctrl->GetCountLayers();
+  int iRank = m_TocCtrl->GetCountLayers();
 
   bool myRelativePath = false;
 
@@ -240,10 +240,10 @@ bool tmLayerManager::SaveTOCStatus(bool isClosing) {
 
   wxString sSentence = _T("");
   while (true) {
-    if (iRank == m_toc_ctrl->GetCountLayers()) {
-      itemProp = m_toc_ctrl->IterateLayers(TRUE);
+    if (iRank == m_TocCtrl->GetCountLayers()) {
+      itemProp = m_TocCtrl->IterateLayers(TRUE);
     } else {
-      itemProp = m_toc_ctrl->IterateLayers(FALSE);
+      itemProp = m_TocCtrl->IterateLayers(FALSE);
     }
 
     if (!itemProp) {
@@ -306,12 +306,12 @@ void tmLayerManager::RemoveLayer(wxCommandEvent &event) {
 // removing multiple layers with a dialog
 void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
   // list support layers
-  wxASSERT(m_toc_ctrl);
+  wxASSERT(m_TocCtrl);
   bool bStart = true;
   PrjMemLayersArray myLayers;
   wxArrayString myLayersName;
   while (1) {
-    tmLayerProperties *myLayerProp = m_toc_ctrl->IterateLayers(bStart);
+    tmLayerProperties *myLayerProp = m_TocCtrl->IterateLayers(bStart);
     bStart = false;
     if (myLayerProp == nullptr) {
       break;
@@ -341,11 +341,11 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
   // removing
   for (unsigned int i = 0; i < myLayerToRemoveIndex.GetCount(); i++) {
     long my_item_id = myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerID;
-    if (!m_toc_ctrl->GetLayerById(my_item_id)) {
+    if (!m_TocCtrl->GetLayerById(my_item_id)) {
       wxLogError(_("Item with layer id : %ld not found in the TOC"),my_item_id);
       continue;
     }
-    m_toc_ctrl->RemoveLayer(my_item_id);
+    m_TocCtrl->RemoveLayer(my_item_id);
     if (!m_DB->RemoveTOCLayer(my_item_id)) {
       wxLogError(_("Unable to remove layer : '%s'"), myLayers.Item(myLayerToRemoveIndex.Item(i))->m_LayerName.c_str());
     }
@@ -408,11 +408,11 @@ void tmLayerManager::OnIncompatibleLayerWarning(wxCommandEvent &event) {
   wxLogWarning(_("File %s has incompatible transformation coefficients and cannot be displayed."),
                wxFileName(event.GetString()).GetFullName());
 
-  tmLayerProperties *item = m_toc_ctrl->GetLayerByPath(event.GetString());
+  tmLayerProperties *item = m_TocCtrl->GetLayerByPath(event.GetString());
 
   if (item) {
     m_DB->RemoveTOCLayer(item->GetID());
-    m_toc_ctrl->RemoveLayer(item->GetID());
+    m_TocCtrl->RemoveLayer(item->GetID());
   }
 }
 
@@ -457,7 +457,7 @@ void tmLayerManager::AddLayer(wxCommandEvent &event) {
 
   // zoom to full extent only if only base layer are present.
   bool bZoomToFullExtent = false;
-  if (m_toc_ctrl->GetCountLayers() == 5) {
+  if (m_TocCtrl->GetCountLayers() == 5) {
     bZoomToFullExtent = true;
   }
 
@@ -522,7 +522,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
   bool bReset = true;
   tmLayerProperties *myLayerToReplace = NULL;
   while(true) {
-    tmLayerProperties *myLayer = m_toc_ctrl->IterateLayers(bReset);
+    tmLayerProperties *myLayer = m_TocCtrl->IterateLayers(bReset);
     bReset = false;
     if (myLayer == nullptr) {
       continue;
@@ -556,7 +556,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
 
   wxFileName myCompleteName(filename);
   // myCompleteName.SetExt(filename.GetExt());
-  m_toc_ctrl->UpdateLayerName(myLayerToReplace, myCompleteName.GetFullName());
+  m_TocCtrl->UpdateLayerName(myLayerToReplace, myCompleteName.GetFullName());
   myLayerToReplace->SetName(myCompleteName);
 
   // Update database
@@ -654,7 +654,7 @@ bool tmLayerManager::OpenLayer(const wxFileName &filename, bool replace, const w
   wxLogDebug(_T("Last inserted item id is : %ld"), lastinsertedID);
 
   // adding entry to TOC
-  if (!m_toc_ctrl->InsertLayer(item)) {
+  if (!m_TocCtrl->InsertLayer(item)) {
     wxLogError(_("Error adding layer: '%s' into TOC"), item->GetNameDisplay());
     wxDELETE(item);
     return false;
@@ -663,7 +663,7 @@ bool tmLayerManager::OpenLayer(const wxFileName &filename, bool replace, const w
 }
 
 void tmLayerManager::ZoomToSelectedLayer() {
-  tmLayerProperties *myLayerProp = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *myLayerProp = m_TocCtrl->GetSelectionLayer();
   if (myLayerProp == nullptr) {
     wxLogError(_("No layer or incorrect layer selected"));
     return;
@@ -673,13 +673,13 @@ void tmLayerManager::ZoomToSelectedLayer() {
 }
 
 void tmLayerManager::ZoomToFrameLayer() {
-  tmLayerProperties *myLayerProp = m_toc_ctrl->GetLayerByName(TOC_GENERIC_NAME_STRING[TOC_NAME_FRAME]);
+  tmLayerProperties *myLayerProp = m_TocCtrl->GetLayerByName(TOC_GENERIC_NAME_STRING[TOC_NAME_FRAME]);
   wxASSERT(myLayerProp);
   ZoomToLayer(myLayerProp->GetID());
 }
 
 bool tmLayerManager::ZoomToLayer(long layerid) {
-  tmLayerProperties *myLayerProp = m_toc_ctrl->GetLayerById(layerid);
+  tmLayerProperties *myLayerProp = m_TocCtrl->GetLayerById(layerid);
   if (myLayerProp == nullptr) {
     wxLogError(_("Layer with specified id doesn't exists (ID = %ld)"), layerid);
     return false;
@@ -888,7 +888,7 @@ void tmLayerManager::OnDisplayProperties(wxCommandEvent &event) {
   itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());
 
   if (itemProp->GetType() == TOC_NAME_SHP) {
-    if (itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_toc_ctrl, wxGetMousePosition())) {
+    if (itemProp->GetSymbolRuleManagerRef()->ShowSymbolRuleDlg(m_TocCtrl, wxGetMousePosition())) {
       ReloadProjectLayers(false);
     }
 
@@ -899,7 +899,7 @@ void tmLayerManager::OnDisplayProperties(wxCommandEvent &event) {
     return;
   }
 
-  if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_toc_ctrl, wxGetMousePosition()) == wxID_OK) {
+  if (itemProp->GetSymbolRef()->ShowSymbologyDialog(m_TocCtrl, wxGetMousePosition()) == wxID_OK) {
     ReloadProjectLayers(false);
   }
 
@@ -916,7 +916,7 @@ void tmLayerManager::OnDisplayLabels(wxCommandEvent &event) {
   wxASSERT(m_DB);
   itemProp->GetSymbolRef()->SetDatabase(m_DB);
   itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());
-  if (itemProp->GetSymbolRef()->ShowLabelDialog(m_toc_ctrl, itemProp, wxGetMousePosition()) == wxID_OK) {
+  if (itemProp->GetSymbolRef()->ShowLabelDialog(m_TocCtrl, itemProp, wxGetMousePosition()) == wxID_OK) {
     ReloadProjectLayers(false);
   }
 
@@ -981,7 +981,7 @@ bool tmLayerManager::SelectedSearch(const wxRect &rect, bool shiftdown) {
   }
 
   // is a layer selected and wich one
-  tmLayerProperties *layerprop = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *layerprop = m_TocCtrl->GetSelectionLayer();
   if (!layerprop) {
     if (IsLoggingEnabled()) {
       wxLogMessage(_("Select a layer first in the TOC"));
@@ -1077,7 +1077,7 @@ bool tmLayerManager::SelectedInvert() {
   }
 
   // get all selected values
-  tmLayerProperties *layerprop = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *layerprop = m_TocCtrl->GetSelectionLayer();
   if (!layerprop) {
     if (IsLoggingEnabled()) {
       wxLogMessage(_("Select a layer first in the TOC"));
@@ -1115,7 +1115,7 @@ bool tmLayerManager::SelectedInvert() {
 }
 
 void tmLayerManager::CheckGeometryValidity() {
-  tmLayerProperties *layerprop = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *layerprop = m_TocCtrl->GetSelectionLayer();
   if (layerprop == nullptr) {
     return;
   }
@@ -1173,7 +1173,7 @@ void tmLayerManager::CheckGeometryValidity() {
 }
 
 void tmLayerManager::ExportSelectedGeometries(const wxFileName &file) {
-  tmLayerProperties *layerprop = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *layerprop = m_TocCtrl->GetSelectionLayer();
   if (layerprop == nullptr) {
     return;
   }
@@ -1227,7 +1227,7 @@ bool tmLayerManager::SelectByOid() {
     wxLogError(_("No project opened, open a project first"));
     return false;
   }
-  tmLayerProperties *layerprop = m_toc_ctrl->GetSelectionLayer();
+  tmLayerProperties *layerprop = m_TocCtrl->GetSelectionLayer();
   if (!layerprop) {
     wxLogError(_("No layer selected, select a layer in the Table of content"));
     return false;
@@ -1325,7 +1325,7 @@ void tmLayerManager::OnZoomToFeature(wxCommandEvent &event) {
 
   // getting geometry
   long myLayerID = m_SelectedData.GetSelectedLayer();
-  tmLayerProperties *myLayerProp = m_toc_ctrl->GetLayerById(myLayerID);
+  tmLayerProperties *myLayerProp = m_TocCtrl->GetLayerById(myLayerID);
 
   tmGISDataVector *myVectorData = (tmGISDataVector *)tmGISData::LoadLayer(myLayerProp);
   wxASSERT(myVectorData);
@@ -1356,7 +1356,7 @@ void tmLayerManager::OnMoveToFeature(wxCommandEvent &event) {
 
   // getting geometry
   long myLayerID = m_SelectedData.GetSelectedLayer();
-  tmLayerProperties *myLayerProp = m_toc_ctrl->GetLayerById(myLayerID);
+  tmLayerProperties *myLayerProp = m_TocCtrl->GetLayerById(myLayerID);
 
   tmGISDataVector *myVectorData = (tmGISDataVector *)tmGISData::LoadLayer(myLayerProp);
   wxASSERT(myVectorData);
@@ -1425,7 +1425,7 @@ void tmLayerManager::OnSelection(wxCommandEvent &event) {
   *******************************************************************************/
 bool tmLayerManager::IsOK() {
   // ensure that TOC ctrl isn't empty
-  if (m_toc_ctrl->GetCountLayers() == 0) {
+  if (m_TocCtrl->GetCountLayers() == 0) {
     return false;
   }
   return true;
@@ -1576,9 +1576,9 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
   tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
   while (1) {
     if (iRank == 0) {
-      pLayerProp = m_toc_ctrl->IterateLayers(TRUE);
+      pLayerProp = m_TocCtrl->IterateLayers(TRUE);
     } else {
-      pLayerProp = m_toc_ctrl->IterateLayers(FALSE);
+      pLayerProp = m_TocCtrl->IterateLayers(FALSE);
     }
 
     if (!pLayerProp) break;
@@ -1627,9 +1627,9 @@ int tmLayerManager::ReadLayerDraw() {
   tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
   while (1) {
     if (iRank == 0) {
-      pLayerProp = m_toc_ctrl->IterateLayers(TRUE);
+      pLayerProp = m_TocCtrl->IterateLayers(TRUE);
     } else {
-      pLayerProp = m_toc_ctrl->IterateLayers(FALSE);
+      pLayerProp = m_TocCtrl->IterateLayers(FALSE);
     }
 
     if (!pLayerProp) {

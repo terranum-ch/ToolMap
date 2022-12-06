@@ -47,7 +47,7 @@ const int ID_INFORMATION_DLG = 22401;
 
 class InformationDLG : public wxDialog {
  private:
-  TocCtrl *m_toc_ctrl;
+  TocCtrl *m_TocCtrl;
   tmSelectedDataMemory *m_Selected;
   tmSelectionInfoCtrl *m_SelCtrl;
   tmLayerInfoCtrl *m_LayerCtrl;
@@ -104,7 +104,7 @@ class tmSelectionInfoCtrl : public wxTreeMultiCtrl {
   tmSelectedDataMemory *m_Selected;
   long m_ClickedItemID;
   PrjDefMemManage *m_Project;
-  TocCtrl *m_toc_ctrl;
+  TocCtrl *m_TocCtrl;
 
   bool _GetItemByMousePos(wxTreeMultiItem &item, const wxPoint &position);
 

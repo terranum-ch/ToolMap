@@ -76,11 +76,11 @@ class TocCtrl : public wxDataViewCtrl {
   void OnMenuShowLabels(wxCommandEvent &event);
   void OnMenuEditing(wxCommandEvent &event);
 
-  TocCtrlModelNode * m_drag_node_start;
-  TocCtrlModelNode * m_drag_node_end;
-  int m_iterate_node_index = wxNOT_FOUND;
-  TocCtrlModelNodePtrArray m_iterate_node_array;
-  tmLayerProperties * m_editing_layer;
+  TocCtrlModelNode *m_DragNodeStart;
+  TocCtrlModelNode *m_DragNodeEnd;
+  int m_IterateNodeIndex = wxNOT_FOUND;
+  TocCtrlModelNodePtrArray m_IterateNodeArray;
+  tmLayerProperties *m_EditingLayer;
 };
 
 #endif  // FEATURE_TOC_TOCCTRL_H
