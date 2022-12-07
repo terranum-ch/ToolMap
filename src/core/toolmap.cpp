@@ -445,7 +445,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   _LoadPreference(false);
 
   // DND
-  m_TocWindow->GetTocCtrl()->SetDropTarget(new tmDropFiles(this));
+  // m_TocWindow->GetTocCtrl()->SetDropTarget(new tmDropFiles(this));
 
   // connecting menu to object kind panel
   wxASSERT(m_AttribObjPanel);
