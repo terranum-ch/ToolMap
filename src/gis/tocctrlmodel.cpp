@@ -287,6 +287,9 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerPropert
   TocCtrlModelNode *item = nullptr;
   item = new TocCtrlModelNode(parent, layerprop);
 
+  // change parent ID
+  layerprop->SetLayerParentId(parent->m_LayerProp->GetID());
+
   parent->Append(item);
   ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)item));
   return item;
@@ -313,6 +316,9 @@ TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, tmLayerProp
   }
 
   auto *my_item = new TocCtrlModelNode(parent, layerprop);
+  // change parent ID
+  layerprop->SetLayerParentId(parent->m_LayerProp->GetID());
+
   parent->Insert(my_item, index);
   ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_item));
   return my_item;
