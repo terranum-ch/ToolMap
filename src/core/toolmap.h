@@ -523,8 +523,6 @@ class ToolMapFrame : public wxFrame {
 
   void _CreateToolBar();
 
-  void _UpdateToolBarIconColor();
-
   void _LoadPreference(bool reload);
 
   void _CreatePerspectives();
