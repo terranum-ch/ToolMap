@@ -36,10 +36,6 @@ class TocCtrl : public wxDataViewCtrl {
 
   TocCtrlModel *GetTocModel();
 
-  void SetColour(const wxColour &colour_normal = wxNullColour, const wxColour &colour_dark = wxNullColour);
-  wxColour GetColourNormal();
-  wxColour GetColourDark();
-
   // toc ctrl function for toolmap
   tmLayerProperties *GetSelectionLayer();
   void SelectLayerByID(int layerID);

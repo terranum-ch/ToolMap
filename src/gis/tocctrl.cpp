@@ -1,7 +1,6 @@
 #include "tocctrl.h"
 #include "tmtocctrlmenu.h"
 
-#include "tocbitmaps.h"
 #include "tocrenderer.h"
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
@@ -174,22 +173,6 @@ void TocCtrl::ExpandAll() {
   for (int i = 0; i < my_root_childs.GetCount(); i++) {
     Expand(my_root_childs[i]);
   }
-}
-
-void TocCtrl::SetColour(const wxColour &colour_normal, const wxColour &colour_dark) {
-  auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
-  renderer->SetColour(colour_normal, colour_dark);
-  wxWindow::Refresh();
-}
-
-wxColour TocCtrl::GetColourNormal() {
-  auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
-  return renderer->GetColourNormal();
-}
-
-wxColour TocCtrl::GetColourDark() {
-  auto renderer = dynamic_cast<tocRenderer *>(wxDataViewCtrl::GetColumn(0)->GetRenderer());
-  return renderer->GetColourDark();
 }
 
 TocCtrlModel *TocCtrl::GetTocModel() {

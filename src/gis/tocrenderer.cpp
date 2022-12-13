@@ -1,7 +1,7 @@
 #include "tocrenderer.h"
 
-#include "tocbitmaps.h"
 #include "tocctrlmodel.h"
+#include "../gui/bitmaps.h"
 
 tocRendererData::tocRendererData() {
   m_layer_name = wxEmptyString;
@@ -53,25 +53,15 @@ tocRenderer::tocRenderer(wxDataViewCellMode mode, wxDataViewTreeCtrl *parent)
 }
 
 void tocRenderer::_CreateBitmaps() {  // loading images supporting dark / white bitmaps
-  wxString my_img_names[] = {feature_toc_bitmaps::toc_folder,    feature_toc_bitmaps::toc_shapefile,
-                             feature_toc_bitmaps::toc_database,  feature_toc_bitmaps::toc_image,
-                             feature_toc_bitmaps::toc_web,       feature_toc_bitmaps::toc_check_on,
-                             feature_toc_bitmaps::toc_check_off, feature_toc_bitmaps::toc_pen};
-  wxArrayString my_bitmaps_name(sizeof(my_img_names) / sizeof(wxString), my_img_names);
-  wxString my_colour = m_ColorNormal.GetAsString(wxC2S_HTML_SYNTAX);
-
-  wxSystemAppearance sys_app = wxSystemSettings::GetAppearance();
-  if (sys_app.IsDark()) {
-    wxLogDebug("Dark mode found!");
-    my_colour = m_ColorDark.GetAsString(wxC2S_HTML_SYNTAX);
-  }
-
-  m_ImageList.Destroy();
-  m_ImageList.Create(16, 16, true, sizeof(my_img_names) / sizeof(wxString));
-  for (int i = 0; i < my_bitmaps_name.GetCount(); i++) {
-    wxString my_bitmap_text = wxString::Format(my_bitmaps_name[i], my_colour);
-    m_ImageList.Add(wxBitmapBundle::FromSVG(my_bitmap_text, wxSize(16, 16)).GetBitmap(wxSize(16, 16)));
-  }
+  m_ImageList.Create(16, 16, true, 8);
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::FOLDER));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::SHAPEFILE));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::DATABASE));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::IMAGE));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::WEB));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::CHECK_ON));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::CHECK_OFF));
+  m_ImageList.Add(Bitmaps::GetTocBitmap(Bitmaps::ID_TOC::PEN));
 }
 
 bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
@@ -80,7 +70,7 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
   wxRect rect_checkbox(rect.GetX(), rect.GetY(), 16, 16);
   wxRect rect_layer_type(rect_checkbox.GetX() + rect_checkbox.GetWidth() + margin, rect.GetY(), 16, 16);
   wxRect rect_text(rect_layer_type.GetX() + rect_layer_type.GetWidth() + margin, rect.GetY(),
-                   dc->GetTextExtent(m_layer_name).GetWidth(), rect.GetHeight());
+                   dc->GetTextExtent(m_LayerName).GetWidth(), rect.GetHeight());
   wxRect rect_edit(rect_text.GetX() + rect_text.GetWidth() + margin, rect.GetY(), 16, 16);
 
   // checkbox image
@@ -117,7 +107,7 @@ bool tocRenderer::Render(wxRect rect, wxDC *dc, int state) {
   // drawing
   dc->DrawBitmap(bmp_checkbox, rect_checkbox.GetX(), rect_checkbox.GetY());
   dc->DrawBitmap(bmp_layer_type, rect_layer_type.GetX(), rect_layer_type.GetY());
-  RenderText(m_layer_name, 0, rect_text, dc, state);
+  RenderText(m_LayerName, 0, rect_text, dc, state);
 
   if (m_IsEditing) {
     m_ImageList.Draw(7, *dc, rect_edit.GetX(), rect_edit.GetY());
@@ -164,7 +154,7 @@ wxSize tocRenderer::GetSize() const {
 
 bool tocRenderer::SetValue(const wxVariant &value) {
   auto *data = (tocRendererData *)value.GetData();
-  m_layer_name = data->m_layer_name;
+  m_LayerName = data->m_layer_name;
   m_ImageIndex = data->m_ImageIndex;
   m_IsEditing = data->m_IsEditing;
   m_IsVisible = data->m_IsVisible;
@@ -173,7 +163,7 @@ bool tocRenderer::SetValue(const wxVariant &value) {
 
 bool tocRenderer::GetValue(wxVariant &value) const {
   auto *data = new tocRendererData();
-  data->m_layer_name = m_layer_name;
+  data->m_layer_name = m_LayerName;
   data->m_ImageIndex = m_ImageIndex;
   data->m_IsVisible = m_IsVisible;
   data->m_IsEditing = m_IsEditing;
@@ -183,7 +173,7 @@ bool tocRenderer::GetValue(wxVariant &value) const {
 
 #if wxUSE_ACCESSIBILITY
 //virtual wxString tocRenderer::GetAccessibleDescription() const wxOVERRIDE {
-//  return m_layer_name;
+//  return m_LayerName;
 //}
 #endif  // wxUSE_ACCESSIBILITY
 
@@ -205,27 +195,4 @@ bool tocRenderer::GetValueFromEditorCtrl(wxWindow *ctrl, wxVariant &value) {
 
   value = text->GetValue();
   return true;
-}
-
-void tocRenderer::SetColour(const wxColour &normal_col, const wxColour &dark_col) {
-  bool reload_list = false;
-  if (normal_col != wxNullColour) {
-    m_ColorNormal = normal_col;
-    reload_list = true;
-  }
-  if (dark_col != wxNullColour) {
-    m_ColorDark = dark_col;
-    reload_list = true;
-  }
-  if (reload_list) {
-    _CreateBitmaps();
-  }
-}
-
-wxColour tocRenderer::GetColourNormal() {
-  return m_ColorNormal;
-}
-
-wxColour tocRenderer::GetColourDark() {
-  return m_ColorDark;
 }
