@@ -245,8 +245,8 @@ wxCursor tmRenderer::LoadCursorFromBitmap(tmGIS_CURSOR cursor) {
   m_ActualNotStockCursor = cursor;
 
   wxImage mycursor(myCursorBmp.ConvertToImage());
-  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 16);
-  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 16);
+  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 12);
+  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 12);
   return wxCursor(mycursor);
 }
 

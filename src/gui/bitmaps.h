@@ -34,7 +34,7 @@ class Bitmaps {
   static wxBitmap GetToolbarBitmap(Bitmaps::ID_TOOLBAR id, const wxSize& size = wxSize(32, 32));
   static wxBitmap GetMiscBitmap(Bitmaps::ID_MISC id, const wxSize& size = wxSize(32, 32));
   static wxBitmap GetTocBitmap(Bitmaps::ID_TOC id, const wxSize& size = wxSize(16, 16));
-  static wxBitmap GetCursorBitmap(Bitmaps::ID_CURSORS id, const wxSize& size = wxSize(32, 32));
+  static wxBitmap GetCursorBitmap(Bitmaps::ID_CURSORS id, const wxSize& size = wxSize(24, 24));
 
   static wxBitmap GetLogo(const wxSize& size = wxSize(32, 32));
 };
