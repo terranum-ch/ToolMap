@@ -11,6 +11,7 @@ class Bitmaps {
   static wxString SvgToolbar[];
   static wxString SvgMisc[];
   static wxString SvgToc[];
+  static wxString SvgCursors[];
   static wxString SvgLogo;
   static wxString ColorBlack;
   static wxString ColorWhite;
@@ -24,12 +25,17 @@ class Bitmaps {
   enum ID_TOC {
     FOLDER = 0, SHAPEFILE, DATABASE, IMAGE, CHECK_ON, CHECK_OFF, PEN, WEB
   };
+  enum ID_CURSORS {
+    ZOOM_IN = 0, ZOOM_OUT, HAND, VERTEX_EDIT, VERTEX_ADD, VERTEX_REMOVE, ORIENTED
+  };
 
   static wxString GetColor();
 
   static wxBitmap GetToolbarBitmap(Bitmaps::ID_TOOLBAR id, const wxSize& size = wxSize(32, 32));
   static wxBitmap GetMiscBitmap(Bitmaps::ID_MISC id, const wxSize& size = wxSize(32, 32));
   static wxBitmap GetTocBitmap(Bitmaps::ID_TOC id, const wxSize& size = wxSize(16, 16));
+  static wxBitmap GetCursorBitmap(Bitmaps::ID_CURSORS id, const wxSize& size = wxSize(32, 32));
+
   static wxBitmap GetLogo(const wxSize& size = wxSize(32, 32));
 };
 

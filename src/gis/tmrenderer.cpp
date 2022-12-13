@@ -21,7 +21,7 @@
 #include "../core/tmstatsevent.h"
 #include "../core/vrrubberband.h"
 #include "../gui/tmtoolmanager.h"
-#include "../img/cursor_bmp.h"
+#include "../gui/bitmaps.h"
 #include "tmeditmanager.h"
 #include "tmmanagerevent.h"
 
@@ -87,7 +87,6 @@ tmRenderer::tmRenderer(wxWindow *parent, wxWindowID id)
   m_isPanning = false;
 
   SetBackgroundStyle(wxBG_STYLE_PAINT);
-  images_cursor_init();
 
   InitSize();
 }
@@ -145,7 +144,6 @@ bool tmRenderer::BitmapCopyInto(wxBitmap *bmp) {
   *******************************************************************************/
 tmRenderer::~tmRenderer() {
   wxDELETE(m_bmp);
-  images_cursor_clean();
 }
 
 /***************************************************************************/ /**
@@ -216,28 +214,28 @@ wxCursor tmRenderer::LoadCursorFromBitmap(tmGIS_CURSOR cursor) {
   wxBitmap myCursorBmp;
   switch (cursor) {
     case tmCURSOR_ZOOM_IN:
-      myCursorBmp = *_img_cursor_zoom_in;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::ZOOM_IN);
       break;
     case tmCURSOR_ZOOM_OUT:
-      myCursorBmp = *_img_cursor_zoom_out;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::ZOOM_OUT);
       break;
     case tmCURSOR_HAND:
-      myCursorBmp = *_img_cursor_hand;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::HAND);
       break;
     case tmCURSOR_EDIT:
-      myCursorBmp = *_img_cursor_editing;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::VERTEX_EDIT);
       break;
 
     case tmCURSOR_VERTEX_ADD:
-      myCursorBmp = *_img_cursor_add;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::VERTEX_ADD);
       break;
 
     case tmCURSOR_VERTEX_REMOVE:
-      myCursorBmp = *_img_cursor_close;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::VERTEX_REMOVE);
       break;
 
     case tmCURSOR_ORIENTED:
-      myCursorBmp = *_img_cursor_oriented;
+      myCursorBmp = Bitmaps::GetCursorBitmap(Bitmaps::ID_CURSORS::ORIENTED);
       break;
 
     default:
@@ -247,8 +245,8 @@ wxCursor tmRenderer::LoadCursorFromBitmap(tmGIS_CURSOR cursor) {
   m_ActualNotStockCursor = cursor;
 
   wxImage mycursor(myCursorBmp.ConvertToImage());
-  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 8);
-  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 8);
+  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_X, 16);
+  mycursor.SetOption(wxIMAGE_OPTION_CUR_HOTSPOT_Y, 16);
   return wxCursor(mycursor);
 }
 
