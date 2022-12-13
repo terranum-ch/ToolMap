@@ -6,22 +6,13 @@
 /// @brief TocCtrlModelNode
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties * layerprop) {
+TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties *layerprop) {
   m_Parent = parent;
   m_LayerProp = layerprop;
   m_Container = false;
-  if (layerprop->GetType() == TOC_NAME_GROUP){
+  if (layerprop->GetType() == TOC_NAME_GROUP) {
     m_Container = true;
   }
-}
-
-TocCtrlModelNode::TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder, long id){
-  m_Parent = parent;
-  m_LayerProp = new tmLayerProperties();
-  m_LayerProp->SetName(wxFileName("", folder));
-  m_LayerProp->SetType(TOC_NAME_GROUP);
-  m_LayerProp->SetID(id);
-  m_Container = true;
 }
 
 TocCtrlModelNode::~TocCtrlModelNode() {
@@ -89,7 +80,10 @@ unsigned int TocCtrlModelNode::GetChildCount() const {
 /// @brief TocCtrlModel
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 TocCtrlModel::TocCtrlModel() {
-  m_Root = new TocCtrlModelNode(nullptr, "Project");
+  tmLayerProperties *root_layer_prop = new tmLayerProperties();
+  root_layer_prop->SetType(TOC_NAME_GROUP);
+  root_layer_prop->SetName(_("Project"));
+  m_Root = new TocCtrlModelNode(nullptr, root_layer_prop);
 }
 
 void TocCtrlModel::Delete(const wxDataViewItem &item) {
@@ -253,31 +247,11 @@ wxDataViewItem TocCtrlModel::GetRoot() const {
   return TocCtrlModel::ConvertFromNode(m_Root);
 }
 
-/// Adding a container node
-/// \param parent parent node
-/// \param branch container name
-/// \return the newly TocCtrlModelNode or a null pointer in case of error
-TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, const wxString &branch) {
-  // check that the node is a container or abort
-  if (!parent->IsContainer()) {
-    wxLogError("Parent node isn't a container, adding folder not possible!");
-    return nullptr;
-  }
-
-  auto *my_group1 = new TocCtrlModelNode(parent, branch);
-  parent->Append(my_group1);
-  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_group1));
-  return my_group1;
-}
-
 /// Append an item
 /// \param parent (must be a container)
-/// \param title
-/// \param checked
-/// \param image zero based image index (0 = folder, 1 = shapefile, 2 = database, 3 = image, 4= web)
-/// \param editing
+/// \param layerprop a tmLayerProperties object containing all the required data
 /// \return the newly TocCtrlModelNode or a null pointer in case of error
-TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerProperties * layerprop) {
+TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerProperties *layerprop) {
   // check that the node is a container or abort
   if (!parent->IsContainer()) {
     wxLogError("Parent node isn't a container, adding item not possible!");
@@ -295,20 +269,7 @@ TocCtrlModelNode *TocCtrlModel::NodeAdd(TocCtrlModelNode *parent, tmLayerPropert
   return item;
 }
 
-TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, const wxString &branch, int index) {
-  // check that the node is a container or abort
-  if (!parent->IsContainer()) {
-    wxLogError("Parent node isn't a container, adding item not possible!");
-    return nullptr;
-  }
-
-  auto *my_group1 = new TocCtrlModelNode(parent, branch);
-  parent->Insert(my_group1, index);
-  ItemAdded(wxDataViewItem((void *)parent), wxDataViewItem((void *)my_group1));
-  return my_group1;
-}
-
-TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, tmLayerProperties * layerprop, int index) {
+TocCtrlModelNode *TocCtrlModel::NodeInsert(TocCtrlModelNode *parent, tmLayerProperties *layerprop, int index) {
   // check that the node is a container or abort
   if (!parent->IsContainer()) {
     wxLogError("Parent node isn't a container, adding item not possible!");
@@ -384,9 +345,9 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   if (source->IsContainer()) {
     TocCtrlModelNode *new_container = nullptr;
     if (move_index == wxNOT_FOUND) {  // add to the end
-      new_container = NodeAdd(real_destination, source->m_LayerProp->GetName().GetName());
+      new_container = NodeAdd(real_destination, source->m_LayerProp);
     } else {  // insert
-      new_container = NodeInsert(real_destination, source->m_LayerProp->GetName().GetName(), move_index);
+      new_container = NodeInsert(real_destination, source->m_LayerProp, move_index);
     }
     NodeRecursiveAdd(new_container, source);
     NodeRecursiveRemove(source);
@@ -398,7 +359,7 @@ bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destinat
   if (move_index == wxNOT_FOUND) {
     NodeAdd(real_destination, source->m_LayerProp);
   } else {
-    NodeInsert(real_destination, source->m_LayerProp,move_index);
+    NodeInsert(real_destination, source->m_LayerProp, move_index);
   }
   Delete(ConvertFromNode(source));
   return true;
@@ -413,7 +374,7 @@ void TocCtrlModel::NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *
     if (!item->IsContainer()) {
       NodeAdd(parent, item->m_LayerProp);
     } else {
-      TocCtrlModelNode *group = NodeAdd(parent, item->m_LayerProp->GetName().GetName());
+      TocCtrlModelNode *group = NodeAdd(parent, item->m_LayerProp);
       NodeRecursiveAdd(group, item);
     }
   }

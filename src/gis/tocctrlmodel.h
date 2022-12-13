@@ -7,8 +7,8 @@
 #endif
 
 #include <wx/dataview.h>
-#include "tmlayerproperties.h"
 
+#include "tmlayerproperties.h"
 
 class TocCtrlModelNode;
 
@@ -19,8 +19,7 @@ WX_DEFINE_ARRAY_PTR(TocCtrlModelNode *, TocCtrlModelNodePtrArray);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class TocCtrlModelNode {
  public:
-  TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties * layerprop);
-  TocCtrlModelNode(TocCtrlModelNode *parent, const wxString &folder, long id = 0);
+  TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties *layerprop);
 
   ~TocCtrlModelNode();
 
@@ -40,10 +39,6 @@ class TocCtrlModelNode {
   unsigned int GetChildCount() const;
 
   // public to avoid getters/setters
-//  wxString m_title;
-//  bool m_checked;
-//  int m_ImageIndex;
-//  bool m_editing;
   bool m_Container;
   tmLayerProperties *m_LayerProp;
 
@@ -69,10 +64,8 @@ class TocCtrlModel : public wxDataViewModel {
   wxString NodeGetTitle(TocCtrlModelNode *node);
   bool NodeSetTitle(TocCtrlModelNode *node, const wxString &title);
 
-  TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, const wxString &branch);
-  TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, tmLayerProperties * layerprop);
-  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, const wxString &branch, int index = 0);
-  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, tmLayerProperties * layerprop, int index = 0);
+  TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, tmLayerProperties *layerprop);
+  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, tmLayerProperties *layerprop, int index = 0);
   bool NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index = wxNOT_FOUND);
   void NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *start);
   void NodeRecursiveRemove(TocCtrlModelNode *start);
