@@ -28,7 +28,7 @@ class Toolmap(ConanFile):
 
     def requirements(self):
         if self.options.unit_test or self.options.code_coverage:
-            self.requires("gtest/cci.20210126")
+            self.requires("gtest/1.12.1")
 
     def configure(self):
         if self.options.code_coverage:
