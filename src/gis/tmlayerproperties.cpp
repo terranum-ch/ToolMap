@@ -80,6 +80,8 @@ bool tmLayerProperties::InitFromArray(const wxArrayString &array, bool userelati
   }
   m_LabelDefinition = array.Item(9);
 
+  array.Item(10).ToLong(&m_layer_parent_ID);
+
   // relative path stuff only for support layer
   if (m_LayerType < TOC_NAME_NOT_GENERIC) {
     return true;

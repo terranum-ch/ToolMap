@@ -2050,7 +2050,7 @@ tmLayerProperties *DataBaseTM::GetNextTOCEntry(bool userelativepath) {
   if (!DataBaseHasResults()) {
     wxString sSentence =
         _T("SELECT CONTENT_ID, TYPE_CD, CONTENT_PATH, ")
-        _T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS, LABEL_VISIBLE, LABEL_DEF FROM ") +
+        _T("CONTENT_NAME, CONTENT_STATUS, GENERIC_LAYERS, SYMBOLOGY, VERTEX_FLAGS, LABEL_VISIBLE, LABEL_DEF, PARENT_ID FROM ") +
         TABLE_NAME_TOC + _T(" ORDER by RANK");
 
     if (!DataBaseQuery(sSentence)) {
@@ -2064,7 +2064,7 @@ tmLayerProperties *DataBaseTM::GetNextTOCEntry(bool userelativepath) {
     return nullptr;
   }
 
-  wxASSERT(myTempResults.GetCount() == 10);
+  wxASSERT(myTempResults.GetCount() == 11);
   // parsing results
   tmLayerProperties *myLayerProp = new tmLayerProperties();
   myLayerProp->InitFromArray(myTempResults, userelativepath, DataBaseGetPath());
