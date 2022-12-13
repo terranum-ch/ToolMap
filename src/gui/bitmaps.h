@@ -9,6 +9,7 @@
 class Bitmaps {
  public:
   static wxString SvgToolbar[];
+  static wxString SvgMisc[];
   static wxString SvgLogo;
   static wxString ColorBlack;
   static wxString ColorWhite;
@@ -16,10 +17,14 @@ class Bitmaps {
   enum ID_TOOLBAR {
     SELECT = 0, ZOOM_FIT, ZOOM, PREVIOUS, PAN, EDIT, KIND, ATTRIBUTE, INFO, MODIFY, VERTEX_MOVE
   };
+  enum ID_MISC {
+    BUG = 0, ZIP
+  };
 
   static wxString GetColor();
 
   static wxBitmap GetToolbarBitmap(Bitmaps::ID_TOOLBAR id, const wxSize& size = wxSize(32, 32));
+  static wxBitmap GetMiscBitmap(Bitmaps::ID_MISC id, const wxSize& size = wxSize(32, 32));
   static wxBitmap GetLogo(const wxSize& size = wxSize(32, 32));
 };
 

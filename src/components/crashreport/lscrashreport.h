@@ -37,13 +37,10 @@ class lsCrashReport_DLG : public wxDialog {
   wxTextCtrl *m_CrashDescCtrl;
   wxHyperlinkCtrl *m_DisplayInfoLinkCtrl;
   wxString m_CrashDirectory;
-  wxBitmap *m_BmpCrash;
 
   void OnLinkClicked(wxHyperlinkEvent &event);
 
   void _CreateControls();
-
-  void _CreateBitmaps();
 
  public:
   lsCrashReport_DLG(wxWindow *parent, const wxString &softname, const wxString &tempdirectory, wxWindowID id = wxID_ANY,

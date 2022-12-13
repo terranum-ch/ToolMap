@@ -340,10 +340,6 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
   // setting minimum size
   SetMinSize(wxSize(600, 400));
 
-  // initing bitmap
-  images_misc_init();
-  images_toolbar_init();
-
   // Loading icon
   wxIcon icon;
   icon.CopyFromBitmap(Bitmaps::GetLogo(wxSize(32,32)));
@@ -503,9 +499,6 @@ ToolMapFrame::~ToolMapFrame() {
   delete m_MManager;
   delete m_PManager;
   wxDELETE(m_StatManager);
-
-  images_misc_clean();
-  images_toolbar_clean();
 
   // finish the GEOS library
   wxLogDebug(_T("Clearing GEOS library"));
