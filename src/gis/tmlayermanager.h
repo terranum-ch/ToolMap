@@ -77,9 +77,6 @@ class tmLayerManager : public wxEvtHandler {
   // tmTHREAD_STATUS m_Shared_ThreadStatus;
   wxBitmap *m_ThreadBitmap;
 
-  // init member values to default
-  void InitMemberValue();
-
   // TOC specific functions
   void FillTOCArray();
 

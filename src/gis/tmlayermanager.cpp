@@ -17,14 +17,10 @@
 
 #include <wx/stdpaths.h>
 
-#include "../core/tmcoordconvert.h"
 #include "../gui/tmclosefile_dlg.h"
 #include "tmgisdatarasterweb.h"
 #include "tmgisdatavectorshp.h"
 #include "tmsymbolvectorline.h"
-#include "tmsymbolvectorlinemultiple.h"
-#include "tmsymbolvectorpoint.h"
-#include "tmsymbolvectorpolygon.h"
 #include "vrprogress.h"
 
 DEFINE_EVENT_TYPE(tmEVT_SELECTION_DONE);
@@ -68,8 +64,24 @@ bool tmLayerManager::m_LogOn = true;
   *******************************************************************************/
 tmLayerManager::tmLayerManager(wxWindow *parent, TocCtrl *tocctrl, tmRenderer *renderer, wxStatusBar *status,
                                tmScaleCtrlCombo *scalectrl) {
-  InitMemberValue();
+ // default
+  m_TocCtrl = nullptr;
+  m_Parent = nullptr;
+  m_DB = nullptr;
+  m_GISRenderer = nullptr;
+  m_Bitmap = nullptr;
+  m_StatusBar = nullptr;
+  m_Thread = nullptr;
+  m_ThreadBitmap = nullptr;
 
+  // init selected data structure
+  m_Drawer.SetSelectedData(&m_SelectedData);
+  m_BlockRefresh = false;
+  m_MemoryPrjRef = nullptr;
+  m_isUsingRAM = true;
+  m_InternetRefreshTime = 250;
+
+  // initing
   m_TocCtrl = tocctrl;
   m_GISRenderer = renderer;
   m_Parent = parent;
@@ -86,28 +98,6 @@ tmLayerManager::tmLayerManager(wxWindow *parent, TocCtrl *tocctrl, tmRenderer *r
 tmLayerManager::~tmLayerManager() {
   UnInitLayerManager();
   m_Parent->PopEventHandler(false);
-}
-
-/***************************************************************************/ /**
-  @brief Init members to default
-  @author Lucien Schreiber (c) CREALP 2008
-  @date 07 July 2008
-  *******************************************************************************/
-void tmLayerManager::InitMemberValue() {
-  m_TocCtrl = nullptr;
-  m_Parent = nullptr;
-  m_DB = nullptr;
-  m_GISRenderer = nullptr;
-  m_Bitmap = nullptr;
-  m_StatusBar = nullptr;
-  m_Thread = nullptr;
-  m_ThreadBitmap = nullptr;
-  // init selected data structure
-  m_Drawer.SetSelectedData(&m_SelectedData);
-  m_BlockRefresh = false;
-  m_MemoryPrjRef = nullptr;
-  m_isUsingRAM = true;
-  m_InternetRefreshTime = 250;
 }
 
 /***************************************************************************/ /**
@@ -191,7 +181,7 @@ void tmLayerManager::FillTOCArray() {
   bool myRelativePath = myConfig->ReadBool("GENERAL/relative_path", true);
 
   tmLayerProperties *lyrproptemp = nullptr;
-  while (1) {
+  while (true) {
     lyrproptemp = m_DB->GetNextTOCEntry(myRelativePath);
 
     if (lyrproptemp == nullptr) {
@@ -314,14 +304,14 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
   bool bStart = true;
   PrjMemLayersArray myLayers;
   wxArrayString myLayersName;
-  while (1) {
+  while (true) {
     tmLayerProperties *myLayerProp = m_TocCtrl->IterateLayers(bStart);
     bStart = false;
     if (myLayerProp == nullptr) {
       break;
     }
     if (myLayerProp->GetType() > TOC_NAME_NOT_GENERIC) {
-      ProjectDefMemoryLayers *myLayer = new ProjectDefMemoryLayers;
+      auto *myLayer = new ProjectDefMemoryLayers;
       myLayer->m_LayerID = myLayerProp->GetID();
       myLayer->m_LayerName = myLayerProp->GetNameDisplay();
       myLayer->m_LayerType = (PRJDEF_LAYERS_TYPE)myLayerProp->GetType();
@@ -360,7 +350,7 @@ void tmLayerManager::OnRemoveLayers(wxCommandEvent &event) {
 void tmLayerManager::OnRotationWarning(wxCommandEvent &event) {
   wxASSERT(m_RotationName.GetCount() == m_RotationStatus.GetCount());
 
-  wxRealPoint *myPt = (wxRealPoint *)event.GetClientData();
+  auto *myPt = (wxRealPoint *)event.GetClientData();
   wxASSERT(myPt);
   double rx = myPt->x;
   double ry = myPt->y;
@@ -388,7 +378,7 @@ void tmLayerManager::OnRotationWarning(wxCommandEvent &event) {
 
   // display dialog
   if (bShouldDisplay) {
-    tmRotationWarning_DLG myDlg(NULL, wxID_ANY, _("Rotation Warning"));
+    tmRotationWarning_DLG myDlg(nullptr, wxID_ANY, _("Rotation Warning"));
     myDlg.SetLayerName(event.GetString());
     myDlg.SetRotation1(rx);
     myDlg.SetRotation2(ry);
@@ -487,7 +477,7 @@ void tmLayerManager::GroupAdd(wxCommandEvent &event) {
     return;
   }
   wxASSERT(m_DB);
-  tmLayerProperties *layer_properties = new tmLayerProperties();
+  auto *layer_properties = new tmLayerProperties();
   layer_properties->SetType(TOC_NAME_GROUP);
   layer_properties->SetName(wxFileName("", newGroupName));
   layer_properties->SetVisible(true);
@@ -538,7 +528,7 @@ void tmLayerManager::AddWebLayer() {
   wxArrayString myWMSFilesShortNames;
   for (unsigned int i = 0; i < myWMSFilesFullPath.GetCount(); ++i) {
     wxString myFileName = wxEmptyString;
-    wxFileName::SplitPath(myWMSFilesFullPath.Item(i), NULL, NULL, &myFileName, NULL);
+    wxFileName::SplitPath(myWMSFilesFullPath.Item(i), nullptr, nullptr, &myFileName, nullptr);
     myFileName.Replace(_T("_"), _T(" "));
     myWMSFilesShortNames.Add(myFileName);
   }
@@ -562,7 +552,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
   wxRegEx myRegex(_T("-([0-9]{3})$"));
   // check if layer exists
   bool bReset = true;
-  tmLayerProperties *myLayerToReplace = NULL;
+  tmLayerProperties *myLayerToReplace = nullptr;
   while(true) {
     tmLayerProperties *myLayer = m_TocCtrl->IterateLayers(bReset);
     bReset = false;
@@ -592,10 +582,6 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
     }
   }
 
-  if (myLayerToReplace == nullptr) {
-    return false;
-  }
-
   wxFileName myCompleteName(filename);
   // myCompleteName.SetExt(filename.GetExt());
   m_TocCtrl->UpdateLayerName(myLayerToReplace, myCompleteName.GetFullName());
@@ -605,9 +591,9 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
   wxString myQuery = _T("UPDATE %s SET CONTENT_PATH=\"%s\", CONTENT_NAME=\"%s\" WHERE CONTENT_ID = %ld;");
   wxString myPath = myCompleteName.GetPath();
   DataBaseTM::ConvertPath(myPath);
-  if (m_DB->DataBaseQuery(
+  if (!m_DB->DataBaseQuery(
           wxString::Format(myQuery, TABLE_NAME_TOC, myPath, myCompleteName.GetFullName(), myLayerToReplace->GetID()),
-          true) == false) {
+          true)) {
     return false;
   }
 
@@ -615,12 +601,12 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
   if (myLayerToReplace->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
       myLayerToReplace->GetSymbolRuleManagerRef()->IsUsingRules()) {
     tmGISDataVectorSHP *myGISData = (tmGISDataVectorSHP *)tmGISData::LoadLayer(myLayerToReplace);
-    wxString myQuery = wxString::Format(_T("DROP INDEX on %s"), myLayerToReplace->GetName().GetName());
-    myGISData->ExecuteSQLQuery(myQuery);
+    wxString myQuery2 = wxString::Format(_T("DROP INDEX on %s"), myLayerToReplace->GetName().GetName());
+    myGISData->ExecuteSQLQuery(myQuery2);
     wxString myFieldName = myLayerToReplace->GetSymbolRuleManagerRef()->GetFieldName();
     if (myFieldName != wxEmptyString) {
-      myQuery = wxString::Format(_T("CREATE INDEX ON %s USING %s"), myLayerToReplace->GetName().GetName(), myFieldName);
-      myGISData->ExecuteSQLQuery(myQuery);
+      myQuery2 = wxString::Format(_T("CREATE INDEX ON %s USING %s"), myLayerToReplace->GetName().GetName(), myFieldName);
+      myGISData->ExecuteSQLQuery(myQuery2);
       wxLogMessage(_("Creating attribut filter for : %s"), myFieldName);
     }
     wxDELETE(myGISData);
