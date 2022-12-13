@@ -354,6 +354,9 @@ void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
   }
 
   tmTOCCtrlMenu menu(layerProp, 0, 0);
+  if (layerProp && layerProp->GetType() < TOC_NAME_GROUP){
+    menu.Check(ID_TOCMENU_EDIT_LAYER, layerProp->IsEditing());
+  }
   PopupMenu(&menu);
   event.Skip();
 }
@@ -495,10 +498,74 @@ void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
 void TocCtrl::OnMenuShowLabels(wxCommandEvent &event) {}
 
 void TocCtrl::OnMenuEditing(wxCommandEvent &event) {
-  // start editing
-  if (event.IsChecked()){
-
-  }else {
-
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()) {
+    return;
   }
+
+  // start editing
+  if (event.IsChecked()) {
+    StopEditing(false);
+    auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+    if (node->IsContainer()) {
+      wxLogError("Unable to Edit container");
+      return;
+    }
+
+    tmLayerProperties *layer_prop = node->m_LayerProp;
+    wxASSERT(layer_prop);
+    layer_prop->SetEditing(true);
+    SetEditLayer(layer_prop);
+    GetTocModel()->ItemChanged(item);
+
+    // sent message
+    wxCommandEvent evt(tmEVT_EM_EDIT_START, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
+  } else {
+    StopEditing(true);
+  }
+}
+
+void TocCtrl::StopEditing(bool send_message) {
+  // if no layer in edition, do nothing.
+  if (!GetEditLayer()){
+    return;
+  }
+
+  // search for the layer in edition and stop edition
+  // we can only edit one layer at a time.
+  bool reset = true;
+  while (true){
+    auto layer = IterateLayers(reset);
+    reset = false;
+    if (!layer){
+      break;
+    }
+    if (layer == GetEditLayer()){
+      layer->SetEditing(false);
+      SetEditLayer(nullptr);
+      TocCtrlModelNode * node = GetNodeFromLayer(layer);
+      wxASSERT(node);
+      GetTocModel()->ItemChanged(TocCtrlModel::ConvertFromNode(node));
+      break;
+    }
+  }
+
+  if (send_message) {
+    wxCommandEvent evt(tmEVT_EM_EDIT_STOP, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
+  }
+}
+
+TocCtrlModelNode *TocCtrl::GetNodeFromLayer(tmLayerProperties *layer_obj) {
+  wxASSERT(layer_obj);
+  auto root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
+  TocCtrlModelNodePtrArray my_array_nodes;
+  root->GetAllChildRecursive(my_array_nodes);
+  for (auto node : my_array_nodes) {
+    if (node->m_LayerProp == layer_obj){
+      return node;
+    }
+  }
+  return nullptr;
 }
