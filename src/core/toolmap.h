@@ -401,8 +401,6 @@ class ToolMapFrame : public wxFrame {
 
   void OnContactUs(wxCommandEvent &event);
 
-  void OnComponentsInfo(wxCommandEvent &event);
-
   void OnImportGISData(wxCommandEvent &event);
 
   void OnExportSelectedGISData(wxCommandEvent &event);

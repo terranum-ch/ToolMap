@@ -20,6 +20,11 @@
 #include "../core/toolmap.h"
 #include "version.h"
 #include "bitmaps.h"
+#include "gdal_priv.h"
+#include "geos_c.h"
+#include "curl/curl.h"
+#include "mysql.h"
+#include "proj.h"
 
 BEGIN_EVENT_TABLE(tmAboutDLG, wxDialog)
 EVT_BUTTON(ID_ABOUT_BTN, tmAboutDLG::OnButton)
@@ -41,18 +46,32 @@ wxString tmAboutDLG::GetVersionText() {
   return myVersion;
 }
 
-wxString tmAboutDLG::GetAuthorsText() {
-  wxString myContributors = _("<CENTER><B>Programming</B><BR>Lucien Schreiber<BR>Pascal Horton<BR><BR>");
-  myContributors.Append(
-      _("<B>Design and Functions</B><BR>Pascal Ornstein<BR>Mario Sartori<BR>Lucien Schreiber<BR><BR>"));
-  myContributors.Append(_("<B>Main icon</B><BR>Chantal Bloch"));
-  myContributors.Append(_T("</CENTER>"));
-  return myContributors;
+wxString tmAboutDLG::GetComponentsVersion() {
+  wxString myVersion;
+  // software version
+  myVersion << "Version: " << ToolMap_MAJOR_VERSION << "." << ToolMap_MINOR_VERSION << "." << GIT_NUMBER << "\n";
+  myVersion << "Revision: " << GIT_REV << "\n"
+            << "Tag: " << GIT_TAG << "\n"
+            << "Branch: " << GIT_BRANCH << "\n";
+
+  // libs version
+  myVersion << wxVERSION_STRING << "\n";
+#ifdef _OPENMP
+  myVersion << "OpenMP: " << _OPENMP << "\n";
+#endif
+
+  myVersion << _("Gdal: ") << GDAL_RELEASE_NAME << "\n";
+  myVersion << _("Geos: ") << GEOS_VERSION << "\n";
+  myVersion << _("Proj: ") << PROJ_VERSION_MAJOR << "." << PROJ_VERSION_MINOR << "." << PROJ_VERSION_PATCH << "\n";
+  myVersion << _("Libcurl: ") << LIBCURL_VERSION << "\n";
+  myVersion << _("MySQL: ") << mysql_get_client_info() << "\n";
+  myVersion << wxGetOsDescription();
+  return myVersion;
 }
 
 wxString tmAboutDLG::GetButtonText() {
   if (m_PanelLicence->IsShown())
-    return _("Show contributors");
+    return _("Show components");
   else
     return _("Show license");
 }
@@ -105,7 +124,7 @@ void tmAboutDLG::CreateControls(wxWindow *parent) {
 
   wxStaticText *m_staticText22;
   wxString myLicenceTxt = _(
-      " Copyright (c) 2018 TERRANUM\n Copyright (c) 2013 CREALP \nCopyright (c) 2013 SWISSTOPO\n\nThis program is free "
+      " Copyright (c) 2022 TERRANUM\n Copyright (c) 2013 SWISSTOPO\n Copyright (c) 2013 CREALP \n\nThis program is free "
       "software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as "
       "published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later "
       "version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without "
@@ -142,13 +161,9 @@ void tmAboutDLG::CreateControls(wxWindow *parent) {
   wxBoxSizer *bSizer41;
   bSizer41 = new wxBoxSizer(wxVERTICAL);
 
-  wxHtmlWindow *m_HtmlAuthors;
-  m_HtmlAuthors = new wxHtmlWindow(m_PanelAuthor, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                                   wxHW_NO_SELECTION | wxHW_SCROLLBAR_AUTO);
-  m_HtmlAuthors->SetPage(GetAuthorsText());
-  // m_HtmlAuthors->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
-
-  bSizer41->Add(m_HtmlAuthors, 1, wxALL | wxEXPAND, 5);
+  wxTextCtrl * txtctrl = new wxTextCtrl(m_PanelAuthor, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE);
+  txtctrl->SetValue(GetComponentsVersion());
+  bSizer41->Add(txtctrl, 1, wxALL | wxEXPAND, 5);
 
   m_PanelAuthor->SetSizer(bSizer41);
   m_PanelAuthor->Layout();

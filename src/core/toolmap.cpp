@@ -50,7 +50,6 @@
 #include "pdfexportwizard.h"
 #include "tmstats.h"
 #include "tmstatsevent.h"
-#include "../gui/framecomponent.h"
 #include "version.h"
 
 IMPLEMENT_APP(ToolMapApp);
@@ -227,7 +226,6 @@ EVT_MENU(ID_MENU_CONTACT_US, ToolMapFrame::OnContactUs)
 EVT_MENU(ID_MENU_USER_MANUAL, ToolMapFrame::OnUserManual)
 
 EVT_MENU(wxID_ABOUT, ToolMapFrame::OnAbout)
-EVT_MENU(ID_MENU_COMPONENTS, ToolMapFrame::OnComponentsInfo)
 
 EVT_MENU(ID_MENU_LAYOUT_DEFAULT, ToolMapFrame::OnLayoutDefault)
 EVT_MENU(ID_MENU_LAYOUT_VERTICAL, ToolMapFrame::OnLayoutVertical)
@@ -725,7 +723,6 @@ void ToolMapFrame::_CreateMenu() {
   // HELP
   wxMenu *itemMenu81 = new wxMenu;
   itemMenu81->Append(wxID_ABOUT, _("About..."), wxEmptyString, wxITEM_NORMAL);
-  itemMenu81->Append(ID_MENU_COMPONENTS, _("Components informations..."), wxEmptyString, wxITEM_NORMAL);
   itemMenu81->AppendSeparator();
   itemMenu81->Append(ID_MENU_CHECK_UPDATE, _("Check for updates..."), wxEmptyString, wxITEM_NORMAL);
   itemMenu81->AppendSeparator();
@@ -1066,15 +1063,6 @@ void ToolMapFrame::OnCheckUpdates(wxCommandEvent &event) {
 
 void ToolMapFrame::OnContactUs(wxCommandEvent &event) {
   wxLaunchDefaultBrowser(_T("mailto:toolmap@terranum.ch?subject=Toolmap"));
-}
-
-void ToolMapFrame::OnComponentsInfo(wxCommandEvent &event) {
-  FrameComponents myDlg(this);
-  myDlg.ShowModal();
-//  lsVersionDlg myDlg(this, wxID_ANY, _("Components"));
-//  myDlg.SetBitmapLogo(*_img_icon_toolmap);
-//  myDlg.SetCopyright(wxString::Format("(c) TERRANUM, %d", wxDateTime::Now().GetYear()));
-//  myDlg.ShowModal();
 }
 
 void ToolMapFrame::OnUserManual(wxCommandEvent &event) {

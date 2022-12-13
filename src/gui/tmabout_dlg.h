@@ -47,7 +47,7 @@ class tmAboutDLG : public wxDialog {
 
   wxString GetVersionText();
 
-  wxString GetAuthorsText();
+  wxString GetComponentsVersion();
 
   wxString GetButtonText();
 
