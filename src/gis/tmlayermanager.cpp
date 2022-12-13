@@ -38,6 +38,7 @@ DEFINE_EVENT_TYPE(tmEVT_DISABLE_ACCELERATORS);
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE, tmLayerManager::RemoveLayer)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD, tmLayerManager::AddLayer)
+EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD_GROUP, tmLayerManager::AddGroup)
 EVT_MENU(ID_MENU_UNLINK_SPATIAL_DATA, tmLayerManager::OnRemoveLayers)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_SIZE_CHANGED, tmLayerManager::OnSizeChange)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)

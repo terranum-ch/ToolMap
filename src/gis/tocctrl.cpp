@@ -5,6 +5,7 @@
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
+DEFINE_EVENT_TYPE(tmEVT_LM_ADD_GROUP)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS)
@@ -400,23 +401,26 @@ void TocCtrl::OnMenuRemoveItem(wxCommandEvent &event) {
 }
 
 void TocCtrl::OnMenuAddGroup(wxCommandEvent &event) {
-  wxString newGroupName = wxGetTextFromUser("Group name");
-  if (newGroupName.IsEmpty()) {
-    return;
-  }
+  wxCommandEvent evt( tmEVT_LM_ADD_GROUP, wxID_ANY);
+  GetEventHandler()->QueueEvent(evt.Clone());
 
-  auto *model = GetTocModel();
-  wxDataViewItem item = GetSelection();
-  if (!item.IsOk()){
-    // If no node is selected, add group at the end of the TOC
-    model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), newGroupName);
-  } else {
-    auto *node = TocCtrlModel::ConvertFromDataViewItem(item);
-    if (!node->IsContainer()) {
-      node = node->GetParent();
-    }
-    model->NodeAdd(node, newGroupName);
-  }
+//  wxString newGroupName = wxGetTextFromUser("Group name");
+//  if (newGroupName.IsEmpty()) {
+//    return;
+//  }
+//
+//  auto *model = GetTocModel();
+//  wxDataViewItem item = GetSelection();
+//  if (!item.IsOk()){
+//    // If no node is selected, add group at the end of the TOC
+//    model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), newGroupName);
+//  } else {
+//    auto *node = TocCtrlModel::ConvertFromDataViewItem(item);
+//    if (!node->IsContainer()) {
+//      node = node->GetParent();
+//    }
+//    model->NodeAdd(node, newGroupName);
+//  }
 }
 
 void TocCtrl::OnMenuRenameGroup(wxCommandEvent &event) {
