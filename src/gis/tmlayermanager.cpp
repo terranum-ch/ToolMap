@@ -1658,51 +1658,38 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
   @date 09 September 2008
   *******************************************************************************/
 int tmLayerManager::ReadLayerDraw() {
-  // iterate throught all layers
-  int iRank = 0;
   int iReaded = 0;
-
   tmLayerProperties *pLayerProp = nullptr;
   tmRealRect myExtent(0, 0, 0, 0);
 
   // prepare loading of MySQL data
   tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
-  while (1) {
-    if (iRank == 0) {
-      pLayerProp = m_TocCtrl->IterateLayers(TRUE);
-    } else {
-      pLayerProp = m_TocCtrl->IterateLayers(FALSE);
-    }
+  bool reset = true;
+  while (true) {
+    pLayerProp = m_TocCtrl->IterateLayers(reset);
+    reset = false;
 
     if (!pLayerProp) {
       break;
     }
 
     if (!pLayerProp->IsVisible()) {
-      ++iRank;
       continue;
     }
 
+    // TODO: Check for parent visibility too!
+
     tmGISData *layerData = tmGISData::LoadLayer(pLayerProp);
     if (layerData == nullptr) {
-      ++iRank;
       continue;
     }
 
     tmCoordConvert *myCoordConv = new tmCoordConvert(m_MemoryPrjRef->m_PrjProjType);
     layerData->SetCoordConvert(myCoordConv);
 
-    if (layerData->GetDataType() == tmGIS_RASTER_WEB) {
-      wxLogMessage(_T("Converting coordinates here..."));
-      // tmGISDataRasterWeb * myWebData = static_cast<tmGISDataRasterWeb* >(layerData);
-      // myWebData->GetWebFrameRef()->SetClientSize(m_GISRenderer->GetSize());
-    }
-
     m_Drawer.Draw(pLayerProp, layerData);
     iReaded++;
-
     wxDELETE(layerData);
-    iRank++;
   }
   return iReaded;
 }
