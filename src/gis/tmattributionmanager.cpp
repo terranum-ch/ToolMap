@@ -636,7 +636,7 @@ void tmAttributionManager::OnRunQuery(wxCommandEvent &event) {
     return;
   }
   // Selecting layer in TOC
-  m_TocCtrl->SetSelectedLayer(myLayerID);
+  m_TocCtrl->SelectLayerByID(myLayerID);
 
   // passing the query
   if (!m_pDB->DataBaseQuery(myQuery)) {

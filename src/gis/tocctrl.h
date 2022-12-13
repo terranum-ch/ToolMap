@@ -42,7 +42,7 @@ class TocCtrl : public wxDataViewCtrl {
 
   // toc ctrl function for toolmap
   tmLayerProperties *GetSelectionLayer();
-  void SetSelectedLayer(int layerID);
+  void SelectLayerByID(int layerID);
   tmLayerProperties *GetLayerByPath(const wxString &layerPath);
   tmLayerProperties *GetLayerByName(const wxString &layerName); // TODO: Is this function really needed, duplicate of GetLayerByPath
   tmLayerProperties *GetLayerById(long layer_id);
