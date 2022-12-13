@@ -38,7 +38,7 @@ DEFINE_EVENT_TYPE(tmEVT_DISABLE_ACCELERATORS);
 BEGIN_EVENT_TABLE(tmLayerManager, wxEvtHandler)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_REMOVE, tmLayerManager::RemoveLayer)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD, tmLayerManager::AddLayer)
-EVT_COMMAND(wxID_ANY, tmEVT_LM_ADD_GROUP, tmLayerManager::AddGroup)
+EVT_COMMAND(wxID_ANY, tmEVT_LM_GROUP_ADD, tmLayerManager::GroupAdd)
 EVT_MENU(ID_MENU_UNLINK_SPATIAL_DATA, tmLayerManager::OnRemoveLayers)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_SIZE_CHANGED, tmLayerManager::OnSizeChange)
 EVT_COMMAND(wxID_ANY, tmEVT_LM_MOUSE_MOVED, tmLayerManager::OnUpdateCoordinates)
@@ -477,7 +477,7 @@ void tmLayerManager::AddLayer(wxCommandEvent &event) {
 
 /// Create the group, and add it to the database. Then call the
 /// TocCtrl and add it.
-void tmLayerManager::AddGroup(wxCommandEvent &event) {
+void tmLayerManager::GroupAdd(wxCommandEvent &event) {
   if (!IsOK()) {
     return;
   }
@@ -512,7 +512,6 @@ void tmLayerManager::AddGroup(wxCommandEvent &event) {
   }
   m_TocCtrl->InsertLayer(layer_properties);
 }
-
 
 void tmLayerManager::AddWebLayer() {
   // list WMS xml files in share/toolmap

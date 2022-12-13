@@ -1433,7 +1433,7 @@ void ToolMapFrame::OnAddGisData(wxCommandEvent &event) {
 }
 
 void ToolMapFrame::OnAddGroup(wxCommandEvent &event) {
- m_LayerManager->AddGroup(event);
+  m_LayerManager->GroupAdd(event);
 }
 
 void ToolMapFrame::OnAddWebData(wxCommandEvent &event) {

@@ -5,7 +5,7 @@
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
 DEFINE_EVENT_TYPE(tmEVT_LM_ADD)
-DEFINE_EVENT_TYPE(tmEVT_LM_ADD_GROUP)
+DEFINE_EVENT_TYPE(tmEVT_LM_GROUP_ADD)
 DEFINE_EVENT_TYPE(tmEVT_LM_UPDATE)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_PROPERTIES)
 DEFINE_EVENT_TYPE(tmEVT_LM_SHOW_LABELS)
@@ -401,7 +401,7 @@ void TocCtrl::OnMenuRemoveItem(wxCommandEvent &event) {
 }
 
 void TocCtrl::OnMenuAddGroup(wxCommandEvent &event) {
-  wxCommandEvent evt( tmEVT_LM_ADD_GROUP, wxID_ANY);
+  wxCommandEvent evt(tmEVT_LM_GROUP_ADD, wxID_ANY);
   GetEventHandler()->QueueEvent(evt.Clone());
 }
 
