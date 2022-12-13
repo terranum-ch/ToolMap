@@ -2134,30 +2134,14 @@ void DataBaseTM::PrepareTOCStatusUpdate(wxString &sentence, tmLayerProperties *i
   myLabelDef.Replace(_T("'"), _T("\\'"));
   myLabelDef.Replace(_T("\""), _T("\\\""));
 
-  if (item->GetType() == TOC_NAME_GROUP) {
-    myPath = "group";
-    wxString name = item->GetName().GetFullName().c_str();
-    if (item->GetID() == 0) {
-      sentence.Append(wxString::Format(_T("INSERT INTO ") + TABLE_NAME_TOC +
-                                           _T(" (TYPE_CD, CONTENT_PATH, CONTENT_NAME,")
-                                           _T(" CONTENT_STATUS, GENERIC_LAYERS, RANK) ") +
-                                           _T(" VALUES ( %d, \"%s\", \"%s\", %d, %d, %d ); "),
-                                       LAYER_EMPTY, myPath, name, item->IsVisible(), item->GetType(), itemRank));
-    } else {
-      sentence.Append(wxString::Format(_T("UPDATE ") + TABLE_NAME_TOC +
-                                           _T(" SET CONTENT_NAME = \"%s\", CONTENT_STATUS = %d, RANK = %d ")
-                                           _T(" WHERE CONTENT_ID = %ld; "),
-                                       name, item->IsVisible(), itemRank, item->GetID()));
-    }
-  } else {
-    sentence.Append(
-        wxString::Format(_T("UPDATE ") + TABLE_NAME_TOC +
-                             _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
-                             _T(" VERTEX_FLAGS = %d, CONTENT_PATH=\"%s\", LABEL_VISIBLE = %d, LABEL_DEF = \"%s\" ")
-                             _T(" WHERE CONTENT_ID = %ld; "),
-                         item->IsVisible(), itemRank, symbology.c_str(), item->GetVertexFlags(), myPath,
-                         item->IsLabelVisible(), myLabelDef, item->GetID()));
-  }
+  sentence.Append(
+      wxString::Format(_T("UPDATE ") + TABLE_NAME_TOC +
+                           _T(" SET CONTENT_STATUS = %d, RANK=%d, SYMBOLOGY=\"%s\",")
+                           _T(" VERTEX_FLAGS = %d, CONTENT_PATH=\"%s\", LABEL_VISIBLE = %d, LABEL_DEF = \"%s\",")
+                           _T(" PARENT_ID=%ld ")
+                           _T(" WHERE CONTENT_ID = %ld; "),
+                       item->IsVisible(), itemRank, symbology.c_str(), item->GetVertexFlags(), myPath,
+                       item->IsLabelVisible(), myLabelDef, item->GetLayerParentId(), item->GetID()));
 }
 
 /***************************************************************************/ /**
