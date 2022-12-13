@@ -154,6 +154,7 @@ EVT_MENU(ID_MENU_PRJ_MERGE, ToolMapFrame::OnProjectMerge)
 EVT_MENU_RANGE(wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 EVT_MENU(ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 EVT_MENU(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnAddWebData)
+EVT_MENU(ID_MENU_ADD_GROUP, ToolMapFrame::OnAddGroup)
 EVT_MENU(ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
 EVT_MENU(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnExportSelectedGISData)
 EVT_MENU(ID_MENU_SHORTCUTS, ToolMapFrame::OnShowShortcutWindow)
@@ -579,6 +580,8 @@ void ToolMapFrame::_CreateMenu() {
   itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
   itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
   itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
+  itemMenu24->AppendSeparator();
+  itemMenu24->Append(ID_MENU_ADD_GROUP, _("Add group...\tCtrl+G"));
   itemMenu24->AppendSeparator();
   itemMenu24->Append(ID_MENU_IMPORT_GIS_DATA, _("Import data..."), wxEmptyString, wxITEM_NORMAL);
   m_MenuBar->Append(itemMenu24, _("Data"));
@@ -1429,6 +1432,10 @@ void ToolMapFrame::OnAddGisData(wxCommandEvent &event) {
   m_LayerManager->AddLayer(event);
 }
 
+void ToolMapFrame::OnAddGroup(wxCommandEvent &event) {
+ m_LayerManager->AddGroup(event);
+}
+
 void ToolMapFrame::OnAddWebData(wxCommandEvent &event) {
   m_LayerManager->AddWebLayer();
 }
@@ -1888,3 +1895,5 @@ void ToolMapFrame::OnUpdateStatisticsDialog(wxUpdateUIEvent &event) {
   wxASSERT(m_StatManager);
   event.Enable(m_StatManager->IsReady());
 }
+
+

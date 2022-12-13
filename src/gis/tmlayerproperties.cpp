@@ -28,6 +28,7 @@
   *******************************************************************************/
 void tmLayerProperties::InitMemberValues() {
   m_LayerID = 0;
+  m_layer_parent_ID = 0;
   m_LayerSpatialType = LAYER_SPATIAL_LINE;
   m_LayerVisible = true;
   m_LayerType = TOC_NAME_NOT_GENERIC;
@@ -276,4 +277,11 @@ tmLayerProperties::tmLayerProperties(tmLayerProperties &layerprop) {
   m_LayerEditing = layerprop.m_LayerEditing;
   m_LabelIsVisible = layerprop.m_LabelIsVisible;
   m_LabelDefinition = layerprop.m_LabelDefinition;
+}
+long tmLayerProperties::GetLayerParentId() const {
+  return m_layer_parent_ID;
+}
+
+void tmLayerProperties::SetLayerParentId(long mLayerParentId) {
+  m_layer_parent_ID = mLayerParentId;
 }

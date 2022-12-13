@@ -205,7 +205,7 @@ void TocCtrl::SelectLayerByID(int layerID) {
     return;
   }
 
-  auto node = TocCtrlModel::ConvertFromNode(GetNodeFromLayer(layerprop));
+  auto node = TocCtrlModel::ConvertFromNode(GetNodeFromLayerID(layerprop->GetID()));
   wxDataViewCtrl::UnselectAll();
   wxDataViewCtrl::Select(node);
 }
@@ -301,7 +301,13 @@ void TocCtrl::SetProjectName(const wxString &project_name) {
 bool TocCtrl::InsertLayer(tmLayerProperties *item) {
   wxString myDisplayName = item->GetNameDisplay();
   auto * model = GetTocModel();
-  model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), item);
+  if (item->GetLayerParentId() == 0) {
+    model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(model->GetRoot()), item);
+  }
+  else {
+    auto parent_node = GetNodeFromLayerID(item->GetLayerParentId());
+    model->NodeAdd(parent_node, item);
+  }
   return true;
 }
 
@@ -544,7 +550,7 @@ void TocCtrl::StopEditing(bool send_message) {
     if (layer == GetEditLayer()){
       layer->SetEditing(false);
       SetEditLayer(nullptr);
-      TocCtrlModelNode * node = GetNodeFromLayer(layer);
+      TocCtrlModelNode * node = GetNodeFromLayerID(layer->GetID());
       wxASSERT(node);
       GetTocModel()->ItemChanged(TocCtrlModel::ConvertFromNode(node));
       break;
@@ -557,13 +563,12 @@ void TocCtrl::StopEditing(bool send_message) {
   }
 }
 
-TocCtrlModelNode *TocCtrl::GetNodeFromLayer(tmLayerProperties *layer_obj) {
-  wxASSERT(layer_obj);
+TocCtrlModelNode *TocCtrl::GetNodeFromLayerID(long layer_id) {
   auto root = TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot());
   TocCtrlModelNodePtrArray my_array_nodes;
   root->GetAllChildRecursive(my_array_nodes);
   for (auto node : my_array_nodes) {
-    if (node->m_LayerProp == layer_obj){
+    if (node->m_LayerProp->GetID() == layer_id){
       return node;
     }
   }

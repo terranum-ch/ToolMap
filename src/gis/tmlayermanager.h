@@ -154,6 +154,8 @@ class tmLayerManager : public wxEvtHandler {
 
   void AddWebLayer();
 
+  void AddGroup(wxCommandEvent &event);
+
   bool OpenLayer(const wxFileName &filename, bool replace = false, const wxString &originalname = wxEmptyString);
 
   tmGISScale *GetScale() {

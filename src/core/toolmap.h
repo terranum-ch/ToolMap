@@ -156,6 +156,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_ADD_SPATIAL_DATA 10022
 #define ID_MENU_IMPORT_GIS_DATA 10112
 #define ID_MENU_EXPORT_GIS_GEOMETRIES 10113
+#define ID_MENU_ADD_GROUP 10114
 
 //#define ID_MENU_ZOOM_PREVIOUS 10313
 #define ID_MENU_ZOOM 10315
@@ -430,6 +431,8 @@ class ToolMapFrame : public wxFrame {
   void OnAddGisData(wxCommandEvent &event);
 
   void OnAddWebData(wxCommandEvent &event);
+
+  void OnAddGroup(wxCommandEvent & event);
 
   void OnShortcutAttributionDone(wxCommandEvent &event);
 

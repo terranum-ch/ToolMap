@@ -474,6 +474,45 @@ void tmLayerManager::AddLayer(wxCommandEvent &event) {
   ReloadProjectLayers(bZoomToFullExtent, true);
 }
 
+/// Create the group, and add it to the database. Then call the
+/// TocCtrl and add it.
+void tmLayerManager::AddGroup(wxCommandEvent &event) {
+  if (!IsOK()) {
+    return;
+  }
+
+  wxString newGroupName = wxGetTextFromUser("Group name");
+  if (newGroupName.IsEmpty()) {
+    return;
+  }
+  wxASSERT(m_DB);
+  tmLayerProperties *layer_properties = new tmLayerProperties();
+  layer_properties->SetType(TOC_NAME_GROUP);
+  layer_properties->SetName(wxFileName("", newGroupName));
+  layer_properties->SetVisible(true);
+
+  long my_group_id = m_DB->AddTOCLayer(layer_properties);
+  if (my_group_id == wxNOT_FOUND){
+    return;
+  }
+  layer_properties->SetID(my_group_id);
+
+  // if something is selected in the toc, use it as a parent
+  wxDataViewItem sel_item = m_TocCtrl->GetSelection();
+  if (sel_item.IsOk()) {
+    auto node = TocCtrlModel::ConvertFromDataViewItem(sel_item);
+    wxASSERT(node);
+    if (node->IsContainer()) {
+      layer_properties->SetLayerParentId(node->m_LayerProp->GetID());
+    }
+    else {
+      layer_properties->SetLayerParentId(node->GetParent()->m_LayerProp->GetID());
+    }
+  }
+  m_TocCtrl->InsertLayer(layer_properties);
+}
+
+
 void tmLayerManager::AddWebLayer() {
   // list WMS xml files in share/toolmap
   wxString myWebPagePathText = _T("/../../share/toolmap");
@@ -1724,3 +1763,4 @@ bool tmLayerManager::HasZoomPrevious() {
   }
   return bReturn;
 }
+

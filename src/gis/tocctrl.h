@@ -79,7 +79,7 @@ class TocCtrl : public wxDataViewCtrl {
   int m_IterateNodeIndex = wxNOT_FOUND;
   TocCtrlModelNodePtrArray m_IterateNodeArray;
   tmLayerProperties *m_EditingLayer;
-  TocCtrlModelNode *GetNodeFromLayer(tmLayerProperties *layer_obj);
+  TocCtrlModelNode *GetNodeFromLayerID(long layer_id);
   void StopEditing(bool send_message);
 };
 

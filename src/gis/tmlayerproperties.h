@@ -48,6 +48,13 @@ class tmLayerProperties : public wxTreeItemData {
  private:
   wxFileName m_LayerName;
   long m_LayerID;
+  long m_layer_parent_ID;
+
+ public:
+  long GetLayerParentId() const;
+  void SetLayerParentId(long mLayerParentId);
+
+ private:
   TM_GIS_SPATIAL_TYPES m_LayerSpatialType;
   bool m_LayerVisible;
   TOC_GENERIC_NAME m_LayerType;
