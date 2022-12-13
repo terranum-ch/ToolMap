@@ -350,7 +350,7 @@ ToolMapFrame::ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, w
 
   // Loading icon
   wxIcon icon;
-  icon.CopyFromBitmap(*_img_icon_toolmap);
+  icon.CopyFromBitmap(Bitmaps::GetLogo(wxSize(16,16)));
   SetIcon(icon);
 
   // adding status bar
@@ -767,9 +767,9 @@ void ToolMapFrame::_CreateToolBar() {
                         wxITEM_NORMAL, _("Move shared Node"));
 
   itemToolBar3->AddSeparator();
-  itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _("Object Kind"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::ATTRIBUTE), wxNullBitmap, wxITEM_NORMAL,
+  itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _("Object Kind"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::KIND), wxNullBitmap, wxITEM_NORMAL,
                         _("Object Kind"), wxEmptyString);
-  itemToolBar3->AddTool(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute"), *_img_toolbar_attribute_extend, wxNullBitmap,
+  itemToolBar3->AddTool(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::ATTRIBUTE), wxNullBitmap,
                         wxITEM_NORMAL, _("Object Attribute"), wxEmptyString);
   itemToolBar3->AddSeparator();
   itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::INFO), wxNullBitmap, wxITEM_NORMAL,

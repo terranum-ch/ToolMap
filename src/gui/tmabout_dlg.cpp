@@ -17,13 +17,9 @@
 // comment doxygen
 
 #include "tmabout_dlg.h"
-
 #include "../core/toolmap.h"
-
-// image
-#include "../img/misc_bmp.h"
-//#include "lsversion_param.h"
 #include "version.h"
+#include "bitmaps.h"
 
 BEGIN_EVENT_TABLE(tmAboutDLG, wxDialog)
 EVT_BUTTON(ID_ABOUT_BTN, tmAboutDLG::OnButton)
@@ -76,7 +72,7 @@ void tmAboutDLG::CreateControls(wxWindow *parent) {
   bSizer37 = new wxBoxSizer(wxVERTICAL);
 
   wxStaticBitmap *m_bitmap1 =
-      new wxStaticBitmap(myPanelImg, wxID_ANY, *_img_icon_toolmap_about, wxDefaultPosition, wxSize(-1, -1), 0);
+      new wxStaticBitmap(myPanelImg, wxID_ANY,Bitmaps::GetLogo(wxSize(128,128)), wxDefaultPosition, wxSize(-1, -1), 0);
   // m_bitmap1->SetBackgroundColour(wxColour(255, 255, 255));
   bSizer37->Add(m_bitmap1, 0, wxALL | wxEXPAND, 5);
 

@@ -14,7 +14,7 @@ class Bitmaps {
   static wxString ColorWhite;
 
   enum ID_TOOLBAR {
-    SELECT = 0, ZOOM_FIT, ZOOM, PREVIOUS, PAN, EDIT, ATTRIBUTE, INFO, MODIFY
+    SELECT = 0, ZOOM_FIT, ZOOM, PREVIOUS, PAN, EDIT, KIND, ATTRIBUTE, INFO, MODIFY
   };
 
   static wxString GetColor();
