@@ -51,6 +51,7 @@ class TocCtrl : public wxDataViewCtrl {
   unsigned int GetCountLayers();
   bool UpdateLayerName(tmLayerProperties *item, const wxString &newName);
   bool RemoveLayer(int database_layer_id);
+  bool IsAllParentLayerVisible(long layer_id);
   
 
  private:

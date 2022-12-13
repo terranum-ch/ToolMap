@@ -1659,14 +1659,10 @@ int tmLayerManager::ReadLayerExtent(bool loginfo, bool buildpyramids) {
   *******************************************************************************/
 int tmLayerManager::ReadLayerDraw() {
   int iReaded = 0;
-  tmLayerProperties *pLayerProp = nullptr;
-  tmRealRect myExtent(0, 0, 0, 0);
-
-  // prepare loading of MySQL data
   tmGISDataVectorMYSQL::SetDataBaseHandle(m_DB);
   bool reset = true;
   while (true) {
-    pLayerProp = m_TocCtrl->IterateLayers(reset);
+    auto pLayerProp = m_TocCtrl->IterateLayers(reset);
     reset = false;
 
     if (!pLayerProp) {
@@ -1677,7 +1673,9 @@ int tmLayerManager::ReadLayerDraw() {
       continue;
     }
 
-    // TODO: Check for parent visibility too!
+    if (!m_TocCtrl->IsAllParentLayerVisible(pLayerProp->GetID())){
+      continue ;
+    }
 
     tmGISData *layerData = tmGISData::LoadLayer(pLayerProp);
     if (layerData == nullptr) {

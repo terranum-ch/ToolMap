@@ -155,13 +155,13 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
 }
 
 void TocCtrl::OnMouseClick(wxDataViewEvent &event) {
+  // Send message show/hide to layermanager
   auto node = TocCtrlModel::ConvertFromDataViewItem( event.GetItem());
-  if (node->IsContainer()){
-    wxLogError("Activation of folder isn't implemented!");
+  if (node == TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot())){
+    wxLogWarning(_("Hiding all the project does nothing!"));
     return;
   }
 
-  // Send message show/hide to layermanager
   wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
   evt.SetInt((int)node->m_LayerProp->IsVisible());
   GetEventHandler()->QueueEvent(evt.Clone());
@@ -559,4 +559,24 @@ TocCtrlModelNode *TocCtrl::GetNodeFromLayerID(long layer_id) {
     }
   }
   return nullptr;
+}
+
+bool TocCtrl::IsAllParentLayerVisible(long layer_id) {
+  auto node = GetNodeFromLayerID(layer_id);
+  if (!node){
+    wxLogError(_("Node: %ld not found!!"), layer_id);
+    return false;
+  }
+
+  while (true){
+    auto parent = node->GetParent();
+    if  (parent == nullptr || parent == TocCtrlModel::ConvertFromDataViewItem(GetTocModel()->GetRoot())){
+      break;
+    }
+    if (!parent->m_LayerProp->IsVisible()){
+      return false;
+    }
+    node = parent;
+  }
+  return true;
 }
