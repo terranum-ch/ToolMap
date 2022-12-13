@@ -7,8 +7,9 @@ PROJECT("ToolMap")
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/build/cmake ${CMAKE_MODULE_PATH})
 
 # using git version
-set(${PROJECT_NAME}_MAJOR_VERSION "3")
-set(${PROJECT_NAME}_MINOR_VERSION "3")
+set(${PROJECT_NAME}_MAJOR_VERSION "4")
+set(${PROJECT_NAME}_MINOR_VERSION "0")
+set(CODE_NAME "NUGLAR")
 include(version)
 
 # defining cmake version for installer mainly
@@ -91,8 +92,8 @@ if (UNIX AND NOT APPLE)
 endif()
 
 # osx icon
-set(MACOSX_BUNDLE_ICON_FILE art/toolmap2.icns)
-set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/toolmap2.icns")
+set(MACOSX_BUNDLE_ICON_FILE art/toolmap.icns)
+set(ICON_PATH "${CMAKE_SOURCE_DIR}/art/toolmap.icns")
 set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
 # Create a library with all sources files mainly for unit testing
@@ -131,7 +132,8 @@ endif (UNIX)
 
 # IF (APPLE)
 # Copy plist to ToolMap (should be after add executable!
-set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${PROJECT_SOURCE_DIR}/build/custominfo.plist)
+configure_file(build/custominfo.plist ${CMAKE_BINARY_DIR}/custominfo.plist)
+set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_BINARY_DIR}/custominfo.plist)
 # ENDIF (APPLE)
 
 # adding multi-core support for Visual Studio Compiler

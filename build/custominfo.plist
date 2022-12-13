@@ -9,13 +9,13 @@
     <key>CFBundleGetInfoString</key>
     <string>ToolMap</string>
     <key>CFBundleIconFile</key>
-    <string>toolmap2.icns</string>
+    <string>toolmap.icns</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleGetInfoString</key>
     <string>GIS framework for digital mapping</string>
     <key>CFBundleShortVersionString</key>
-    <string>MEYRIN</string>
+    <string>${CODE_NAME}</string>
     <key>CFBundleLongVersionString</key>
     <string></string>
     <key>CFBundleName</key>
@@ -23,11 +23,11 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>2.6</string>
+    <string>${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}</string>
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleVersion</key>
-    <string>2.6.0</string>
+    <string>${CMAKE_PROJECT_VERSION_MAJOR}.${CMAKE_PROJECT_VERSION_MINOR}.${CMAKE_PROJECT_VERSION_PATCH}</string>
     <key>CSResourcesFileMapped</key>
     <true/>
     <key>LSRequiresCarbon</key>
