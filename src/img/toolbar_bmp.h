@@ -19,7 +19,6 @@ extern wxBitmap *_img_toolbar_info;
 extern wxBitmap *_img_toolbar_modify;
 extern wxBitmap *_img_toolbar_pan;
 extern wxBitmap *_img_toolbar_previous;
-extern wxBitmap *_img_toolbar_select;
 extern wxBitmap *_img_toolbar_vertex_move;
 extern wxBitmap *_img_toolbar_zoom;
 extern wxBitmap *_img_toolbar_zoom_fit;

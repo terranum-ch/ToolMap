@@ -36,6 +36,7 @@
 
 #include "../components/tmupdate/update.h"
 #include "../gui/attribution_obj_type.h"
+#include "../gui/bitmaps.h"
 #include "../gui/beziersettings_dlg.h"
 #include "../gui/information_dlg.h"
 #include "../gui/newtemplateprjwizard.h"
@@ -744,7 +745,7 @@ void ToolMapFrame::_CreateToolBar() {
 
   wxToolBar *itemToolBar3 = this->CreateToolBar(style, wxID_ANY);
   itemToolBar3->SetToolBitmapSize(wxSize(32, 32));
-  itemToolBar3->AddTool(ID_MENU_SELECT, _("Select"), *_img_toolbar_select, wxNullBitmap, wxITEM_NORMAL, _("Select"),
+  itemToolBar3->AddTool(ID_MENU_SELECT, _("Select"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::SELECT), wxNullBitmap, wxITEM_NORMAL, _("Select"),
                         wxEmptyString);
   itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _("Fit"), *_img_toolbar_zoom_fit, wxNullBitmap, wxITEM_NORMAL,
                         _("Zoom to full extent"), wxEmptyString);
@@ -1710,7 +1711,6 @@ void ToolMapFrame::OnUpdateMenuZoomLayer(wxUpdateUIEvent &event) {
 }
 
 void ToolMapFrame::OnSysColourChanged(wxSysColourChangedEvent &event) {
-  _UpdateToolBarIconColor();
   event.Skip();
 }
 
