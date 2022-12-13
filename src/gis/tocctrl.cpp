@@ -206,8 +206,25 @@ tmLayerProperties *TocCtrl::GetSelectionLayer() {
   return selected_node->m_LayerProp;
 }
 
-void TocCtrl::SetSelectedLayer(int layerID) {
-    wxFAIL_MSG("Not implemented!");
+void TocCtrl::SelectLayerByID(int layerID) {
+  tmLayerProperties *layerprop = nullptr;
+  bool reset = true;
+  while (true) {
+    layerprop = IterateLayers(reset);
+    reset = false;
+    if (!layerprop) {
+      break;
+    }
+    if (layerprop->GetID() == layerID) break;
+  }
+
+  if (!layerprop){
+    return;
+  }
+
+  auto node = TocCtrlModel::ConvertFromNode(GetNodeFromLayer(layerprop));
+  wxDataViewCtrl::UnselectAll();
+  wxDataViewCtrl::Select(node);
 }
 
 tmLayerProperties *TocCtrl::GetLayerByPath(const wxString &layerPath) {
