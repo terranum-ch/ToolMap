@@ -12,27 +12,8 @@ extern void images_toolbar_init(void);
 
 extern void images_toolbar_clean(void);
 
-extern wxBitmap *_img_toolbar_attribute;
 extern wxBitmap *_img_toolbar_attribute_extend;
-extern wxBitmap *_img_toolbar_edit;
-extern wxBitmap *_img_toolbar_info;
-extern wxBitmap *_img_toolbar_modify;
-extern wxBitmap *_img_toolbar_pan;
-extern wxBitmap *_img_toolbar_previous;
 extern wxBitmap *_img_toolbar_vertex_move;
-extern wxBitmap *_img_toolbar_zoom;
-extern wxBitmap *_img_toolbar_zoom_fit;
 
-extern wxBitmap *_img_w_toolbar_attribute;
-extern wxBitmap *_img_w_toolbar_attribute_extend;
-extern wxBitmap *_img_w_toolbar_edit;
-extern wxBitmap *_img_w_toolbar_info;
-extern wxBitmap *_img_w_toolbar_modify;
-extern wxBitmap *_img_w_toolbar_pan;
-extern wxBitmap *_img_w_toolbar_previous;
-extern wxBitmap *_img_w_toolbar_select;
-extern wxBitmap *_img_w_toolbar_vertex_move;
-extern wxBitmap *_img_w_toolbar_zoom;
-extern wxBitmap *_img_w_toolbar_zoom_fit;
 
 #endif /* _TOOLBAR_BMP_H_ */

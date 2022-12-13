@@ -747,32 +747,32 @@ void ToolMapFrame::_CreateToolBar() {
   itemToolBar3->SetToolBitmapSize(wxSize(32, 32));
   itemToolBar3->AddTool(ID_MENU_SELECT, _("Select"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::SELECT), wxNullBitmap, wxITEM_NORMAL, _("Select"),
                         wxEmptyString);
-  itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _("Fit"), *_img_toolbar_zoom_fit, wxNullBitmap, wxITEM_NORMAL,
+  itemToolBar3->AddTool(ID_MENU_ZOOM_FIT, _("Fit"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::ZOOM_FIT), wxNullBitmap, wxITEM_NORMAL,
                         _("Zoom to full extent"), wxEmptyString);
-  itemToolBar3->AddTool(ID_MENU_ZOOM, _("Zoom"), *_img_toolbar_zoom, wxNullBitmap, wxITEM_NORMAL,
+  itemToolBar3->AddTool(ID_MENU_ZOOM, _("Zoom"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::ZOOM), wxNullBitmap, wxITEM_NORMAL,
                         _("Zoom by rectangle"), wxEmptyString);
-  itemToolBar3->AddTool(ID_MENU_PAN, _("Pan"), *_img_toolbar_pan, wxNullBitmap, wxITEM_NORMAL, _("Pan"), wxEmptyString);
-  itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), *_img_toolbar_previous, wxNullBitmap, wxITEM_NORMAL,
+  itemToolBar3->AddTool(ID_MENU_PAN, _("Pan"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::PAN), wxNullBitmap, wxITEM_NORMAL, _("Pan"), wxEmptyString);
+  itemToolBar3->AddTool(wxID_BACKWARD, _("Previous Zoom"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::PREVIOUS), wxNullBitmap, wxITEM_NORMAL,
                         _("Previous Zoom"), wxEmptyString);
 
   wxArrayString itemComboBox8Strings;
   m_ScaleCombo =
       new tmScaleCtrlCombo(itemToolBar3, ID_TOOLBAR_ZOOM, wxDefaultPosition, wxDefaultSize, itemComboBox8Strings);
   itemToolBar3->AddControl(m_ScaleCombo);
-  itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), *_img_toolbar_edit, wxNullBitmap, wxITEM_NORMAL, _("Draw"),
+  itemToolBar3->AddTool(ID_MENU_DRAW, _("Draw"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::EDIT), wxNullBitmap, wxITEM_NORMAL, _("Draw"),
                         wxEmptyString);
-  itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), *_img_toolbar_modify, wxNullBitmap, wxITEM_NORMAL, _("Modify"),
+  itemToolBar3->AddTool(ID_MENU_MODIFY, _("Modify"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::MODIFY), wxNullBitmap, wxITEM_NORMAL, _("Modify"),
                         wxEmptyString);
   itemToolBar3->AddTool(ID_MENU_MODIFY_SHARED, _("Move shared Node"), *_img_toolbar_vertex_move, wxNullBitmap,
                         wxITEM_NORMAL, _("Move shared Node"));
 
   itemToolBar3->AddSeparator();
-  itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _("Object Kind"), *_img_toolbar_attribute, wxNullBitmap, wxITEM_NORMAL,
+  itemToolBar3->AddTool(ID_MENU_ATTRIB_TYPES, _("Object Kind"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::ATTRIBUTE), wxNullBitmap, wxITEM_NORMAL,
                         _("Object Kind"), wxEmptyString);
   itemToolBar3->AddTool(ID_MENU_ATTRIB_ATTRIBUTES, _("Object Attribute"), *_img_toolbar_attribute_extend, wxNullBitmap,
                         wxITEM_NORMAL, _("Object Attribute"), wxEmptyString);
   itemToolBar3->AddSeparator();
-  itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), *_img_toolbar_info, wxNullBitmap, wxITEM_NORMAL,
+  itemToolBar3->AddTool(ID_MENU_INFO_WINDOW, _("Information"), Bitmaps::GetToolbarBitmap(Bitmaps::ID_TOOLBAR::INFO), wxNullBitmap, wxITEM_NORMAL,
                         _("Information"), wxEmptyString);
 
   itemToolBar3->Realize();
