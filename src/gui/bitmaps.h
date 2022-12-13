@@ -18,7 +18,7 @@ class Bitmaps {
     SELECT = 0, ZOOM_FIT, ZOOM, PREVIOUS, PAN, EDIT, KIND, ATTRIBUTE, INFO, MODIFY, VERTEX_MOVE
   };
   enum ID_MISC {
-    BUG = 0, ZIP
+    BUG = 0, ZIP, SORT_DOWN, SORT_UP
   };
 
   static wxString GetColor();

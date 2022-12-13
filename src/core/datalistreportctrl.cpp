@@ -5,6 +5,7 @@
  ***************************************************************************/
 
 #include "datalistreportctrl.h"
+#include "../gui/bitmaps.h"
 
 int DataListReportCtrl::_Compare(DATALIST_COLTYPE coltype, const wxString &text1, const wxString &text2,
                                  bool ascending) {
@@ -342,47 +343,9 @@ void DataListReportCtrl::SwapRow(int row1, int row2) {
 }
 
 wxBitmap DataListReportCtrl::CreateArrowDown(const wxSize &size) {
-  wxPointList myPoints;
-  int myVSize = size.GetHeight() / 2.0;
-  int myHSize = size.GetWidth() / 2.0;
-  wxPoint myPt1(0, 0);
-  wxPoint myPt2(myHSize, 0);
-  wxPoint myPt3(myHSize / 2.0, myVSize);
-
-  myPoints.Append(&myPt1);
-  myPoints.Append(&myPt2);
-  myPoints.Append(&myPt3);
-
-  wxBitmap myBmp(size);
-  {
-    wxMemoryDC memdc(myBmp);
-    wxGCDC dc(memdc);
-    dc.SetBackground(*wxTRANSPARENT_BRUSH);
-    dc.Clear();
-    wxRendererNative::Get().DrawHeaderButtonContents(this, dc, wxRect(0, 0, 16, 16), 0, wxHDR_SORT_ICON_DOWN);
-  }
-  return myBmp;
+  return Bitmaps::GetMiscBitmap(Bitmaps::ID_MISC::SORT_DOWN, size);
 }
 
 wxBitmap DataListReportCtrl::CreateArrowUp(const wxSize &size) {
-  wxPointList myPoints;
-  int myVSize = size.GetHeight() / 2.0;
-  int myHSize = size.GetWidth() / 2.0;
-  wxPoint myPt1(0, myVSize);
-  wxPoint myPt2(myHSize, myVSize);
-  wxPoint myPt3(myHSize / 2.0, 0);
-
-  myPoints.Append(&myPt1);
-  myPoints.Append(&myPt2);
-  myPoints.Append(&myPt3);
-
-  wxBitmap myBmp(size);
-  {
-    wxMemoryDC memdc(myBmp);
-    wxGCDC dc(memdc);
-    dc.SetBackground(*wxTRANSPARENT_BRUSH);
-    dc.Clear();
-    wxRendererNative::Get().DrawHeaderButtonContents(this, dc, wxRect(0, 0, 16, 16), 0, wxHDR_SORT_ICON_UP);
-  }
-  return myBmp;
+  return Bitmaps::GetMiscBitmap(Bitmaps::ID_MISC::SORT_UP, size);
 }

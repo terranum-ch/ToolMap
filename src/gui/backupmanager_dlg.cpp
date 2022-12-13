@@ -17,7 +17,7 @@
 
 #include "../core/backupmanager.h"
 #include "../core/projectmanager.h"
-#include "../img/backup_bmp.h"
+#include "../gui/bitmaps.h"
 
 BEGIN_EVENT_TABLE(BackupManagerDLG, wxDialog)
 EVT_LIST_COL_CLICK(ID_LIST_BACKUPS, BackupManagerDLG::OnListColumnClick)
@@ -56,8 +56,7 @@ void BackupManagerDLG::_CreateControls() {
   m_ListBackup->SetImageList(m_ImgList, wxIMAGE_LIST_SMALL);
   m_ImgList->Add(m_ListBackup->CreateArrowDown(wxSize(16, 16)));
   m_ImgList->Add(m_ListBackup->CreateArrowUp(wxSize(16, 16)));
-  m_ImgList->Add(*_img_backup_tm);
-  m_ImgList->Add(*_img_backup_zip);
+  m_ImgList->Add(Bitmaps::GetMiscBitmap(Bitmaps::ID_MISC::ZIP, wxSize(16, 16)));
 
   wxBoxSizer *bSizer4;
   bSizer4 = new wxBoxSizer(wxHORIZONTAL);
@@ -121,12 +120,7 @@ bool BackupManagerDLG::_LoadData() {
     m_BackupManager->GetFileInfo(wxFileName(m_BackupPath, mySupportedFiles.Item(i)), myFile);
 
     long myIndex = m_ListBackup->InsertItem(m_ListBackup->GetItemCount(), wxEmptyString);
-    m_ListBackup->SetItemImage(myIndex, 3);
-    wxFileName mySupportedFileFile(mySupportedFiles.Item(i));
-    if (mySupportedFileFile.GetExt() == _T("tmbk")) {
-      m_ListBackup->SetItemImage(myIndex, 2);
-    }
-
+    m_ListBackup->SetItemImage(myIndex, 2);
     m_ListBackup->SetText(myIndex, mySupportedFiles.Item(i), 1);
     if (myFile.GetDate().IsValid()) {
       m_ListBackup->SetText(myIndex, myFile.GetDate().Format(_T("%d %b %Y")), 2);
@@ -261,7 +255,6 @@ BackupManagerDLG::BackupManagerDLG(wxWindow *parent, wxWindowID id, const wxStri
     : wxDialog(parent, id, title, wxDefaultPosition, wxDefaultSize,
                wxDEFAULT_DIALOG_STYLE | wxMAXIMIZE_BOX | wxRESIZE_BORDER) {
   wxASSERT(bckmanager);
-  images_backup_init();
   m_BackupManager = bckmanager;
   m_ClassedCol = wxNOT_FOUND;
   m_AscendingOrder = true;
@@ -275,7 +268,6 @@ BackupManagerDLG::BackupManagerDLG(wxWindow *parent, wxWindowID id, const wxStri
 
 BackupManagerDLG::~BackupManagerDLG() {
   wxDELETE(m_ImgList);
-  images_backup_clean();
 }
 
 wxString BackupManagerDLG::GetRestoreFileName() {
