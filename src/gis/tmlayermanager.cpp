@@ -937,10 +937,12 @@ void tmLayerManager::OnDisplayProperties(wxCommandEvent &event) {
 }
 
 void tmLayerManager::OnDisplayLabels(wxCommandEvent &event) {
-  tmLayerProperties *itemProp = (tmLayerProperties *)event.GetClientData();
-  if (itemProp == nullptr) {
+  wxDataViewItem item = (wxDataViewItem) event.GetClientData();
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node == nullptr) {
     return;
   }
+  auto itemProp = node->m_LayerProp;
   wxASSERT(m_DB);
   itemProp->GetSymbolRef()->SetDatabase(m_DB);
   itemProp->GetSymbolRef()->SetTocName(itemProp->GetType());

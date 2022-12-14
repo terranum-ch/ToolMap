@@ -487,7 +487,20 @@ void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
   // GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
-void TocCtrl::OnMenuShowLabels(wxCommandEvent &event) {}
+void TocCtrl::OnMenuShowLabels(wxCommandEvent &event) {
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()) {
+    return;
+  }
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node == nullptr){
+    return;
+  }
+  wxASSERT(node->m_LayerProp->GetSymbolRef());
+  wxCommandEvent Evt(tmEVT_LM_SHOW_LABELS, wxID_ANY);
+  Evt.SetClientData(item);
+  GetEventHandler()->QueueEvent(Evt.Clone());
+}
 
 void TocCtrl::OnMenuEditing(wxCommandEvent &event) {
   wxDataViewItem item = GetSelection();
