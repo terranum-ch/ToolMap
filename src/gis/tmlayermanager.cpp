@@ -630,7 +630,7 @@ void tmLayerManager::_BuildOverviewsIfNeeded(tmGISData *layer, const wxString &d
         layer->CreateSpatialIndex(GDALUpdateSimple, &myProgressData);
       }
     } else {
-      layer->CreateSpatialIndex(NULL, NULL);
+      layer->CreateSpatialIndex(nullptr, nullptr);
     }
   }
 }
@@ -1170,7 +1170,7 @@ void tmLayerManager::CheckGeometryValidity() {
   m_SelectedData.Clear();
   wxArrayLong myOids;
 
-  while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != NULL) {
+  while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != nullptr) {
     bRestart = false;
 
     bool bError = false;
@@ -1230,7 +1230,7 @@ void tmLayerManager::ExportSelectedGeometries(const wxFileName &file) {
   long myOid = wxNOT_FOUND;
   long iCount = 0;
 
-  while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != NULL) {
+  while ((myGeom = myLayerDataVector->GetNextGeometry(bRestart, myOid)) != nullptr) {
     bRestart = false;
 
     if (m_SelectedData.IsSelected(myOid)) {
@@ -1681,24 +1681,17 @@ int tmLayerManager::ReadLayerDraw() {
 void tmLayerManager::InitScaleCtrlList() {
   wxASSERT(m_DB);
   wxArrayLong myValues;
-
-  long myScale = 0;
-  long myCount = 0;
   long myDBIndex = -1;
-
-  myScale = m_DB->GetNextScaleValue(myDBIndex, TRUE);
-
-  while (1) {
-    if (myScale != -1) {
-      // adding scale in the list
-      myValues.Add(myScale);
-      myCount++;
-    } else {
+  bool first = true;
+  while (true) {
+    long myScale = m_DB->GetNextScaleValue(myDBIndex, first);
+    first = false;
+    if (myScale == wxNOT_FOUND){
       break;
     }
-    myScale = m_DB->GetNextScaleValue(myDBIndex, FALSE);
+      // adding scale in the list
+      myValues.Add(myScale);
   }
-
   // send message
   m_ScaleCtrl->InitScaleFromDatabase(myValues);
 }
