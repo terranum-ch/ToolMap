@@ -715,7 +715,12 @@ bool tmDrawer::DrawPoints(tmLayerProperties *itemProp, tmGISData *pdata) {
   wxPoint Intpts(0, 0);
   bool bAsSelection = false;
 
-  while (1) {
+  // avoid dividing by 0 when converting coordinates
+  if (m_scale->GetPixelSize() == 0){
+    return false;
+  }
+
+  while (true) {
     bool isOver = false;
     wxRealPoint *pptsReal = pVectPoint->GetNextDataPoint(myOid, isOver);
     if (isOver) {
@@ -992,6 +997,10 @@ void tmDrawer::_LabelPoint(tmLayerProperties *itemprop, tmGISData *pdata) {
 
   tmSymbolVectorPoint *pSymbol = (tmSymbolVectorPoint *)itemprop->GetSymbolRef();
   OGRFeature *pFeat = nullptr;
+  // ensure we didn't divide by 0 if the display isn't inited
+  if (m_scale->GetPixelSize() == 0){
+    return;
+  }
   while ((pFeat = pVect->GetNextFeature()) != nullptr) {
     OGRPoint *myPoint = static_cast<OGRPoint *>(pFeat->GetGeometryRef());
     if (myPoint == nullptr) {
