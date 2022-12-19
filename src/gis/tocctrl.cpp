@@ -486,7 +486,77 @@ void TocCtrl::OnMenuPropertiesSave(wxCommandEvent &event) {
 }
 
 void TocCtrl::OnMenuPropertiesLoad(wxCommandEvent &event) {
-  wxFAIL_MSG("Not implemented Yet!");
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    return;
+  }
+
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node->IsContainer()){
+    wxLogError("Unable to display symbology for container");
+    return ;
+  }
+
+  wxString myLoadFilePathTxt = wxLoadFileSelector(_("Load symbology"), _T("tly"), wxEmptyString, this);
+  if (myLoadFilePathTxt == wxEmptyString) {
+    return;
+  }
+  // try to load the symbology file
+  wxTextFile myFile;
+  if (!myFile.Open(myLoadFilePathTxt)) {
+    wxLogError(_("Unable to open symbology file: %s"), myLoadFilePathTxt);
+    return;
+  }
+
+  // load selected layer information
+  auto *layer_prop = node->m_LayerProp;
+  wxASSERT(layer_prop);
+  wxFileName myLayerName = layer_prop->GetName();
+  wxString mySpatialType;
+  mySpatialType << layer_prop->GetSpatialType();
+
+  // check layer name stored
+  wxString myLayerNameInTxtFile = myFile.GetFirstLine();
+  if (myLayerNameInTxtFile != myLayerName.GetName()) {
+    wxMessageDialog myDlg(
+        this,
+        wxString::Format(_T("This symbology was saved for layer: %s. Apply for selected layer?"), myLayerNameInTxtFile),
+        _T("Different layer names"), wxYES_NO | wxCANCEL);
+    if (myDlg.ShowModal() != wxID_YES) {
+      return;
+    }
+  }
+  // check geometry stored
+  wxString myFileSpatialType = myFile.GetNextLine();
+  if (myFileSpatialType != mySpatialType) {
+    wxMessageDialog myDlg(this,
+                          wxString::Format(_T("This symbology was saved for '%s'. Apply for '%s'?"),
+                                           TM_GIS_SPATIAL_TYPES_STRING[wxAtoi(myFileSpatialType)],
+                                           TM_GIS_SPATIAL_TYPES_STRING[wxAtoi(mySpatialType)]),
+                          _T("Different spatial types"), wxYES_NO | wxCANCEL);
+    if (myDlg.ShowModal() != wxID_YES) {
+      return;
+    }
+  }
+  // load serialisation
+  wxString mySymbologyTxt = myFile.GetNextLine();
+  if (mySymbologyTxt.IsEmpty()) {
+    wxLogError(_("No symbology of empty symbology found in: %s"), myLoadFilePathTxt);
+    return;
+  }
+
+  // escaping character are only needed for storing in the database.
+  mySymbologyTxt.Replace(_T("\\\""), _T("\""));
+  tmSerialize in(mySymbologyTxt);
+  layer_prop->GetSymbolRuleManagerRef()->Serialize(in);
+
+  // update display
+  wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+  GetEventHandler()->QueueEvent(evt.Clone());
+
+  // save new status
+  wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+  GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 void TocCtrl::OnMenuVertex(wxCommandEvent &event) {

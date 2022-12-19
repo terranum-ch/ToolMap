@@ -10,6 +10,8 @@
 #endif
 
 #include <wx/dataview.h>
+#include <wx/textfile.h>
+
 
 #include "tocctrlmodel.h"
 #include "tmlayerproperties.h"
