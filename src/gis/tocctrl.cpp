@@ -1,6 +1,8 @@
 #include "tocctrl.h"
-#include "tmtocctrlmenu.h"
 
+#include "../components/wxserialize/tmserialize.h"  // for object serialization
+#include "tmsymbolrule.h"
+#include "tmtocctrlmenu.h"
 #include "tocrenderer.h"
 
 DEFINE_EVENT_TYPE(tmEVT_LM_REMOVE)
@@ -445,8 +447,47 @@ void TocCtrl::OnMenuShowProperties(wxCommandEvent &event) {
   ProcessEvent(Evt);
 }
 
-void TocCtrl::OnMenuPropertiesSave(wxCommandEvent &event) {}
-void TocCtrl::OnMenuPropertiesLoad(wxCommandEvent &event) {}
+void TocCtrl::OnMenuPropertiesSave(wxCommandEvent &event) {
+  wxDataViewItem item = GetSelection();
+  if (!item.IsOk()){
+    return;
+  }
+
+  auto node = TocCtrlModel::ConvertFromDataViewItem(item);
+  if (node->IsContainer()){
+    wxLogError("Unable to display symbology for container");
+    return ;
+  }
+  tmLayerProperties * layer_prop = node->m_LayerProp;
+  wxASSERT(layer_prop);
+  wxFileName layer_filename = layer_prop->GetName();
+  layer_filename.SetExt("tly");
+  wxString save_filepath =
+      wxSaveFileSelector(_("Save symbology"), layer_filename.GetExt(), layer_filename.GetFullName(), this);
+  if (save_filepath == wxEmptyString) {
+    return;
+  }
+
+  // prepare serialization object and write to file
+  tmSerialize out;
+  layer_prop->GetSymbolRuleManagerRef()->Serialize(out);
+
+  wxFile myFile(save_filepath, wxFile::write);
+  if (!myFile.IsOpened()) {
+    wxLogError(_("Error creating file: '%s'"), save_filepath);
+    return;
+  }
+  wxString spatial_type_string;
+  spatial_type_string << layer_prop->GetSpatialType();
+  myFile.Write(layer_filename.GetName() << _T("\n"));
+  myFile.Write(spatial_type_string << _T("\n"));
+  myFile.Write(out.GetString());
+  myFile.Close();
+}
+
+void TocCtrl::OnMenuPropertiesLoad(wxCommandEvent &event) {
+  wxFAIL_MSG("Not implemented Yet!");
+}
 
 void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
   wxDataViewItem item = GetSelection();
