@@ -378,7 +378,9 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
   long myTotalVertex = 0;
   long mySkippedVertex = 0;
 
-  while (1) {
+  std::vector<wxPoint> points(256);
+
+  while (true) {
     int iNbVertex = wxNOT_FOUND;
     long myOid = wxNOT_FOUND;
     bool isOver = false;
@@ -388,17 +390,20 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
       break;
     }
 
+    if (iNbVertex > points.size()) {
+      points.resize(iNbVertex);
+    }
+
     myTotalVertex += iNbVertex;
     // convert realpts to pxpts
-    wxPoint *pptspx = new wxPoint[iNbVertex];
     m_PreviousPoint = wxDefaultPosition;
     for (int i = 0; i < iNbVertex; i++) {
       wxPoint myPt = m_scale->RealToPixel(pptsReal[i]);
       if (myPt == m_PreviousPoint) {
-        pptspx[i] = wxDefaultPosition;
+        points[i] = wxDefaultPosition;
         ++mySkippedVertex;
       } else {
-        pptspx[i] = myPt;
+        points[i] = myPt;
       }
       m_PreviousPoint = myPt;
     }
@@ -425,10 +430,10 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
         pgdc->SetPen(mySelectionUnValidHaloPen);
       }
       wxGraphicsPath myPath = pgdc->CreatePath();
-      myPath.MoveToPoint(pptspx[0]);
+      myPath.MoveToPoint(points[0]);
       for (int i = 1; i < iNbVertex; i++) {
-        if (pptspx[i] != wxDefaultPosition) {
-          myPath.AddLineToPoint(pptspx[i]);
+        if (points[i] != wxDefaultPosition) {
+          myPath.AddLineToPoint(points[i]);
         }
       }
       pgdc->StrokePath(myPath);
@@ -456,20 +461,20 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
 
     // creating path
     wxGraphicsPath myPath = pgdc->CreatePath();
-    myPath.MoveToPoint(pptspx[0]);
+    myPath.MoveToPoint(points[0]);
     for (int i = 1; i < iNbVertex; i++) {
-      if (pptspx[i] != wxDefaultPosition) {
-        myPath.AddLineToPoint(pptspx[i]);
+      if (points[i] != wxDefaultPosition) {
+        myPath.AddLineToPoint(points[i]);
       }
     }
     pgdc->StrokePath(myPath);
 
     // oriented lines
     if (bUseValidOriented && IsValid) {
-      _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+      _DrawOrientedLine(pgdc, &points[0], iNbVertex, myActualPen);
     }
     if (bUseUnValidOriented && !IsValid) {
-      _DrawOrientedLine(pgdc, pptspx, iNbVertex, myActualPen);
+      _DrawOrientedLine(pgdc, &points[0], iNbVertex, myActualPen);
     }
 
     tmLayerProperties myProperty(*itemProp);
@@ -480,8 +485,7 @@ bool tmDrawer::DrawLinesEnhanced(tmLayerProperties *itemProp, tmGISData *pdata) 
     }
 
     // drawing vertex
-    DrawVertexLine(pgdc, pptspx, iNbVertex, &myProperty, &myVertexPen);
-    wxDELETEA(pptspx);
+    DrawVertexLine(pgdc, &points[0], iNbVertex, &myProperty, &myVertexPen);
   }
   temp_dc.SelectObject(wxNullBitmap);
   wxDELETE(pgdc);
