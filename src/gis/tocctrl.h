@@ -78,8 +78,6 @@ class TocCtrl : public wxDataViewCtrl {
   void OnMenuShowLabels(wxCommandEvent &event);
   void OnMenuEditing(wxCommandEvent &event);
 
-  TocCtrlModelNode *m_DragNodeStart;
-  TocCtrlModelNode *m_DragNodeEnd;
   int m_IterateNodeIndex = wxNOT_FOUND;
   TocCtrlModelNodePtrArray m_IterateNodeArray;
   tmLayerProperties *m_EditingLayer;

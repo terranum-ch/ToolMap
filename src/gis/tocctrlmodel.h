@@ -66,7 +66,7 @@ class TocCtrlModel : public wxDataViewModel {
 
   TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, tmLayerProperties *layerprop);
   TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, tmLayerProperties *layerprop, int index = 0);
-  bool NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index = wxNOT_FOUND);
+  bool NodeMove(wxDataViewItemArray &selectedItems, TocCtrlModelNode *destination, int proposedIndex = wxNOT_FOUND);
   void NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *start);
   void NodeRecursiveRemove(TocCtrlModelNode *start);
 

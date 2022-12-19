@@ -316,52 +316,59 @@ bool TocCtrlModel::NodeSetTitle(TocCtrlModelNode *node, const wxString &title) {
   return true;
 }
 
-/// Move a node or a container from source to destination.
-/// \param source
+/// Move nodes to destination.
+/// \param selectedItems
 /// \param destination
-/// \param proposed_index wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the
+/// \param proposedIndex wxNOT_FOUND means move to the end, otherwise try to move to the specified index of the
 /// destination container
 /// \return allways true
-bool TocCtrlModel::NodeMove(TocCtrlModelNode *source, TocCtrlModelNode *destination, int proposed_index) {
-  wxASSERT(source);
+bool TocCtrlModel::NodeMove(wxDataViewItemArray &selectedItems, TocCtrlModelNode *destination,
+                            int proposedIndex) {
   wxASSERT(destination);
+  wxASSERT(!selectedItems.IsEmpty());
 
   // ensure that destination is a container
-  TocCtrlModelNode *real_destination = destination;
+  TocCtrlModelNode *realDestination = destination;
   if (!destination->IsContainer()) {
-    real_destination = destination->GetParent();
+    realDestination = destination->GetParent();
   }
 
   // ensure index isn't out of bounds
-  int move_index = proposed_index;
-  if (move_index != wxNOT_FOUND) {
-    if (real_destination->GetChildCount() < move_index) {
-      wxLogMessage("Changing index, child count = %d", real_destination->GetChildCount());
-      move_index = wxNOT_FOUND;
+  int moveIndex = proposedIndex;
+  if (moveIndex != wxNOT_FOUND) {
+    if (realDestination->GetChildCount() < moveIndex) {
+      wxLogMessage("Changing index, child count = %d", realDestination->GetChildCount());
+      moveIndex = wxNOT_FOUND;
     }
   }
 
-  // moving container
-  if (source->IsContainer()) {
-    TocCtrlModelNode *new_container = nullptr;
-    if (move_index == wxNOT_FOUND) {  // add to the end
-      new_container = NodeAdd(real_destination, source->m_LayerProp);
-    } else {  // insert
-      new_container = NodeInsert(real_destination, source->m_LayerProp, move_index);
+  for (auto item : selectedItems) {
+    TocCtrlModelNode *source = ConvertFromDataViewItem(item);
+    // moving container
+    if (source->IsContainer()) {
+      TocCtrlModelNode *newContainer = nullptr;
+      if (moveIndex == wxNOT_FOUND) {  // add to the end
+        newContainer = NodeAdd(realDestination, source->m_LayerProp);
+      } else {  // insert
+        newContainer = NodeInsert(realDestination, source->m_LayerProp, moveIndex);
+      }
+      NodeRecursiveAdd(newContainer, source);
+      NodeRecursiveRemove(source);
+    } else {
+      // moving node
+      if (moveIndex == wxNOT_FOUND) {
+        NodeAdd(realDestination, source->m_LayerProp);
+      } else {
+        NodeInsert(realDestination, source->m_LayerProp, moveIndex);
+      }
     }
-    NodeRecursiveAdd(new_container, source);
-    NodeRecursiveRemove(source);
-    Delete(TocCtrlModel::ConvertFromNode(source));
-    return true;
+    moveIndex++;
   }
 
-  // moving node
-  if (move_index == wxNOT_FOUND) {
-    NodeAdd(real_destination, source->m_LayerProp);
-  } else {
-    NodeInsert(real_destination, source->m_LayerProp, move_index);
+  for (auto item : selectedItems) {
+    Delete(item);
   }
-  Delete(ConvertFromNode(source));
+
   return true;
 }
 
