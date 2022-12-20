@@ -179,13 +179,8 @@ GEOSGeom tmGISDataVector::CreateGEOSGeometry(const tmRealRect &rect) {
 OGRGeometry *tmGISDataVector::CreateOGRGeometry(const tmRealRect &rect) {
   wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), rect.x_min, rect.y_min, rect.x_max,
                                     rect.y_min, rect.x_max, rect.y_max, rect.x_min, rect.y_max, rect.x_min, rect.y_min);
-  // conversion Unicode wxString -> const char *
-  char *buffer = new char[sRect.Length() * sizeof(wxString)];
-  strcpy(buffer, (const char *)sRect.mb_str(wxConvUTF8));
-
   OGRGeometry *geom = nullptr;
-  OGRGeometryFactory::createFromWkt(&buffer, nullptr, &geom);
-  // dont delete buffer, used by OGR
+  OGRGeometryFactory::createFromWkt((const char*)sRect.ToUTF8(), nullptr, &geom);
   return geom;
 }
 
