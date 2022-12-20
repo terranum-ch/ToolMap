@@ -89,7 +89,7 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 SET(ADDED_LIBS "")
 if (UNIX AND NOT APPLE)
     SET(ADDED_LIBS "fontconfig")
-endif()
+endif ()
 
 # osx icon
 set(MACOSX_BUNDLE_ICON_FILE art/toolmap.icns)

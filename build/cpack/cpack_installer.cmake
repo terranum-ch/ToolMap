@@ -23,7 +23,7 @@ if (WIN32)
             FILES_MATCHING
             PATTERN "*.dll"
     )
-endif()
+endif ()
 
 
 if (WIN32)
