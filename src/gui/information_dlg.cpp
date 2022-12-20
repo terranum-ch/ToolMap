@@ -132,12 +132,18 @@ void tmLayerInfoCtrl::UpdateLayer(TocCtrl *toc) {
     return;
   }
 
+  wxString myMetaData;
   tmGISData *myData = tmGISData::LoadLayer(itemProp);
-  if (!myData) {
-    wxLogError(_("Error loading GIS data for metadata"));
-    return;
+  if (myData) {
+    myMetaData = myData->GetMetaDataAsHtml();
+  } else {
+    if (itemProp->GetType() == TOC_NAME_GROUP) {
+      myMetaData = "<B><U>Group Name</B></U><BR>";
+    } else {
+      myMetaData = "<B><U>Layer Name</B></U><BR>";
+    }
+    myMetaData.Append(itemProp->GetNameDisplay());
   }
-  wxString myMetaData = myData->GetMetaDataAsHtml();
   SetPage(myMetaData);
 }
 
