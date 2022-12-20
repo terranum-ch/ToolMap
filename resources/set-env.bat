@@ -1,1 +1,1 @@
-setx PROJ_LIB "%CD%\share\proj"
+setx PROJ_DATA "%CD%\share\proj"
