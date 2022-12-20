@@ -1,0 +1,79 @@
+name: OSX build (Intel)
+
+on:
+  push:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: macos-10.15
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install conan
+        run: |
+          python -m pip install --upgrade pip
+          pip install conan
+
+          # gitlab support
+          conan config set general.revisions_enabled=1
+          conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+          conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
+
+      - name: Install libraries
+        run: |
+          mkdir ${{github.workspace}}/bin
+          cd ${{github.workspace}}/bin
+          conan install .. -o unit_test=True
+
+#      - name: Install OpenMP
+#        run: |
+#          brew install libomp
+
+      - name: Build
+        run: |
+          cd ${{github.workspace}}/bin
+          conan build ..
+
+      - name: Installer DND
+        run: |
+          cd ${{github.workspace}}/bin
+          cpack -G DragNDrop
+
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            ${{github.workspace}}/bin/*.dmg
+
+  upload_all:
+    name: Upload if release
+    needs: [build]
+    runs-on: ubuntu-22.04
+    if: github.event_name == 'release' && github.event.action == 'created'
+
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+          path: dist
+
+      - name: Upload to releases
+        uses: xresloader/upload-to-github-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "dist/*.dmg"
+          tags: true
+          draft: true
+          verbose: true
