@@ -182,9 +182,9 @@ bool tocRenderer::GetValue(wxVariant &value) const {
 }
 
 #if wxUSE_ACCESSIBILITY
-//virtual wxString tocRenderer::GetAccessibleDescription() const wxOVERRIDE {
-//  return m_layer_name;
-//}
+// virtual wxString tocRenderer::GetAccessibleDescription() const wxOVERRIDE {
+//   return m_layer_name;
+// }
 #endif  // wxUSE_ACCESSIBILITY
 
 bool tocRenderer::HasEditorCtrl() const {

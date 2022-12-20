@@ -28,40 +28,40 @@
 class siAttribut;
 
 enum SIATTRIBUT_OPERATION {
-  SIATTRIBUT_OPERATION_VALUE = 0,
-  SIATTRIBUT_OPERATION_REPLACE,
-  SIATTRIBUT_OPERATION_COPY,
-  SIATTRIBUT_OPERATION_FIELD,
-  SIATTRIBUT_OPERATION_UNKNOWN = -1
+    SIATTRIBUT_OPERATION_VALUE = 0,
+    SIATTRIBUT_OPERATION_REPLACE,
+    SIATTRIBUT_OPERATION_COPY,
+    SIATTRIBUT_OPERATION_FIELD,
+    SIATTRIBUT_OPERATION_UNKNOWN = -1
 };
 
 class siAttributValue {
- private:
-  siAttribut* m_ParentAttribut;
-  wxString m_ValueIn;
-  wxString m_ValueOut;
-  long m_ValueOutCode;
+  private:
+    siAttribut* m_ParentAttribut;
+    wxString m_ValueIn;
+    wxString m_ValueOut;
+    long m_ValueOutCode;
 
-  bool _LoadOperationValue(const wxString& text, DataBase* database, long layerindex);
-  bool _LoadOperationReplace(const wxString& text, DataBase* database, long layerindex);
-  bool _GetCatalogDatabaseID(DataBase* database);
+    bool _LoadOperationValue(const wxString& text, DataBase* database, long layerindex);
+    bool _LoadOperationReplace(const wxString& text, DataBase* database, long layerindex);
+    bool _GetCatalogDatabaseID(DataBase* database);
 
- public:
-  siAttributValue(siAttribut* parent);
-  virtual ~siAttributValue();
-  void Reset();
+  public:
+    siAttributValue(siAttribut* parent);
+    virtual ~siAttributValue();
+    void Reset();
 
-  bool LoadFromText(const wxString& text, DataBase* database, long layerindex);
-  inline const long GetValueOutCode() const;
-  inline const wxString GetValueIn() const;
+    bool LoadFromText(const wxString& text, DataBase* database, long layerindex);
+    inline const long GetValueOutCode() const;
+    inline const wxString GetValueIn() const;
 };
 
 inline const long siAttributValue::GetValueOutCode() const {
-  return m_ValueOutCode;
+    return m_ValueOutCode;
 }
 
 inline const wxString siAttributValue::GetValueIn() const {
-  return m_ValueIn;
+    return m_ValueIn;
 }
 
 WX_DECLARE_OBJARRAY(siAttributValue*, siAttributValueArray);
@@ -72,46 +72,46 @@ WX_DECLARE_OBJARRAY(siAttributValue*, siAttributValueArray);
  @date 04 janvier 2013
  *****************************************************************************************/
 class siAttribut {
- private:
-  wxString m_AttributNameIn;
-  wxString m_AttributNameOut;
-  wxArrayLong m_AttributFilterIDs;
-  SIATTRIBUT_OPERATION m_AttributOperation;
-  siAttributValueArray m_Values;
-  long m_AttributIDReal;
+  private:
+    wxString m_AttributNameIn;
+    wxString m_AttributNameOut;
+    wxArrayLong m_AttributFilterIDs;
+    SIATTRIBUT_OPERATION m_AttributOperation;
+    siAttributValueArray m_Values;
+    long m_AttributIDReal;
 
-  void _ClearAttributValueArray();
-  long _GetIDForValueIn(const wxString& valueintxt);
+    void _ClearAttributValueArray();
+    long _GetIDForValueIn(const wxString& valueintxt);
 
- public:
-  siAttribut();
-  virtual ~siAttribut();
+  public:
+    siAttribut();
+    virtual ~siAttribut();
 
-  bool LoadFromArray(const wxArrayString& attribtxt, DataBase* database, long layerindex);
-  bool Process(OGRFeature* feature, DataBase* database, long layerindex, long databaseid, long kind);
-  void Reset();
+    bool LoadFromArray(const wxArrayString& attribtxt, DataBase* database, long layerindex);
+    bool Process(OGRFeature* feature, DataBase* database, long layerindex, long databaseid, long kind);
+    void Reset();
 
-  inline const SIATTRIBUT_OPERATION GetAttributOperation() const;
-  inline const wxString GetAttributNameIn() const;
-  inline const wxString GetAttributNameOut() const;
-  wxArrayLong* GetAttributFilterIDsRef();
-  inline const long GetAttributIDReal() const;
+    inline const SIATTRIBUT_OPERATION GetAttributOperation() const;
+    inline const wxString GetAttributNameIn() const;
+    inline const wxString GetAttributNameOut() const;
+    wxArrayLong* GetAttributFilterIDsRef();
+    inline const long GetAttributIDReal() const;
 };
 
 inline const SIATTRIBUT_OPERATION siAttribut::GetAttributOperation() const {
-  return m_AttributOperation;
+    return m_AttributOperation;
 }
 
 inline const wxString siAttribut::GetAttributNameIn() const {
-  return m_AttributNameIn;
+    return m_AttributNameIn;
 }
 
 inline const wxString siAttribut::GetAttributNameOut() const {
-  return m_AttributNameOut;
+    return m_AttributNameOut;
 }
 
 inline const long siAttribut::GetAttributIDReal() const {
-  return m_AttributIDReal;
+    return m_AttributIDReal;
 }
 
 WX_DECLARE_OBJARRAY(siAttribut*, siAttributArray);

@@ -24,15 +24,15 @@
 #endif
 
 class siProgressIndicator {
- private:
-  long m_Total;
+  private:
+    long m_Total;
 
- public:
-  siProgressIndicator();
-  virtual ~siProgressIndicator();
+  public:
+    siProgressIndicator();
+    virtual ~siProgressIndicator();
 
-  virtual void UpdateProgress(int value, int step);
-  virtual void StartProgress();
-  virtual void StopProgress();
+    virtual void UpdateProgress(int value, int step);
+    virtual void StartProgress();
+    virtual void StopProgress();
 };
 #endif

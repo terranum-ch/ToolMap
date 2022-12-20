@@ -52,40 +52,46 @@ void FrameMain::_create_statusbar() {
 }
 
 void FrameMain::_create_menubar() {
-  wxMenuBar* m_menubar;
-  m_menubar = new wxMenuBar( 0 );
-  wxMenu* m_menu_Tools;
+  wxMenuBar *m_menubar;
+  m_menubar = new wxMenuBar(0);
+  wxMenu *m_menu_Tools;
   m_menu_Tools = new wxMenu();
-  m_menu_item_colour = new wxMenuItem( m_menu_Tools, wxID_ANY, wxString( wxT("Set toc color...") ) , wxEmptyString, wxITEM_NORMAL );
-  m_menu_Tools->Append( m_menu_item_colour );
+  m_menu_item_colour =
+      new wxMenuItem(m_menu_Tools, wxID_ANY, wxString(wxT("Set toc color...")), wxEmptyString, wxITEM_NORMAL);
+  m_menu_Tools->Append(m_menu_item_colour);
 
-  wxMenuItem* m_menu_item_about;
-  m_menu_item_about = new wxMenuItem( m_menu_Tools, wxID_ABOUT, wxString( wxT("About...") ) , wxEmptyString, wxITEM_NORMAL );
-  m_menu_Tools->Append( m_menu_item_about );
+  wxMenuItem *m_menu_item_about;
+  m_menu_item_about = new wxMenuItem(m_menu_Tools, wxID_ABOUT, wxString(wxT("About...")), wxEmptyString, wxITEM_NORMAL);
+  m_menu_Tools->Append(m_menu_item_about);
 
-  m_menubar->Append( m_menu_Tools, wxT("Tools") );
+  m_menubar->Append(m_menu_Tools, wxT("Tools"));
 
-  wxMenu* m_menu_data;
+  wxMenu *m_menu_data;
   m_menu_data = new wxMenu();
-  m_menu_item_add_item = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Add item...") ) + wxT('\t') + wxT("Ctrl+N"), wxEmptyString, wxITEM_NORMAL );
-  m_menu_data->Append( m_menu_item_add_item );
+  m_menu_item_add_item = new wxMenuItem(m_menu_data, wxID_ANY, wxString(wxT("Add item...")) + wxT('\t') + wxT("Ctrl+N"),
+                                        wxEmptyString, wxITEM_NORMAL);
+  m_menu_data->Append(m_menu_item_add_item);
 
-  m_menu_item_add_group = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Add group...") ) + wxT('\t') + wxT("Ctrl+G"), wxEmptyString, wxITEM_NORMAL );
-  m_menu_data->Append( m_menu_item_add_group );
-
-  m_menu_data->AppendSeparator();
-
-  m_menu_item_remove_selected = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Remove selected") ) , wxEmptyString, wxITEM_NORMAL );
-  m_menu_data->Append( m_menu_item_remove_selected );
+  m_menu_item_add_group = new wxMenuItem(
+      m_menu_data, wxID_ANY, wxString(wxT("Add group...")) + wxT('\t') + wxT("Ctrl+G"), wxEmptyString, wxITEM_NORMAL);
+  m_menu_data->Append(m_menu_item_add_group);
 
   m_menu_data->AppendSeparator();
 
-  m_menu_item_change_name = new wxMenuItem( m_menu_data, wxID_ANY, wxString( wxT("Change item text...") ) + wxT('\t') + wxT("Ctrl+M"), wxEmptyString, wxITEM_NORMAL );
-  m_menu_data->Append( m_menu_item_change_name );
+  m_menu_item_remove_selected =
+      new wxMenuItem(m_menu_data, wxID_ANY, wxString(wxT("Remove selected")), wxEmptyString, wxITEM_NORMAL);
+  m_menu_data->Append(m_menu_item_remove_selected);
 
-  m_menubar->Append( m_menu_data, wxT("Data") );
+  m_menu_data->AppendSeparator();
 
-  this->SetMenuBar( m_menubar );
+  m_menu_item_change_name =
+      new wxMenuItem(m_menu_data, wxID_ANY, wxString(wxT("Change item text...")) + wxT('\t') + wxT("Ctrl+M"),
+                     wxEmptyString, wxITEM_NORMAL);
+  m_menu_data->Append(m_menu_item_change_name);
+
+  m_menubar->Append(m_menu_data, wxT("Data"));
+
+  this->SetMenuBar(m_menubar);
 }
 
 void FrameMain::OnAbout(wxCommandEvent &event) {
@@ -145,8 +151,7 @@ void FrameMain::OnAddItem(wxCommandEvent &event) {
   auto *my_model = m_toc_ctrl->GetTocModel();
   if (!my_sel_item.IsOk()) {
     wxLogMessage("Nothing selected, adding item to the end of the TOC");
-    my_model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot()), new_node_name, true, my_index,
-                      false);
+    my_model->NodeAdd(TocCtrlModel::ConvertFromDataViewItem(my_model->GetRoot()), new_node_name, true, my_index, false);
   } else {
     auto *my_node = TocCtrlModel::ConvertFromDataViewItem(my_sel_item);
     if (!my_node->IsContainer()) {
@@ -217,13 +222,14 @@ void FrameMain::OnChangeName(wxCommandEvent &event) {
 
   auto *my_model = m_toc_ctrl->GetTocModel();
   auto *my_node = TocCtrlModel::ConvertFromDataViewItem(my_sel_item);
-  if (!my_node->IsContainer()){
+  if (!my_node->IsContainer()) {
     wxLogError("Changing name only works for container not for items!");
     return;
   }
 
-  wxString new_group_name = wxGetTextFromUser("Node name", wxASCII_STR(wxGetTextFromUserPromptStr), my_model->NodeGetTitle(my_node));
-  if (new_group_name.IsEmpty()){
+  wxString new_group_name =
+      wxGetTextFromUser("Node name", wxASCII_STR(wxGetTextFromUserPromptStr), my_model->NodeGetTitle(my_node));
+  if (new_group_name.IsEmpty()) {
     return;
   }
   my_model->NodeSetTitle(my_node, new_group_name);

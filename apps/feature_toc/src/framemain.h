@@ -36,20 +36,20 @@ class FrameMain : public wxFrame {
 
   void OnAbout(wxCommandEvent &event);
   void OnChangeColor(wxCommandEvent &event);
-  void OnAddItem(wxCommandEvent & event);
-  void OnAddGroup(wxCommandEvent & event);
-  void OnRemove(wxCommandEvent & event);
-  void OnChangeName(wxCommandEvent & event);
+  void OnAddItem(wxCommandEvent &event);
+  void OnAddGroup(wxCommandEvent &event);
+  void OnRemove(wxCommandEvent &event);
+  void OnChangeName(wxCommandEvent &event);
 
   TocCtrl *m_toc_ctrl;
   wxTextCtrl *m_text_ctrl;
   wxLog *m_log_old;
 
-  wxMenuItem* m_menu_item_colour;
-  wxMenuItem* m_menu_item_add_item;
-  wxMenuItem* m_menu_item_add_group;
-  wxMenuItem* m_menu_item_remove_selected;
-  wxMenuItem* m_menu_item_change_name;
+  wxMenuItem *m_menu_item_colour;
+  wxMenuItem *m_menu_item_add_item;
+  wxMenuItem *m_menu_item_add_group;
+  wxMenuItem *m_menu_item_remove_selected;
+  wxMenuItem *m_menu_item_change_name;
 };
 
 #endif

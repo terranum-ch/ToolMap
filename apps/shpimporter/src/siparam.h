@@ -25,17 +25,17 @@
 #include <wx/tokenzr.h>
 
 class siParam {
- private:
-  wxString m_Separator;
+  private:
+    wxString m_Separator;
 
- public:
-  siParam(const wxString& separator = _T("\t"));
-  virtual ~siParam();
+  public:
+    siParam(const wxString& separator = _T("\t"));
+    virtual ~siParam();
 
-  wxString GetParam(const wxString& text, const wxString& paramname, bool& error);
-  wxString GetParamByCol(const wxString& text, int column, bool& error);
-  int GetParamCount(const wxString& text);
-  bool IsEmpty(const wxString& text);
-  bool GetRowIDs(const wxString& text, wxArrayLong& array);
+    wxString GetParam(const wxString& text, const wxString& paramname, bool& error);
+    wxString GetParamByCol(const wxString& text, int column, bool& error);
+    int GetParamCount(const wxString& text);
+    bool IsEmpty(const wxString& text);
+    bool GetRowIDs(const wxString& text, wxArrayLong& array);
 };
 #endif
