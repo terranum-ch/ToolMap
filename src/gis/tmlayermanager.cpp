@@ -505,12 +505,18 @@ void tmLayerManager::GroupAdd(wxCommandEvent& event) {
 
 void tmLayerManager::AddWebLayer() {
     // list WMS xml files in share/toolmap
-    wxString myWebPagePathText = _T("/../../share/toolmap");
+    wxString myWebPagePathText = _T("/../share/toolmap");
 #ifdef __WXMSW__
     myWebPagePathText.Replace(_T("/"), _T("\\"));
 #endif
-    wxFileName myWebPath(wxStandardPaths::Get().GetExecutablePath() + myWebPagePathText);
-    myWebPath.Normalize(wxPATH_NORM_ABSOLUTE);
+    wxFileName myWebPath(wxStandardPaths::Get().GetExecutablePath());
+    myWebPath.SetPath(myWebPath.GetPath() + myWebPagePathText);
+    myWebPath.SetName(wxEmptyString); // Remove the name of the binary
+    if(!myWebPath.Normalize(wxPATH_NORM_ABSOLUTE)){
+        wxLogError(_("Unable to normalize path: '%s"), myWebPath.GetFullPath());
+        return ;
+    };
+    wxLogDebug(myWebPath.GetFullPath());
 
     if (!myWebPath.Exists()) {
         wxLogError(_("WMS directory didn't exists! Try re-installing ToolMap"));
