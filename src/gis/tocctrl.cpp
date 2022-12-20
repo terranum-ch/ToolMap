@@ -104,7 +104,7 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent &event) {
 
   // Get selected items
   wxDataViewItemArray selectedItems;
-  int nItems = this->GetSelections(selectedItems);
+  int nItems = GetSelections(selectedItems);
 
   nodeEnd = TocCtrlModel::ConvertFromDataViewItem(model->GetRoot());
 
@@ -356,7 +356,7 @@ void TocCtrl::OnMouseRightClick(wxDataViewEvent &event) {
     layerProp = TocCtrlModel::ConvertFromDataViewItem(event.GetItem())->m_LayerProp;
   }
 
-  tmTOCCtrlMenu menu(layerProp, 0, 0);
+  tmTOCCtrlMenu menu(layerProp, 0, GetSelectedItemsCount());
   if (layerProp && layerProp->GetType() < TOC_NAME_GROUP){
     menu.Check(ID_TOCMENU_EDIT_LAYER, layerProp->IsEditing());
   }

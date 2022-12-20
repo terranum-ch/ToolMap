@@ -50,8 +50,9 @@ class tmLayerProperties;
 class tmTOCCtrlMenu : public wxMenu {
  private:
   int m_SelectedPos;
-  int m_TotalLayers;
   tmLayerProperties *m_LayerProperties;
+
+  void _CreateTOCRemoveMultiple();
 
   void _CreateTOCAddGroup();
 
@@ -70,7 +71,7 @@ class tmTOCCtrlMenu : public wxMenu {
     ;
   }
 
-  tmTOCCtrlMenu(tmLayerProperties *item, int pos, int numberitems);
+  tmTOCCtrlMenu(tmLayerProperties *item, int pos, int nbItems);
 
   ~tmTOCCtrlMenu();
 };
