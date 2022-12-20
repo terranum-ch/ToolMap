@@ -52,20 +52,6 @@ TocCtrl::TocCtrl(wxWindow *parent, wxWindowID id)
   this->Bind(wxEVT_MENU, &TocCtrl::OnMenuShowLabels, this, ID_TOCMENU_LABELS);
 }
 
-//void TocCtrl::add_test_data() {
-//  TocCtrlModel *model = GetTocModel();
-//  auto *my_root = (TocCtrlModelNode *)model->GetRoot().GetID();
-//  auto *group_const = model->NodeAdd(my_root, "Construction");
-//  auto *line = model->NodeAdd(group_const, "Line", true, 2, true);
-//  auto *point = model->NodeAdd(group_const, "Point", false, 2, false);
-//
-//  auto *group_support = model->NodeAdd(my_root, "Support");
-//  auto *shape = model->NodeAdd(group_support, "Shapefile", false, 1, false);
-//  auto *raster = model->NodeAdd(group_support, "Raster", true, 3, false);
-//  auto *web = model->NodeAdd(group_support, "Web raster", true, 4, false);
-//  ExpandAll();
-//}
-
 void TocCtrl::OnDragndropBegin(wxDataViewEvent &event) {
   wxDataViewItem item(event.GetItem());
 
@@ -587,9 +573,8 @@ void TocCtrl::OnMenuVertex(wxCommandEvent &event) {
   wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
   GetEventHandler()->QueueEvent(evt.Clone());
 
-  // TODO: Uncomment this code when saving is working...
-  // wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
-  // GetEventHandler()->QueueEvent(evtSave.Clone());
+  wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+  GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 void TocCtrl::OnMenuShowLabels(wxCommandEvent &event) {
