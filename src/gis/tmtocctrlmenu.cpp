@@ -24,10 +24,12 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties *item, int pos, int nbItems) : wx
   m_LayerProperties = item;
   m_SelectedPos = pos;
 
-  // create menu
   if (nbItems > 1) {
-    _CreateTOCRemoveMultiple();
-  } else if (m_LayerProperties == nullptr) {
+    return;
+  }
+
+  // create menu
+  if (m_LayerProperties == nullptr) {
     _CreateTOCAddGroup();
   } else if (m_LayerProperties->GetType() == TOC_NAME_GROUP) {
     _CreateTOCAddGroup();
@@ -41,10 +43,6 @@ tmTOCCtrlMenu::tmTOCCtrlMenu(tmLayerProperties *item, int pos, int nbItems) : wx
 }
 
 tmTOCCtrlMenu::~tmTOCCtrlMenu() {}
-
-void tmTOCCtrlMenu::_CreateTOCRemoveMultiple() {
-  Append(ID_TOCMENU_REMOVE, _("Remove layers"));
-}
 
 void tmTOCCtrlMenu::_CreateTOCAddGroup() {
   Append(ID_TOCMENU_ADD_GROUP, _("Add new group"));

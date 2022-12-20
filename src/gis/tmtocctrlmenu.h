@@ -52,8 +52,6 @@ class tmTOCCtrlMenu : public wxMenu {
   int m_SelectedPos;
   tmLayerProperties *m_LayerProperties;
 
-  void _CreateTOCRemoveMultiple();
-
   void _CreateTOCAddGroup();
 
   void _CreateTOCRenameGroup();
