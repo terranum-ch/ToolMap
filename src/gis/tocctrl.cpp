@@ -134,6 +134,13 @@ void TocCtrl::OnDragndropDrop(wxDataViewEvent& event) {
     }
 
     model->NodeMove(selectedItems, nodeEnd, proposedDropIndex);
+    // update display
+    wxCommandEvent evt(tmEVT_LM_UPDATE, wxID_ANY);
+    GetEventHandler()->QueueEvent(evt.Clone());
+
+    // save new status
+    wxCommandEvent evtSave(tmEVT_LM_TOC_EDITED, wxID_ANY);
+    GetEventHandler()->QueueEvent(evtSave.Clone());
 }
 
 void TocCtrl::OnMouseClick(wxDataViewEvent& event) {
