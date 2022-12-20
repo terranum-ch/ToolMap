@@ -557,7 +557,7 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName &filename, const wxString &o
     tmLayerProperties *myLayer = m_TocCtrl->IterateLayers(bReset);
     bReset = false;
     if (myLayer == nullptr) {
-      continue;
+      return false;
     }
     if (myLayer->GetType() != TOC_NAME_SHP) {
       continue;
