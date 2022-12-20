@@ -24,16 +24,17 @@
 
 #include <wx/regex.h>
 
-#include "../database/database_tm.h"  // class database
 #include "tmdrawer.h"                 // for drawing into bitmaps
+#include "tocctrl.h"                  // class TOC ctrl
+#include "../database/database_tm.h"  // class database
 #include "tmgisdata.h"                // for GISdata
 #include "tmgisdatavectormysql.h"     // for direct access to GIS mysql
-#include "tmmanagerevent.h"           // for shared event with other manager
-#include "tmmemoryzoom.h"             // for storing previous zoom in memory.
 #include "tmrenderer.h"               // for GIS rendering
 #include "tmscalectrl.h"              // for combo box scale control
 #include "tmselecteddatamemory.h"     // for storing selected data into memory
-#include "tocctrl.h"                  // class TOC ctrl
+#include "tmmanagerevent.h"           // for shared event with other manager
+#include "tmmemoryzoom.h"             // for storing previous zoom in memory.
+
 
 #define ID_MENU_UNLINK_SPATIAL_DATA 10023
 

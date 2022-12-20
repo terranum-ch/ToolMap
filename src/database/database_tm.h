@@ -27,6 +27,8 @@
 #include <wx/wx.h>
 #endif
 
+#include "database.h"
+
 #include "../core/prjdefmemmanage.h"       // for transfering data directely
 #include "../core/projectdefmemory.h"      // for transfering data directely
 #include "../core/tmsnappingmemory.h"      // for snapping defintions.
@@ -34,7 +36,6 @@
 #include "../gis/tmlayermanager.h"         // GIS definition
 #include "../gui/projectproperties_dlg.h"  // for scale RANK function
 #include "../gui/shortcut_defs.h"          // for key definitions (F1,...)
-#include "database.h"
 
 class BezierSettingsData;
 

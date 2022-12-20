@@ -27,8 +27,8 @@
 #include <wx/wx.h>
 #endif
 
-#include "../database/database_tm.h"
 #include "tmpointorient.h"
+#include "../database/database_tm.h"
 
 class tmPointOrientAttrib : public tmPointOrient {
   private:

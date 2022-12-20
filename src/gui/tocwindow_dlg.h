@@ -27,8 +27,8 @@
 #include <wx/wx.h>
 #endif
 
-#include <wx/aui/dockart.h>
 #include <wx/aui/framemanager.h>
+#include <wx/aui/dockart.h>
 #include <wx/tglbtn.h>
 
 #include "../gis/tocctrl.h"

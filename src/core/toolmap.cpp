@@ -34,14 +34,14 @@
 
 #include <wx/stdpaths.h>
 
-#include "../components/crashreport/lscrashreport.h"
 #include "../components/tmupdate/update.h"
 #include "../gui/attribution_obj_type.h"
-#include "../gui/beziersettings_dlg.h"
 #include "../gui/bitmaps.h"
+#include "../gui/beziersettings_dlg.h"
 #include "../gui/information_dlg.h"
 #include "../gui/newtemplateprjwizard.h"
 #include "../gui/preference_dlg.h"
+#include "../components/crashreport/lscrashreport.h"
 // #include "lsversion_dlg.h"
 // #include "lsversion_param.h"
 #include "pdfdocument.h"

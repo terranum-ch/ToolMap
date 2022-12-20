@@ -20,8 +20,8 @@
 
 #include "../core/tmstatsevent.h"
 #include "../core/vrrubberband.h"
-#include "../gui/bitmaps.h"
 #include "../gui/tmtoolmanager.h"
+#include "../gui/bitmaps.h"
 #include "tmeditmanager.h"
 #include "tmmanagerevent.h"
 

@@ -22,9 +22,9 @@
 #pragma hdrstop
 #endif
 
+#include "TreeMultiItemNode.h"
 #include <wx/arrimpl.cpp>
 
-#include "TreeMultiItemNode.h"
 WX_DEFINE_OBJARRAY(TreeMultiItemBaseArray);
 
 /** TreeMultiItemNode

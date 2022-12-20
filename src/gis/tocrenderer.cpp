@@ -1,7 +1,7 @@
 #include "tocrenderer.h"
 
-#include "../gui/bitmaps.h"
 #include "tocctrlmodel.h"
+#include "../gui/bitmaps.h"
 
 tocRendererData::tocRendererData() {
     m_layer_name = wxEmptyString;

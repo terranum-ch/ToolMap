@@ -12,8 +12,8 @@
 #include <wx/dataview.h>
 #include <wx/textfile.h>
 
-#include "tmlayerproperties.h"
 #include "tocctrlmodel.h"
+#include "tmlayerproperties.h"
 
 // EVENT FOR TOC CTRL
 DECLARE_EVENT_TYPE(tmEVT_LM_REMOVE, -1)

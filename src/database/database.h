@@ -41,10 +41,10 @@
 // #include <wx/filename.h>
 
 #include <wx/buffer.h>
-#include <wx/config.h>
-#include <wx/dir.h>  // directory operation (size)
-#include <wx/fileconf.h>
 #include <wx/tokenzr.h>  // tokenizer of string
+#include <wx/dir.h>  // directory operation (size)
+#include <wx/config.h>
+#include <wx/fileconf.h>
 
 WX_DEFINE_ARRAY_LONG(unsigned long, tmArrayULong);
 
