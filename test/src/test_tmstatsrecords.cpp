@@ -22,71 +22,72 @@
 #include "database_environnement.h"
 
 class TestStatsRecords : public ::testing::Test {
- protected:
-  DataBaseTM *m_pDB = DatabaseEnvironment::m_db;
+  protected:
+    DataBaseTM* m_pDB = DatabaseEnvironment::m_db;
 
-  virtual void SetUp() {
-    ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Stats));
-  }
-  virtual void TearDown() {;
-  }
+    virtual void SetUp() {
+        ASSERT_TRUE(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestPrj_Stats));
+    }
+    virtual void TearDown() {
+        ;
+    }
 };
 
 TEST_F(TestStatsRecords, Create) {
-  tmStatsRecords myRecord(m_pDB);
-  tmStatsData myData;
-  long myRecordId = myRecord.Create(myData);
-  EXPECT_EQ(myRecordId, wxNOT_FOUND);
+    tmStatsRecords myRecord(m_pDB);
+    tmStatsData myData;
+    long myRecordId = myRecord.Create(myData);
+    EXPECT_EQ(myRecordId, wxNOT_FOUND);
 
-  myData.m_TimeStart = wxDateTime::Now();
-  myRecordId = myRecord.Create(myData);
-  EXPECT_NE(myRecordId, wxNOT_FOUND);
-  wxLogMessage("Adding stat record with id = %ld", myRecordId);
+    myData.m_TimeStart = wxDateTime::Now();
+    myRecordId = myRecord.Create(myData);
+    EXPECT_NE(myRecordId, wxNOT_FOUND);
+    wxLogMessage("Adding stat record with id = %ld", myRecordId);
 }
 
 TEST_F(TestStatsRecords, AddRemove) {
-  tmStatsRecords myRecord(m_pDB);
-  tmStatsData myData;
-  myData.m_TimeStart = wxDateTime::Now();
-  myData.m_NbClick = 1;
-  myData.m_NbAttribution = 2;
-  myData.m_NbIntersection = 3;
+    tmStatsRecords myRecord(m_pDB);
+    tmStatsData myData;
+    myData.m_TimeStart = wxDateTime::Now();
+    myData.m_NbClick = 1;
+    myData.m_NbAttribution = 2;
+    myData.m_NbIntersection = 3;
 
-  long myRecordId = myRecord.Create(myData);
-  EXPECT_NE(myRecordId, wxNOT_FOUND);
-  EXPECT_TRUE(myRecord.Add(myRecordId, myData));
-  EXPECT_TRUE(myRecord.Delete(myRecordId));
-  wxLogMessage("Adding and removing stat record with id = %ld", myRecordId);
+    long myRecordId = myRecord.Create(myData);
+    EXPECT_NE(myRecordId, wxNOT_FOUND);
+    EXPECT_TRUE(myRecord.Add(myRecordId, myData));
+    EXPECT_TRUE(myRecord.Delete(myRecordId));
+    wxLogMessage("Adding and removing stat record with id = %ld", myRecordId);
 }
 
 TEST_F(TestStatsRecords, Load) {
-  // id = 1 for first record
-  tmStatsRecords myRecord(m_pDB);
-  tmStatsData myData;
+    // id = 1 for first record
+    tmStatsRecords myRecord(m_pDB);
+    tmStatsData myData;
 
-  EXPECT_TRUE(myRecord.Load(1, myData));
-  wxLogMessage("time elapsed is: %s", myData.m_TimeElapsed.Format());
+    EXPECT_TRUE(myRecord.Load(1, myData));
+    wxLogMessage("time elapsed is: %s", myData.m_TimeElapsed.Format());
 
-  EXPECT_EQ(myData.m_NbClick, 2);
-  EXPECT_EQ(myData.m_NbIntersection, 0);
-  EXPECT_EQ(myData.m_NbAttribution, 2);
+    EXPECT_EQ(myData.m_NbClick, 2);
+    EXPECT_EQ(myData.m_NbIntersection, 0);
+    EXPECT_EQ(myData.m_NbAttribution, 2);
 }
 
 TEST_F(TestStatsRecords, GetCount) {
-  tmStatsRecords myRecord(m_pDB);
-  long myNbRecords = myRecord.GetCount();
-  EXPECT_LT(2, myNbRecords);
-  wxLogMessage("%ld statistics records!", myNbRecords);
+    tmStatsRecords myRecord(m_pDB);
+    long myNbRecords = myRecord.GetCount();
+    EXPECT_LT(2, myNbRecords);
+    wxLogMessage("%ld statistics records!", myNbRecords);
 }
 
 TEST_F(TestStatsRecords, LoadTotal) {
-  tmStatsRecords myRecord(m_pDB);
-  tmStatsData myData;
-  EXPECT_TRUE(myRecord.LoadTotal(myData));
+    tmStatsRecords myRecord(m_pDB);
+    tmStatsData myData;
+    EXPECT_TRUE(myRecord.LoadTotal(myData));
 
-  EXPECT_LT(2, myData.m_NbClick);
-  EXPECT_LT(1, myData.m_NbAttribution);
+    EXPECT_LT(2, myData.m_NbClick);
+    EXPECT_LT(1, myData.m_NbAttribution);
 
-  wxLogMessage("Total (Click, attribution, intersection, time): %ld, %ld, %ld, %s", myData.m_NbClick,
-               myData.m_NbAttribution, myData.m_NbIntersection, myData.m_TimeElapsed.Format());
+    wxLogMessage("Total (Click, attribution, intersection, time): %ld, %ld, %ld, %s", myData.m_NbClick,
+                 myData.m_NbAttribution, myData.m_NbIntersection, myData.m_TimeElapsed.Format());
 }

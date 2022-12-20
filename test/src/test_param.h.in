@@ -18,22 +18,21 @@
 #ifndef _TEST_PARAM_H_
 #define _TEST_PARAM_H_
 
-
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 // DEFINITION UPDATED BY CMAKE
 #cmakedefine UNIT_TESTING_PATH "@UNIT_TESTING_PATH@"
-#cmakedefine UNIT_TESTING_USE_PROXY 
+#cmakedefine UNIT_TESTING_USE_PROXY
 // END OF DEFINITION UPDATED BY CMAKE
 
 static const wxString g_TestPath = wxString::FromAscii(UNIT_TESTING_PATH);
 static const wxString g_TestPathSHP = g_TestPath + _T("/shp/");
 static const wxString g_TestPathMISC = g_TestPath + _T("/misc/");
-static const wxString g_TestPathPRJ = g_TestPath +  _T("/prj/");
-static const wxString g_TestPathEXPORT = g_TestPath +  _T("/export/");
+static const wxString g_TestPathPRJ = g_TestPath + _T("/prj/");
+static const wxString g_TestPathEXPORT = g_TestPath + _T("/export/");
 static const wxString g_TestPathBackup = g_TestPath + _T("/backup/");
 
 static const wxString g_TestFileMisc = _T("gpl.txt");
@@ -58,10 +57,10 @@ static const wxString g_TestPrj_Boltigen = _T("Boltigen09");
 static const wxString g_TestPrj_Ricken = _T("Ricken09");
 static const wxString g_TestPrj_Ambri = _T("ambri_saisie_v2");
 static const wxString g_TestPrj_AdvAttribution = _T("testadvattribution");
-static const wxString g_TestPrj_PrjUpdate =_T("testprjupdate");
-static const wxString g_TestPrj_Stats =_T("teststats");
+static const wxString g_TestPrj_PrjUpdate = _T("testprjupdate");
+static const wxString g_TestPrj_Stats = _T("teststats");
 static const wxString g_TestPrj_221 = _T("combioula221");
-static const wxString g_TestPrj_Fields_221  = _T("testfields221");
+static const wxString g_TestPrj_Fields_221 = _T("testfields221");
 static const wxString g_TestPrj_222 = _T("testprj222");
 static const wxString g_TestMigre222 = _T("222_migre");
 static const wxString g_TestExportConcat = _T("exportconcat");
@@ -75,8 +74,7 @@ static const bool g_UseProxy = false;
 static const wxString g_ProxyName = _T("proxy.vs.ch:8080");
 static const int g_ToolMapInternetVersion = 967;
 
-
-static const wxString g_InternetVName = wxString::Format(_T("http://www.crealp.ch/index.php?option=com_content&task=view&id=342&Itemid=311"));
-
+static const wxString g_InternetVName = wxString::Format(
+    _T("http://www.crealp.ch/index.php?option=com_content&task=view&id=342&Itemid=311"));
 
 #endif

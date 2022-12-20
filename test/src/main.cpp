@@ -5,21 +5,21 @@
 #include "database_environnement.h"
 
 void DatabaseEnvironment::SetUp() {
-  if (m_db == nullptr) {
-    m_db = new DataBaseTM();
-  }
+    if (m_db == nullptr) {
+        m_db = new DataBaseTM();
+    }
 }
 
 void DatabaseEnvironment::TearDown() {
-  wxDELETE(m_db);
+    wxDELETE(m_db);
 }
 
-DataBaseTM *DatabaseEnvironment::m_db = nullptr;
+DataBaseTM* DatabaseEnvironment::m_db = nullptr;
 
-int main(int argc, char **argv) {
-  wxInitialize();
-  wxLog::SetActiveTarget(new wxLogStderr());
-  ::testing::InitGoogleTest(&argc, argv);
-  ::testing::AddGlobalTestEnvironment(new DatabaseEnvironment);
-  return RUN_ALL_TESTS();
+int main(int argc, char** argv) {
+    wxInitialize();
+    wxLog::SetActiveTarget(new wxLogStderr());
+    ::testing::InitGoogleTest(&argc, argv);
+    ::testing::AddGlobalTestEnvironment(new DatabaseEnvironment);
+    return RUN_ALL_TESTS();
 }

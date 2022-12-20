@@ -22,55 +22,55 @@
 
 
 class TestExportConcat : public ::testing::Test {
- protected:
-  DataBaseTM *m_pDB = DatabaseEnvironment::m_db;
-  PrjDefMemManage *m_PrjDef = nullptr;
-  wxString *m_RealExportPath = nullptr;
-  tmGISScale *m_ExportScale = nullptr;
+  protected:
+    DataBaseTM* m_pDB = DatabaseEnvironment::m_db;
+    PrjDefMemManage* m_PrjDef = nullptr;
+    wxString* m_RealExportPath = nullptr;
+    tmGISScale* m_ExportScale = nullptr;
 
-  virtual void SetUp() {
-    GTEST_SKIP_("Concat project file is too old and corrupted...");
-    OGRRegisterAll();
-    ASSERT_EQ(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestExportConcat), tmDB_OPEN_OK);
-    // load project Data
-    m_PrjDef = m_pDB->GetProjectDataFromDB();
-    ASSERT_TRUE(m_PrjDef != nullptr);
-    ASSERT_NE(m_PrjDef->GetCountLayers(), 0);
-    int iExportType = 0;
-    wxString myTempString = wxEmptyString;
-    ASSERT_NE(m_pDB->GetProjectExportData(iExportType, myTempString), PATH_DATABASE_ERROR);
-    m_RealExportPath = new wxString(myTempString);
+    virtual void SetUp() {
+        GTEST_SKIP_("Concat project file is too old and corrupted...");
+        OGRRegisterAll();
+        ASSERT_EQ(m_pDB->OpenTMDatabase(g_TestPathPRJ + g_TestExportConcat), tmDB_OPEN_OK);
+        // load project Data
+        m_PrjDef = m_pDB->GetProjectDataFromDB();
+        ASSERT_TRUE(m_PrjDef != nullptr);
+        ASSERT_NE(m_PrjDef->GetCountLayers(), 0);
+        int iExportType = 0;
+        wxString myTempString = wxEmptyString;
+        ASSERT_NE(m_pDB->GetProjectExportData(iExportType, myTempString), PATH_DATABASE_ERROR);
+        m_RealExportPath = new wxString(myTempString);
 
-    ASSERT_TRUE(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, g_TestPathEXPORT));
+        ASSERT_TRUE(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, g_TestPathEXPORT));
 
-    // init scale for export. The project we export are in meters
-    // thus we can create this "fake" scale.
-    m_ExportScale = new tmGISScale();
-    m_ExportScale->SetExtentWndReal(tmRealRect(0, 0, 1, 1));
-    m_ExportScale->SetWidthDistanceInM(1);
-  }
-  virtual void TearDown() {
-    GTEST_SKIP();
-    // reset path to old value
-    ASSERT_TRUE(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
+        // init scale for export. The project we export are in meters
+        // thus we can create this "fake" scale.
+        m_ExportScale = new tmGISScale();
+        m_ExportScale->SetExtentWndReal(tmRealRect(0, 0, 1, 1));
+        m_ExportScale->SetWidthDistanceInM(1);
+    }
+    virtual void TearDown() {
+        GTEST_SKIP();
+        // reset path to old value
+        ASSERT_TRUE(m_pDB->SetProjectExportData(EXPORT_SHAPEFILE, *m_RealExportPath));
 
-    wxDELETE(m_PrjDef);
-    wxDELETE(m_RealExportPath);
-    wxDELETE(m_ExportScale);
-  }
+        wxDELETE(m_PrjDef);
+        wxDELETE(m_RealExportPath);
+        wxDELETE(m_ExportScale);
+    }
 };
 
 TEST_F(TestExportConcat, ExportLine) {
-  tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
-  EXPECT_TRUE(myManager.ExportConcatenated(m_PrjDef, LAYER_LINE, false));
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
+    EXPECT_TRUE(myManager.ExportConcatenated(m_PrjDef, LAYER_LINE, false));
 }
 
 TEST_F(TestExportConcat, ExportPoint) {
-  tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
-  EXPECT_TRUE(myManager.ExportConcatenated(m_PrjDef, LAYER_POINT, false));
+    tmExportManager myManager(nullptr, m_pDB, m_ExportScale);
+    EXPECT_TRUE(myManager.ExportConcatenated(m_PrjDef, LAYER_POINT, false));
 }
 
 TEST_F(TestExportConcat, ExportLabels) {
-  tmExportManager myManager(NULL, m_pDB, m_ExportScale);
-  EXPECT_TRUE(myManager.ExportConcatenated(m_PrjDef, LAYER_POLYGON, false));
+    tmExportManager myManager(NULL, m_pDB, m_ExportScale);
+    EXPECT_TRUE(myManager.ExportConcatenated(m_PrjDef, LAYER_POLYGON, false));
 }

@@ -22,77 +22,77 @@
 
 
 class TestToolDanglingNodes : public ::testing::Test {
- protected:
-  ToolDanglingNodes* m_DN = nullptr;
-  wxString m_DBPathName;
-  DataBaseTM* m_DB = DatabaseEnvironment::m_db;
+  protected:
+    ToolDanglingNodes* m_DN = nullptr;
+    wxString m_DBPathName;
+    DataBaseTM* m_DB = DatabaseEnvironment::m_db;
 
-  virtual void SetUp() {
-    m_DBPathName = g_TestPathPRJ + g_TestPrj_Dangling;
-    m_DB->OpenTMDatabase(m_DBPathName);
-    m_DN = new ToolDanglingNodes(m_DB);
-  }
-  virtual void TearDown() {
-    wxDELETE(m_DN);
-  }
+    virtual void SetUp() {
+        m_DBPathName = g_TestPathPRJ + g_TestPrj_Dangling;
+        m_DB->OpenTMDatabase(m_DBPathName);
+        m_DN = new ToolDanglingNodes(m_DB);
+    }
+    virtual void TearDown() {
+        wxDELETE(m_DN);
+    }
 };
 
 TEST_F(TestToolDanglingNodes, GetDanglingNodes1) {
-  wxArrayRealPoints myPts;
-  EXPECT_FALSE(m_DN->GetDanglingNodes(myPts));
+    wxArrayRealPoints myPts;
+    EXPECT_FALSE(m_DN->GetDanglingNodes(myPts));
 }
 
 TEST_F(TestToolDanglingNodes, Create1) {
-  ToolDanglingNodes myTool;
-  EXPECT_FALSE(myTool.IsOk());
-  myTool.Create(m_DB);
-  EXPECT_TRUE(myTool.IsOk());
+    ToolDanglingNodes myTool;
+    EXPECT_FALSE(myTool.IsOk());
+    myTool.Create(m_DB);
+    EXPECT_TRUE(myTool.IsOk());
 }
 
 TEST_F(TestToolDanglingNodes, Create2) {
-  ToolDanglingNodes myTool2(m_DB);
-  EXPECT_TRUE(myTool2.IsOk());
+    ToolDanglingNodes myTool2(m_DB);
+    EXPECT_TRUE(myTool2.IsOk());
 }
 
 TEST_F(TestToolDanglingNodes, Search1) {
-  EXPECT_FALSE(m_DN->SearchInit(2, "no layer name"));
-  EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
-  EXPECT_FALSE(m_DN->SearchInit(100, "no layer name"));
+    EXPECT_FALSE(m_DN->SearchInit(2, "no layer name"));
+    EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
+    EXPECT_FALSE(m_DN->SearchInit(100, "no layer name"));
 }
 
 TEST_F(TestToolDanglingNodes, Search2) {
-  int iFeatureSearched = 0;
-  EXPECT_FALSE(m_DN->SearchInfo(iFeatureSearched));
-  EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
+    int iFeatureSearched = 0;
+    EXPECT_FALSE(m_DN->SearchInfo(iFeatureSearched));
+    EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
 
-  EXPECT_TRUE(m_DN->SearchInfo(iFeatureSearched));
-  EXPECT_TRUE(iFeatureSearched > 0);
-  wxLogDebug(_T("Number of feature to process : %d"), iFeatureSearched);
+    EXPECT_TRUE(m_DN->SearchInfo(iFeatureSearched));
+    EXPECT_TRUE(iFeatureSearched > 0);
+    wxLogDebug(_T("Number of feature to process : %d"), iFeatureSearched);
 }
 
 TEST_F(TestToolDanglingNodes, SearchRun1) {
-  EXPECT_FALSE(m_DN->SearchRun());
+    EXPECT_FALSE(m_DN->SearchRun());
 }
 
 TEST_F(TestToolDanglingNodes, SearchRun2) {
-  int iNum = 0;
-  EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
-  EXPECT_TRUE(m_DN->SearchRun());
-  EXPECT_FALSE(m_DN->SearchRun());
-  EXPECT_FALSE(m_DN->SearchInfo(iNum));
+    int iNum = 0;
+    EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
+    EXPECT_TRUE(m_DN->SearchRun());
+    EXPECT_FALSE(m_DN->SearchRun());
+    EXPECT_FALSE(m_DN->SearchInfo(iNum));
 }
 
 TEST_F(TestToolDanglingNodes, SearchRun3) {
-  // int iNum = 0;
-  EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
-  EXPECT_TRUE(m_DN->SearchRun());
-  wxArrayRealPoints myPts;
-  bool bGet = m_DN->GetDanglingNodes(myPts);
-  EXPECT_TRUE(bGet);
-  if (bGet) {
-    wxLogDebug(_T("%zu dangling nodes "), myPts.GetCount());
-  }
+    // int iNum = 0;
+    EXPECT_TRUE(m_DN->SearchInit(1, "no layer name"));
+    EXPECT_TRUE(m_DN->SearchRun());
+    wxArrayRealPoints myPts;
+    bool bGet = m_DN->GetDanglingNodes(myPts);
+    EXPECT_TRUE(bGet);
+    if (bGet) {
+        wxLogDebug(_T("%zu dangling nodes "), myPts.GetCount());
+    }
 
-  for (unsigned int i = 0; i < myPts.GetCount(); i++)
-    wxLogDebug(_T("--- dangling node : %.*f, %.*f"), 2, myPts.Item(i).x, 2, myPts.Item(i).y);
+    for (unsigned int i = 0; i < myPts.GetCount(); i++)
+        wxLogDebug(_T("--- dangling node : %.*f, %.*f"), 2, myPts.Item(i).x, 2, myPts.Item(i).y);
 }
