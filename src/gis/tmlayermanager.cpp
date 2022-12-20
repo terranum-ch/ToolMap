@@ -512,6 +512,7 @@ void tmLayerManager::AddWebLayer() {
     wxFileName myWebPath(wxStandardPaths::Get().GetExecutablePath());
     myWebPath.SetPath(myWebPath.GetPath() + myWebPagePathText);
     myWebPath.SetName(wxEmptyString); // Remove the name of the binary
+    myWebPath.SetExt("");
     if(!myWebPath.Normalize(wxPATH_NORM_ABSOLUTE)){
         wxLogError(_("Unable to normalize path: '%s"), myWebPath.GetFullPath());
         return ;
