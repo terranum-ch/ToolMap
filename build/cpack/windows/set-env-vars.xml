@@ -1,5 +1,5 @@
 <CPackWiXPatch>
     <CPackWiXFragment Id="CM_CP_share.proj.proj.db">
-        <Environment Id="PROJ_DATA" Action="set" Name="PROJ_DATA" Value="[INSTALL_ROOT]share\proj" System="no"/>
+        <Environment Id="PROJ_LIB" Action="set" Name="PROJ_LIB" Value="[INSTALL_ROOT]share\proj" System="no"/>
     </CPackWiXFragment>
 </CPackWiXPatch>
