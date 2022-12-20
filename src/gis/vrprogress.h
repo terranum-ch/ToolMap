@@ -29,38 +29,38 @@
 #include "gdal_priv.h"
 
 class vrProgress {
- public:
-  vrProgress();
+  public:
+    vrProgress();
 
-  virtual ~vrProgress();
+    virtual ~vrProgress();
 };
 
-int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char *pszMessage, void *pProgressArg);
+int CPL_STDCALL GDALUpdateSimple(double dfComplete, const char* pszMessage, void* pProgressArg);
 
 class vrProgressSimple : public vrProgress {
- private:
-  wxProgressDialog *m_ProgressWnd;
-  tmPercent m_Percent;
-  bool m_Continue;
+  private:
+    wxProgressDialog* m_ProgressWnd;
+    tmPercent m_Percent;
+    bool m_Continue;
 
- public:
-  vrProgressSimple(wxWindow *parent, wxString title, wxString message);
+  public:
+    vrProgressSimple(wxWindow* parent, wxString title, wxString message);
 
-  virtual ~vrProgressSimple();
+    virtual ~vrProgressSimple();
 
-  inline tmPercent *GetPercent();
+    inline tmPercent* GetPercent();
 
-  inline const bool GetContinue() const;
+    inline const bool GetContinue() const;
 
-  void UpdateProgress();
+    void UpdateProgress();
 };
 
-inline tmPercent *vrProgressSimple::GetPercent() {
-  return &m_Percent;
+inline tmPercent* vrProgressSimple::GetPercent() {
+    return &m_Percent;
 }
 
 inline const bool vrProgressSimple::GetContinue() const {
-  return m_Continue;
+    return m_Continue;
 }
 
 #endif

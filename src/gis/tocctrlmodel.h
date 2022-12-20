@@ -12,92 +12,92 @@
 
 class TocCtrlModelNode;
 
-WX_DEFINE_ARRAY_PTR(TocCtrlModelNode *, TocCtrlModelNodePtrArray);
+WX_DEFINE_ARRAY_PTR(TocCtrlModelNode*, TocCtrlModelNodePtrArray);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief Node for TocCtrlModel
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class TocCtrlModelNode {
- public:
-  TocCtrlModelNode(TocCtrlModelNode *parent, tmLayerProperties *layerprop);
+  public:
+    TocCtrlModelNode(TocCtrlModelNode* parent, tmLayerProperties* layerprop);
 
-  ~TocCtrlModelNode();
+    ~TocCtrlModelNode();
 
-  void GetAllChildRecursive(TocCtrlModelNodePtrArray &node_array, TocCtrlModelNode *startnode = nullptr);
-  bool IsMyChildren(TocCtrlModelNode *node);
+    void GetAllChildRecursive(TocCtrlModelNodePtrArray& node_array, TocCtrlModelNode* startnode = nullptr);
+    bool IsMyChildren(TocCtrlModelNode* node);
 
-  bool IsContainer() const;
+    bool IsContainer() const;
 
-  TocCtrlModelNode *GetParent();
+    TocCtrlModelNode* GetParent();
 
-  TocCtrlModelNodePtrArray &GetChildren();
+    TocCtrlModelNodePtrArray& GetChildren();
 
-  void Insert(TocCtrlModelNode *child, unsigned int n);
+    void Insert(TocCtrlModelNode* child, unsigned int n);
 
-  void Append(TocCtrlModelNode *child);
+    void Append(TocCtrlModelNode* child);
 
-  unsigned int GetChildCount() const;
+    unsigned int GetChildCount() const;
 
-  // public to avoid getters/setters
-  bool m_Container;
-  tmLayerProperties *m_LayerProp;
+    // public to avoid getters/setters
+    bool m_Container;
+    tmLayerProperties* m_LayerProp;
 
- private:
-  TocCtrlModelNode *m_Parent;
-  TocCtrlModelNodePtrArray m_Children;
+  private:
+    TocCtrlModelNode* m_Parent;
+    TocCtrlModelNodePtrArray m_Children;
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// @brief Model for TocCtrl
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 class TocCtrlModel : public wxDataViewModel {
- public:
-  TocCtrlModel();
+  public:
+    TocCtrlModel();
 
-  ~TocCtrlModel() {
-    delete m_Root;
-  }
+    ~TocCtrlModel() {
+        delete m_Root;
+    }
 
-  bool IsChecked(const wxDataViewItem &item) const;
-  void SetChecked(const wxDataViewItem &item, bool check = true);
+    bool IsChecked(const wxDataViewItem& item) const;
+    void SetChecked(const wxDataViewItem& item, bool check = true);
 
-  wxString NodeGetTitle(TocCtrlModelNode *node);
-  bool NodeSetTitle(TocCtrlModelNode *node, const wxString &title);
+    wxString NodeGetTitle(TocCtrlModelNode* node);
+    bool NodeSetTitle(TocCtrlModelNode* node, const wxString& title);
 
-  TocCtrlModelNode *NodeAdd(TocCtrlModelNode *parent, tmLayerProperties *layerprop);
-  TocCtrlModelNode *NodeInsert(TocCtrlModelNode *parent, tmLayerProperties *layerprop, int index = 0);
-  bool NodeMove(wxDataViewItemArray &selectedItems, TocCtrlModelNode *destination, int proposedIndex = wxNOT_FOUND);
-  void NodeRecursiveAdd(TocCtrlModelNode *parent, TocCtrlModelNode *start);
-  void NodeRecursiveRemove(TocCtrlModelNode *start);
+    TocCtrlModelNode* NodeAdd(TocCtrlModelNode* parent, tmLayerProperties* layerprop);
+    TocCtrlModelNode* NodeInsert(TocCtrlModelNode* parent, tmLayerProperties* layerprop, int index = 0);
+    bool NodeMove(wxDataViewItemArray& selectedItems, TocCtrlModelNode* destination, int proposedIndex = wxNOT_FOUND);
+    void NodeRecursiveAdd(TocCtrlModelNode* parent, TocCtrlModelNode* start);
+    void NodeRecursiveRemove(TocCtrlModelNode* start);
 
-  // model function
-  void Delete(const wxDataViewItem &item);
+    // model function
+    void Delete(const wxDataViewItem& item);
 
-  void Clear();
+    void Clear();
 
-  virtual void GetValue(wxVariant &variant, const wxDataViewItem &item, unsigned int col) const wxOVERRIDE;
+    virtual void GetValue(wxVariant& variant, const wxDataViewItem& item, unsigned int col) const wxOVERRIDE;
 
-  virtual bool SetValue(const wxVariant &variant, const wxDataViewItem &item, unsigned int col) wxOVERRIDE;
+    virtual bool SetValue(const wxVariant& variant, const wxDataViewItem& item, unsigned int col) wxOVERRIDE;
 
-  virtual bool IsEnabled(const wxDataViewItem &item, unsigned int col) const wxOVERRIDE;
+    virtual bool IsEnabled(const wxDataViewItem& item, unsigned int col) const wxOVERRIDE;
 
-  virtual wxDataViewItem GetParent(const wxDataViewItem &item) const wxOVERRIDE;
+    virtual wxDataViewItem GetParent(const wxDataViewItem& item) const wxOVERRIDE;
 
-  wxDataViewItem GetRoot() const;
+    wxDataViewItem GetRoot() const;
 
-  virtual bool IsContainer(const wxDataViewItem &item) const wxOVERRIDE;
+    virtual bool IsContainer(const wxDataViewItem& item) const wxOVERRIDE;
 
-  virtual unsigned int GetChildren(const wxDataViewItem &parent, wxDataViewItemArray &array) const wxOVERRIDE;
+    virtual unsigned int GetChildren(const wxDataViewItem& parent, wxDataViewItemArray& array) const wxOVERRIDE;
 
-  virtual unsigned int GetColumnCount() const wxOVERRIDE;
-  virtual wxString GetColumnType(unsigned int) const wxOVERRIDE;
+    virtual unsigned int GetColumnCount() const wxOVERRIDE;
+    virtual wxString GetColumnType(unsigned int) const wxOVERRIDE;
 
-  static wxDataViewItem ConvertFromNode(const TocCtrlModelNode *node);
-  static TocCtrlModelNode *ConvertFromDataViewItem(const wxDataViewItem &item);
+    static wxDataViewItem ConvertFromNode(const TocCtrlModelNode* node);
+    static TocCtrlModelNode* ConvertFromDataViewItem(const wxDataViewItem& item);
 
- private:
-  TocCtrlModelNode *m_Root;
-  wxImageList m_ImageList;
+  private:
+    TocCtrlModelNode* m_Root;
+    wxImageList m_ImageList;
 };
 
 #endif  // FEATURE_TOC_TOCCTRLMODEL_H

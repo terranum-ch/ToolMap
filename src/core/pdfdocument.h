@@ -35,92 +35,92 @@
 class PrjDefMemManage;
 
 class PdfDocument {
- private:
-  ArrayPdfLayer m_pdfLayers;
+  private:
+    ArrayPdfLayer m_pdfLayers;
 
-  wxString m_prjName;
-  wxPdfDocument *m_pdf;
-  wxPaperSize m_PaperFormat;
-  double m_PaperWidth;
-  double m_PaperHeight;
+    wxString m_prjName;
+    wxPdfDocument* m_pdf;
+    wxPaperSize m_PaperFormat;
+    double m_PaperWidth;
+    double m_PaperHeight;
 
-  wxPrintOrientation m_PaperOrientation;
-  int m_FontSize;
-  double m_LineSpacing;
-  double m_UsablePageWidth;
-  bool m_Decorate;
-  bool m_TwoCols;
-  bool m_PageBreak;
-  bool m_OnePage;
+    wxPrintOrientation m_PaperOrientation;
+    int m_FontSize;
+    double m_LineSpacing;
+    double m_UsablePageWidth;
+    bool m_Decorate;
+    bool m_TwoCols;
+    bool m_PageBreak;
+    bool m_OnePage;
 
-  bool _GenerateTitle();
+    bool _GenerateTitle();
 
-  void _UpdatePageWidth();
+    void _UpdatePageWidth();
 
-  void _ComputeOnePageSize(double &width, double &height);
+    void _ComputeOnePageSize(double& width, double& height);
 
-  bool _OrderLayers();
+    bool _OrderLayers();
 
- public:
-  PdfDocument(PrjDefMemManage *project);
+  public:
+    PdfDocument(PrjDefMemManage* project);
 
-  virtual ~PdfDocument();
+    virtual ~PdfDocument();
 
-  bool Generate(const wxFileName &filename);
+    bool Generate(const wxFileName& filename);
 
-  inline const int GetFontSize() const;
+    inline const int GetFontSize() const;
 
-  inline const double GetLineSpacing() const;
+    inline const double GetLineSpacing() const;
 
-  inline const bool IsDecorated() const;
+    inline const bool IsDecorated() const;
 
-  void SetDecorate(bool value);
+    void SetDecorate(bool value);
 
-  void SetLineSpacing(double value);
+    void SetLineSpacing(double value);
 
-  void SetFontSize(int value);
+    void SetFontSize(int value);
 
-  void SetPaperFormat(wxPaperSize value);
+    void SetPaperFormat(wxPaperSize value);
 
-  void SetPaperSize(double width, double height);
+    void SetPaperSize(double width, double height);
 
-  void SetPaperOrientation(wxPrintOrientation value);
+    void SetPaperOrientation(wxPrintOrientation value);
 
-  double GetUsablePageWidth();
+    double GetUsablePageWidth();
 
-  bool IsLandscape();
+    bool IsLandscape();
 
-  wxPdfDocument *GetPdfRef();
+    wxPdfDocument* GetPdfRef();
 
-  inline const bool IsTwoColsLayout() const;
+    inline const bool IsTwoColsLayout() const;
 
-  void SetTwoColsLayout(bool value);
+    void SetTwoColsLayout(bool value);
 
-  inline const bool HasPageBreak() const;
+    inline const bool HasPageBreak() const;
 
-  void SetPageBreak(bool value);
+    void SetPageBreak(bool value);
 
-  void SetOnePage(bool value);
+    void SetOnePage(bool value);
 };
 
 inline const int PdfDocument::GetFontSize() const {
-  return m_FontSize;
+    return m_FontSize;
 }
 
 inline const double PdfDocument::GetLineSpacing() const {
-  return m_LineSpacing;
+    return m_LineSpacing;
 }
 
 inline const bool PdfDocument::IsDecorated() const {
-  return m_Decorate;
+    return m_Decorate;
 }
 
 inline const bool PdfDocument::IsTwoColsLayout() const {
-  return m_TwoCols;
+    return m_TwoCols;
 }
 
 inline const bool PdfDocument::HasPageBreak() const {
-  return m_PageBreak;
+    return m_PageBreak;
 }
 
 #endif

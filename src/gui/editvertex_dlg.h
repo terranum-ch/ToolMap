@@ -65,72 +65,72 @@ const int gSizeMargin = 10;
   @date 24 February 2009
   *******************************************************************************/
 class EditVertexDLG : public wxDialog {
- private:
-  // member controls
-  wxGrid *m_VertexGrid;
-  wxFlatButton *m_DisplayVertexPosBtn;
-  wxStatusBar *m_Status;
-  wxFlatButton *m_BtnAddVertex;
-  wxFlatButton *m_BtnRemoveVertex;
-  wxButton *m_BtnUpdate;
+  private:
+    // member controls
+    wxGrid* m_VertexGrid;
+    wxFlatButton* m_DisplayVertexPosBtn;
+    wxStatusBar* m_Status;
+    wxFlatButton* m_BtnAddVertex;
+    wxFlatButton* m_BtnRemoveVertex;
+    wxButton* m_BtnUpdate;
 
-  // member functions
-  void CreateControls();
+    // member functions
+    void CreateControls();
 
-  // status function
-  void SetStatusSelectedID(long oid);
+    // status function
+    void SetStatusSelectedID(long oid);
 
-  void SetStatusNumberVertex(int ivertexnumber);
+    void SetStatusNumberVertex(int ivertexnumber);
 
-  // buttons update functions
-  void UpdateAddVertexButton(bool selection);
+    // buttons update functions
+    void UpdateAddVertexButton(bool selection);
 
-  void UpdateRemoveVertexButton(bool selection);
+    void UpdateRemoveVertexButton(bool selection);
 
-  void UpdateHighlightVertexButton(bool selection);
+    void UpdateHighlightVertexButton(bool selection);
 
-  void UpdateSaveButton();
+    void UpdateSaveButton();
 
-  // validation function
-  bool IsAllCellsNumber(int &col, int &row);
+    // validation function
+    bool IsAllCellsNumber(int& col, int& row);
 
-  // Grid functions
-  bool GridInsertLine(int iIndex = -1, wxRealPoint *pt = nullptr);
+    // Grid functions
+    bool GridInsertLine(int iIndex = -1, wxRealPoint* pt = nullptr);
 
-  bool GridClear();
+    bool GridClear();
 
-  int GridGetSelection();
+    int GridGetSelection();
 
-  // event function
-  void OnVertexAdd(wxCommandEvent &event);
+    // event function
+    void OnVertexAdd(wxCommandEvent& event);
 
-  void OnVertexRemove(wxCommandEvent &event);
+    void OnVertexRemove(wxCommandEvent& event);
 
-  void OnVertexHighlight(wxCommandEvent &event);
+    void OnVertexHighlight(wxCommandEvent& event);
 
-  void OnIdleTime(wxIdleEvent &event);
+    void OnIdleTime(wxIdleEvent& event);
 
-  void OnSave(wxCommandEvent &event);
+    void OnSave(wxCommandEvent& event);
 
-  DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
- public:
-  // ctor and dtor
-  EditVertexDLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Edit Vertex"),
-                const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-                long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+  public:
+    // ctor and dtor
+    EditVertexDLG(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Edit Vertex"),
+                  const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                  long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-  ~EditVertexDLG();
+    ~EditVertexDLG();
 
-  // member for data exchange
-  wxArrayRealPoints m_VertexPts;
-  long m_SelectedOID;
-  int m_LayerType;
+    // member for data exchange
+    wxArrayRealPoints m_VertexPts;
+    long m_SelectedOID;
+    int m_LayerType;
 
-  // data transfert, called automatically
-  virtual bool TransferDataToWindow();
+    // data transfert, called automatically
+    virtual bool TransferDataToWindow();
 
-  virtual bool TransferDataFromWindow();
+    virtual bool TransferDataFromWindow();
 };
 
 #endif

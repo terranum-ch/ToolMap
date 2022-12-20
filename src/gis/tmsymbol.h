@@ -36,54 +36,55 @@ class DataBaseTM;
 class tmLayerProperties;
 
 class tmSymbol : public wxObject {
- private:
-  DataBaseTM *m_pDB;
-  TOC_GENERIC_NAME m_TocName;
+  private:
+    DataBaseTM* m_pDB;
+    TOC_GENERIC_NAME m_TocName;
 
-  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+    virtual tmSymbolDLG* GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos);
 
-  virtual bool GetDialogData(tmSymbolDLG *dlg);
+    virtual bool GetDialogData(tmSymbolDLG* dlg);
 
- protected:
-  int m_LayerTransparency;
+  protected:
+    int m_LayerTransparency;
 
-  char ConvertTransparency(int itransparency);
+    char ConvertTransparency(int itransparency);
 
-  DataBaseTM *GetDatabase() {
-    return m_pDB;
-  }
+    DataBaseTM* GetDatabase() {
+        return m_pDB;
+    }
 
-  TOC_GENERIC_NAME GetTocName() {
-    return m_TocName;
-  }
+    TOC_GENERIC_NAME GetTocName() {
+        return m_TocName;
+    }
 
- public:
-  tmSymbol();
+  public:
+    tmSymbol();
 
-  ~tmSymbol();
+    ~tmSymbol();
 
-  static tmSymbol *CreateSymbolBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname);
+    static tmSymbol* CreateSymbolBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname);
 
-  static tmSymbol *CreateCopySymbolBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname,
-                                               tmSymbol *origin);
+    static tmSymbol* CreateCopySymbolBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname,
+                                                 tmSymbol* origin);
 
-  int ShowSymbologyDialog(wxWindow *parent, const wxPoint &dlgpos = wxDefaultPosition);
+    int ShowSymbologyDialog(wxWindow* parent, const wxPoint& dlgpos = wxDefaultPosition);
 
-  virtual int ShowLabelDialog(wxWindow *parent, tmLayerProperties *properties, const wxPoint &pos = wxDefaultPosition);
+    virtual int ShowLabelDialog(wxWindow* parent, tmLayerProperties* properties,
+                                const wxPoint& pos = wxDefaultPosition);
 
-  virtual bool Serialize(tmSerialize &s);
+    virtual bool Serialize(tmSerialize& s);
 
-  virtual int GetTransparency() {
-    return 0;
-  }
+    virtual int GetTransparency() {
+        return 0;
+    }
 
-  void SetDatabase(DataBaseTM *database) {
-    m_pDB = database;
-  }
+    void SetDatabase(DataBaseTM* database) {
+        m_pDB = database;
+    }
 
-  void SetTocName(TOC_GENERIC_NAME tocname) {
-    m_TocName = tocname;
-  }
+    void SetTocName(TOC_GENERIC_NAME tocname) {
+        m_TocName = tocname;
+    }
 };
 
 #endif

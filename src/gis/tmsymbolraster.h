@@ -31,30 +31,30 @@
 #include "tmsymboldlgraster.h"  // raster dialog definition
 
 class tmSymbolRaster : public tmSymbol {
- private:
-  tmSymbolDataRaster m_RasterData;
+  private:
+    tmSymbolDataRaster m_RasterData;
 
-  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+    virtual tmSymbolDLG* GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos);
 
-  virtual bool GetDialogData(tmSymbolDLG *dlg);
+    virtual bool GetDialogData(tmSymbolDLG* dlg);
 
- protected:
- public:
-  tmSymbolRaster();
+  protected:
+  public:
+    tmSymbolRaster();
 
-  tmSymbolRaster(const tmSymbolRaster &origin);
+    tmSymbolRaster(const tmSymbolRaster& origin);
 
-  ~tmSymbolRaster();
+    ~tmSymbolRaster();
 
-  virtual bool Serialize(tmSerialize &s);
+    virtual bool Serialize(tmSerialize& s);
 
-  virtual int GetTransparency() {
-    return m_RasterData.m_GlobalTransparency;
-  }
+    virtual int GetTransparency() {
+        return m_RasterData.m_GlobalTransparency;
+    }
 
-  bool GetDoMultiply() {
-    return m_RasterData.m_DoMultiplyRaster;
-  }
+    bool GetDoMultiply() {
+        return m_RasterData.m_DoMultiplyRaster;
+    }
 };
 
 #endif

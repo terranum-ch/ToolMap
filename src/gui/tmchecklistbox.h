@@ -54,85 +54,86 @@ const int tmCHECK_MENU_TOGGLE_FREQUENT = 13005;
   @date 14 May 2008
   *******************************************************************************/
 class tmCheckListBox : public wxCheckListBox {
- private:
-  wxArrayLong m_ids;
-  wxArrayLong m_originalIds;
-  wxArrayString m_originalLabels;
-  wxArrayShort m_originalChecks;
-  wxMenu *m_PopupMenu;
+  private:
+    wxArrayLong m_ids;
+    wxArrayLong m_originalIds;
+    wxArrayString m_originalLabels;
+    wxArrayShort m_originalChecks;
+    wxMenu* m_PopupMenu;
 
-  bool CreateStandardMenu();
+    bool CreateStandardMenu();
 
-  // event functions
-  void OnDisplayPopupMenu(wxMouseEvent &event);
+    // event functions
+    void OnDisplayPopupMenu(wxMouseEvent& event);
 
-  void OnMoveItemInList(wxCommandEvent &event);
+    void OnMoveItemInList(wxCommandEvent& event);
 
-  void OnToggleFrequent(wxCommandEvent &event);
+    void OnToggleFrequent(wxCommandEvent& event);
 
- protected:
-  bool m_IsFiltered;
-  // wxArrayInt m_Selections;
+  protected:
+    bool m_IsFiltered;
+    // wxArrayInt m_Selections;
 
-  void Init() {
-    m_PopupMenu = nullptr;
-    m_IsFiltered = false;
-  }
+    void Init() {
+        m_PopupMenu = nullptr;
+        m_IsFiltered = false;
+    }
 
-  wxMenu *GetPopupMenu() {
-    return m_PopupMenu;
-  }
+    wxMenu* GetPopupMenu() {
+        return m_PopupMenu;
+    }
 
-  virtual void EnableRelevantMenuEntries();
+    virtual void EnableRelevantMenuEntries();
 
- public:
-  // ctor
-  tmCheckListBox() {
-    Init();
-  }
+  public:
+    // ctor
+    tmCheckListBox() {
+        Init();
+    }
 
-  ~tmCheckListBox();
+    ~tmCheckListBox();
 
-  tmCheckListBox(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-                 const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr, long style = 0,
-                 const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr) {
-    Init();
-    Create(parent, id, pos, size, nStrings, choices, style, validator, name);
-  }
+    tmCheckListBox(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                   const wxSize& size = wxDefaultSize, int nStrings = 0, const wxString* choices = nullptr,
+                   long style = 0, const wxValidator& validator = wxDefaultValidator,
+                   const wxString& name = wxListBoxNameStr) {
+        Init();
+        Create(parent, id, pos, size, nStrings, choices, style, validator, name);
+    }
 
-  bool Create(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr, long style = 0,
-              const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr);
+    bool Create(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize, int nStrings = 0, const wxString* choices = nullptr, long style = 0,
+                const wxValidator& validator = wxDefaultValidator, const wxString& name = wxListBoxNameStr);
 
-  // functions
-  bool AddItem(long index = -1, long id = -1, const wxString &name = wxEmptyString, bool checked = false,
-               bool keepFilters = false);
+    // functions
+    bool AddItem(long index = -1, long id = -1, const wxString& name = wxEmptyString, bool checked = false,
+                 bool keepFilters = false);
 
-  bool RemoveItem(long index = -1);
+    bool RemoveItem(long index = -1);
 
-  bool EditItem(long index, long id = -1, const wxString &name = wxEmptyString, short checked = 2);
+    bool EditItem(long index, long id = -1, const wxString& name = wxEmptyString, short checked = 2);
 
-  bool SwapItem(long index1, long index2 = -1);
+    bool SwapItem(long index1, long index2 = -1);
 
-  bool MoveItem(long index1, long index2);
+    bool MoveItem(long index1, long index2);
 
-  bool GetItem(long index, long &id, wxString &name, bool &bcheck);
+    bool GetItem(long index, long& id, wxString& name, bool& bcheck);
 
-  bool GetItemId(long index, long &id);
+    bool GetItemId(long index, long& id);
 
-  bool SetItemCheck(long index, short checked = 2);
+    bool SetItemCheck(long index, short checked = 2);
 
-  void ClearItems();
+    void ClearItems();
 
-  void ClearFilters();
+    void ClearFilters();
 
-  void ClearCheckMarks();
+    void ClearCheckMarks();
 
-  void Filter(wxString filter);
+    void Filter(wxString filter);
 
-  void ResetOriginalArrays();
+    void ResetOriginalArrays();
 
-  bool StoreActualChecks();
+    bool StoreActualChecks();
 };
 
 #endif

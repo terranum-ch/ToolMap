@@ -19,28 +19,28 @@
 #include "../database/database_tm.h"
 
 int QueriesWizard::ShowWizard() {
-  if (RunWizard(m_PageIntro)) {
-    return wxID_OK;
-  } else {
-    return wxID_CANCEL;
-  }
+    if (RunWizard(m_PageIntro)) {
+        return wxID_OK;
+    } else {
+        return wxID_CANCEL;
+    }
 }
 
-QueriesWizard::QueriesWizard(wxWindow *parent, DataBaseTM *database, int id)
+QueriesWizard::QueriesWizard(wxWindow* parent, DataBaseTM* database, int id)
     : wxWizard(parent, id, _("Query Wizard"), wxNullBitmap, wxDefaultPosition) {
-  m_pDB = database;
-  wxASSERT(m_pDB);
-  m_PageIntro = new QueriesPageIntro(this, m_pDB);
+    m_pDB = database;
+    wxASSERT(m_pDB);
+    m_PageIntro = new QueriesPageIntro(this, m_pDB);
 
-  m_QueryData = new QueriesData();
+    m_QueryData = new QueriesData();
 
-  GetPageAreaSizer()->Add(m_PageIntro);
-  wxSize mySize = GetPageAreaSizer()->CalcMin();
-  SetMinSize(mySize);
-  SetPageSize(mySize);
+    GetPageAreaSizer()->Add(m_PageIntro);
+    wxSize mySize = GetPageAreaSizer()->CalcMin();
+    SetMinSize(mySize);
+    SetPageSize(mySize);
 }
 
 QueriesWizard::~QueriesWizard() {
-  delete m_QueryData;
-  this->Destroy();
+    delete m_QueryData;
+    this->Destroy();
 }

@@ -45,26 +45,26 @@
   @date 12 March 2008
  *******************************************************************************/
 class MenuManager : public wxObject {
- private:
-  wxMenuBar *m_MenuBar;
-  wxFileHistory *m_pFilesHistory;
-  DECLARE_CLASS(MenuManager);
+  private:
+    wxMenuBar* m_MenuBar;
+    wxFileHistory* m_pFilesHistory;
+    DECLARE_CLASS(MenuManager);
 
- public:
-  MenuManager(wxMenuBar *menubar);
+  public:
+    MenuManager(wxMenuBar* menubar);
 
-  ~MenuManager();
+    ~MenuManager();
 
-  // deals with recent files
-  void InitializeRecentFilesHistory();
+    // deals with recent files
+    void InitializeRecentFilesHistory();
 
-  void TerminateRecentFilesHistory();
+    void TerminateRecentFilesHistory();
 
-  void AddFileToRecent(const wxString &spath);
+    void AddFileToRecent(const wxString& spath);
 
-  void RemoveFileFromRecent(int fileid);
+    void RemoveFileFromRecent(int fileid);
 
-  bool GetRecentFile(wxString &filepath, int fileid);
+    bool GetRecentFile(wxString& filepath, int fileid);
 };
 
 #endif

@@ -59,136 +59,137 @@
 #define SYMBOL_PROJECTDEFFIELDDLG_POSITION wxDefaultPosition
 
 class ProjectDefFieldList : public ListGenReportWithDialog {
- private:
-  ProjectDefMemoryFieldsCodedVal *m_CodedValueObj;
-  PrjDefMemManage *m_pPrjDefinition;
-  int m_ChoiceIndex;
+  private:
+    ProjectDefMemoryFieldsCodedVal* m_CodedValueObj;
+    PrjDefMemManage* m_pPrjDefinition;
+    int m_ChoiceIndex;
 
-  // void OnMySelectionChange (wxListEvent & event);
+    // void OnMySelectionChange (wxListEvent & event);
 
-  virtual void AfterAdding(bool bRealyAddItem);
+    virtual void AfterAdding(bool bRealyAddItem);
 
-  virtual void AfterEditing(bool bRealyEdited);
+    virtual void AfterEditing(bool bRealyEdited);
 
-  virtual void BeforeAdding();
+    virtual void BeforeAdding();
 
-  virtual void BeforeDeleting();
+    virtual void BeforeDeleting();
 
-  virtual void BeforeEditing();
+    virtual void BeforeEditing();
 
-  virtual void AddingValueToArray(wxArrayString &myImportedValues);
+    virtual void AddingValueToArray(wxArrayString& myImportedValues);
 
- public:
-  static const int ID_PARAMLIST;
+  public:
+    static const int ID_PARAMLIST;
 
-  ProjectDefFieldList(wxWindow *parent, wxWindowID id, wxSize size);
+    ProjectDefFieldList(wxWindow* parent, wxWindowID id, wxSize size);
 
-  ~ProjectDefFieldList();
+    ~ProjectDefFieldList();
 
-  void PassPrjDefToList(PrjDefMemManage *myPrjMemManage) {
-    m_pPrjDefinition = myPrjMemManage;
-  }
+    void PassPrjDefToList(PrjDefMemManage* myPrjMemManage) {
+        m_pPrjDefinition = myPrjMemManage;
+    }
 
-  // int GetParamType (wxString myTextParam);
-  //
-  // wxString GetParamType (int imyType);
-  //
-  // void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
-  // void SetChoiceList (wxChoice * myChoiceList) {m_ChoiceToDefault = myChoiceList;}
-  // DECLARE_EVENT_TABLE();
+    // int GetParamType (wxString myTextParam);
+    //
+    // wxString GetParamType (int imyType);
+    //
+    // void AddItemToParamList(wxString myValue, wxString myComment, ACOMMENTPOSITION type);
+    // void SetChoiceList (wxChoice * myChoiceList) {m_ChoiceToDefault = myChoiceList;}
+    // DECLARE_EVENT_TABLE();
 };
 
 class ProjectDefFieldDlg : public wxDialog {
-  PRJDEF_FIELD_TYPE m_FieldTypeStatus;
+    PRJDEF_FIELD_TYPE m_FieldTypeStatus;
 
-  ProjectDefMemoryFields *m_MemoryField;
-  PrjDefMemManage *m_pPrjDefinition;
+    ProjectDefMemoryFields* m_MemoryField;
+    PrjDefMemManage* m_pPrjDefinition;
 
-  // event functions
-  void OnShowLiveResults(wxCommandEvent &event);
+    // event functions
+    void OnShowLiveResults(wxCommandEvent& event);
 
-  void OnAddAllowedValue(wxCommandEvent &event);
+    void OnAddAllowedValue(wxCommandEvent& event);
 
-  void OnImportAllowedValue(wxCommandEvent &event);
+    void OnImportAllowedValue(wxCommandEvent& event);
 
-  void OnRemoveAllowedValue(wxCommandEvent &event);
+    void OnRemoveAllowedValue(wxCommandEvent& event);
 
-  void OnExportAllowedValue(wxCommandEvent &event);
+    void OnExportAllowedValue(wxCommandEvent& event);
 
-  // void OnFieldNameChange (wxCommandEvent & event);
-  void OnIdleValidateDlg(wxIdleEvent &event);
+    // void OnFieldNameChange (wxCommandEvent & event);
+    void OnIdleValidateDlg(wxIdleEvent& event);
 
-  // transfering data private function.
-  void TransfertTextValues(bool bSendDataToDlg = FALSE);
+    // transfering data private function.
+    void TransfertTextValues(bool bSendDataToDlg = FALSE);
 
-  void TransfertIntegerValues(bool bSendDataToDlg = FALSE);
+    void TransfertIntegerValues(bool bSendDataToDlg = FALSE);
 
-  void TransfertFloatValues(bool bSendDataToDlg = FALSE);
+    void TransfertFloatValues(bool bSendDataToDlg = FALSE);
 
-  void TransfertDateValues(bool bSendDataToDlg = FALSE);
+    void TransfertDateValues(bool bSendDataToDlg = FALSE);
 
-  void TransfertEnumValues(bool bSendDataToDlg = FALSE);
+    void TransfertEnumValues(bool bSendDataToDlg = FALSE);
 
-  bool m_bIsModeEditing;
+    bool m_bIsModeEditing;
 
-  void DisableControlsForEdition();
+    void DisableControlsForEdition();
 
-  void HideUnusedTabs(int iIndexShow);
+    void HideUnusedTabs(int iIndexShow);
 
-  void _SetValidator();
+    void _SetValidator();
 
-  DECLARE_DYNAMIC_CLASS(ProjectDefFieldDlg);
-  DECLARE_EVENT_TABLE();
+    DECLARE_DYNAMIC_CLASS(ProjectDefFieldDlg);
+    DECLARE_EVENT_TABLE();
 
- public:
-  /// Constructors
-  ProjectDefFieldDlg();
+  public:
+    /// Constructors
+    ProjectDefFieldDlg();
 
-  ProjectDefFieldDlg(wxWindow *parent, PrjDefMemManage *myPrjMemManage, bool isEditingMode = FALSE,
-                     wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME,
-                     const wxString &caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE,
-                     const wxPoint &pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION,
-                     const wxSize &size = SYMBOL_PROJECTDEFFIELDDLG_SIZE, long style = SYMBOL_PROJECTDEFFIELDDLG_STYLE);
+    ProjectDefFieldDlg(wxWindow* parent, PrjDefMemManage* myPrjMemManage, bool isEditingMode = FALSE,
+                       wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME,
+                       const wxString& caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE,
+                       const wxPoint& pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION,
+                       const wxSize& size = SYMBOL_PROJECTDEFFIELDDLG_SIZE,
+                       long style = SYMBOL_PROJECTDEFFIELDDLG_STYLE);
 
-  /// Creation
-  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME,
-              const wxString &caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE,
-              const wxPoint &pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION,
-              const wxSize &size = SYMBOL_PROJECTDEFFIELDDLG_SIZE, long style = SYMBOL_PROJECTDEFFIELDDLG_STYLE);
+    /// Creation
+    bool Create(wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFFIELDDLG_IDNAME,
+                const wxString& caption = SYMBOL_PROJECTDEFFIELDDLG_TITLE,
+                const wxPoint& pos = SYMBOL_PROJECTDEFFIELDDLG_POSITION,
+                const wxSize& size = SYMBOL_PROJECTDEFFIELDDLG_SIZE, long style = SYMBOL_PROJECTDEFFIELDDLG_STYLE);
 
-  /// Destructor
-  ~ProjectDefFieldDlg();
+    /// Destructor
+    ~ProjectDefFieldDlg();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-  void SetMemoryFieldObject(ProjectDefMemoryFields *myMemField) {
-    m_MemoryField = myMemField;
-  }
+    void SetMemoryFieldObject(ProjectDefMemoryFields* myMemField) {
+        m_MemoryField = myMemField;
+    }
 
-  ProjectDefMemoryFields *GetMemoryFieldObject() {
-    return m_MemoryField;
-  }
+    ProjectDefMemoryFields* GetMemoryFieldObject() {
+        return m_MemoryField;
+    }
 
-  /// Transfer data, is called automaticaly
-  /// when the dialog is disabled
-  virtual bool TransferDataFromWindow();
+    /// Transfer data, is called automaticaly
+    /// when the dialog is disabled
+    virtual bool TransferDataFromWindow();
 
-  virtual bool TransferDataToWindow();
+    virtual bool TransferDataToWindow();
 
-  ProjectDefFieldList *m_DlgAFD_Coded_Val_List;
-  wxTextCtrl *m_DlgAFD_Field_Def;
-  wxChoicebook *m_DlgAFD_Choicebook;
-  wxSpinCtrl *m_DlgAFD_Text_Length;
-  // wxCheckBox* m_DlgAFD_Orientation_Integer;
-  wxSpinCtrl *m_DlgAFD_Field_Precision;
-  wxSpinCtrl *m_DlgAFD_Field_Scale;
-  wxTextCtrl *m_DlgAFD_Result;
-  // wxCheckBox* m_DlgAFD_Orientation_Float;
-  wxButton *m_DlgAFD_Button_OK;
+    ProjectDefFieldList* m_DlgAFD_Coded_Val_List;
+    wxTextCtrl* m_DlgAFD_Field_Def;
+    wxChoicebook* m_DlgAFD_Choicebook;
+    wxSpinCtrl* m_DlgAFD_Text_Length;
+    // wxCheckBox* m_DlgAFD_Orientation_Integer;
+    wxSpinCtrl* m_DlgAFD_Field_Precision;
+    wxSpinCtrl* m_DlgAFD_Field_Scale;
+    wxTextCtrl* m_DlgAFD_Result;
+    // wxCheckBox* m_DlgAFD_Orientation_Float;
+    wxButton* m_DlgAFD_Button_OK;
 };
 
 #endif

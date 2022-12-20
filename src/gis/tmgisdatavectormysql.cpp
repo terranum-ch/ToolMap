@@ -23,133 +23,133 @@
 #include "tmattributiondatapoint.h"
 
 // init static member
-DataBaseTM *tmGISDataVectorMYSQL::m_DB = nullptr;
+DataBaseTM* tmGISDataVectorMYSQL::m_DB = nullptr;
 
 tmGISDataVectorMYSQL::tmGISDataVectorMYSQL() {
-  m_PrjDef = nullptr;
-  m_ClassType = tmGIS_VECTOR_MYSQL;
+    m_PrjDef = nullptr;
+    m_ClassType = tmGIS_VECTOR_MYSQL;
 }
 
 tmGISDataVectorMYSQL::~tmGISDataVectorMYSQL() {}
 
-bool tmGISDataVectorMYSQL::CheckGeometryFields(const wxString &tablename) {
-  wxASSERT(m_DB);
-  wxString sSentence = _T("");
-  sSentence = wxString::Format(
-      _T("SELECT COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS WHERE ")
-      _T("table_schema=\"%s\" AND table_name='%s' ")
-      _T("AND COLUMN_NAME IN ('%s','%s');"),
-      m_DB->DataBaseGetName().c_str(), tablename.c_str(), tmGISMYSQL_FIELD1.c_str(), tmGISMYSQL_FIELD2.c_str());
+bool tmGISDataVectorMYSQL::CheckGeometryFields(const wxString& tablename) {
+    wxASSERT(m_DB);
+    wxString sSentence = _T("");
+    sSentence = wxString::Format(
+        _T("SELECT COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS WHERE ")
+        _T("table_schema=\"%s\" AND table_name='%s' ")
+        _T("AND COLUMN_NAME IN ('%s','%s');"),
+        m_DB->DataBaseGetName().c_str(), tablename.c_str(), tmGISMYSQL_FIELD1.c_str(), tmGISMYSQL_FIELD2.c_str());
 
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    if (IsLoggingEnabled()) {
-      wxLogDebug(_T("Error checking geometry fields : %s"), sSentence.c_str());
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Error checking geometry fields : %s"), sSentence.c_str());
+        }
+        return false;
     }
-    return false;
-  }
-  long myRows = 0;
-  if (!m_DB->DataBaseGetResultSize(nullptr, &myRows)) return false;
+    long myRows = 0;
+    if (!m_DB->DataBaseGetResultSize(nullptr, &myRows)) return false;
 
-  wxASSERT(myRows == 2);
-  m_DB->DataBaseClearResults();
+    wxASSERT(myRows == 2);
+    m_DB->DataBaseClearResults();
 
-  /*if (m_DB->DatabaseGetCountResults() != 2)
-  {
-      if (IsLoggingEnabled())
-          wxLogDebug(_T("The table : %s dosen't contain needed geometry fields"), tablename.c_str());
-      return FALSE;
-  }*/
+    /*if (m_DB->DatabaseGetCountResults() != 2)
+    {
+        if (IsLoggingEnabled())
+            wxLogDebug(_T("The table : %s dosen't contain needed geometry fields"), tablename.c_str());
+        return FALSE;
+    }*/
 
-  return true;
+    return true;
 }
 
-bool tmGISDataVectorMYSQL::Open(const wxString &filename, bool bReadWrite) {
-  tmGISData::Open(filename, bReadWrite);
+bool tmGISDataVectorMYSQL::Open(const wxString& filename, bool bReadWrite) {
+    tmGISData::Open(filename, bReadWrite);
 
-  // ensure that we have set a valid pointer to the database
-  wxASSERT(m_DB);
-  if (!m_DB) {
-    if (IsLoggingEnabled()) {
-      wxLogDebug(_T("Pointer to database invalid, open database first"));
+    // ensure that we have set a valid pointer to the database
+    wxASSERT(m_DB);
+    if (!m_DB) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Pointer to database invalid, open database first"));
+        }
+        return FALSE;
     }
-    return FALSE;
-  }
 
-  // TODO: Only checks those once
-  // does the table exists ?
-  /*if(!m_DB->DataBaseTableExist(filename))
-  {
-      if (IsLoggingEnabled())
-          wxLogDebug(_T("Table '%s' dosen't exists in the database"), filename.c_str());
-      return FALSE;
-  }*/
+    // TODO: Only checks those once
+    // does the table exists ?
+    /*if(!m_DB->DataBaseTableExist(filename))
+    {
+        if (IsLoggingEnabled())
+            wxLogDebug(_T("Table '%s' dosen't exists in the database"), filename.c_str());
+        return FALSE;
+    }*/
 
-  // does the fields exists ?
-  // if (!CheckGeometryFields(filename))
-  // return FALSE;
+    // does the fields exists ?
+    // if (!CheckGeometryFields(filename))
+    // return FALSE;
 
-  return TRUE;
+    return TRUE;
 }
 
 tmRealRect tmGISDataVectorMYSQL::GetMinimalBoundingRectangle() {
-  OGREnvelope *psExtent = new OGREnvelope();
-  OGREnvelope oEnv;
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+    OGREnvelope* psExtent = new OGREnvelope();
+    OGREnvelope oEnv;
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-  // query for the geometry enveloppe for all lines
-  wxString sSentence =
-      wxString::Format(_T("SELECT Envelope(%s) FROM %s"), tmGISMYSQL_FIELD2.c_str(), GetShortFileName().c_str());
+    // query for the geometry enveloppe for all lines
+    wxString sSentence = wxString::Format(_T("SELECT Envelope(%s) FROM %s"), tmGISMYSQL_FIELD2.c_str(),
+                                          GetShortFileName().c_str());
 
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    wxDELETE(psExtent);
-    return tmRealRect(0, 0, 0, 0);
-  }
-
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    wxDELETE(psExtent);
-    return tmRealRect(0, 0, 0, 0);
-  }
-
-  OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
-  wxASSERT(poGeometry);
-
-  poGeometry->getEnvelope(&oEnv);
-  psExtent->MinX = oEnv.MinX;
-  psExtent->MinY = oEnv.MinY;
-  psExtent->MaxX = oEnv.MaxX;
-  psExtent->MaxY = oEnv.MaxY;
-
-  OGRGeometryFactory::destroyGeometry(poGeometry);
-
-  // loop all lines
-  while (m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    // compute the geometry and get the xmin xmax, ymin, ymax
-    OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_length);
-    if (poGeometry != nullptr) {
-      poGeometry->getEnvelope(&oEnv);
-      if (oEnv.MinX < psExtent->MinX) psExtent->MinX = oEnv.MinX;
-      if (oEnv.MinY < psExtent->MinY) psExtent->MinY = oEnv.MinY;
-      if (oEnv.MaxX > psExtent->MaxX) psExtent->MaxX = oEnv.MaxX;
-      if (oEnv.MaxY > psExtent->MaxY) psExtent->MaxY = oEnv.MaxY;
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        wxDELETE(psExtent);
+        return tmRealRect(0, 0, 0, 0);
     }
+
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        wxDELETE(psExtent);
+        return tmRealRect(0, 0, 0, 0);
+    }
+
+    OGRGeometry* poGeometry = CreateDataBaseGeometry(row, row_length);
+    wxASSERT(poGeometry);
+
+    poGeometry->getEnvelope(&oEnv);
+    psExtent->MinX = oEnv.MinX;
+    psExtent->MinY = oEnv.MinY;
+    psExtent->MaxX = oEnv.MaxX;
+    psExtent->MaxY = oEnv.MaxY;
+
     OGRGeometryFactory::destroyGeometry(poGeometry);
-  }
-  m_DB->DataBaseClearResults();
-  tmRealRect myRect(psExtent->MinX, psExtent->MinY, psExtent->MaxX, psExtent->MaxY);
-  wxDELETE(psExtent);
-  return myRect;
+
+    // loop all lines
+    while (m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        // compute the geometry and get the xmin xmax, ymin, ymax
+        OGRGeometry* poGeometry = CreateDataBaseGeometry(row, row_length);
+        if (poGeometry != nullptr) {
+            poGeometry->getEnvelope(&oEnv);
+            if (oEnv.MinX < psExtent->MinX) psExtent->MinX = oEnv.MinX;
+            if (oEnv.MinY < psExtent->MinY) psExtent->MinY = oEnv.MinY;
+            if (oEnv.MaxX > psExtent->MaxX) psExtent->MaxX = oEnv.MaxX;
+            if (oEnv.MaxY > psExtent->MaxY) psExtent->MaxY = oEnv.MaxY;
+        }
+        OGRGeometryFactory::destroyGeometry(poGeometry);
+    }
+    m_DB->DataBaseClearResults();
+    tmRealRect myRect(psExtent->MinX, psExtent->MinY, psExtent->MaxX, psExtent->MaxY);
+    wxDELETE(psExtent);
+    return myRect;
 }
 
-OGRGeometry *tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW &row, const tmArrayULong &row_lengths,
+OGRGeometry* tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW& row, const tmArrayULong& row_lengths,
                                                           int geometry_col) {
-  OGRGeometry *geometry = nullptr;
-  // Geometry columns will have the first 4 bytes contain the SRID.
-  OGRGeometryFactory::createFromWkb(((unsigned char *)row[geometry_col]) + 4, nullptr, &geometry,
-                                    row_lengths.Item(geometry_col) - 4);
+    OGRGeometry* geometry = nullptr;
+    // Geometry columns will have the first 4 bytes contain the SRID.
+    OGRGeometryFactory::createFromWkb(((unsigned char*)row[geometry_col]) + 4, nullptr, &geometry,
+                                      row_lengths.Item(geometry_col) - 4);
 
-  return geometry;
+    return geometry;
 }
 
 /***************************************************************************/ /**
@@ -160,11 +160,11 @@ OGRGeometry *tmGISDataVectorMYSQL::CreateDataBaseGeometry(MYSQL_ROW &row, const 
   @author Lucien Schreiber (c) CREALP 2008
   @date 30 October 2008
   *******************************************************************************/
-long tmGISDataVectorMYSQL::GetOid(MYSQL_ROW &row, const int &col) {
-  if (!row) return 0;
-  long lreturnOID = 0;
-  wxString(row[col], wxConvUTF8).ToLong(&lreturnOID);
-  return lreturnOID;
+long tmGISDataVectorMYSQL::GetOid(MYSQL_ROW& row, const int& col) {
+    if (!row) return 0;
+    long lreturnOID = 0;
+    wxString(row[col], wxConvUTF8).ToLong(&lreturnOID);
+    return lreturnOID;
 }
 
 /***************************************************************************/ /**
@@ -178,195 +178,195 @@ long tmGISDataVectorMYSQL::GetOid(MYSQL_ROW &row, const int &col) {
   @date 09 September 2008
   *******************************************************************************/
 bool tmGISDataVectorMYSQL::SetSpatialFilter(tmRealRect filter, int type) {
-  // m_DB->DataBaseDestroyResults();
+    // m_DB->DataBaseDestroyResults();
 
-  wxString table = GetTableName((TOC_GENERIC_NAME)type);
-  // check that a table is specified.
-  if (table.IsEmpty()) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("No database table specified"));
+    wxString table = GetTableName((TOC_GENERIC_NAME)type);
+    // check that a table is specified.
+    if (table.IsEmpty()) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("No database table specified"));
+        }
+        return false;
     }
-    return false;
-  }
 
-  wxString sFilter = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), filter.x_min, filter.y_min,
-                                      filter.x_max, filter.y_min, filter.x_max, filter.y_max, filter.x_min,
-                                      filter.y_max, filter.x_min, filter.y_min);
-  wxString sSentence = wxString::Format(
-      _T("SELECT %s, %s FROM %s WHERE ")
-      _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
-      tmGISMYSQL_FIELD1.c_str(), tmGISMYSQL_FIELD2.c_str(), table.c_str(), sFilter.c_str());
-  if (m_DB->DataBaseQuery(sSentence)) {
-    bool bResult = m_DB->DataBaseHasResults();
-    return bResult;
-    // return TRUE;
-  }
+    wxString sFilter = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), filter.x_min, filter.y_min,
+                                        filter.x_max, filter.y_min, filter.x_max, filter.y_max, filter.x_min,
+                                        filter.y_max, filter.x_min, filter.y_min);
+    wxString sSentence = wxString::Format(
+        _T("SELECT %s, %s FROM %s WHERE ")
+        _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+        tmGISMYSQL_FIELD1.c_str(), tmGISMYSQL_FIELD2.c_str(), table.c_str(), sFilter.c_str());
+    if (m_DB->DataBaseQuery(sSentence)) {
+        bool bResult = m_DB->DataBaseHasResults();
+        return bResult;
+        // return TRUE;
+    }
 
-  if (IsLoggingEnabled()) {
-    wxLogDebug(wxString::Format(_T("Error setting spatial filter")));
-  }
+    if (IsLoggingEnabled()) {
+        wxLogDebug(wxString::Format(_T("Error setting spatial filter")));
+    }
 
-  return FALSE;
+    return FALSE;
 }
 
 wxString tmGISDataVectorMYSQL::GetTableName(TOC_GENERIC_NAME type) {
-  if (type < TABLE_NAME_GIS_GENERIC_NUMBER) {
-    return wxString(TABLE_NAME_GIS_GENERIC[type]);
-  }
-  return _T("");
+    if (type < TABLE_NAME_GIS_GENERIC_NUMBER) {
+        return wxString(TABLE_NAME_GIS_GENERIC[type]);
+    }
+    return _T("");
 }
 
-wxRealPoint *tmGISDataVectorMYSQL::GetNextDataLine(int &nbvertex, long &oid, bool &isOver) {
-  isOver = false;
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+wxRealPoint* tmGISDataVectorMYSQL::GetNextDataLine(int& nbvertex, long& oid, bool& isOver) {
+    isOver = false;
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-  // security check
-  if (!m_DB->DataBaseHasResults()) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("Database should have results..."));
+    // security check
+    if (!m_DB->DataBaseHasResults()) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("Database should have results..."));
+        }
+        nbvertex = 0;
+        isOver = true;
+        return nullptr;
     }
-    nbvertex = 0;
-    isOver = true;
-    return nullptr;
-  }
 
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    nbvertex = 0;
-    isOver = true;
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        nbvertex = 0;
+        isOver = true;
+        return nullptr;
+    }
 
-  OGRLineString *pline = (OGRLineString *)CreateDataBaseGeometry(row, row_length, 1);
-  oid = GetOid(row, 0);
-  wxASSERT(pline);
-  nbvertex = pline->getNumPoints();
-  if (nbvertex <= 1) {
-    if (IsLoggingEnabled()) {
-      wxLogDebug(_T("Only one vertex or less in this line ???"));
+    OGRLineString* pline = (OGRLineString*)CreateDataBaseGeometry(row, row_length, 1);
+    oid = GetOid(row, 0);
+    wxASSERT(pline);
+    nbvertex = pline->getNumPoints();
+    if (nbvertex <= 1) {
+        if (IsLoggingEnabled()) {
+            wxLogDebug(_T("Only one vertex or less in this line ???"));
+        }
+        OGRGeometryFactory::destroyGeometry(pline);
+        return nullptr;
+    }
+
+    wxRealPoint* pts = new wxRealPoint[nbvertex];
+
+    for (int i = 0; i < nbvertex; i++) {
+        pts[i].x = pline->getX(i);
+        pts[i].y = pline->getY(i);
     }
     OGRGeometryFactory::destroyGeometry(pline);
-    return nullptr;
-  }
-
-  wxRealPoint *pts = new wxRealPoint[nbvertex];
-
-  for (int i = 0; i < nbvertex; i++) {
-    pts[i].x = pline->getX(i);
-    pts[i].y = pline->getY(i);
-  }
-  OGRGeometryFactory::destroyGeometry(pline);
-  return pts;
+    return pts;
 }
 
-OGRLineString *tmGISDataVectorMYSQL::GetNextDataLine(long &oid) {
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+OGRLineString* tmGISDataVectorMYSQL::GetNextDataLine(long& oid) {
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-  // security check
-  if (!m_DB->DataBaseHasResults()) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("Database should have results..."));
+    // security check
+    if (!m_DB->DataBaseHasResults()) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("Database should have results..."));
+        }
+        return nullptr;
     }
-    return nullptr;
-  }
 
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        return nullptr;
+    }
 
-  OGRLineString *pline = (OGRLineString *)CreateDataBaseGeometry(row, row_length, 1);
-  oid = GetOid(row, 0);
-  wxASSERT(pline);
-  return pline;
+    OGRLineString* pline = (OGRLineString*)CreateDataBaseGeometry(row, row_length, 1);
+    oid = GetOid(row, 0);
+    wxASSERT(pline);
+    return pline;
 }
 
-OGRPoint *tmGISDataVectorMYSQL::GetOGRNextDataPoint(long &oid) {
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+OGRPoint* tmGISDataVectorMYSQL::GetOGRNextDataPoint(long& oid) {
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-  // security check
-  if (!m_DB->DataBaseHasResults()) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("Database should have results..."));
+    // security check
+    if (!m_DB->DataBaseHasResults()) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("Database should have results..."));
+        }
+        return nullptr;
     }
-    return nullptr;
-  }
 
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        return nullptr;
+    }
 
-  OGRPoint *ppoint = (OGRPoint *)CreateDataBaseGeometry(row, row_length, 1);
-  oid = GetOid(row, 0);
-  return ppoint;
+    OGRPoint* ppoint = (OGRPoint*)CreateDataBaseGeometry(row, row_length, 1);
+    oid = GetOid(row, 0);
+    return ppoint;
 }
 
-OGRPoint *tmGISDataVectorMYSQL::GetNextDataPointWithAttrib(long &oid, wxArrayString &values) {
-  MYSQL_ROW row;
-  tmArrayULong row_length;
-  values.Clear();
+OGRPoint* tmGISDataVectorMYSQL::GetNextDataPointWithAttrib(long& oid, wxArrayString& values) {
+    MYSQL_ROW row;
+    tmArrayULong row_length;
+    values.Clear();
 
-  // security check
-  if (!m_DB->DataBaseHasResults()) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("Database should have results..."));
+    // security check
+    if (!m_DB->DataBaseHasResults()) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("Database should have results..."));
+        }
+        return nullptr;
     }
-    return nullptr;
-  }
 
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        return nullptr;
+    }
 
-  unsigned int iRows = 0;
-  bool bCount = m_DB->DataBaseGetResultSize(&iRows, nullptr);
-  wxASSERT(bCount);
-  wxASSERT(iRows > 2);
-  for (unsigned int i = 2; i < iRows; i++) {
-    values.Add(wxString(row[i], wxConvUTF8));
-  }
+    unsigned int iRows = 0;
+    bool bCount = m_DB->DataBaseGetResultSize(&iRows, nullptr);
+    wxASSERT(bCount);
+    wxASSERT(iRows > 2);
+    for (unsigned int i = 2; i < iRows; i++) {
+        values.Add(wxString(row[i], wxConvUTF8));
+    }
 
-  OGRPoint *ppoint = (OGRPoint *)CreateDataBaseGeometry(row, row_length, 1);
-  oid = GetOid(row, 0);
-  return ppoint;
+    OGRPoint* ppoint = (OGRPoint*)CreateDataBaseGeometry(row, row_length, 1);
+    oid = GetOid(row, 0);
+    return ppoint;
 }
 
-wxRealPoint *tmGISDataVectorMYSQL::GetNextDataPoint(long &oid, bool &isOver) {
-  isOver = false;
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+wxRealPoint* tmGISDataVectorMYSQL::GetNextDataPoint(long& oid, bool& isOver) {
+    isOver = false;
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-  // security check
-  if (!m_DB->DataBaseHasResults()) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("Database should have results..."));
+    // security check
+    if (!m_DB->DataBaseHasResults()) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("Database should have results..."));
+        }
+        isOver = true;
+        return nullptr;
     }
-    isOver = true;
-    return nullptr;
-  }
 
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    isOver = true;
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        isOver = true;
+        return nullptr;
+    }
 
-  OGRPoint *pPoint = (OGRPoint *)CreateDataBaseGeometry(row, row_length, 1);
-  oid = GetOid(row, 0);
-  wxASSERT(pPoint);
+    OGRPoint* pPoint = (OGRPoint*)CreateDataBaseGeometry(row, row_length, 1);
+    oid = GetOid(row, 0);
+    wxASSERT(pPoint);
 
-  wxRealPoint *pts = new wxRealPoint;
+    wxRealPoint* pts = new wxRealPoint;
 
-  pts->x = pPoint->getX();
-  pts->y = pPoint->getY();
+    pts->x = pPoint->getX();
+    pts->y = pPoint->getY();
 
-  OGRGeometryFactory::destroyGeometry(pPoint);
-  return pts;
+    OGRGeometryFactory::destroyGeometry(pPoint);
+    return pts;
 }
 
 /***************************************************************************/ /**
@@ -380,34 +380,34 @@ wxRealPoint *tmGISDataVectorMYSQL::GetNextDataPoint(long &oid, bool &isOver) {
   @date 23 October 2008
   *******************************************************************************/
 TM_GIS_SPATIAL_TYPES tmGISDataVectorMYSQL::GetSpatialType() {
-  TM_GIS_SPATIAL_TYPES myRetVal = LAYER_ERR;
+    TM_GIS_SPATIAL_TYPES myRetVal = LAYER_ERR;
 
-  wxString sSentence = _T("");
-  sSentence = wxString::Format(
-      _T("SELECT COLUMN_TYPE from INFORMATION_SCHEMA.COLUMNS WHERE ")
-      _T("table_schema=\"%s\" AND ")
-      _T("table_name='%s' AND COLUMN_NAME IN ('%s')"),
-      m_DB->DataBaseGetName().c_str(), GetFullFileName().c_str(), tmGISMYSQL_FIELD2.c_str());
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    wxLogDebug(_T("Error getting table type"));
+    wxString sSentence = _T("");
+    sSentence = wxString::Format(
+        _T("SELECT COLUMN_TYPE from INFORMATION_SCHEMA.COLUMNS WHERE ")
+        _T("table_schema=\"%s\" AND ")
+        _T("table_name='%s' AND COLUMN_NAME IN ('%s')"),
+        m_DB->DataBaseGetName().c_str(), GetFullFileName().c_str(), tmGISMYSQL_FIELD2.c_str());
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        wxLogDebug(_T("Error getting table type"));
+        return myRetVal;
+    }
+
+    wxString myResult = _T("");
+    if (!m_DB->DataBaseGetNextResult(myResult)) return myRetVal;
+
+    m_DB->DataBaseClearResults();
+
+    if (myResult == tmGISMYSQL_TEXT_TYPES[0])
+        myRetVal = LAYER_SPATIAL_LINE;  // lines
+
+    else if (myResult == tmGISMYSQL_TEXT_TYPES[1])
+        myRetVal = LAYER_SPATIAL_POINT;  // points
+
+    else if (myResult == tmGISMYSQL_TEXT_TYPES[2])
+        myRetVal = LAYER_SPATIAL_POLYGON;  // polygons
+
     return myRetVal;
-  }
-
-  wxString myResult = _T("");
-  if (!m_DB->DataBaseGetNextResult(myResult)) return myRetVal;
-
-  m_DB->DataBaseClearResults();
-
-  if (myResult == tmGISMYSQL_TEXT_TYPES[0])
-    myRetVal = LAYER_SPATIAL_LINE;  // lines
-
-  else if (myResult == tmGISMYSQL_TEXT_TYPES[1])
-    myRetVal = LAYER_SPATIAL_POINT;  // points
-
-  else if (myResult == tmGISMYSQL_TEXT_TYPES[2])
-    myRetVal = LAYER_SPATIAL_POLYGON;  // polygons
-
-  return myRetVal;
 }
 
 /***************************************************************************/ /**
@@ -417,23 +417,23 @@ TM_GIS_SPATIAL_TYPES tmGISDataVectorMYSQL::GetSpatialType() {
   @date 22 October 2008
   *******************************************************************************/
 wxString tmGISDataVectorMYSQL::GetMetaDataAsHtml() {
-  wxString myType = TM_GIS_SPATIAL_TYPES_STRING[GetSpatialType()];
-  wxString myResult = _T("");
-  myResult.Append(_("<B><U>Embedded table Name</B></U><BR>"));
-  myResult.Append(GetFullFileName() + _T("<BR><BR>"));
+    wxString myType = TM_GIS_SPATIAL_TYPES_STRING[GetSpatialType()];
+    wxString myResult = _T("");
+    myResult.Append(_("<B><U>Embedded table Name</B></U><BR>"));
+    myResult.Append(GetFullFileName() + _T("<BR><BR>"));
 
-  myResult.Append(_("<B><U>General informations</B></U><BR>"));
-  myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
-  myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
+    myResult.Append(_("<B><U>General informations</B></U><BR>"));
+    myResult.Append(_("Vector type is : ") + myType + _T("<BR>"));
+    myResult.Append(wxString::Format(_("Number of feature(s) : %d<BR><BR>"), GetCount()));
 
-  myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
+    myResult.Append(GetMinimalBoundingRectangleAsHtml(2) + _T("<BR>"));
 
-  // no sense to display fields
-  /*myResult.Append(GetFieldsMetadata() + _T("<BR>"));*/
+    // no sense to display fields
+    /*myResult.Append(GetFieldsMetadata() + _T("<BR>"));*/
 
-  myResult.Append(GetDataSizeAsHtml());
+    myResult.Append(GetDataSizeAsHtml());
 
-  return myResult;
+    return myResult;
 }
 
 /***************************************************************************/ /**
@@ -443,18 +443,18 @@ wxString tmGISDataVectorMYSQL::GetMetaDataAsHtml() {
   @date 23 October 2008
   *******************************************************************************/
 int tmGISDataVectorMYSQL::GetCount() {
-  wxString sSentence = _T("");
-  sSentence = wxString::Format(_T("SELECT COUNT(*) FROM %s"), GetFullFileName().c_str());
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    wxLogDebug(_T("Error getting number of features for %s"), GetFullFileName().c_str());
-    return 0;
-  }
+    wxString sSentence = _T("");
+    sSentence = wxString::Format(_T("SELECT COUNT(*) FROM %s"), GetFullFileName().c_str());
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        wxLogDebug(_T("Error getting number of features for %s"), GetFullFileName().c_str());
+        return 0;
+    }
 
-  long lNbFeatures = 0;
-  if (!m_DB->DataBaseGetNextResult(lNbFeatures)) return 0;
+    long lNbFeatures = 0;
+    if (!m_DB->DataBaseGetNextResult(lNbFeatures)) return 0;
 
-  m_DB->DataBaseClearResults();
-  return (int)lNbFeatures;
+    m_DB->DataBaseClearResults();
+    return (int)lNbFeatures;
 }
 
 /***************************************************************************/ /**
@@ -465,232 +465,232 @@ int tmGISDataVectorMYSQL::GetCount() {
   @date 23 October 2008
   *******************************************************************************/
 wxString tmGISDataVectorMYSQL::GetDataSizeAsHtml(int iPrecision) {
-  wxString myResultVal = _("<U><B>Database Size</B></U><BR>");
+    wxString myResultVal = _("<U><B>Database Size</B></U><BR>");
 
-  wxULongLong myDBSize =
-      wxDir::GetTotalSize(m_DB->DataBaseGetPath() + wxFileName::GetPathSeparator() + m_DB->DataBaseGetName());
-  if (myDBSize == wxInvalidSize) {
-    myResultVal.Append(_("Error computing database size<BR>"));
+    wxULongLong myDBSize = wxDir::GetTotalSize(m_DB->DataBaseGetPath() + wxFileName::GetPathSeparator() +
+                                               m_DB->DataBaseGetName());
+    if (myDBSize == wxInvalidSize) {
+        myResultVal.Append(_("Error computing database size<BR>"));
+        return myResultVal;
+    }
+
+    // modifiy the size to be MB
+    double dMegaBytes = (myDBSize.ToDouble() / 1024) / 1024;
+    myResultVal.Append(wxString::Format(_("Total project size is : %.*f [Mb]<BR>"), iPrecision, dMegaBytes));
     return myResultVal;
-  }
-
-  // modifiy the size to be MB
-  double dMegaBytes = (myDBSize.ToDouble() / 1024) / 1024;
-  myResultVal.Append(wxString::Format(_("Total project size is : %.*f [Mb]<BR>"), iPrecision, dMegaBytes));
-  return myResultVal;
 }
 
 int tmGISDataVectorMYSQL::GetFieldsCount() {
-  // this function isn't working for MySQL layers because number
-  // of fields is linked to the oid !!! Use GetFieldsName();
-  return wxNOT_FOUND;
+    // this function isn't working for MySQL layers because number
+    // of fields is linked to the oid !!! Use GetFieldsName();
+    return wxNOT_FOUND;
 }
 
-tmAttributionData *tmGISDataVectorMYSQL::_CreateAttributionObject(int &layertype) {
-  // getting layer type (line, point, poly)
-  wxASSERT(m_DB);
-  wxFileName myTable(GetShortFileName());
-  if (!myTable.IsOk()) {
-    wxLogError(_T("Layer %s was not open correctly."), GetShortFileName().c_str());
-    return nullptr;
-  }
-
-  layertype = wxNOT_FOUND;
-  int iTableSize = sizeof(TABLE_NAME_GIS_GENERIC) / sizeof(wxString);
-  for (int i = 0; i < iTableSize; i++) {
-    if (myTable.GetName() == TABLE_NAME_GIS_GENERIC[i]) {
-      layertype = i;
-      break;
-    }
-  }
-
-  if (layertype == wxNOT_FOUND) {
-    wxLogError(_T("Layer type %d was not found."), layertype);
-    return nullptr;
-  }
-
-  // creating tmAttributionData object
-  tmAttributionData *myAttribData = nullptr;
-  switch (layertype) {
-    case LAYER_SPATIAL_LINE:
-      myAttribData = new tmAttributionDataLine();
-      break;
-
-    case LAYER_SPATIAL_POINT:
-      myAttribData = new tmAttributionDataPoint();
-      break;
-
-    case LAYER_SPATIAL_POLYGON:
-      myAttribData = new tmAttributionDataLabel();
-      break;
-
-    default:
-      wxLogDebug(_T("Layer type %d is not yet supported."), layertype);
-  }
-
-  return myAttribData;
-}
-
-bool tmGISDataVectorMYSQL::GetFieldsName(wxArrayString &Fields, long oid) {
-  // basic initialisation and checks
-  Fields.Clear();
-  if (oid == wxNOT_FOUND) {
-    wxLogError(_T("OID specified is not valid (%ld)"), oid);
-    return false;
-  }
-
-  if (m_PrjDef == nullptr) {
-    wxLogError(_T("Project object not specified, use SetProject() first"));
-    return false;
-  }
-
-  int iTableType = wxNOT_FOUND;
-  tmAttributionData *myAttribData = _CreateAttributionObject(iTableType);
-  if (myAttribData == nullptr) {
-    return false;
-  }
-
-  // passing info to attribution data
-  wxArrayLong myOid;
-  myOid.Add(oid);
-  myAttribData->Create(&myOid, m_DB);
-
-  tmLayerValueArray myLayerValues;
-  if (!myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)) {
-    wxDELETE(myAttribData);
-    // wxLogError(_T("Error getting attribution layers for oid %d"), oid);
-    return false;
-  }
-
-  // iterate project for getting fields
-  PrjMemLayersArray myLayers;
-  for (unsigned int i = 0; i < myLayerValues.GetCount(); i++) {
-    ProjectDefMemoryLayers *myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
-    if (myLayer == nullptr) {
-      wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
-    } else {
-      myLayers.Add(new ProjectDefMemoryLayers());
-      *(myLayers.Item(myLayers.GetCount() - 1)) = *myLayer;
-    }
-  }
-
-  // preparing results
-  for (unsigned int j = 0; j < myLayers.GetCount(); j++) {
-    Fields.Add(_T("OBJ_CD"));
-    Fields.Add(_T("OBJ_DESC"));
-
-    PrjMemFieldArray *myFields = &(myLayers.Item(j)->m_pLayerFieldArray);
-    // adding fields only for object of correct type (case of line / poly)
-    if (myLayers.Item(j)->m_LayerType == iTableType) {
-      wxASSERT(myFields);
-      for (unsigned int i = 0; i < myFields->GetCount(); i++) {
-        Fields.Add(myFields->Item(i)->m_Fieldname);
-      }
+tmAttributionData* tmGISDataVectorMYSQL::_CreateAttributionObject(int& layertype) {
+    // getting layer type (line, point, poly)
+    wxASSERT(m_DB);
+    wxFileName myTable(GetShortFileName());
+    if (!myTable.IsOk()) {
+        wxLogError(_T("Layer %s was not open correctly."), GetShortFileName().c_str());
+        return nullptr;
     }
 
-    Fields.Add(_T("##<BREAK HERE>##"));
-  }
-
-  if (Fields.GetCount() > 0) {
-    Fields.RemoveAt(Fields.GetCount() - 1);
-  }
-
-  wxDELETE(myAttribData);
-  return true;
-}
-
-bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid) {
-  values.Clear();
-  if (oid == wxNOT_FOUND) {
-    wxLogError(_T("OID specified is not valid (%ld)"), oid);
-    return false;
-  }
-
-  if (m_PrjDef == nullptr) {
-    wxLogError(_T("Project object not specified, use SetProject() first"));
-    return false;
-  }
-
-  int iTableType = wxNOT_FOUND;
-  tmAttributionData *myAttribData = _CreateAttributionObject(iTableType);
-  if (myAttribData == nullptr) {
-    return false;
-  }
-
-  // passing info to attribution data
-  wxArrayLong myOid;
-  myOid.Add(oid);
-  myAttribData->Create(&myOid, m_DB);
-
-  // isolating layers used for attribution
-  tmLayerValueArray myLayerValues;
-  if (!myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)) {
-    wxDELETE(myAttribData);
-    // wxLogError(_T("Error getting attribution layers for oid %d"), oid);
-    return false;
-  }
-
-  PrjMemLayersArray myLayers;
-  for (unsigned int i = 0; i < myLayerValues.GetCount(); i++) {
-    ProjectDefMemoryLayers *myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
-    if (myLayer == nullptr) {
-      wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
-    } else {
-      myLayers.Add(new ProjectDefMemoryLayers());
-      *(myLayers.Item(myLayers.GetCount() - 1)) = *myLayer;
-    }
-  }
-
-  // gettting basic attribution
-  tmAttributionBasicArray myValues;
-  myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
-
-  wxArrayLong myObjID;
-  wxArrayString myObjCode;
-  wxArrayString myObjVal;
-  if (!myAttribData->GetInfoBasic(oid, myObjID, myObjCode, myObjVal)) {
-    wxLogError(_T("Error getting basic informations for object OID : %ld"), oid);
-    return false;
-  }
-  wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
-  wxASSERT(myObjVal.GetCount() == myLayers.GetCount());
-  if (myObjVal.GetCount() != myObjCode.GetCount() || myObjVal.GetCount() != myLayers.GetCount()) {
-    wxLogError(_("Missmatch between the number of layers and the values."));
-    return false;
-  }
-
-  for (unsigned int i = 0; i < myObjCode.GetCount(); i++) {
-    values.Add(myObjCode.Item(i));
-    values.Add(myObjVal.Item(i));
-
-    ProjectDefMemoryLayers *myLayer = myLayers.Item(i);
-    wxASSERT(myLayer);
-    wxASSERT(myLayer->m_LayerID != wxNOT_FOUND);
-    // getting advanced attribution
-    if (myLayer->m_LayerType == iTableType && myLayer->m_pLayerFieldArray.GetCount() > 0) {
-      wxArrayString myAdvValues;
-      wxArrayString myAdvCodes;
-      if (myAttribData->GetAdvancedAttribution(myLayer, myAdvValues, myAdvCodes, oid)) {
-        wxASSERT(myAdvCodes.GetCount() == myAdvValues.GetCount());
-        for (unsigned int j = 0; j < myAdvValues.GetCount(); j++) {
-          if (myAdvCodes[j] != wxEmptyString) {
-            values.Add(myAdvCodes.Item(j) + _T(" | ") + myAdvValues.Item(j));
-          } else {
-            values.Add(myAdvValues[j]);
-          }
+    layertype = wxNOT_FOUND;
+    int iTableSize = sizeof(TABLE_NAME_GIS_GENERIC) / sizeof(wxString);
+    for (int i = 0; i < iTableSize; i++) {
+        if (myTable.GetName() == TABLE_NAME_GIS_GENERIC[i]) {
+            layertype = i;
+            break;
         }
-      }
     }
-    values.Add(_T("##<BREAK HERE>##"));
-  }
 
-  // remove last BREAK
-  if (values.GetCount() > 0) {
-    values.RemoveAt(values.GetCount() - 1);
-  }
+    if (layertype == wxNOT_FOUND) {
+        wxLogError(_T("Layer type %d was not found."), layertype);
+        return nullptr;
+    }
 
-  wxDELETE(myAttribData);
-  return true;
+    // creating tmAttributionData object
+    tmAttributionData* myAttribData = nullptr;
+    switch (layertype) {
+        case LAYER_SPATIAL_LINE:
+            myAttribData = new tmAttributionDataLine();
+            break;
+
+        case LAYER_SPATIAL_POINT:
+            myAttribData = new tmAttributionDataPoint();
+            break;
+
+        case LAYER_SPATIAL_POLYGON:
+            myAttribData = new tmAttributionDataLabel();
+            break;
+
+        default:
+            wxLogDebug(_T("Layer type %d is not yet supported."), layertype);
+    }
+
+    return myAttribData;
+}
+
+bool tmGISDataVectorMYSQL::GetFieldsName(wxArrayString& Fields, long oid) {
+    // basic initialisation and checks
+    Fields.Clear();
+    if (oid == wxNOT_FOUND) {
+        wxLogError(_T("OID specified is not valid (%ld)"), oid);
+        return false;
+    }
+
+    if (m_PrjDef == nullptr) {
+        wxLogError(_T("Project object not specified, use SetProject() first"));
+        return false;
+    }
+
+    int iTableType = wxNOT_FOUND;
+    tmAttributionData* myAttribData = _CreateAttributionObject(iTableType);
+    if (myAttribData == nullptr) {
+        return false;
+    }
+
+    // passing info to attribution data
+    wxArrayLong myOid;
+    myOid.Add(oid);
+    myAttribData->Create(&myOid, m_DB);
+
+    tmLayerValueArray myLayerValues;
+    if (!myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)) {
+        wxDELETE(myAttribData);
+        // wxLogError(_T("Error getting attribution layers for oid %d"), oid);
+        return false;
+    }
+
+    // iterate project for getting fields
+    PrjMemLayersArray myLayers;
+    for (unsigned int i = 0; i < myLayerValues.GetCount(); i++) {
+        ProjectDefMemoryLayers* myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
+        if (myLayer == nullptr) {
+            wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
+        } else {
+            myLayers.Add(new ProjectDefMemoryLayers());
+            *(myLayers.Item(myLayers.GetCount() - 1)) = *myLayer;
+        }
+    }
+
+    // preparing results
+    for (unsigned int j = 0; j < myLayers.GetCount(); j++) {
+        Fields.Add(_T("OBJ_CD"));
+        Fields.Add(_T("OBJ_DESC"));
+
+        PrjMemFieldArray* myFields = &(myLayers.Item(j)->m_pLayerFieldArray);
+        // adding fields only for object of correct type (case of line / poly)
+        if (myLayers.Item(j)->m_LayerType == iTableType) {
+            wxASSERT(myFields);
+            for (unsigned int i = 0; i < myFields->GetCount(); i++) {
+                Fields.Add(myFields->Item(i)->m_Fieldname);
+            }
+        }
+
+        Fields.Add(_T("##<BREAK HERE>##"));
+    }
+
+    if (Fields.GetCount() > 0) {
+        Fields.RemoveAt(Fields.GetCount() - 1);
+    }
+
+    wxDELETE(myAttribData);
+    return true;
+}
+
+bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString& values, long oid) {
+    values.Clear();
+    if (oid == wxNOT_FOUND) {
+        wxLogError(_T("OID specified is not valid (%ld)"), oid);
+        return false;
+    }
+
+    if (m_PrjDef == nullptr) {
+        wxLogError(_T("Project object not specified, use SetProject() first"));
+        return false;
+    }
+
+    int iTableType = wxNOT_FOUND;
+    tmAttributionData* myAttribData = _CreateAttributionObject(iTableType);
+    if (myAttribData == nullptr) {
+        return false;
+    }
+
+    // passing info to attribution data
+    wxArrayLong myOid;
+    myOid.Add(oid);
+    myAttribData->Create(&myOid, m_DB);
+
+    // isolating layers used for attribution
+    tmLayerValueArray myLayerValues;
+    if (!myAttribData->GetAttributionLayersIDFull(oid, myLayerValues)) {
+        wxDELETE(myAttribData);
+        // wxLogError(_T("Error getting attribution layers for oid %d"), oid);
+        return false;
+    }
+
+    PrjMemLayersArray myLayers;
+    for (unsigned int i = 0; i < myLayerValues.GetCount(); i++) {
+        ProjectDefMemoryLayers* myLayer = m_PrjDef->FindLayerByRealID(myLayerValues.Item(i).m_Oid);
+        if (myLayer == nullptr) {
+            wxLogWarning(_T("Layer with ID : %ld wasn't found in project"), myLayerValues.Item(i).m_Oid);
+        } else {
+            myLayers.Add(new ProjectDefMemoryLayers());
+            *(myLayers.Item(myLayers.GetCount() - 1)) = *myLayer;
+        }
+    }
+
+    // gettting basic attribution
+    tmAttributionBasicArray myValues;
+    myAttribData->SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[iTableType]);
+
+    wxArrayLong myObjID;
+    wxArrayString myObjCode;
+    wxArrayString myObjVal;
+    if (!myAttribData->GetInfoBasic(oid, myObjID, myObjCode, myObjVal)) {
+        wxLogError(_T("Error getting basic informations for object OID : %ld"), oid);
+        return false;
+    }
+    wxASSERT(myObjVal.GetCount() == myObjCode.GetCount());
+    wxASSERT(myObjVal.GetCount() == myLayers.GetCount());
+    if (myObjVal.GetCount() != myObjCode.GetCount() || myObjVal.GetCount() != myLayers.GetCount()) {
+        wxLogError(_("Missmatch between the number of layers and the values."));
+        return false;
+    }
+
+    for (unsigned int i = 0; i < myObjCode.GetCount(); i++) {
+        values.Add(myObjCode.Item(i));
+        values.Add(myObjVal.Item(i));
+
+        ProjectDefMemoryLayers* myLayer = myLayers.Item(i);
+        wxASSERT(myLayer);
+        wxASSERT(myLayer->m_LayerID != wxNOT_FOUND);
+        // getting advanced attribution
+        if (myLayer->m_LayerType == iTableType && myLayer->m_pLayerFieldArray.GetCount() > 0) {
+            wxArrayString myAdvValues;
+            wxArrayString myAdvCodes;
+            if (myAttribData->GetAdvancedAttribution(myLayer, myAdvValues, myAdvCodes, oid)) {
+                wxASSERT(myAdvCodes.GetCount() == myAdvValues.GetCount());
+                for (unsigned int j = 0; j < myAdvValues.GetCount(); j++) {
+                    if (myAdvCodes[j] != wxEmptyString) {
+                        values.Add(myAdvCodes.Item(j) + _T(" | ") + myAdvValues.Item(j));
+                    } else {
+                        values.Add(myAdvValues[j]);
+                    }
+                }
+            }
+        }
+        values.Add(_T("##<BREAK HERE>##"));
+    }
+
+    // remove last BREAK
+    if (values.GetCount() > 0) {
+        values.RemoveAt(values.GetCount() - 1);
+    }
+
+    wxDELETE(myAttribData);
+    return true;
 }
 
 /***************************************************************************/ /**
@@ -702,45 +702,46 @@ bool tmGISDataVectorMYSQL::GetFieldsValue(wxArrayString &values, long oid) {
   @author Lucien Schreiber (c) CREALP 2008
   @date 29 October 2008
   *******************************************************************************/
-wxArrayLong *tmGISDataVectorMYSQL::SearchData(const tmRealRect &rect, int type) {
-  wxBusyCursor wait;
-  // m_DB->DataBaseDestroyResults();
+wxArrayLong* tmGISDataVectorMYSQL::SearchData(const tmRealRect& rect, int type) {
+    wxBusyCursor wait;
+    // m_DB->DataBaseDestroyResults();
 
-  wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), rect.x_min, rect.y_min, rect.x_max,
-                                    rect.y_min, rect.x_max, rect.y_max, rect.x_min, rect.y_max, rect.x_min, rect.y_min);
-  wxString sSentence = wxString::Format(
-      _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-      _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
-      GetShortFileName().c_str(), sRect.c_str());
+    wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), rect.x_min, rect.y_min,
+                                      rect.x_max, rect.y_min, rect.x_max, rect.y_max, rect.x_min, rect.y_max,
+                                      rect.x_min, rect.y_min);
+    wxString sSentence = wxString::Format(
+        _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+        _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+        GetShortFileName().c_str(), sRect.c_str());
 
-  MYSQL_ROW row;
-  tmArrayULong row_size;
+    MYSQL_ROW row;
+    tmArrayULong row_size;
 
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    return nullptr;
-  }
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        return nullptr;
+    }
 
-  if (!m_DB->DataBaseHasResults()) {
-    return nullptr;
-  }
+    if (!m_DB->DataBaseHasResults()) {
+        return nullptr;
+    }
 
-  GEOSGeom grect = CreateGEOSGeometry(rect);
-  wxASSERT(grect);
+    GEOSGeom grect = CreateGEOSGeometry(rect);
+    wxASSERT(grect);
 
-  wxArrayLong *myArray = new wxArrayLong();
-  while (m_DB->DataBaseGetNextRowResult(row, row_size)) {
-    OGRGeometry *ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
-    GEOSGeom geom = CreateGEOSGeometry(ogrgeom);
+    wxArrayLong* myArray = new wxArrayLong();
+    while (m_DB->DataBaseGetNextRowResult(row, row_size)) {
+        OGRGeometry* ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
+        GEOSGeom geom = CreateGEOSGeometry(ogrgeom);
 
-    if (CheckGEOSIntersection(&grect, &geom)) myArray->Add(GetOid(row, 0));
+        if (CheckGEOSIntersection(&grect, &geom)) myArray->Add(GetOid(row, 0));
 
-    // destroy geometry
-    GEOSGeom_destroy(geom);
-    OGRGeometryFactory::destroyGeometry(ogrgeom);
-  }
-  GEOSGeom_destroy(grect);
-  m_DB->DataBaseClearResults();
-  return myArray;
+        // destroy geometry
+        GEOSGeom_destroy(geom);
+        OGRGeometryFactory::destroyGeometry(ogrgeom);
+    }
+    GEOSGeom_destroy(grect);
+    m_DB->DataBaseClearResults();
+    return myArray;
 }
 
 /***************************************************************************/ /**
@@ -748,19 +749,20 @@ wxArrayLong *tmGISDataVectorMYSQL::SearchData(const tmRealRect &rect, int type) 
   @author Lucien Schreiber (c) CREALP 2009
   @date 31 March 2009
   *******************************************************************************/
-wxArrayLong *tmGISDataVectorMYSQL::GetAllData() {
-  wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID FROM %s ORDER BY OBJECT_ID"), GetShortFileName().c_str());
-  if (!m_DB->DataBaseQuery(sSentence)) return nullptr;
+wxArrayLong* tmGISDataVectorMYSQL::GetAllData() {
+    wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID FROM %s ORDER BY OBJECT_ID"),
+                                          GetShortFileName().c_str());
+    if (!m_DB->DataBaseQuery(sSentence)) return nullptr;
 
-  wxArrayLong *mySel = new wxArrayLong();
+    wxArrayLong* mySel = new wxArrayLong();
 
-  if (!m_DB->DataBaseGetResults(*mySel)) {
-    delete mySel;
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetResults(*mySel)) {
+        delete mySel;
+        return nullptr;
+    }
 
-  wxASSERT(mySel);
-  return mySel;
+    wxASSERT(mySel);
+    return mySel;
 }
 
 /***************************************************************************/ /**
@@ -773,52 +775,53 @@ wxArrayLong *tmGISDataVectorMYSQL::GetAllData() {
   @author Lucien Schreiber (c) CREALP 2009
   @date 09 February 2009
   *******************************************************************************/
-wxArrayLong *tmGISDataVectorMYSQL::SearchIntersectingGeometry(OGRGeometry *intersectinggeom) {
-  // m_DB->DataBaseDestroyResults();
+wxArrayLong* tmGISDataVectorMYSQL::SearchIntersectingGeometry(OGRGeometry* intersectinggeom) {
+    // m_DB->DataBaseDestroyResults();
 
-  // create bounding box
-  wxASSERT(intersectinggeom);
-  if (intersectinggeom == nullptr) {
-    return nullptr;
-  }
-  OGREnvelope myEnv;
-  intersectinggeom->getEnvelope(&myEnv);
+    // create bounding box
+    wxASSERT(intersectinggeom);
+    if (intersectinggeom == nullptr) {
+        return nullptr;
+    }
+    OGREnvelope myEnv;
+    intersectinggeom->getEnvelope(&myEnv);
 
-  wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), myEnv.MinX, myEnv.MinY, myEnv.MaxX,
-                                    myEnv.MinY, myEnv.MaxX, myEnv.MaxY, myEnv.MinX, myEnv.MaxY, myEnv.MinX, myEnv.MinY);
-  wxString sSentence = wxString::Format(
-      _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-      _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
-      GetShortFileName().c_str(), sRect.c_str());
+    wxString sRect = wxString::Format(_T("POLYGON ((%f %f,%f %f,%f %f,%f %f,%f %f))"), myEnv.MinX, myEnv.MinY,
+                                      myEnv.MaxX, myEnv.MinY, myEnv.MaxX, myEnv.MaxY, myEnv.MinX, myEnv.MaxY,
+                                      myEnv.MinX, myEnv.MinY);
+    wxString sSentence = wxString::Format(
+        _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+        _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+        GetShortFileName().c_str(), sRect.c_str());
 
-  MYSQL_ROW row;
-  tmArrayULong row_size;
-  GEOSGeom grect = CreateGEOSGeometry(intersectinggeom);
+    MYSQL_ROW row;
+    tmArrayULong row_size;
+    GEOSGeom grect = CreateGEOSGeometry(intersectinggeom);
 
-  if (!m_DB->DataBaseQuery(sSentence)) {
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        GEOSGeom_destroy(grect);
+        return nullptr;
+    }
+
+    if (!m_DB->DataBaseHasResults()) {
+        GEOSGeom_destroy(grect);
+        return nullptr;
+    }
+
+    wxArrayLong* myArray = new wxArrayLong();
+    while (m_DB->DataBaseGetNextRowResult(row, row_size)) {
+        OGRGeometry* ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
+        GEOSGeom geom = CreateGEOSGeometry(ogrgeom);
+
+        if (CheckGEOSCrosses(&grect, &geom)) myArray->Add(GetOid(row, 0));
+
+        // destroy geometry
+        GEOSGeom_destroy(geom);
+        OGRGeometryFactory::destroyGeometry(ogrgeom);
+    }
     GEOSGeom_destroy(grect);
-    return nullptr;
-  }
-
-  if (!m_DB->DataBaseHasResults()) {
-    GEOSGeom_destroy(grect);
-    return nullptr;
-  }
-
-  wxArrayLong *myArray = new wxArrayLong();
-  while (m_DB->DataBaseGetNextRowResult(row, row_size)) {
-    OGRGeometry *ogrgeom = CreateDataBaseGeometry(row, row_size, 1);
-    GEOSGeom geom = CreateGEOSGeometry(ogrgeom);
-
-    if (CheckGEOSCrosses(&grect, &geom)) myArray->Add(GetOid(row, 0));
-
-    // destroy geometry
-    GEOSGeom_destroy(geom);
-    OGRGeometryFactory::destroyGeometry(ogrgeom);
-  }
-  GEOSGeom_destroy(grect);
-  m_DB->DataBaseClearResults();
-  return myArray;
+    m_DB->DataBaseClearResults();
+    return myArray;
 }
 
 /***************************************************************************/ /**
@@ -832,96 +835,97 @@ wxArrayLong *tmGISDataVectorMYSQL::SearchIntersectingGeometry(OGRGeometry *inter
   @author Lucien Schreiber (c) CREALP 2009
   @date 29 January 2009
   *******************************************************************************/
-bool tmGISDataVectorMYSQL::GetSnapCoord(const wxRealPoint &clickpt, double buffersize, wxArrayRealPoints &snapppts,
+bool tmGISDataVectorMYSQL::GetSnapCoord(const wxRealPoint& clickpt, double buffersize, wxArrayRealPoints& snapppts,
                                         int snaptype) {
-  // create OGRpoint and buffer
-  OGRPoint myClickPoint;
-  myClickPoint.setX(clickpt.x);
-  myClickPoint.setY(clickpt.y);
+    // create OGRpoint and buffer
+    OGRPoint myClickPoint;
+    myClickPoint.setX(clickpt.x);
+    myClickPoint.setY(clickpt.y);
 
-  OGRGeometry *myBufferClick = myClickPoint.Buffer(buffersize);  // tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
-  wxASSERT(myBufferClick);
+    OGRGeometry* myBufferClick = myClickPoint.Buffer(
+        buffersize);  // tmGISDataVector::SafeBuffer(&myClickPoint, iBuffer);
+    wxASSERT(myBufferClick);
 
-  // convert buffer to text for sql query
-  char *buffer = nullptr;
-  myBufferClick->exportToWkt(&buffer);
-  wxASSERT(buffer);
-  wxString mySBuffer = wxString::FromAscii(buffer);
-  CPLFree(buffer);
+    // convert buffer to text for sql query
+    char* buffer = nullptr;
+    myBufferClick->exportToWkt(&buffer);
+    wxASSERT(buffer);
+    wxString mySBuffer = wxString::FromAscii(buffer);
+    CPLFree(buffer);
 
-  // search for intersecting features
-  wxString sSentence = wxString::Format(
-      _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-      _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
-      GetShortFileName().c_str(), mySBuffer.c_str());
+    // search for intersecting features
+    wxString sSentence = wxString::Format(
+        _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+        _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+        GetShortFileName().c_str(), mySBuffer.c_str());
 
-  MYSQL_ROW row;
-  tmArrayULong row_size;
+    MYSQL_ROW row;
+    tmArrayULong row_size;
 
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    wxLogError(_T("Error getting snapping info"));
-    OGRGeometryFactory::destroyGeometry(myBufferClick);
-    return false;
-  }
-
-  // no results found
-  if (!m_DB->DataBaseHasResults()) {
-    OGRGeometryFactory::destroyGeometry(myBufferClick);
-    return false;
-  }
-
-  // search into returned object for intersection
-  unsigned int myPtsCount = snapppts.GetCount();
-  while (m_DB->DataBaseGetNextRowResult(row, row_size)) {
-    OGRGeometry *poGeometry = CreateDataBaseGeometry(row, row_size, 1);
-    if (poGeometry->Intersects(myBufferClick)) {
-      if ((snaptype & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX) {
-        GetVertexIntersection(poGeometry, myBufferClick, snapppts);
-      } else if (snaptype == tmSNAPPING_BEGIN_END) {
-        GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
-      }
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        wxLogError(_T("Error getting snapping info"));
+        OGRGeometryFactory::destroyGeometry(myBufferClick);
+        return false;
     }
-    OGRGeometryFactory::destroyGeometry(poGeometry);
-  }
-  m_DB->DataBaseClearResults();
-  OGRGeometryFactory::destroyGeometry(myBufferClick);
 
-  if (myPtsCount < snapppts.GetCount()) {
-    return true;
-  }
-  return false;
+    // no results found
+    if (!m_DB->DataBaseHasResults()) {
+        OGRGeometryFactory::destroyGeometry(myBufferClick);
+        return false;
+    }
+
+    // search into returned object for intersection
+    unsigned int myPtsCount = snapppts.GetCount();
+    while (m_DB->DataBaseGetNextRowResult(row, row_size)) {
+        OGRGeometry* poGeometry = CreateDataBaseGeometry(row, row_size, 1);
+        if (poGeometry->Intersects(myBufferClick)) {
+            if ((snaptype & tmSNAPPING_VERTEX) == tmSNAPPING_VERTEX) {
+                GetVertexIntersection(poGeometry, myBufferClick, snapppts);
+            } else if (snaptype == tmSNAPPING_BEGIN_END) {
+                GetBeginEndInterseciton(poGeometry, myBufferClick, snapppts);
+            }
+        }
+        OGRGeometryFactory::destroyGeometry(poGeometry);
+    }
+    m_DB->DataBaseClearResults();
+    OGRGeometryFactory::destroyGeometry(myBufferClick);
+
+    if (myPtsCount < snapppts.GetCount()) {
+        return true;
+    }
+    return false;
 }
 
-bool tmGISDataVectorMYSQL::IsPointSnapped(const wxRealPoint &point, int snaptype, long excludeoid) {
-  OGRPoint myPt;
-  myPt.setX(point.x);
-  myPt.setY(point.y);
-  char *buffer = nullptr;
-  myPt.exportToWkt(&buffer);
-  wxASSERT(buffer);
-  wxString mySBuffer = wxString::FromAscii(buffer);
-  CPLFree(buffer);
+bool tmGISDataVectorMYSQL::IsPointSnapped(const wxRealPoint& point, int snaptype, long excludeoid) {
+    OGRPoint myPt;
+    myPt.setX(point.x);
+    myPt.setY(point.y);
+    char* buffer = nullptr;
+    myPt.exportToWkt(&buffer);
+    wxASSERT(buffer);
+    wxString mySBuffer = wxString::FromAscii(buffer);
+    CPLFree(buffer);
 
-  wxString myQuery = wxString::Format(_T("SELECT * FROM %s WHERE ST_Touches(GeomFromText('%s') ,OBJECT_GEOMETRY) "),
-                                      GetShortFileName().c_str(), buffer);
+    wxString myQuery = wxString::Format(_T("SELECT * FROM %s WHERE ST_Touches(GeomFromText('%s') ,OBJECT_GEOMETRY) "),
+                                        GetShortFileName().c_str(), buffer);
 
-  if (excludeoid != wxNOT_FOUND) {
-    myQuery.Append(wxString::Format(_T(" AND OBJECT_ID != %ld"), excludeoid));
-  }
+    if (excludeoid != wxNOT_FOUND) {
+        myQuery.Append(wxString::Format(_T(" AND OBJECT_ID != %ld"), excludeoid));
+    }
 
-  if (!m_DB->DataBaseQuery(myQuery)) {
+    if (!m_DB->DataBaseQuery(myQuery)) {
+        return false;
+    }
+
+    wxArrayLong myIds;
+    if (!m_DB->DataBaseGetResults(myIds)) {
+        return false;
+    }
+
+    if (myIds.GetCount() > 0) {
+        return true;
+    }
     return false;
-  }
-
-  wxArrayLong myIds;
-  if (!m_DB->DataBaseGetResults(myIds)) {
-    return false;
-  }
-
-  if (myIds.GetCount() > 0) {
-    return true;
-  }
-  return false;
 }
 
 /***************************************************************************/ /**
@@ -932,80 +936,80 @@ bool tmGISDataVectorMYSQL::IsPointSnapped(const wxRealPoint &point, int snaptype
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 February 2009
   *******************************************************************************/
-OGRFeature *tmGISDataVectorMYSQL::GetFeatureByOID(long oid) {
-  wxString sSentence = wxString::Format(
-      _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-      _T("OBJECT_ID = %ld;"),
-      GetShortFileName().c_str(), oid);
-  long myUnusedOid = 0;
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    wxLogError(_T("Error getting geometry for oid = %ld"), oid);
-    return nullptr;
-  }
+OGRFeature* tmGISDataVectorMYSQL::GetFeatureByOID(long oid) {
+    wxString sSentence = wxString::Format(
+        _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+        _T("OBJECT_ID = %ld;"),
+        GetShortFileName().c_str(), oid);
+    long myUnusedOid = 0;
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        wxLogError(_T("Error getting geometry for oid = %ld"), oid);
+        return nullptr;
+    }
 
-  if (!m_DB->DataBaseHasResults()) {
-    return nullptr;
-  }
+    if (!m_DB->DataBaseHasResults()) {
+        return nullptr;
+    }
 
-  OGRGeometry *myGeom = GetNextDataLine(myUnusedOid);
-  wxASSERT(myGeom);
-  // create feature from geometry
-  OGRFeatureDefn *myFeatDef = new OGRFeatureDefn(GetShortFileName().mb_str());
-  OGRFieldDefn myFieldDef(wxString(_T("test")).mb_str(), OFTInteger);
-  myFeatDef->AddFieldDefn(&myFieldDef);
+    OGRGeometry* myGeom = GetNextDataLine(myUnusedOid);
+    wxASSERT(myGeom);
+    // create feature from geometry
+    OGRFeatureDefn* myFeatDef = new OGRFeatureDefn(GetShortFileName().mb_str());
+    OGRFieldDefn myFieldDef(wxString(_T("test")).mb_str(), OFTInteger);
+    myFeatDef->AddFieldDefn(&myFieldDef);
 #if (defined(__WXMSW__) && defined(__WXDEBUG__))
-  // this is needed for windows but generate a memory leak under other plateforms
-  myFeatDef->Reference();
+    // this is needed for windows but generate a memory leak under other plateforms
+    myFeatDef->Reference();
 #endif
-  if (TABLE_NAME_GIS_GENERIC[0] == GetShortFileName()) {
-    myFeatDef->SetGeomType(wkbLineString);
-  } else if (TABLE_NAME_GIS_GENERIC[1] == GetShortFileName()) {
-    myFeatDef->SetGeomType(wkbPoint);
-  } else if (TABLE_NAME_GIS_GENERIC[2] == GetShortFileName()) {
-    myFeatDef->SetGeomType(wkbPoint);
-  } else if (TABLE_NAME_GIS_GENERIC[3] == GetShortFileName()) {
-    myFeatDef->SetGeomType(wkbPoint);
-  } else if (TABLE_NAME_GIS_GENERIC[4] == GetShortFileName()) {
-    myFeatDef->SetGeomType(wkbLineString);
-  }
+    if (TABLE_NAME_GIS_GENERIC[0] == GetShortFileName()) {
+        myFeatDef->SetGeomType(wkbLineString);
+    } else if (TABLE_NAME_GIS_GENERIC[1] == GetShortFileName()) {
+        myFeatDef->SetGeomType(wkbPoint);
+    } else if (TABLE_NAME_GIS_GENERIC[2] == GetShortFileName()) {
+        myFeatDef->SetGeomType(wkbPoint);
+    } else if (TABLE_NAME_GIS_GENERIC[3] == GetShortFileName()) {
+        myFeatDef->SetGeomType(wkbPoint);
+    } else if (TABLE_NAME_GIS_GENERIC[4] == GetShortFileName()) {
+        myFeatDef->SetGeomType(wkbLineString);
+    }
 
-  OGRFeature *myFeature = OGRFeature::CreateFeature(myFeatDef);
-  myFeature->SetGeometryDirectly(myGeom);
-  myFeature->SetFID(oid);
+    OGRFeature* myFeature = OGRFeature::CreateFeature(myFeatDef);
+    myFeature->SetGeometryDirectly(myGeom);
+    myFeature->SetFID(oid);
 
-  m_DB->DataBaseClearResults();
-  return myFeature;
+    m_DB->DataBaseClearResults();
+    return myFeature;
 }
 
-OGRGeometry *tmGISDataVectorMYSQL::GetNextGeometry(bool restart, long &oid) {
-  if (restart) {
-    wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s"), GetShortFileName());
-    if (!m_DB->DataBaseQuery(sSentence)) {
-      wxLogError(_("Error getting geometry for %s"), GetShortFileName());
-      oid = wxNOT_FOUND;
-      return nullptr;
+OGRGeometry* tmGISDataVectorMYSQL::GetNextGeometry(bool restart, long& oid) {
+    if (restart) {
+        wxString sSentence = wxString::Format(_T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s"), GetShortFileName());
+        if (!m_DB->DataBaseQuery(sSentence)) {
+            wxLogError(_("Error getting geometry for %s"), GetShortFileName());
+            oid = wxNOT_FOUND;
+            return nullptr;
+        }
     }
-  }
 
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-  // security check
-  if (!m_DB->DataBaseHasResults()) {
-    oid = wxNOT_FOUND;
-    return nullptr;
-  }
+    // security check
+    if (!m_DB->DataBaseHasResults()) {
+        oid = wxNOT_FOUND;
+        return nullptr;
+    }
 
-  if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
-    m_DB->DataBaseClearResults();
-    oid = wxNOT_FOUND;
-    return nullptr;
-  }
+    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) {
+        m_DB->DataBaseClearResults();
+        oid = wxNOT_FOUND;
+        return nullptr;
+    }
 
-  OGRGeometry *myGeom = CreateDataBaseGeometry(row, row_length, 1);
-  oid = GetOid(row, 0);
-  wxASSERT(myGeom);
-  return myGeom;
+    OGRGeometry* myGeom = CreateDataBaseGeometry(row, row_length, 1);
+    oid = GetOid(row, 0);
+    wxASSERT(myGeom);
+    return myGeom;
 }
 
 /***************************************************************************/ /**
@@ -1017,32 +1021,32 @@ OGRGeometry *tmGISDataVectorMYSQL::GetNextGeometry(bool restart, long &oid) {
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 February 2009
   *******************************************************************************/
-long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry *Geom, const long &oid, int layertype) {
-  // check that function was used correctly
-  wxASSERT(layertype != wxNOT_FOUND);
+long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry* Geom, const long& oid, int layertype) {
+    // check that function was used correctly
+    wxASSERT(layertype != wxNOT_FOUND);
 
-  CPLSetConfigOption("OGR_WKT_PRECISION", "15");
+    CPLSetConfigOption("OGR_WKT_PRECISION", "15");
 
-  char *myCharGeom = nullptr;
-  Geom->setCoordinateDimension(2);
-  Geom->exportToWkt(&myCharGeom);
-  if (!myCharGeom) return wxNOT_FOUND;
+    char* myCharGeom = nullptr;
+    Geom->setCoordinateDimension(2);
+    Geom->exportToWkt(&myCharGeom);
+    if (!myCharGeom) return wxNOT_FOUND;
 
-  wxString mySGeom = wxString::FromAscii(myCharGeom);
-  CPLFree(myCharGeom);
+    wxString mySGeom = wxString::FromAscii(myCharGeom);
+    CPLFree(myCharGeom);
 
-  if (layertype == wxNOT_FOUND) return wxNOT_FOUND;
+    if (layertype == wxNOT_FOUND) return wxNOT_FOUND;
 
-  wxString sSentence = wxString::Format(
-      _T("INSERT INTO %s (OBJECT_GEOMETRY)")
-      _T(" VALUES (GeomFromText('%s'));"),
-      GetTableName((TOC_GENERIC_NAME)layertype).c_str(), mySGeom.c_str());
-  if (!m_DB->DataBaseQueryNoResults(sSentence)) {
-    wxLogDebug(_T("Error inserting geometry into database"));
-    return -1;
-  }
+    wxString sSentence = wxString::Format(
+        _T("INSERT INTO %s (OBJECT_GEOMETRY)")
+        _T(" VALUES (GeomFromText('%s'));"),
+        GetTableName((TOC_GENERIC_NAME)layertype).c_str(), mySGeom.c_str());
+    if (!m_DB->DataBaseQueryNoResults(sSentence)) {
+        wxLogDebug(_T("Error inserting geometry into database"));
+        return -1;
+    }
 
-  return m_DB->DataBaseGetLastInsertedID();
+    return m_DB->DataBaseGetLastInsertedID();
 }
 
 /***************************************************************************/ /**
@@ -1053,25 +1057,25 @@ long tmGISDataVectorMYSQL::AddGeometry(OGRGeometry *Geom, const long &oid, int l
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 February 2009
   *******************************************************************************/
-bool tmGISDataVectorMYSQL::UpdateGeometry(OGRGeometry *geom, const long &oid) {
-  char *myCharGeom = nullptr;
-  if (geom == nullptr) return false;
+bool tmGISDataVectorMYSQL::UpdateGeometry(OGRGeometry* geom, const long& oid) {
+    char* myCharGeom = nullptr;
+    if (geom == nullptr) return false;
 
-  geom->setCoordinateDimension(2);
-  geom->exportToWkt(&myCharGeom);
-  if (!myCharGeom) return false;
-  wxString mySGeom = wxString::FromAscii(myCharGeom);
-  CPLFree(myCharGeom);
+    geom->setCoordinateDimension(2);
+    geom->exportToWkt(&myCharGeom);
+    if (!myCharGeom) return false;
+    wxString mySGeom = wxString::FromAscii(myCharGeom);
+    CPLFree(myCharGeom);
 
-  wxString sSentence = wxString::Format(
-      _T("UPDATE  %s SET OBJECT_GEOMETRY=")
-      _T("(GeomFromText('%s')) WHERE OBJECT_ID=%ld;"),
-      GetShortFileName().c_str(), mySGeom.c_str(), oid);
-  if (!m_DB->DataBaseQueryNoResults(sSentence)) {
-    wxLogDebug(_T("Error updating geometry"));
-    return false;
-  }
-  return true;
+    wxString sSentence = wxString::Format(
+        _T("UPDATE  %s SET OBJECT_GEOMETRY=")
+        _T("(GeomFromText('%s')) WHERE OBJECT_ID=%ld;"),
+        GetShortFileName().c_str(), mySGeom.c_str(), oid);
+    if (!m_DB->DataBaseQueryNoResults(sSentence)) {
+        wxLogDebug(_T("Error updating geometry"));
+        return false;
+    }
+    return true;
 }
 
 /***************************************************************************/ /**
@@ -1082,39 +1086,40 @@ bool tmGISDataVectorMYSQL::UpdateGeometry(OGRGeometry *geom, const long &oid) {
   @author Lucien Schreiber (c) CREALP 2009
   @date 27 February 2009
   *******************************************************************************/
-OGRGeometryCollection *tmGISDataVectorMYSQL::GetGeometryColByOID(wxArrayLong *OIDs) {
-  // prepare query
-  wxString sSentence = wxString::Format(
-      _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-      _T("OBJECT_ID IN ("),
-      GetShortFileName().c_str());
-  unsigned int i = 0;
-  for (i = 0; i < OIDs->GetCount(); i++) {
-    sSentence.Append(wxString::Format(_T("%ld,"), OIDs->Item(i)));
-  }
-  sSentence.RemoveLast(1);
-  sSentence.Append(_T(");"));
-
-  // run query
-  if (!m_DB->DataBaseQuery(sSentence)) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_T("Error getting geometry for multiple oid"));
+OGRGeometryCollection* tmGISDataVectorMYSQL::GetGeometryColByOID(wxArrayLong* OIDs) {
+    // prepare query
+    wxString sSentence = wxString::Format(
+        _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
+        _T("OBJECT_ID IN ("),
+        GetShortFileName().c_str());
+    unsigned int i = 0;
+    for (i = 0; i < OIDs->GetCount(); i++) {
+        sSentence.Append(wxString::Format(_T("%ld,"), OIDs->Item(i)));
     }
-    return nullptr;
-  }
+    sSentence.RemoveLast(1);
+    sSentence.Append(_T(");"));
 
-  // create geometries
-  OGRGeometryCollection *myGeomCol = (OGRGeometryCollection *)OGRGeometryFactory::createGeometry(wkbGeometryCollection);
-  MYSQL_ROW row;
-  tmArrayULong row_length;
+    // run query
+    if (!m_DB->DataBaseQuery(sSentence)) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_T("Error getting geometry for multiple oid"));
+        }
+        return nullptr;
+    }
 
-  for (i = 0; i < OIDs->GetCount(); i++) {
-    if (!m_DB->DataBaseGetNextRowResult(row, row_length)) break;
+    // create geometries
+    OGRGeometryCollection* myGeomCol = (OGRGeometryCollection*)OGRGeometryFactory::createGeometry(
+        wkbGeometryCollection);
+    MYSQL_ROW row;
+    tmArrayULong row_length;
 
-    OGRGeometry *pGeom = CreateDataBaseGeometry(row, row_length, 1);
-    myGeomCol->addGeometry(pGeom);
-    OGRGeometryFactory::destroyGeometry(pGeom);
-  }
-  m_DB->DataBaseClearResults();
-  return myGeomCol;
+    for (i = 0; i < OIDs->GetCount(); i++) {
+        if (!m_DB->DataBaseGetNextRowResult(row, row_length)) break;
+
+        OGRGeometry* pGeom = CreateDataBaseGeometry(row, row_length, 1);
+        myGeomCol->addGeometry(pGeom);
+        OGRGeometryFactory::destroyGeometry(pGeom);
+    }
+    m_DB->DataBaseClearResults();
+    return myGeomCol;
 }

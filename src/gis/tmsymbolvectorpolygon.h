@@ -31,46 +31,46 @@
 #include "tmsymbolvector.h"  // tmSymbol class definition
 
 class tmSymbolVectorPolygon : public tmSymbolVector {
- private:
-  tmSymbolDataPolygonUnique m_plgUniqueSymbol;
+  private:
+    tmSymbolDataPolygonUnique m_plgUniqueSymbol;
 
-  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+    virtual tmSymbolDLG* GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos);
 
-  virtual bool GetDialogData(tmSymbolDLG *dlg);
+    virtual bool GetDialogData(tmSymbolDLG* dlg);
 
- protected:
- public:
-  tmSymbolVectorPolygon();
+  protected:
+  public:
+    tmSymbolVectorPolygon();
 
-  tmSymbolVectorPolygon(const tmSymbolVectorPolygon &origin);
+    tmSymbolVectorPolygon(const tmSymbolVectorPolygon& origin);
 
-  ~tmSymbolVectorPolygon();
+    ~tmSymbolVectorPolygon();
 
-  wxColour GetBorderColour();
+    wxColour GetBorderColour();
 
-  wxColour GetFillColour();
+    wxColour GetFillColour();
 
-  int GetBorderWidth() {
-    return m_plgUniqueSymbol.m_bWidth;
-  }
+    int GetBorderWidth() {
+        return m_plgUniqueSymbol.m_bWidth;
+    }
 
-  wxBrushStyle GetFillStyle() {
-    return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];
-  }
+    wxBrushStyle GetFillStyle() {
+        return tmSYMBOLFILLSTYLES[m_plgUniqueSymbol.m_fStyle];
+    }
 
-  virtual int GetTransparency() {
-    return m_plgUniqueSymbol.m_GlobalTransparency;
-  }
+    virtual int GetTransparency() {
+        return m_plgUniqueSymbol.m_GlobalTransparency;
+    }
 
-  virtual void SetColour(const wxColour &colour) {
-    m_plgUniqueSymbol.m_fColour = colour;
-  }
+    virtual void SetColour(const wxColour& colour) {
+        m_plgUniqueSymbol.m_fColour = colour;
+    }
 
-  virtual bool Serialize(tmSerialize &s);
+    virtual bool Serialize(tmSerialize& s);
 
-  tmSymbolDataPolygonUnique *GetSymbolData() {
-    return &m_plgUniqueSymbol;
-  }
+    tmSymbolDataPolygonUnique* GetSymbolData() {
+        return &m_plgUniqueSymbol;
+    }
 };
 
 #endif

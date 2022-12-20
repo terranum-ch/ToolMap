@@ -35,31 +35,31 @@ class tmSelectedDataMemory;
 class tmAAttribCtrl;
 
 class tmAAttribBatchManager {
- private:
-  PrjDefMemManage *m_Project;
-  DataBaseTM *m_DB;
-  tmSelectedDataMemory *m_Selected;
-  PRJDEF_LAYERS_TYPE m_SelLayerType;
+  private:
+    PrjDefMemManage* m_Project;
+    DataBaseTM* m_DB;
+    tmSelectedDataMemory* m_Selected;
+    PRJDEF_LAYERS_TYPE m_SelLayerType;
 
-  bool _GetSelectionSubset(long layerid, wxArrayLong &subselected);
+    bool _GetSelectionSubset(long layerid, wxArrayLong& subselected);
 
-  wxString _CreateListOfIds(const wxArrayLong *ids);
+    wxString _CreateListOfIds(const wxArrayLong* ids);
 
- public:
-  tmAAttribBatchManager(PrjDefMemManage *project, DataBaseTM *database, tmSelectedDataMemory *selected,
-                        PRJDEF_LAYERS_TYPE sellayertype);
+  public:
+    tmAAttribBatchManager(PrjDefMemManage* project, DataBaseTM* database, tmSelectedDataMemory* selected,
+                          PRJDEF_LAYERS_TYPE sellayertype);
 
-  virtual ~tmAAttribBatchManager();
+    virtual ~tmAAttribBatchManager();
 
-  bool GetTypes(PrjMemObjectsArray &objects, wxArrayInt &number, wxArrayLong &layerid);
+    bool GetTypes(PrjMemObjectsArray& objects, wxArrayInt& number, wxArrayLong& layerid);
 
-  bool GetFields(long layerid, PrjMemFieldArray &fields);
+    bool GetFields(long layerid, PrjMemFieldArray& fields);
 
-  tmAAttribCtrl *GetValueControl(const ProjectDefMemoryFields &field, wxWindow *wnd);
+    tmAAttribCtrl* GetValueControl(const ProjectDefMemoryFields& field, wxWindow* wnd);
 
-  bool IsOk();
+    bool IsOk();
 
-  int Attribute(long layerid, const ProjectDefMemoryFields &field, const wxString &value);
+    int Attribute(long layerid, const ProjectDefMemoryFields& field, const wxString& value);
 };
 
 #endif

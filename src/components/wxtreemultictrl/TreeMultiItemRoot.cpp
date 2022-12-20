@@ -32,6 +32,7 @@
  * of a relative tree in this class.
  */
 
-TreeMultiItemRoot::TreeMultiItemRoot() : TreeMultiItemNode(0, _T(""), _T("")) {}
+TreeMultiItemRoot::TreeMultiItemRoot()
+    : TreeMultiItemNode(0, _T(""), _T("")) {}
 
 TreeMultiItemRoot::~TreeMultiItemRoot() {}

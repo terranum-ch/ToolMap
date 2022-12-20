@@ -45,44 +45,44 @@
 #define SYMBOL_TMSLIDERWITHTEXT_STYLE wxTAB_TRAVERSAL
 
 class tmSliderWithText : public wxPanel {
- private:
-  wxSlider *m_Slider;
-  wxTextCtrl *m_Text;
-  wxStaticText *m_UnitValue;
+  private:
+    wxSlider* m_Slider;
+    wxTextCtrl* m_Text;
+    wxStaticText* m_UnitValue;
 
-  int m_iLimitMin;
-  int m_iLimitMax;
+    int m_iLimitMin;
+    int m_iLimitMax;
 
-  void Init();
+    void Init();
 
-  void CreateControls(int ivalue, int imin, int imax, const wxString &unitvalue);
+    void CreateControls(int ivalue, int imin, int imax, const wxString& unitvalue);
 
-  // event function
-  void OnTextUpdated(wxCommandEvent &event);
+    // event function
+    void OnTextUpdated(wxCommandEvent& event);
 
-  void OnSliderUpdated(wxScrollEvent &event);
+    void OnSliderUpdated(wxScrollEvent& event);
 
-  DECLARE_DYNAMIC_CLASS(tmSliderWithText)
+    DECLARE_DYNAMIC_CLASS(tmSliderWithText)
 
- protected:
-  int SetSliderValue(int iNewValue);
+  protected:
+    int SetSliderValue(int iNewValue);
 
- public:
-  tmSliderWithText();
+  public:
+    tmSliderWithText();
 
-  tmSliderWithText(wxWindow *parent, wxWindowID id, int ivalue, int imin, int imax, const wxString &unitvalue = _T(""),
-                   const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-                   long style = SYMBOL_TMSLIDERWITHTEXT_STYLE);
+    tmSliderWithText(wxWindow* parent, wxWindowID id, int ivalue, int imin, int imax,
+                     const wxString& unitvalue = _T(""), const wxPoint& pos = wxDefaultPosition,
+                     const wxSize& size = wxDefaultSize, long style = SYMBOL_TMSLIDERWITHTEXT_STYLE);
 
-  bool Create(wxWindow *parent, wxWindowID id, int ivalue, int imin, int imax, const wxString &unitvalue = _T(""),
-              const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-              long style = SYMBOL_TMSLIDERWITHTEXT_STYLE);
+    bool Create(wxWindow* parent, wxWindowID id, int ivalue, int imin, int imax, const wxString& unitvalue = _T(""),
+                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                long style = SYMBOL_TMSLIDERWITHTEXT_STYLE);
 
-  ~tmSliderWithText();
+    ~tmSliderWithText();
 
-  int GetValue();
+    int GetValue();
 
-  bool SetValue(int iValue);
+    bool SetValue(int iValue);
 };
 
 #endif

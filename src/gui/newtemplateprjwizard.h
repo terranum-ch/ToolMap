@@ -35,40 +35,40 @@ const int ID_NEWPRJ_DESTDIRCTRL = wxID_HIGHEST + 4;
 const int ID_NEWPRJ_DESTNAMECTRL = wxID_HIGHEST + 5;
 
 class NewTemplatePrjWizard : public wxWizard {
- private:
-  wxWizardPageSimple *m_SourcePage;
-  wxWizardPageSimple *m_DestinationPage;
+  private:
+    wxWizardPageSimple* m_SourcePage;
+    wxWizardPageSimple* m_DestinationPage;
 
-  wxFilePickerCtrl *m_SourceFileCtrl;
-  wxDirPickerCtrl *m_DestDirCtrl;
-  wxTextCtrl *m_DestNameCtrl;
-  wxStaticText *m_DateCtrl;
-  wxStaticText *m_CommentCtrl;
+    wxFilePickerCtrl* m_SourceFileCtrl;
+    wxDirPickerCtrl* m_DestDirCtrl;
+    wxTextCtrl* m_DestNameCtrl;
+    wxStaticText* m_DateCtrl;
+    wxStaticText* m_CommentCtrl;
 
-  BackupFile *m_BackupFileData;
+    BackupFile* m_BackupFileData;
 
-  void OnUpdateNextBtn(wxIdleEvent &event);
+    void OnUpdateNextBtn(wxIdleEvent& event);
 
-  void OnSourceDirChanged(wxFileDirPickerEvent &event);
+    void OnSourceDirChanged(wxFileDirPickerEvent& event);
 
-  void _CreateControls();
+    void _CreateControls();
 
-  DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
- public:
-  NewTemplatePrjWizard(wxWindow *parent, int id, const wxString &title);
+  public:
+    NewTemplatePrjWizard(wxWindow* parent, int id, const wxString& title);
 
-  virtual ~NewTemplatePrjWizard();
+    virtual ~NewTemplatePrjWizard();
 
-  inline BackupFile *GetBackupFileData() const;
+    inline BackupFile* GetBackupFileData() const;
 
-  virtual bool TransferDataFromWindow();
+    virtual bool TransferDataFromWindow();
 
-  int ShowWizard();
+    int ShowWizard();
 };
 
-inline BackupFile *NewTemplatePrjWizard::GetBackupFileData() const {
-  return m_BackupFileData;
+inline BackupFile* NewTemplatePrjWizard::GetBackupFileData() const {
+    return m_BackupFileData;
 }
 
 #endif

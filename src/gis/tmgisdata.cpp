@@ -33,7 +33,7 @@ bool tmGISData::m_LogOn = true;
   @date 14 July 2008
   *******************************************************************************/
 tmGISData::tmGISData() {
-  InitMemberValue();
+    InitMemberValue();
 }
 
 /***************************************************************************/ /**
@@ -42,7 +42,7 @@ tmGISData::tmGISData() {
   @date 14 July 2008
   *******************************************************************************/
 tmGISData::~tmGISData() {
-  wxDELETE(m_CoordConvert);
+    wxDELETE(m_CoordConvert);
 }
 
 /***************************************************************************/ /**
@@ -51,10 +51,10 @@ tmGISData::~tmGISData() {
   @date 14 July 2008
   *******************************************************************************/
 void tmGISData::InitMemberValue() {
-  m_ShortFileName = _T("");
-  m_FullFileName = _T("");
-  m_ClassType = wxNOT_FOUND;
-  m_CoordConvert = nullptr;
+    m_ShortFileName = _T("");
+    m_FullFileName = _T("");
+    m_ClassType = wxNOT_FOUND;
+    m_CoordConvert = nullptr;
 }
 
 /***************************************************************************/ /**
@@ -67,13 +67,13 @@ void tmGISData::InitMemberValue() {
   @date 14 July 2008
   *******************************************************************************/
 void tmGISData::InitGISDrivers(bool bRaster, bool bVector) {
-  if (bRaster) {
-    tmGISDataRaster::InitGISDriversRaster();
-  }
+    if (bRaster) {
+        tmGISDataRaster::InitGISDriversRaster();
+    }
 
-  if (bVector) {
-    tmGISDataVector::InitGISDriversVector();
-  }
+    if (bVector) {
+        tmGISDataVector::InitGISDriversVector();
+    }
 }
 
 /*
@@ -95,13 +95,13 @@ void tmGISData::finishGEOS() {
   @date 14 July 2008
   *******************************************************************************/
 wxString tmGISData::GetAllSupportedGISFormatsWildcards() {
-  wxString myReturnedWildcard = _T("");
+    wxString myReturnedWildcard = _T("");
 
-  myReturnedWildcard.Append(tmGISDataRaster::GetAllRasterGISFormatsWildcards());
-  myReturnedWildcard.Append(_T("|"));
-  myReturnedWildcard.Append(tmGISDataVector::GetAllVectorGISFormatsWildcards());
+    myReturnedWildcard.Append(tmGISDataRaster::GetAllRasterGISFormatsWildcards());
+    myReturnedWildcard.Append(_T("|"));
+    myReturnedWildcard.Append(tmGISDataVector::GetAllVectorGISFormatsWildcards());
 
-  return myReturnedWildcard;
+    return myReturnedWildcard;
 }
 
 /***************************************************************************/ /**
@@ -114,21 +114,21 @@ wxString tmGISData::GetAllSupportedGISFormatsWildcards() {
   @date 06 August 2008
   *******************************************************************************/
 wxArrayString tmGISData::GetAllSupportedGISFormatsExtensions() {
-  wxArrayString myExtensions;
+    wxArrayString myExtensions;
 
-  int iNbRaster = sizeof(tmGISDATA_RASTER_TYPE_EXTENSION) / sizeof(wxString);
-  int iNbVector = sizeof(tmGISDATA_VECTOR_TYPE_EXTENSION) / sizeof(wxString);
-  iNbVector = iNbVector - 1;  // removing mysql format.
+    int iNbRaster = sizeof(tmGISDATA_RASTER_TYPE_EXTENSION) / sizeof(wxString);
+    int iNbVector = sizeof(tmGISDATA_VECTOR_TYPE_EXTENSION) / sizeof(wxString);
+    iNbVector = iNbVector - 1;  // removing mysql format.
 
-  // adding rasters
-  for (int r = 0; r < iNbRaster; r++) {
-    myExtensions.Add(tmGISDATA_RASTER_TYPE_EXTENSION[r]);
-  }
+    // adding rasters
+    for (int r = 0; r < iNbRaster; r++) {
+        myExtensions.Add(tmGISDATA_RASTER_TYPE_EXTENSION[r]);
+    }
 
-  // adding vectors
-  for (int v = 0; v < iNbVector; v++) myExtensions.Add(tmGISDATA_VECTOR_TYPE_EXTENSION[v]);
+    // adding vectors
+    for (int v = 0; v < iNbVector; v++) myExtensions.Add(tmGISDATA_VECTOR_TYPE_EXTENSION[v]);
 
-  return myExtensions;
+    return myExtensions;
 }
 
 /***************************************************************************/ /**
@@ -141,30 +141,30 @@ wxArrayString tmGISData::GetAllSupportedGISFormatsExtensions() {
   @author Lucien Schreiber (c) CREALP 2008
   @date 14 July 2008
   *******************************************************************************/
-tmGISData *tmGISData::CreateGISBasedOnType(const int &gis_format_index) {
-  // create pointer depending on the selected format
-  if (gis_format_index < tmGISVECTOR_OFFSET)
-    return tmGISDataRaster::CreateGISRasterBasedOnType(gis_format_index);
-  else
-    return tmGISDataVector::CreateGISVectorBasedOnType(gis_format_index);
+tmGISData* tmGISData::CreateGISBasedOnType(const int& gis_format_index) {
+    // create pointer depending on the selected format
+    if (gis_format_index < tmGISVECTOR_OFFSET)
+        return tmGISDataRaster::CreateGISRasterBasedOnType(gis_format_index);
+    else
+        return tmGISDataVector::CreateGISVectorBasedOnType(gis_format_index);
 }
 
-tmGISData *tmGISData::CreateGISBasedOnExt(const wxString &extension) {
-  tmGISData *myDataObj = nullptr;
+tmGISData* tmGISData::CreateGISBasedOnExt(const wxString& extension) {
+    tmGISData* myDataObj = nullptr;
 
-  // try opening vector extensions
-  myDataObj = tmGISDataVector::CreateGISVectorBasedOnExt(extension);
-  if (myDataObj) return myDataObj;
+    // try opening vector extensions
+    myDataObj = tmGISDataVector::CreateGISVectorBasedOnExt(extension);
+    if (myDataObj) return myDataObj;
 
-  // try opening raster extensions
-  myDataObj = tmGISDataRaster::CreateGISRasterBasedOnExt(extension);
-  if (myDataObj) return myDataObj;
+    // try opening raster extensions
+    myDataObj = tmGISDataRaster::CreateGISRasterBasedOnExt(extension);
+    if (myDataObj) return myDataObj;
 
-  // if all failed then return null.
-  if (IsLoggingEnabled()) {
-    wxLogDebug(_T("No format handler found for extension : %s"), extension.c_str());
-  }
-  return nullptr;
+    // if all failed then return null.
+    if (IsLoggingEnabled()) {
+        wxLogDebug(_T("No format handler found for extension : %s"), extension.c_str());
+    }
+    return nullptr;
 }
 
 /***************************************************************************/ /**
@@ -176,12 +176,12 @@ tmGISData *tmGISData::CreateGISBasedOnExt(const wxString &extension) {
   @author Lucien Schreiber (c) CREALP 2008
   @date 14 July 2008
   *******************************************************************************/
-bool tmGISData::Open(const wxString &filename, bool bReadWrite) {
-  wxFileName myFilename(filename);
-  m_ShortFileName = myFilename.GetFullName();
-  m_FullFileName = myFilename.GetFullPath();
+bool tmGISData::Open(const wxString& filename, bool bReadWrite) {
+    wxFileName myFilename(filename);
+    m_ShortFileName = myFilename.GetFullName();
+    m_FullFileName = myFilename.GetFullPath();
 
-  return TRUE;
+    return TRUE;
 }
 
 /***************************************************************************/ /**
@@ -193,20 +193,20 @@ bool tmGISData::Open(const wxString &filename, bool bReadWrite) {
   @date 23 October 2008
   *******************************************************************************/
 wxString tmGISData::GetMinimalBoundingRectangleAsHtml(int iprecision) {
-  tmRealRect MinBounding = GetMinimalBoundingRectangle();
-  wxString myReturnedVal = _("<U><B>Extent of the layers</B></U><BR>");
+    tmRealRect MinBounding = GetMinimalBoundingRectangle();
+    wxString myReturnedVal = _("<U><B>Extent of the layers</B></U><BR>");
 
-  if (MinBounding == tmRealRect(0, 0, 0, 0)) {
-    myReturnedVal.Append(_("Unable to compute the layers extent<BR>"));
-    myReturnedVal.Append(_("<I>Maybe no data are present in the layer</I><BR>"));
+    if (MinBounding == tmRealRect(0, 0, 0, 0)) {
+        myReturnedVal.Append(_("Unable to compute the layers extent<BR>"));
+        myReturnedVal.Append(_("<I>Maybe no data are present in the layer</I><BR>"));
+        return myReturnedVal;
+    }
+
+    myReturnedVal.Append(wxString::Format(_("x min : %.*f<br>x max : %.*f<BR>"), iprecision, MinBounding.x_min,
+                                          iprecision, MinBounding.x_max));
+    myReturnedVal.Append(wxString::Format(_("y min : %.*f<BR>y max : %.*f<BR>"), iprecision, MinBounding.y_min,
+                                          iprecision, MinBounding.y_max));
     return myReturnedVal;
-  }
-
-  myReturnedVal.Append(wxString::Format(_("x min : %.*f<br>x max : %.*f<BR>"), iprecision, MinBounding.x_min,
-                                        iprecision, MinBounding.x_max));
-  myReturnedVal.Append(wxString::Format(_("y min : %.*f<BR>y max : %.*f<BR>"), iprecision, MinBounding.y_min,
-                                        iprecision, MinBounding.y_max));
-  return myReturnedVal;
 }
 
 /***************************************************************************/ /**
@@ -218,66 +218,66 @@ wxString tmGISData::GetMinimalBoundingRectangleAsHtml(int iprecision) {
   @author Lucien Schreiber (c) CREALP 2009
   @date 30 January 2009
   *******************************************************************************/
-tmGISData *tmGISData::LoadLayer(tmLayerProperties *layerProp) {
-  wxASSERT(layerProp);
-  tmGISData *m_Data = nullptr;
-  wxString myFileName = _T("");
-  wxString myErrMsg = _T("");
+tmGISData* tmGISData::LoadLayer(tmLayerProperties* layerProp) {
+    wxASSERT(layerProp);
+    tmGISData* m_Data = nullptr;
+    wxString myFileName = _T("");
+    wxString myErrMsg = _T("");
 
-  switch (layerProp->GetType()) {
-    case TOC_NAME_LINES:
-    case TOC_NAME_POINTS:
-    case TOC_NAME_ANNOTATIONS:
-    case TOC_NAME_LABELS:
-    case TOC_NAME_FRAME:
-      m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
-      myFileName = TABLE_NAME_GIS_GENERIC[layerProp->GetType()];
-      myErrMsg = layerProp->GetNameDisplay();
-      break;
+    switch (layerProp->GetType()) {
+        case TOC_NAME_LINES:
+        case TOC_NAME_POINTS:
+        case TOC_NAME_ANNOTATIONS:
+        case TOC_NAME_LABELS:
+        case TOC_NAME_FRAME:
+            m_Data = tmGISData::CreateGISBasedOnType(tmGIS_VECTOR_MYSQL);
+            myFileName = TABLE_NAME_GIS_GENERIC[layerProp->GetType()];
+            myErrMsg = layerProp->GetNameDisplay();
+            break;
 
-    case TOC_NAME_TIFF:
-    case TOC_NAME_EGRID:
-    case TOC_NAME_JPEG:
-    case TOC_NAME_SHP:
-      m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
-      myFileName = layerProp->GetName().GetFullPath();
-      myErrMsg = layerProp->GetNameDisplay();
-      break;
+        case TOC_NAME_TIFF:
+        case TOC_NAME_EGRID:
+        case TOC_NAME_JPEG:
+        case TOC_NAME_SHP:
+            m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
+            myFileName = layerProp->GetName().GetFullPath();
+            myErrMsg = layerProp->GetNameDisplay();
+            break;
 
-    case TOC_NAME_WEB:
-      m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
-      myFileName = layerProp->GetName().GetFullPath();
-      myErrMsg = layerProp->GetNameDisplay();
-      /*{
-          tmGISDataRasterWeb * myWebDataRef = static_cast<tmGISDataRasterWeb*>(m_Data);
-          myWebDataRef->SetWebFrameRef(layerProp->GetWebFrameRef());
-      }*/
+        case TOC_NAME_WEB:
+            m_Data = tmGISData::CreateGISBasedOnExt(layerProp->GetName().GetExt().MakeLower());
+            myFileName = layerProp->GetName().GetFullPath();
+            myErrMsg = layerProp->GetNameDisplay();
+            /*{
+                tmGISDataRasterWeb * myWebDataRef = static_cast<tmGISDataRasterWeb*>(m_Data);
+                myWebDataRef->SetWebFrameRef(layerProp->GetWebFrameRef());
+            }*/
 
-      break;
+            break;
 
-    default:
-      if (IsLoggingEnabled()) {
-        wxLogDebug(_T("%s file format not supported yet \n "), layerProp->GetNameDisplay().c_str());
-      }
-      return nullptr;
-      break;
-  }
-
-  // here load data
-  if (!m_Data) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_("Error loading : %s"), myErrMsg.c_str());
+        default:
+            if (IsLoggingEnabled()) {
+                wxLogDebug(_T("%s file format not supported yet \n "), layerProp->GetNameDisplay().c_str());
+            }
+            return nullptr;
+            break;
     }
-    return nullptr;
-  }
 
-  if (!m_Data->Open(myFileName, TRUE)) {
-    if (IsLoggingEnabled()) {
-      wxLogError(_("Error opening : %s"), myErrMsg.c_str());
+    // here load data
+    if (!m_Data) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_("Error loading : %s"), myErrMsg.c_str());
+        }
+        return nullptr;
     }
-    wxDELETE(m_Data);
-    return nullptr;
-  }
 
-  return m_Data;
+    if (!m_Data->Open(myFileName, TRUE)) {
+        if (IsLoggingEnabled()) {
+            wxLogError(_("Error opening : %s"), myErrMsg.c_str());
+        }
+        wxDELETE(m_Data);
+        return nullptr;
+    }
+
+    return m_Data;
 }

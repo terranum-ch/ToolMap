@@ -33,23 +33,23 @@ class DataBaseTM;
  @date 15 juillet 2011
  *******************************************************************************/
 class tmStatsData {
- public:
-  long m_Id;
-  wxDateTime m_TimeStart;
-  long m_NbClick;
-  long m_NbAttribution;
-  long m_NbIntersection;
-  wxTimeSpan m_TimeElapsed;
+  public:
+    long m_Id;
+    wxDateTime m_TimeStart;
+    long m_NbClick;
+    long m_NbAttribution;
+    long m_NbIntersection;
+    wxTimeSpan m_TimeElapsed;
 
-  tmStatsData();
+    tmStatsData();
 
-  virtual ~tmStatsData();
+    virtual ~tmStatsData();
 
-  void Reset();
+    void Reset();
 
-  void ResetPartial();
+    void ResetPartial();
 
-  bool IsOk() const;
+    bool IsOk() const;
 };
 
 /***************************************************************************/ /**
@@ -58,32 +58,32 @@ class tmStatsData {
  @date 15 juillet 2011
  *******************************************************************************/
 class tmStatsManager {
- private:
-  tmStatsData m_StatBufferData;
-  DataBaseTM *m_Database;
-  bool m_IsStarted;
-  static const int m_BufferSize = 50;
+  private:
+    tmStatsData m_StatBufferData;
+    DataBaseTM* m_Database;
+    bool m_IsStarted;
+    static const int m_BufferSize = 50;
 
-  void _FlushBuffer();
+    void _FlushBuffer();
 
-  void _StartRecord();
+    void _StartRecord();
 
-  void _StopRecord();
+    void _StopRecord();
 
-  // void OnGetStatsMessage(wxCommandEvent & event);
+    // void OnGetStatsMessage(wxCommandEvent & event);
 
- public:
-  tmStatsManager();
+  public:
+    tmStatsManager();
 
-  virtual ~tmStatsManager();
+    virtual ~tmStatsManager();
 
-  void Create(DataBaseTM *database);
+    void Create(DataBaseTM* database);
 
-  bool IsReady();
+    bool IsReady();
 
-  void AppendToBuffer(long click, long attrib, long intersection);
+    void AppendToBuffer(long click, long attrib, long intersection);
 
-  void ShowStatsDialog(wxWindow *parent);
+    void ShowStatsDialog(wxWindow* parent);
 };
 
 /***************************************************************************/ /**
@@ -92,49 +92,49 @@ class tmStatsManager {
  @date 15 juillet 2011
  *******************************************************************************/
 class tmStats_DLG : public wxDialog {
- private:
-  // controls
-  wxStaticBoxSizer *m_SessionSizerCtrl;
-  wxStaticText *m_SessionClickCtrl;
-  wxStaticText *m_SessionAttribCtrl;
-  wxStaticText *m_SessionIntersectCtrl;
-  wxStaticText *m_SessionElapsedTimeCtrl;
-  wxStaticBoxSizer *m_TotalSizerCtrl;
-  wxStaticText *m_TotalClickCtrl;
-  wxStaticText *m_TotalAttribCtrl;
-  wxStaticText *m_TotalIntersectCtrl;
-  wxStaticText *m_TotalElapsedTimeCtrl;
-  wxButton *m_BtnStartCtrl;
-  wxButton *m_BtnStopCtrl;
-  wxButton *m_BtnExportCtrl;
-  wxButton *m_BtnCloseCtrl;
+  private:
+    // controls
+    wxStaticBoxSizer* m_SessionSizerCtrl;
+    wxStaticText* m_SessionClickCtrl;
+    wxStaticText* m_SessionAttribCtrl;
+    wxStaticText* m_SessionIntersectCtrl;
+    wxStaticText* m_SessionElapsedTimeCtrl;
+    wxStaticBoxSizer* m_TotalSizerCtrl;
+    wxStaticText* m_TotalClickCtrl;
+    wxStaticText* m_TotalAttribCtrl;
+    wxStaticText* m_TotalIntersectCtrl;
+    wxStaticText* m_TotalElapsedTimeCtrl;
+    wxButton* m_BtnStartCtrl;
+    wxButton* m_BtnStopCtrl;
+    wxButton* m_BtnExportCtrl;
+    wxButton* m_BtnCloseCtrl;
 
-  const tmStatsData *m_DataActual;
-  const tmStatsData *m_DataTotal;
-  long m_DataTotalRecord;
-  DataBaseTM *m_Database;
+    const tmStatsData* m_DataActual;
+    const tmStatsData* m_DataTotal;
+    long m_DataTotalRecord;
+    DataBaseTM* m_Database;
 
-  void OnRecordStart(wxCommandEvent &event);
+    void OnRecordStart(wxCommandEvent& event);
 
-  void OnRecordStop(wxCommandEvent &event);
+    void OnRecordStop(wxCommandEvent& event);
 
-  void OnExport(wxCommandEvent &event);
+    void OnExport(wxCommandEvent& event);
 
-  void _CreateControls();
+    void _CreateControls();
 
-  void _UpdateControls();
+    void _UpdateControls();
 
-  DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
- public:
-  tmStats_DLG(wxWindow *parent, const tmStatsData *actual, const tmStatsData *total, long nbrecords,
-              DataBaseTM *database, wxWindowID id = wxID_ANY, const wxString &title = _("Statistics"),
-              const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-              long style = wxDEFAULT_DIALOG_STYLE);
+  public:
+    tmStats_DLG(wxWindow* parent, const tmStatsData* actual, const tmStatsData* total, long nbrecords,
+                DataBaseTM* database, wxWindowID id = wxID_ANY, const wxString& title = _("Statistics"),
+                const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                long style = wxDEFAULT_DIALOG_STYLE);
 
-  virtual ~tmStats_DLG();
+    virtual ~tmStats_DLG();
 
-  void SetStarted(bool recordstarted);
+    void SetStarted(bool recordstarted);
 };
 
 #endif

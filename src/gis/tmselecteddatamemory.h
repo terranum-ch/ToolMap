@@ -41,64 +41,64 @@ WX_DEFINE_SORTED_ARRAY_LONG(long, tmArraySortedLong);
   @date 28 October 2008
   *******************************************************************************/
 class tmSelectedDataMemory : public wxObject {
- private:
-  long m_LayerID;
-  tmArraySortedLong *m_SelectedIDs;
-  wxColour m_Colour;
-  bool m_HasHalo;
+  private:
+    long m_LayerID;
+    tmArraySortedLong* m_SelectedIDs;
+    wxColour m_Colour;
+    bool m_HasHalo;
 
-  void InitMemberValues();
+    void InitMemberValues();
 
- protected:
-  int Search(const long &value);
+  protected:
+    int Search(const long& value);
 
- public:
-  // ctor(s) and destructors
-  tmSelectedDataMemory();
+  public:
+    // ctor(s) and destructors
+    tmSelectedDataMemory();
 
-  ~tmSelectedDataMemory();
+    ~tmSelectedDataMemory();
 
-  // operations
-  bool AddSelected(wxArrayLong *selected);
+    // operations
+    bool AddSelected(wxArrayLong* selected);
 
-  bool Remove(wxArrayLong *selected = nullptr);
+    bool Remove(wxArrayLong* selected = nullptr);
 
-  bool IsSelected(const long &value);
+    bool IsSelected(const long& value);
 
-  unsigned int GetCount();
+    unsigned int GetCount();
 
-  void SetSelected(long selected);
+    void SetSelected(long selected);
 
-  // getters / setters
-  void SetLayerID(long layerID);
+    // getters / setters
+    void SetLayerID(long layerID);
 
-  void Clear() {
-    m_SelectedIDs->Clear();
-  }
+    void Clear() {
+        m_SelectedIDs->Clear();
+    }
 
-  wxColour GetSelectionColour() {
-    return m_Colour;
-  }
+    wxColour GetSelectionColour() {
+        return m_Colour;
+    }
 
-  void SetSelectionColour(const wxColour &col) {
-    m_Colour = col;
-  }
+    void SetSelectionColour(const wxColour& col) {
+        m_Colour = col;
+    }
 
-  void SetSelectionHalo(bool hashalo) {
-    m_HasHalo = hashalo;
-  }
+    void SetSelectionHalo(bool hashalo) {
+        m_HasHalo = hashalo;
+    }
 
-  bool GetSelectionHalo() {
-    return m_HasHalo;
-  }
+    bool GetSelectionHalo() {
+        return m_HasHalo;
+    }
 
-  long GetSelectedLayer() {
-    return m_LayerID;
-  }
+    long GetSelectedLayer() {
+        return m_LayerID;
+    }
 
-  wxArrayLong *GetSelectedValues();
+    wxArrayLong* GetSelectedValues();
 
-  long GetSelectedUnique();
+    long GetSelectedUnique();
 };
 
 #endif

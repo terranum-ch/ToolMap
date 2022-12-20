@@ -28,23 +28,23 @@
 class tmGISDataVector;
 
 class tmImportGIS : public tmImport {
- private:
-  tmGISDataVector *m_Vector;
+  private:
+    tmGISDataVector* m_Vector;
 
- public:
-  tmImportGIS();
+  public:
+    tmImportGIS();
 
-  virtual ~tmImportGIS();
+    virtual ~tmImportGIS();
 
-  virtual bool Open(const wxFileName &filename);
+    virtual bool Open(const wxFileName& filename);
 
-  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
+    virtual bool Import(DataBaseTM* database, PrjDefMemManage* prj, wxProgressDialog* progress = nullptr);
 
-  virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
+    virtual bool GetExistingAttributeValues(const wxString& attName, wxArrayString& values);
 
-  virtual wxArrayInt GetTargetSupported();
+    virtual wxArrayInt GetTargetSupported();
 
-  virtual bool GetFieldNames(wxArrayString &Fields);
+    virtual bool GetFieldNames(wxArrayString& Fields);
 };
 
 #endif

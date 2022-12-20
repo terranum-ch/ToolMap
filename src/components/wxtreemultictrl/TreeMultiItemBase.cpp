@@ -31,7 +31,7 @@
  * using RTTI. NOTE: this class cannot be constructed directly
  */
 
-TreeMultiItemBase::TreeMultiItemBase(TreeMultiItemNode *parent)
+TreeMultiItemBase::TreeMultiItemBase(TreeMultiItemNode* parent)
     : _excluded(false),
       _type(0),
       _x(0),
@@ -49,20 +49,20 @@ TreeMultiItemBase::TreeMultiItemBase(TreeMultiItemNode *parent)
 TreeMultiItemBase::~TreeMultiItemBase() {}
 
 bool TreeMultiItemBase::IsVisible() {
-  // are we excluded? then we are not visible as well
+    // are we excluded? then we are not visible as well
 
-  if (IsExcluded()) return false;
+    if (IsExcluded()) return false;
 
-  // check every parent up until the last and if one of them is collapsed
-  // we are not visible
+    // check every parent up until the last and if one of them is collapsed
+    // we are not visible
 
-  TreeMultiItemNode *p = GetParent();
-  while (p) {
-    if (!p->IsExpanded())
-      return false;
-    else
-      p = p->GetParent();
-  }
+    TreeMultiItemNode* p = GetParent();
+    while (p) {
+        if (!p->IsExpanded())
+            return false;
+        else
+            p = p->GetParent();
+    }
 
-  return true;
+    return true;
 }

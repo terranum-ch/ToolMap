@@ -26,7 +26,7 @@
   @date 12 August 2008
   *******************************************************************************/
 tmColourPickerCtrl::tmColourPickerCtrl() {
-  InitMemberValues();
+    InitMemberValues();
 }
 
 /***************************************************************************/ /**
@@ -39,11 +39,11 @@ tmColourPickerCtrl::tmColourPickerCtrl() {
   *******************************************************************************/
 tmColourPickerCtrl::tmColourPickerCtrl(wxWindow* parent, wxWindowID id, const wxColour& colour, const wxPoint& pos,
                                        const wxSize& size) {
-  InitMemberValues();
-  m_Colour = colour;
-  wxBitmapButton::Create(parent, id, CreateColourBitmap(colour), pos, size);
-  // connecting event
-  Connect(id, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(tmColourPickerCtrl::OnChooseColour));
+    InitMemberValues();
+    m_Colour = colour;
+    wxBitmapButton::Create(parent, id, CreateColourBitmap(colour), pos, size);
+    // connecting event
+    Connect(id, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(tmColourPickerCtrl::OnChooseColour));
 }
 
 /***************************************************************************/ /**
@@ -60,7 +60,7 @@ tmColourPickerCtrl::~tmColourPickerCtrl() {}
   @date 12 August 2008
   *******************************************************************************/
 void tmColourPickerCtrl::InitMemberValues() {
-  m_Colour = wxColour(*wxBLACK);
+    m_Colour = wxColour(*wxBLACK);
 }
 
 /***************************************************************************/ /**
@@ -72,14 +72,14 @@ void tmColourPickerCtrl::InitMemberValues() {
   @date 12 August 2008
   *******************************************************************************/
 wxBitmap tmColourPickerCtrl::CreateColourBitmap(const wxColour& col) {
-  wxBitmap myBitmap(tmCOLOURPICKERCTRL_SIZE.GetWidth(), tmCOLOURPICKERCTRL_SIZE.GetHeight());
-  wxMemoryDC memdc;
-  memdc.SelectObject(myBitmap);
-  memdc.SetBrush(wxBrush(col));
-  memdc.SetPen(wxPen(col));
-  memdc.DrawRectangle(0, 0, tmCOLOURPICKERCTRL_SIZE.GetWidth(), tmCOLOURPICKERCTRL_SIZE.GetHeight());
-  memdc.SelectObject(wxNullBitmap);
-  return myBitmap;
+    wxBitmap myBitmap(tmCOLOURPICKERCTRL_SIZE.GetWidth(), tmCOLOURPICKERCTRL_SIZE.GetHeight());
+    wxMemoryDC memdc;
+    memdc.SelectObject(myBitmap);
+    memdc.SetBrush(wxBrush(col));
+    memdc.SetPen(wxPen(col));
+    memdc.DrawRectangle(0, 0, tmCOLOURPICKERCTRL_SIZE.GetWidth(), tmCOLOURPICKERCTRL_SIZE.GetHeight());
+    memdc.SelectObject(wxNullBitmap);
+    return myBitmap;
 }
 
 /***************************************************************************/ /**
@@ -89,8 +89,8 @@ wxBitmap tmColourPickerCtrl::CreateColourBitmap(const wxColour& col) {
   @date 12 August 2008
   *******************************************************************************/
 void tmColourPickerCtrl::SetColour(const wxColour& col) {
-  m_Colour = col;
-  SetBitmapLabel(CreateColourBitmap(col));
+    m_Colour = col;
+    SetBitmapLabel(CreateColourBitmap(col));
 }
 
 /***************************************************************************/ /**
@@ -99,12 +99,12 @@ void tmColourPickerCtrl::SetColour(const wxColour& col) {
   @date 12 August 2008
   *******************************************************************************/
 void tmColourPickerCtrl::OnChooseColour(wxCommandEvent& event) {
-  wxColour selcol = wxGetColourFromUser(this, m_Colour);
-  if (!selcol.IsOk()) {
-    wxLogDebug(_T("Error selecting color, color invalid"));
-    return;
-  }
-  SetColour(selcol);
+    wxColour selcol = wxGetColourFromUser(this, m_Colour);
+    if (!selcol.IsOk()) {
+        wxLogDebug(_T("Error selecting color, color invalid"));
+        return;
+    }
+    SetColour(selcol);
 }
 
 #else  // STANDARD COLOUR PICKER WINDOWS & LINUX
@@ -115,9 +115,9 @@ void tmColourPickerCtrl::OnChooseColour(wxCommandEvent& event) {
   @author Lucien Schreiber (c) CREALP 2008
   @date 12 August 2008
   *******************************************************************************/
-tmColourPickerCtrl::tmColourPickerCtrl(wxWindow *parent, wxWindowID id, const wxColour &colour, const wxPoint &pos,
-                                       const wxSize &size) {
-  wxColourPickerCtrl::Create(parent, id, colour, pos, size);
+tmColourPickerCtrl::tmColourPickerCtrl(wxWindow* parent, wxWindowID id, const wxColour& colour, const wxPoint& pos,
+                                       const wxSize& size) {
+    wxColourPickerCtrl::Create(parent, id, colour, pos, size);
 }
 
 #endif

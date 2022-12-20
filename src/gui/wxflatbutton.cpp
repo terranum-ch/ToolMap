@@ -23,14 +23,14 @@
 #if (__WXMAC__)
 
 wxFlatButton::wxFlatButton() {
-  // InitwxFlatButton();
+    // InitwxFlatButton();
 }
 
 wxFlatButton::wxFlatButton(wxWindow* parent, wxWindowID id, const wxString& label, wxSize size)
     : wxButton(parent, id, label, wxDefaultPosition, size, wxBORDER_SIMPLE) {
-  /*InitwxFlatButton(id);
-  Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
-          (wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
+    /*InitwxFlatButton(id);
+    Connect(id, wxEVT_COMMAND_TOGGLEBUTTON_CLICKED,
+            (wxObjectEventFunction)&wxFlatButton::OnClickToggleButton);*/
 }
 
 wxFlatButton::~wxFlatButton() {}
@@ -66,12 +66,12 @@ void wxFlatButton::OnClickToggleButton(wxCommandEvent & event)
 #else
 
 wxFlatButton::wxFlatButton() {
-  // InitwxFlatButton();
+    // InitwxFlatButton();
 }
 
-wxFlatButton::wxFlatButton(wxWindow *parent, wxWindowID id, const wxString &label, wxSize size)
+wxFlatButton::wxFlatButton(wxWindow* parent, wxWindowID id, const wxString& label, wxSize size)
     : wxButton(parent, id, label, wxDefaultPosition, size, wxFLATBUTTON_STYLE) {
-  // InitwxFlatButton();
+    // InitwxFlatButton();
 }
 
 wxFlatButton::~wxFlatButton() {}

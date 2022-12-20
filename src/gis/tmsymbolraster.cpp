@@ -24,41 +24,42 @@
 #include <wx/txtstrm.h>
 
 tmSymbolRaster::tmSymbolRaster() {
-  m_RasterData.m_GlobalTransparency = 0;
-  m_RasterData.m_DoMultiplyRaster = false;
+    m_RasterData.m_GlobalTransparency = 0;
+    m_RasterData.m_DoMultiplyRaster = false;
 }
 
-tmSymbolRaster::tmSymbolRaster(const tmSymbolRaster &origin) {
-  m_RasterData.m_GlobalTransparency = origin.m_RasterData.m_GlobalTransparency;
-  m_RasterData.m_DoMultiplyRaster = origin.m_RasterData.m_DoMultiplyRaster;
+tmSymbolRaster::tmSymbolRaster(const tmSymbolRaster& origin) {
+    m_RasterData.m_GlobalTransparency = origin.m_RasterData.m_GlobalTransparency;
+    m_RasterData.m_DoMultiplyRaster = origin.m_RasterData.m_DoMultiplyRaster;
 }
 
 tmSymbolRaster::~tmSymbolRaster() {}
 
-tmSymbolDLG *tmSymbolRaster::GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos) {
-  tmSymbolDLGRaster *myDlg = new tmSymbolDLGRaster(parent, SYMBOL_TMSYMBOLDLG_IDNAME, SYMBOL_TMSYMBOLDLG_TITLE, dlgpos);
-  myDlg->SetDialogData(m_RasterData);
+tmSymbolDLG* tmSymbolRaster::GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos) {
+    tmSymbolDLGRaster* myDlg = new tmSymbolDLGRaster(parent, SYMBOL_TMSYMBOLDLG_IDNAME, SYMBOL_TMSYMBOLDLG_TITLE,
+                                                     dlgpos);
+    myDlg->SetDialogData(m_RasterData);
 
-  return myDlg;
+    return myDlg;
 }
 
-bool tmSymbolRaster::GetDialogData(tmSymbolDLG *dlg) {
-  m_RasterData = ((tmSymbolDLGRaster *)dlg)->GetDialogData();
-  return TRUE;
+bool tmSymbolRaster::GetDialogData(tmSymbolDLG* dlg) {
+    m_RasterData = ((tmSymbolDLGRaster*)dlg)->GetDialogData();
+    return TRUE;
 }
 
-bool tmSymbolRaster::Serialize(tmSerialize &s) {
-  s.EnterObject();
-  if (s.IsStoring()) {
-    s << m_RasterData.m_GlobalTransparency;
-    s << m_RasterData.m_DoMultiplyRaster;
+bool tmSymbolRaster::Serialize(tmSerialize& s) {
+    s.EnterObject();
+    if (s.IsStoring()) {
+        s << m_RasterData.m_GlobalTransparency;
+        s << m_RasterData.m_DoMultiplyRaster;
 
-  } else {
-    s >> m_RasterData.m_GlobalTransparency;
-    s >> m_RasterData.m_DoMultiplyRaster;
-  }
-  s.LeaveObject();
+    } else {
+        s >> m_RasterData.m_GlobalTransparency;
+        s >> m_RasterData.m_DoMultiplyRaster;
+    }
+    s.LeaveObject();
 
-  // return false when the archive encountered an error
-  return s.IsOk();
+    // return false when the archive encountered an error
+    return s.IsOk();
 }

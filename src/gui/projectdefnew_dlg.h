@@ -37,50 +37,51 @@
 #define SYMBOL_PROJECTDEFNEW_POSITION wxDefaultPosition
 
 class ProjectDefNew : public wxDialog {
-  DECLARE_DYNAMIC_CLASS(ProjectDefNew)
+    DECLARE_DYNAMIC_CLASS(ProjectDefNew)
 
-  DECLARE_EVENT_TABLE()
-  PrjDefMemManage *m_PrjDefinition;
+    DECLARE_EVENT_TABLE()
+    PrjDefMemManage* m_PrjDefinition;
 
-  // private functions
-  bool CheckIdleRules();
+    // private functions
+    bool CheckIdleRules();
 
-  void OnIdleWait(wxIdleEvent &event);
+    void OnIdleWait(wxIdleEvent& event);
 
- public:
-  /// Constructors
-  ProjectDefNew();
+  public:
+    /// Constructors
+    ProjectDefNew();
 
-  ProjectDefNew(wxWindow *parent, PrjDefMemManage *PrjDefinition, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
-                const wxString &caption = SYMBOL_PROJECTDEFNEW_TITLE,
-                const wxPoint &pos = SYMBOL_PROJECTDEFNEW_POSITION, const wxSize &size = SYMBOL_PROJECTDEFNEW_SIZE,
+    ProjectDefNew(wxWindow* parent, PrjDefMemManage* PrjDefinition, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
+                  const wxString& caption = SYMBOL_PROJECTDEFNEW_TITLE,
+                  const wxPoint& pos = SYMBOL_PROJECTDEFNEW_POSITION, const wxSize& size = SYMBOL_PROJECTDEFNEW_SIZE,
+                  long style = SYMBOL_PROJECTDEFNEW_STYLE);
+
+    /// Creation
+    bool Create(wxWindow* parent, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
+                const wxString& caption = SYMBOL_PROJECTDEFNEW_TITLE,
+                const wxPoint& pos = SYMBOL_PROJECTDEFNEW_POSITION, const wxSize& size = SYMBOL_PROJECTDEFNEW_SIZE,
                 long style = SYMBOL_PROJECTDEFNEW_STYLE);
 
-  /// Creation
-  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTDEFNEW_IDNAME,
-              const wxString &caption = SYMBOL_PROJECTDEFNEW_TITLE, const wxPoint &pos = SYMBOL_PROJECTDEFNEW_POSITION,
-              const wxSize &size = SYMBOL_PROJECTDEFNEW_SIZE, long style = SYMBOL_PROJECTDEFNEW_STYLE);
+    /// Destructor
+    ~ProjectDefNew();
 
-  /// Destructor
-  ~ProjectDefNew();
+    /// Initialises member variables
+    void Init();
 
-  /// Initialises member variables
-  void Init();
+    /// Creates the controls and sizers
+    void CreateControls();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    PrjDefMemManage* GetProjectDefinition() {
+        return m_PrjDefinition;
+    }
 
-  PrjDefMemManage *GetProjectDefinition() {
-    return m_PrjDefinition;
-  }
+    wxDirPickerCtrlBest* m_DlgPD_Proj_Path;
+    wxTextCtrl* m_DlgPd_Proj_Name;
+    wxChoice* m_DlgPd_Proj_Unit;
+    wxChoice* m_DlgPd_Proj_Projection;
+    wxButton* m_DlgPd_Button_Ok;
 
-  wxDirPickerCtrlBest *m_DlgPD_Proj_Path;
-  wxTextCtrl *m_DlgPd_Proj_Name;
-  wxChoice *m_DlgPd_Proj_Unit;
-  wxChoice *m_DlgPd_Proj_Projection;
-  wxButton *m_DlgPd_Button_Ok;
-
-  virtual bool TransferDataFromWindow();
+    virtual bool TransferDataFromWindow();
 };
 
 #endif

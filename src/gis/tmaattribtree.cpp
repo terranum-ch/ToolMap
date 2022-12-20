@@ -32,10 +32,10 @@ tmAAttribTree::tmAAttribTree() {}
   @author Lucien Schreiber (c) CREALP 2009
   @date 05 March 2009
   *******************************************************************************/
-tmAAttribTree::tmAAttribTree(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long style,
-                             const wxValidator &validator, const wxString &name)
+tmAAttribTree::tmAAttribTree(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style,
+                             const wxValidator& validator, const wxString& name)
     : wxTreeMultiCtrl(parent, id, pos, size, style, validator) {
-  // SetBackgroundColour(*wxWHITE);
+    // SetBackgroundColour(*wxWHITE);
 }
 
 /***************************************************************************/ /**
@@ -51,9 +51,9 @@ tmAAttribTree::~tmAAttribTree() {}
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 March 2009
   *******************************************************************************/
-void tmAAttribTree::AddLayerNode(const wxString &layername) {
-  wxTreeMultiItem item = AddRoot(layername);
-  m_ActualNode = item;
+void tmAAttribTree::AddLayerNode(const wxString& layername) {
+    wxTreeMultiItem item = AddRoot(layername);
+    m_ActualNode = item;
 }
 
 /***************************************************************************/ /**
@@ -65,11 +65,11 @@ void tmAAttribTree::AddLayerNode(const wxString &layername) {
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 March 2009
   *******************************************************************************/
-bool tmAAttribTree::FindLayerNode(const wxString &layername) {
-  m_ActualNode = FindItem(layername);
-  if (m_ActualNode.IsOk()) return true;
+bool tmAAttribTree::FindLayerNode(const wxString& layername) {
+    m_ActualNode = FindItem(layername);
+    if (m_ActualNode.IsOk()) return true;
 
-  return false;
+    return false;
 }
 
 /***************************************************************************/ /**
@@ -80,22 +80,22 @@ bool tmAAttribTree::FindLayerNode(const wxString &layername) {
   @author Lucien Schreiber (c) CREALP 2009
   @date 18 March 2009
   *******************************************************************************/
-tmAAttribCtrl *tmAAttribTree::IterateAllCtrl(bool restart) {
-  if (restart) {
-    m_ActualNode = GetFirstRoot();
-    wxASSERT(m_ActualNode.IsOk());
-  }
+tmAAttribCtrl* tmAAttribTree::IterateAllCtrl(bool restart) {
+    if (restart) {
+        m_ActualNode = GetFirstRoot();
+        wxASSERT(m_ActualNode.IsOk());
+    }
 
-  m_ActualNode = GetNext(m_ActualNode);
-  if (!m_ActualNode.IsOk()) return nullptr;
+    m_ActualNode = GetNext(m_ActualNode);
+    if (!m_ActualNode.IsOk()) return nullptr;
 
-  if (!m_ActualNode.IsWindowItem()) {
-    // if we are passing on the parent branch
-    IterateAllCtrl(false);
-  }
+    if (!m_ActualNode.IsWindowItem()) {
+        // if we are passing on the parent branch
+        IterateAllCtrl(false);
+    }
 
-  tmAAttribCtrl *myCtrl = (tmAAttribCtrl *)GetWindow(m_ActualNode);
-  return myCtrl;
+    tmAAttribCtrl* myCtrl = (tmAAttribCtrl*)GetWindow(m_ActualNode);
+    return myCtrl;
 }
 
 /***************************************************************************/ /**
@@ -104,47 +104,47 @@ tmAAttribCtrl *tmAAttribTree::IterateAllCtrl(bool restart) {
   @author Lucien Schreiber (c) CREALP 2009
   @date 06 March 2009
   *******************************************************************************/
-tmAAttribCtrl *tmAAttribTree::AddControl(const ProjectDefMemoryFields &fieldinfo) {
-  tmAAttribCtrl *mypControl = nullptr;
-  tmAAttribCtrlInteger *mypControlInt;
-  tmAAttribCtrlFloat *mypControlFloat;
-  tmAAttribCtrlEnum *mypControlEnum;
-  tmAAttribCtrlText *mypControlText;
+tmAAttribCtrl* tmAAttribTree::AddControl(const ProjectDefMemoryFields& fieldinfo) {
+    tmAAttribCtrl* mypControl = nullptr;
+    tmAAttribCtrlInteger* mypControlInt;
+    tmAAttribCtrlFloat* mypControlFloat;
+    tmAAttribCtrlEnum* mypControlEnum;
+    tmAAttribCtrlText* mypControlText;
 
-  switch (fieldinfo.m_FieldType) {
-    case TM_FIELD_INTEGER:
-      mypControlInt = new tmAAttribCtrlInteger(this, fieldinfo);
-      mypControl = mypControlInt;
-      break;
+    switch (fieldinfo.m_FieldType) {
+        case TM_FIELD_INTEGER:
+            mypControlInt = new tmAAttribCtrlInteger(this, fieldinfo);
+            mypControl = mypControlInt;
+            break;
 
-    case TM_FIELD_FLOAT:
-      mypControlFloat = new tmAAttribCtrlFloat(this, fieldinfo);
-      mypControl = mypControlFloat;
-      break;
+        case TM_FIELD_FLOAT:
+            mypControlFloat = new tmAAttribCtrlFloat(this, fieldinfo);
+            mypControl = mypControlFloat;
+            break;
 
-    case TM_FIELD_ENUMERATION:
-      mypControlEnum = new tmAAttribCtrlEnum(this, fieldinfo);
-      mypControl = mypControlEnum;
-      break;
+        case TM_FIELD_ENUMERATION:
+            mypControlEnum = new tmAAttribCtrlEnum(this, fieldinfo);
+            mypControl = mypControlEnum;
+            break;
 
-    case TM_FIELD_DATE:
+        case TM_FIELD_DATE:
 #ifdef __WXOSX__
-      mypControl = (tmAAttribCtrlSafeDate *)new tmAAttribCtrlSafeDate(this, fieldinfo);
+            mypControl = (tmAAttribCtrlSafeDate*)new tmAAttribCtrlSafeDate(this, fieldinfo);
 #else
-      mypControl = (tmAAttribCtrlDate *)new tmAAttribCtrlDate(this, fieldinfo);
+            mypControl = (tmAAttribCtrlDate*)new tmAAttribCtrlDate(this, fieldinfo);
 #endif
-      break;
+            break;
 
-    default:  // tmfieldText
-      mypControlText = new tmAAttribCtrlText(this, fieldinfo);
-      mypControl = mypControlText;
-      break;
-  }
+        default:  // tmfieldText
+            mypControlText = new tmAAttribCtrlText(this, fieldinfo);
+            mypControl = mypControlText;
+            break;
+    }
 
-  wxASSERT(mypControl);
-  wxTreeMultiWindowInfo wndinfo(0, 0, 0);
+    wxASSERT(mypControl);
+    wxTreeMultiWindowInfo wndinfo(0, 0, 0);
 
-  // add subitem to root
-  AppendWindow(m_ActualNode, mypControl, _T(""), wndinfo);
-  return mypControl;
+    // add subitem to root
+    AppendWindow(m_ActualNode, mypControl, _T(""), wndinfo);
+    return mypControl;
 }

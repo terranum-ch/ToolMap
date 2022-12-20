@@ -35,7 +35,7 @@
 #endif
 
 // include
-//#include "../database/db_project.h" // for project in memory (creation)
+// #include "../database/db_project.h" // for project in memory (creation)
 #include <wx/busyinfo.h>  // informations message for busy time
 
 #include "../gis/tmattributionmanager.h"   // for attribution manager
@@ -66,123 +66,123 @@ class DataBaseTM;
   @date 10 March 2008
   *******************************************************************************/
 class ProjectManager : public wxObject {
- private:
-  bool bProjectIsOpen;
-  DataBaseTM *m_DB;
-  wxFrame *m_Parent;
-  MenuManager *m_pMManager;
-  ObjectManager *m_Obj;
-  wxStatusBar *m_ParentStatus;
-  tmLayerManager *m_LayerManager;
-  tmAttributionManager *m_AttribManager;
-  Queries_PANEL *m_QueriesPanel;
-  Shortcuts_PANEL *m_ShortcutPanel;
-  Snapping_PANEL *m_SnappingPanel;
-  tmEditManager *m_EditManager;
-  PrjDefMemManage *m_PrjMem;
-  tmToolManager *m_ToolManager;
-  tmStatsManager *m_StatManager;
+  private:
+    bool bProjectIsOpen;
+    DataBaseTM* m_DB;
+    wxFrame* m_Parent;
+    MenuManager* m_pMManager;
+    ObjectManager* m_Obj;
+    wxStatusBar* m_ParentStatus;
+    tmLayerManager* m_LayerManager;
+    tmAttributionManager* m_AttribManager;
+    Queries_PANEL* m_QueriesPanel;
+    Shortcuts_PANEL* m_ShortcutPanel;
+    Snapping_PANEL* m_SnappingPanel;
+    tmEditManager* m_EditManager;
+    PrjDefMemManage* m_PrjMem;
+    tmToolManager* m_ToolManager;
+    tmStatsManager* m_StatManager;
 
-  DECLARE_CLASS(ProjectManager)
+    DECLARE_CLASS(ProjectManager)
 
-  bool IsDataBasePath(const wxString &path);
+    bool IsDataBasePath(const wxString& path);
 
-  bool PMAddDefaultQueries();
+    bool PMAddDefaultQueries();
 
-  bool _copy_directory(wxString from, wxString to);
+    bool _copy_directory(wxString from, wxString to);
 
-  bool CleanDirectory(const wxString &path);
+    bool CleanDirectory(const wxString& path);
 
-  bool CheckDirectoryContent(const wxString &path) const;
+    bool CheckDirectoryContent(const wxString& path) const;
 
- public:
-  ProjectManager(wxFrame *parent);
+  public:
+    ProjectManager(wxFrame* parent);
 
-  ~ProjectManager();
+    ~ProjectManager();
 
-  // project operations
-  bool CreateNewProject();
+    // project operations
+    bool CreateNewProject();
 
-  void CloseProject();
+    void CloseProject();
 
-  int OpenProject(const wxString &path);
+    int OpenProject(const wxString& path);
 
-  bool EditProjectObjectDefinition();
+    bool EditProjectObjectDefinition();
 
-  bool EditObjectFrequency(int id);
+    bool EditObjectFrequency(int id);
 
-  bool EditProjectSettings();
+    bool EditProjectSettings();
 
-  bool EditProject(int notebooknumber);
+    bool EditProject(int notebooknumber);
 
-  bool BackupProject(const wxString &backup_comment = wxEmptyString);
+    bool BackupProject(const wxString& backup_comment = wxEmptyString);
 
-  bool MergeProjects(const wxString &slave_project_name, bool beVerbose = true);
+    bool MergeProjects(const wxString& slave_project_name, bool beVerbose = true);
 
-  // project infos
-  wxString GetProjectName();
+    // project infos
+    wxString GetProjectName();
 
-  // setter and getter
-  void SetMenuManager(MenuManager *pMenu) {
-    m_pMManager = pMenu;
-  }
+    // setter and getter
+    void SetMenuManager(MenuManager* pMenu) {
+        m_pMManager = pMenu;
+    }
 
-  MenuManager *GetMenuManager() {
-    return m_pMManager;
-  }
+    MenuManager* GetMenuManager() {
+        return m_pMManager;
+    }
 
-  ObjectManager *GetObjectManager() {
-    return m_Obj;
-  }
+    ObjectManager* GetObjectManager() {
+        return m_Obj;
+    }
 
-  void SetStatusBar(wxStatusBar *status) {
-    m_ParentStatus = status;
-  }
+    void SetStatusBar(wxStatusBar* status) {
+        m_ParentStatus = status;
+    }
 
-  void SetAttributionManager(tmAttributionManager *pAManager) {
-    m_AttribManager = pAManager;
-  }
+    void SetAttributionManager(tmAttributionManager* pAManager) {
+        m_AttribManager = pAManager;
+    }
 
-  void SetQueriesPanel(Queries_PANEL *queriespanel) {
-    m_QueriesPanel = queriespanel;
-  }
+    void SetQueriesPanel(Queries_PANEL* queriespanel) {
+        m_QueriesPanel = queriespanel;
+    }
 
-  void SetShortcutPanel(Shortcuts_PANEL *panel) {
-    m_ShortcutPanel = panel;
-  }
+    void SetShortcutPanel(Shortcuts_PANEL* panel) {
+        m_ShortcutPanel = panel;
+    }
 
-  void SetSnappingPanel(Snapping_PANEL *panel) {
-    m_SnappingPanel = panel;
-  }
+    void SetSnappingPanel(Snapping_PANEL* panel) {
+        m_SnappingPanel = panel;
+    }
 
-  void SetEditManager(tmEditManager *editmanager) {
-    m_EditManager = editmanager;
-  }
+    void SetEditManager(tmEditManager* editmanager) {
+        m_EditManager = editmanager;
+    }
 
-  DataBaseTM *GetDatabase() {
-    return m_DB;
-  }
+    DataBaseTM* GetDatabase() {
+        return m_DB;
+    }
 
-  void SetToolManager(tmToolManager *tm) {
-    m_ToolManager = tm;
-  }
+    void SetToolManager(tmToolManager* tm) {
+        m_ToolManager = tm;
+    }
 
-  void SetStatManager(tmStatsManager *statmanager) {
-    m_StatManager = statmanager;
-  }
+    void SetStatManager(tmStatsManager* statmanager) {
+        m_StatManager = statmanager;
+    }
 
-  void SetLayerManager(tmLayerManager *layermanager) {
-    m_LayerManager = layermanager;
-  }
+    void SetLayerManager(tmLayerManager* layermanager) {
+        m_LayerManager = layermanager;
+    }
 
-  bool IsProjectOpen() {
-    return bProjectIsOpen;
-  }
+    bool IsProjectOpen() {
+        return bProjectIsOpen;
+    }
 
-  // project defintion into memory
-  bool LoadProjectDefintion(short int message = 0);
+    // project defintion into memory
+    bool LoadProjectDefintion(short int message = 0);
 
-  PrjDefMemManage *GetMemoryProjectDefinition();
+    PrjDefMemManage* GetMemoryProjectDefinition();
 };
 
 /***************************************************************************/ /**
@@ -191,29 +191,29 @@ class ProjectManager : public wxObject {
   @date 16 May 2008
   *******************************************************************************/
 class ObjectManager : public wxObject {
- private:
-  AttribObjType_PANEL *m_panel;
+  private:
+    AttribObjType_PANEL* m_panel;
 
-  void InitValues();
+    void InitValues();
 
- public:
-  // ctor
-  ObjectManager() {
-    InitValues();
-  }
+  public:
+    // ctor
+    ObjectManager() {
+        InitValues();
+    }
 
-  ObjectManager(AttribObjType_PANEL *panel) {
-    InitValues();
-    SetPanel(panel);
-  }
+    ObjectManager(AttribObjType_PANEL* panel) {
+        InitValues();
+        SetPanel(panel);
+    }
 
-  // setter
-  void SetPanel(AttribObjType_PANEL *panel) {
-    m_panel = panel;
-  }
+    // setter
+    void SetPanel(AttribObjType_PANEL* panel) {
+        m_panel = panel;
+    }
 
-  // functions
-  bool UpdateObjectLists(DataBaseTM *pDB);
+    // functions
+    bool UpdateObjectLists(DataBaseTM* pDB);
 };
 
 #endif

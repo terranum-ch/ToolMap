@@ -16,8 +16,9 @@
 #define _tmProjectMerge_H_
 
 // For compilers that support precompilation, includes "wx/wx.h".
-#include "database.h"
 #include <wx/wxprec.h>
+
+#include "database.h"
 
 // Include wxWidgets' headers
 #ifndef WX_PRECOMP
@@ -29,57 +30,57 @@
 class DataBase;
 
 class tmProjectMerge {
- private:
-  wxFileName m_MasterFileName;
-  wxFileName m_SlaveFileName;
-  DataBase *m_DB;
-  bool m_manage_database;
+  private:
+    wxFileName m_MasterFileName;
+    wxFileName m_SlaveFileName;
+    DataBase* m_DB;
+    bool m_manage_database;
 
-  bool m_beVerbose;
-  wxArrayString m_Errors;
+    bool m_beVerbose;
+    wxArrayString m_Errors;
 
-  bool _HasSameNumberRecords(DataBase *db, const wxString &tablename);
+    bool _HasSameNumberRecords(DataBase* db, const wxString& tablename);
 
-  bool _HasSameRecords(DataBase *db, const wxString &query, long &errnumber, long &firstId, bool raiseError);
+    bool _HasSameRecords(DataBase* db, const wxString& query, long& errnumber, long& firstId, bool raiseError);
 
-  bool _HasSimilarResults(DataBase *db, const wxString &query, long &errnumber);
+    bool _HasSimilarResults(DataBase* db, const wxString& query, long& errnumber);
 
-  bool _CopyUpdateTable(const wxString &tablename, const wxString &keycol, wxArrayLong *oldids, wxArrayLong *newids);
+    bool _CopyUpdateTable(const wxString& tablename, const wxString& keycol, wxArrayLong* oldids, wxArrayLong* newids);
 
-  bool _MergeGeom(const wxString &geomtablename, const wxString &aatablename, int geomtype);
+    bool _MergeGeom(const wxString& geomtablename, const wxString& aatablename, int geomtype);
 
-  bool _IsReady();
+    bool _IsReady();
 
-  bool _GetIdMax(const wxString &dbName, const wxString &tableName, long &idMax);
+    bool _GetIdMax(const wxString& dbName, const wxString& tableName, long& idMax);
 
- public:
-  tmProjectMerge(const wxString &masterprj, const wxString &slaveprj, DataBase *database = nullptr);
+  public:
+    tmProjectMerge(const wxString& masterprj, const wxString& slaveprj, DataBase* database = nullptr);
 
-  virtual ~tmProjectMerge();
+    virtual ~tmProjectMerge();
 
-  inline const bool IsVerbose() const;
+    inline const bool IsVerbose() const;
 
-  void SetVerbose(bool value);
+    void SetVerbose(bool value);
 
-  inline const wxArrayString GetErrors() const;
+    inline const wxArrayString GetErrors() const;
 
-  wxString GetLastError();
+    wxString GetLastError();
 
-  bool CheckSimilar();
+    bool CheckSimilar();
 
-  bool MergeIntoMaster();
+    bool MergeIntoMaster();
 
-  DataBase *GetDatabaseRef() {
-    return m_DB;
-  }
+    DataBase* GetDatabaseRef() {
+        return m_DB;
+    }
 };
 
 inline const bool tmProjectMerge::IsVerbose() const {
-  return m_beVerbose;
+    return m_beVerbose;
 }
 
 inline const wxArrayString tmProjectMerge::GetErrors() const {
-  return m_Errors;
+    return m_Errors;
 }
 
 #endif

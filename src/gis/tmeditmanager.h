@@ -35,7 +35,7 @@
 #include "../gui/editvertex_dlg.h"  // for editing vertex position
 #include "tmmanagerevent.h"         // for shared event with other manager
 #include "tmselecteddatamemory.h"   // for selection data
-#include "tocctrl.h"              // for TOC ctrl
+#include "tocctrl.h"                // for TOC ctrl
 
 const int tmEM_CONTEXTMENU_VERTEX_INSERT = 22200;
 const int tmEM_CONTEXTMENU_VERTEX_DELETE = 22201;
@@ -49,30 +49,30 @@ class DataBaseTM;
 class tmRenderer;
 
 class tmSharedNodeEdit {
- private:
-  long m_LineID;
-  int m_VertexID;
-  wxPoint m_CoordVertexPrevious;
-  wxPoint m_CoordVertex;
+  private:
+    long m_LineID;
+    int m_VertexID;
+    wxPoint m_CoordVertexPrevious;
+    wxPoint m_CoordVertex;
 
- public:
-  tmSharedNodeEdit(long lineid, int vertexid, const wxPoint &coord, const wxPoint &coordprevious);
+  public:
+    tmSharedNodeEdit(long lineid, int vertexid, const wxPoint& coord, const wxPoint& coordprevious);
 
-  virtual ~tmSharedNodeEdit();
+    virtual ~tmSharedNodeEdit();
 
-  void DrawLine(wxClientDC *dc, wxPoint *point = nullptr);
+    void DrawLine(wxClientDC* dc, wxPoint* point = nullptr);
 
-  long GetLineID() {
-    return m_LineID;
-  }
+    long GetLineID() {
+        return m_LineID;
+    }
 
-  int GetVertexID() {
-    return m_VertexID;
-  }
+    int GetVertexID() {
+        return m_VertexID;
+    }
 
-  void SetCoordVertex(const wxPoint &point) {
-    m_CoordVertex = point;
-  }
+    void SetCoordVertex(const wxPoint& point) {
+        m_CoordVertex = point;
+    }
 };
 
 WX_DECLARE_OBJARRAY(tmSharedNodeEdit, tmArraySharedNodes);
@@ -85,223 +85,223 @@ WX_DECLARE_OBJARRAY(tmSharedNodeEdit, tmArraySharedNodes);
   @date 26 January 2009
   *******************************************************************************/
 class tmEditManager : public wxEvtHandler {
- private:
-  // defined by ctor
-  ToolMapFrame *m_ParentEvt;
-  TocCtrl *m_TocCtrl;
-  tmSelectedDataMemory *m_SelectedData;
-  tmRenderer *m_Renderer;
-  bool m_EditStarted;
-  tmDrawerEditLine m_DrawLine;
-  int m_INSDELVertex;
-  wxRealPoint m_INSVertexPos;
-  tmPointOrientAttrib m_OrientedPt;
-  wxPoint m_LastMousePos;
-  tmArraySharedNodes m_SharedNodes;
-  wxOverlay m_OverlaySharedNodes;
-  wxColour m_SelectionColour;
+  private:
+    // defined by ctor
+    ToolMapFrame* m_ParentEvt;
+    TocCtrl* m_TocCtrl;
+    tmSelectedDataMemory* m_SelectedData;
+    tmRenderer* m_Renderer;
+    bool m_EditStarted;
+    tmDrawerEditLine m_DrawLine;
+    int m_INSDELVertex;
+    wxRealPoint m_INSVertexPos;
+    tmPointOrientAttrib m_OrientedPt;
+    wxPoint m_LastMousePos;
+    tmArraySharedNodes m_SharedNodes;
+    wxOverlay m_OverlaySharedNodes;
+    wxColour m_SelectionColour;
 
-  DataBaseTM *m_pDB;
-  tmGISScale *m_Scale;
+    DataBaseTM* m_pDB;
+    tmGISScale* m_Scale;
 
-  tmSnappingMemory *m_SnapMem;
-  bool m_SnappingShowOnMap;
+    tmSnappingMemory* m_SnapMem;
+    bool m_SnappingShowOnMap;
 
-  wxRealPointList m_BezierPoints;
-  wxRealPointList m_BezierPointsControl;
-  wxArrayInt m_BezierSnappedPointsIndexes;
-  wxPoint m_BezierActualP1;
-  wxPoint m_BezierActualP2;
-  wxPoint m_BezierActualC1;
-  wxPoint m_BezierActualC2;
-  bool m_BezierDrawControlPoints;
-  wxRect m_BezierRefreshRect;
-  int m_BezierModifyIndexPoint;
-  int m_BezierModifyIndexControl;
-  bool m_BezierModifyControlInverted;
-  // double m_BezierApproximationScale;
-  BezierSettingsData m_BezierSettings;
+    wxRealPointList m_BezierPoints;
+    wxRealPointList m_BezierPointsControl;
+    wxArrayInt m_BezierSnappedPointsIndexes;
+    wxPoint m_BezierActualP1;
+    wxPoint m_BezierActualP2;
+    wxPoint m_BezierActualC1;
+    wxPoint m_BezierActualC2;
+    bool m_BezierDrawControlPoints;
+    wxRect m_BezierRefreshRect;
+    int m_BezierModifyIndexPoint;
+    int m_BezierModifyIndexControl;
+    bool m_BezierModifyControlInverted;
+    // double m_BezierApproximationScale;
+    BezierSettingsData m_BezierSettings;
 
-  wxRealPointList m_ArcPoints;
-  wxArrayLong m_ArcSnappedPointsIndexes;
-  wxPoint m_ArcActualPt;
-  wxRect m_ArcRefreshRect;
-  int m_ArcModifyIndexPoint;
-  long m_ArcOID;
+    wxRealPointList m_ArcPoints;
+    wxArrayLong m_ArcSnappedPointsIndexes;
+    wxPoint m_ArcActualPt;
+    wxRect m_ArcRefreshRect;
+    int m_ArcModifyIndexPoint;
+    long m_ArcOID;
 
-  // FUNCTIONS
-  void InitMemberValues();
+    // FUNCTIONS
+    void InitMemberValues();
 
-  // Extern EVENT function
-  void OnEditStart(wxCommandEvent &event);
+    // Extern EVENT function
+    void OnEditStart(wxCommandEvent& event);
 
-  void OnEditStop(wxCommandEvent &event);
+    void OnEditStop(wxCommandEvent& event);
 
-  void OnDrawFeatureValidate(wxCommandEvent &event);
+    void OnDrawFeatureValidate(wxCommandEvent& event);
 
-  void OnDrawFeatureEscape(wxCommandEvent &event);
+    void OnDrawFeatureEscape(wxCommandEvent& event);
 
-  void OnCutLines(wxCommandEvent &event);
+    void OnCutLines(wxCommandEvent& event);
 
-  void OnShowVertexPosition(wxCommandEvent &event);
+    void OnShowVertexPosition(wxCommandEvent& event);
 
-  void OnSetRenderFocus(wxCommandEvent &event);
+    void OnSetRenderFocus(wxCommandEvent& event);
 
-  void OnEditSharedDown(wxCommandEvent &event);
+    void OnEditSharedDown(wxCommandEvent& event);
 
-  void OnEditSharedUp(wxCommandEvent &event);
+    void OnEditSharedUp(wxCommandEvent& event);
 
-  void OnEditSharedMove(wxCommandEvent &event);
+    void OnEditSharedMove(wxCommandEvent& event);
 
-  void OnOrientedPtsDown(wxCommandEvent &event);
+    void OnOrientedPtsDown(wxCommandEvent& event);
 
-  void OnOrientedPtsMove(wxCommandEvent &event);
+    void OnOrientedPtsMove(wxCommandEvent& event);
 
-  void OnOrientedPtsUp(wxCommandEvent &event);
+    void OnOrientedPtsUp(wxCommandEvent& event);
 
-  void OnMenuInsertVertex(wxCommandEvent &event);
+    void OnMenuInsertVertex(wxCommandEvent& event);
 
-  void OnMenuDeleteVertex(wxCommandEvent &event);
+    void OnMenuDeleteVertex(wxCommandEvent& event);
 
-  // internal verification
-  bool IsCorrectLayerSelected();
+    // internal verification
+    bool IsCorrectLayerSelected();
 
-  bool IsObjectSelected();
+    bool IsObjectSelected();
 
-  bool IsObjectMinNumberSelected(unsigned int iNumbermin = 1);
+    bool IsObjectMinNumberSelected(unsigned int iNumbermin = 1);
 
-  bool IsLayerTypeSelected(int layertype = LAYER_SPATIAL_LINE);
+    bool IsLayerTypeSelected(int layertype = LAYER_SPATIAL_LINE);
 
-  // snapping function
-  bool EMGetSnappingCoord(wxRealPoint &pt);
+    // snapping function
+    bool EMGetSnappingCoord(wxRealPoint& pt);
 
-  wxRealPoint *EMIterateAllSnappingLayers(const wxRealPoint &clickedpoint);
+    wxRealPoint* EMIterateAllSnappingLayers(const wxRealPoint& clickedpoint);
 
-  long _SaveToDatabase();
+    long _SaveToDatabase();
 
-  // checking
-  bool _LoadSnappingStatus();
+    // checking
+    bool _LoadSnappingStatus();
 
-  wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
+    wxArrayLong _GetErrorLines(wxArrayLong linetocheck);
 
-  void _ProcessChaikin();
+    void _ProcessChaikin();
 
-  DECLARE_EVENT_TABLE()
- protected:
- public:
-  // ctor - dtor
-  tmEditManager(ToolMapFrame *parent, TocCtrl *toc, tmSelectedDataMemory *seldata, tmRenderer *renderer,
-                tmGISScale *scale);
+    DECLARE_EVENT_TABLE()
+  protected:
+  public:
+    // ctor - dtor
+    tmEditManager(ToolMapFrame* parent, TocCtrl* toc, tmSelectedDataMemory* seldata, tmRenderer* renderer,
+                  tmGISScale* scale);
 
-  ~tmEditManager();
+    ~tmEditManager();
 
-  // If database is valid then project is open.
-  void SetDatabase(DataBaseTM *database) {
-    m_pDB = database;
-  }
+    // If database is valid then project is open.
+    void SetDatabase(DataBaseTM* database) {
+        m_pDB = database;
+    }
 
-  void SetSnappingMemoryRef(tmSnappingMemory *snapping) {
-    m_SnapMem = snapping;
-  }
+    void SetSnappingMemoryRef(tmSnappingMemory* snapping) {
+        m_SnapMem = snapping;
+    }
 
-  void SetSnappingShowOnMap(bool show) {
-    m_SnappingShowOnMap = show;
-  }
+    void SetSnappingShowOnMap(bool show) {
+        m_SnappingShowOnMap = show;
+    }
 
-  // change tool functions
-  void OnToolEdit();
+    // change tool functions
+    void OnToolEdit();
 
-  void OnToolBezier();
+    void OnToolBezier();
 
-  void OnToolBezierModify();
+    void OnToolBezierModify();
 
-  void OnToolModify();
+    void OnToolModify();
 
-  void OnToolEditShared();
+    void OnToolEditShared();
 
-  void OnToolCutLines();
+    void OnToolCutLines();
 
-  void OnToolOrientedPoint();
+    void OnToolOrientedPoint();
 
-  void OnToolVertexDelete();
+    void OnToolVertexDelete();
 
-  void OnToolVertexInsert();
+    void OnToolVertexInsert();
 
-  bool IsDrawingAllowed();
+    bool IsDrawingAllowed();
 
-  bool IsModificationAllowed();
+    bool IsModificationAllowed();
 
-  bool IsModificationBezierAllowed();
+    bool IsModificationBezierAllowed();
 
-  bool IsLayerSpatialType(int layerType = LAYER_SPATIAL_LINE);
+    bool IsLayerSpatialType(int layerType = LAYER_SPATIAL_LINE);
 
-  bool IsMultipleModificationAllowed();
+    bool IsMultipleModificationAllowed();
 
-  bool DeleteSelected(bool clearSelection = true);
+    bool DeleteSelected(bool clearSelection = true);
 
-  bool UndoLastVertex();
+    bool UndoLastVertex();
 
-  bool HasLastVertex();
+    bool HasLastVertex();
 
-  int GetSelectionCount();
+    int GetSelectionCount();
 
-  bool SelectedSearch(const wxPoint &screenpt);
+    bool SelectedSearch(const wxPoint& screenpt);
 
-  bool CreateIntersections();
+    bool CreateIntersections();
 
-  bool EditVertexPosition();
+    bool EditVertexPosition();
 
-  bool MergeSelectedLines();
+    bool MergeSelectedLines();
 
-  bool FlipLine();
+    bool FlipLine();
 
-  bool SmoothLine();
+    bool SmoothLine();
 
-  void BezierClick(const wxPoint &mousepos);
+    void BezierClick(const wxPoint& mousepos);
 
-  void BezierMove(const wxPoint &mousepos);
+    void BezierMove(const wxPoint& mousepos);
 
-  void BezierDraw(wxGCDC *dc);
+    void BezierDraw(wxGCDC* dc);
 
-  void BezierClear();
+    void BezierClear();
 
-  void BezierModifyDraw(wxGCDC *dc);
+    void BezierModifyDraw(wxGCDC* dc);
 
-  void BezierModifyClickDown(const wxPoint &mousepos);
+    void BezierModifyClickDown(const wxPoint& mousepos);
 
-  void BezierModifyClickMove(const wxPoint &mousepos);
+    void BezierModifyClickMove(const wxPoint& mousepos);
 
-  void BezierModifyClickUp(const wxPoint &mousepos);
+    void BezierModifyClickUp(const wxPoint& mousepos);
 
-  bool BezierToLine(BezierSettingsData settings);
+    bool BezierToLine(BezierSettingsData settings);
 
-  bool IsBezierToLinePreviewAllowed();
+    bool IsBezierToLinePreviewAllowed();
 
-  void SetBezierSettings(BezierSettingsData data, bool savetodb = false);
+    void SetBezierSettings(BezierSettingsData data, bool savetodb = false);
 
-  BezierSettingsData GetBezierSettings() {
-    return m_BezierSettings;
-  }
+    BezierSettingsData GetBezierSettings() {
+        return m_BezierSettings;
+    }
 
-  void ArcClick(const wxPoint &mousepos);
+    void ArcClick(const wxPoint& mousepos);
 
-  void ArcMove(const wxPoint &mousepos);
+    void ArcMove(const wxPoint& mousepos);
 
-  void ArcDraw(wxGCDC *dc);
+    void ArcDraw(wxGCDC* dc);
 
-  void ArcClear();
+    void ArcClear();
 
-  void ArcModifyClickDown(const wxPoint &mousepos);
+    void ArcModifyClickDown(const wxPoint& mousepos);
 
-  void ArcModifyClickMove(const wxPoint &mousepos);
+    void ArcModifyClickMove(const wxPoint& mousepos);
 
-  void ArcModifyClickUp(const wxPoint &mousepos);
+    void ArcModifyClickUp(const wxPoint& mousepos);
 
-  void ArcVertexInsertUp(const wxPoint &mousepos);
+    void ArcVertexInsertUp(const wxPoint& mousepos);
 
-  void ArcVertexDeleteUp(const wxPoint &mousePos);
+    void ArcVertexDeleteUp(const wxPoint& mousePos);
 
-  void DrawSnappingCircle(wxGCDC *dc);
+    void DrawSnappingCircle(wxGCDC* dc);
 };
 
 #endif

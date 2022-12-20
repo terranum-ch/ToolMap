@@ -43,55 +43,55 @@ const int tmCHECK_MENU_SAVE_RANK = 10005;
   @date 20 May 2008
   *******************************************************************************/
 class tmCheckListBoxRank : public tmCheckListBox {
- private:
-  // members
-  wxString m_RankColName;
-  wxString m_TableName;
-  DataBaseTM *m_pDB;
+  private:
+    // members
+    wxString m_RankColName;
+    wxString m_TableName;
+    DataBaseTM* m_pDB;
 
-  // functions
-  void Init();
+    // functions
+    void Init();
 
-  bool AddToMenu();
+    bool AddToMenu();
 
-  // event functions
-  void OnSaveOrder(wxCommandEvent &event);
+    // event functions
+    void OnSaveOrder(wxCommandEvent& event);
 
- protected:
-  bool PrepareOrderStatement(wxString &sqlstatement);
+  protected:
+    bool PrepareOrderStatement(wxString& sqlstatement);
 
-  void EnableRelevantMenuEntries();
+    void EnableRelevantMenuEntries();
 
- public:
-  ~tmCheckListBoxRank();
+  public:
+    ~tmCheckListBoxRank();
 
-  tmCheckListBoxRank(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-                     const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr,
-                     long style = 0, const wxValidator &validator = wxDefaultValidator,
-                     const wxString &name = wxListBoxNameStr);
+    tmCheckListBoxRank(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                       const wxSize& size = wxDefaultSize, int nStrings = 0, const wxString* choices = nullptr,
+                       long style = 0, const wxValidator& validator = wxDefaultValidator,
+                       const wxString& name = wxListBoxNameStr);
 
-  bool Create(wxWindow *parent, wxWindowID id, const wxPoint &pos = wxDefaultPosition,
-              const wxSize &size = wxDefaultSize, int nStrings = 0, const wxString *choices = nullptr, long style = 0,
-              const wxValidator &validator = wxDefaultValidator, const wxString &name = wxListBoxNameStr);
+    bool Create(wxWindow* parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                const wxSize& size = wxDefaultSize, int nStrings = 0, const wxString* choices = nullptr, long style = 0,
+                const wxValidator& validator = wxDefaultValidator, const wxString& name = wxListBoxNameStr);
 
-  // set and get the rank column name
-  wxString GetRankColName() {
-    return m_RankColName;
-  }
+    // set and get the rank column name
+    wxString GetRankColName() {
+        return m_RankColName;
+    }
 
-  void SetRankColName(const wxString &colrank = _T("RANK"));
+    void SetRankColName(const wxString& colrank = _T("RANK"));
 
-  // set and get the table name for the rank
-  wxString GetTableName() {
-    return m_TableName;
-  }
+    // set and get the table name for the rank
+    wxString GetTableName() {
+        return m_TableName;
+    }
 
-  void SetTableName(const wxString &tabname = TABLE_NAME_OBJECTS);
+    void SetTableName(const wxString& tabname = TABLE_NAME_OBJECTS);
 
-  // set the database
-  void SetDataBase(DataBaseTM *pDB) {
-    m_pDB = pDB;
-  }
+    // set the database
+    void SetDataBase(DataBaseTM* pDB) {
+        m_pDB = pDB;
+    }
 };
 
 #endif

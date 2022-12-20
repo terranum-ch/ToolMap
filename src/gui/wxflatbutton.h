@@ -40,34 +40,36 @@
 #define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_BUTTON_CLICKED
 
 class wxFlatButton : public wxButton {
- private:
-  DECLARE_DYNAMIC_CLASS(wxFlatButton)
+  private:
+    DECLARE_DYNAMIC_CLASS(wxFlatButton)
 
- public:
-  wxFlatButton();
-  wxFlatButton(wxWindow* parent, wxWindowID id, const wxString& label = wxEmptyString, wxSize size = wxFLATBUTTON_SIZE);
-  ~wxFlatButton();
+  public:
+    wxFlatButton();
+    wxFlatButton(wxWindow* parent, wxWindowID id, const wxString& label = wxEmptyString,
+                 wxSize size = wxFLATBUTTON_SIZE);
+    ~wxFlatButton();
 
-  /*private:
-      void OnClickToggleButton(wxCommandEvent & event);
-      void InitwxFlatButton(wxWindowID id= wxID_ANY);
-      DECLARE_DYNAMIC_CLASS(wxFlatButton)*/
+    /*private:
+        void OnClickToggleButton(wxCommandEvent & event);
+        void InitwxFlatButton(wxWindowID id= wxID_ANY);
+        DECLARE_DYNAMIC_CLASS(wxFlatButton)*/
 };
 #else
 #define EVT_FLATBUTTON EVT_BUTTON
 #define EVT_FLATBUTTON_CLICKED wxEVT_COMMAND_BUTTON_CLICKED
 
 class wxFlatButton : public wxButton {
- private:
-  DECLARE_DYNAMIC_CLASS(wxFlatButton)
-  // void InitwxFlatButton();
+  private:
+    DECLARE_DYNAMIC_CLASS(wxFlatButton)
+    // void InitwxFlatButton();
 
- public:
-  wxFlatButton();
+  public:
+    wxFlatButton();
 
-  wxFlatButton(wxWindow *parent, wxWindowID id, const wxString &label = wxEmptyString, wxSize size = wxFLATBUTTON_SIZE);
+    wxFlatButton(wxWindow* parent, wxWindowID id, const wxString& label = wxEmptyString,
+                 wxSize size = wxFLATBUTTON_SIZE);
 
-  ~wxFlatButton();
+    ~wxFlatButton();
 };
 
 #endif

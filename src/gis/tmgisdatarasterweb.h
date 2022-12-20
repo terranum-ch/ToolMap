@@ -25,22 +25,22 @@
 #include "tmgisdataraster.h"
 
 class tmGISDataRasterWeb : public tmGISDataRaster {
- private:
-  tmRealRect m_FilterCoordLocal;
-  tmRealRect m_FilterCoordWeb;
+  private:
+    tmRealRect m_FilterCoordLocal;
+    tmRealRect m_FilterCoordWeb;
 
- public:
-  tmGISDataRasterWeb();
+  public:
+    tmGISDataRasterWeb();
 
-  ~tmGISDataRasterWeb();
+    ~tmGISDataRasterWeb();
 
-  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
+    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 
-  virtual bool SetSpatialFilter(tmRealRect filter, int type);
+    virtual bool SetSpatialFilter(tmRealRect filter, int type);
 
-  virtual tmRealRect GetImageClipedCoordinates() {
-    return m_FilterCoordLocal;
-  }
+    virtual tmRealRect GetImageClipedCoordinates() {
+        return m_FilterCoordLocal;
+    }
 };
 
 #endif

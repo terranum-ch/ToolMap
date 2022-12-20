@@ -32,37 +32,37 @@ const int tmDANGLING_NODE_DRAW_SIZE = 4;
 const wxColour tmDANGLING_NODE_DRAW_COLOUR = wxColour(*wxRED);
 
 class tmToolManager : public wxEvtHandler {
- private:
-  // defined by ctor
-  wxWindow *m_Parent;
-  tmSelectedDataMemory *m_Selected;
-  tmRenderer *m_Renderer;
-  tmGISScale *m_Scale;
-  wxArrayRealPoints m_DanglingPts;
-  DataBaseTM *m_pDB;
+  private:
+    // defined by ctor
+    wxWindow* m_Parent;
+    tmSelectedDataMemory* m_Selected;
+    tmRenderer* m_Renderer;
+    tmGISScale* m_Scale;
+    wxArrayRealPoints m_DanglingPts;
+    DataBaseTM* m_pDB;
 
-  void InitMemberValues();
+    void InitMemberValues();
 
-  bool _IsOk();
+    bool _IsOk();
 
-  bool _SearchDanglingNodes(int selectedlayer, const wxArrayString &layersname);
+    bool _SearchDanglingNodes(int selectedlayer, const wxArrayString& layersname);
 
-  void _ClearDangling() {
-    m_DanglingPts.Clear();
-  }
+    void _ClearDangling() {
+        m_DanglingPts.Clear();
+    }
 
- public:
-  tmToolManager(wxWindow *parent, tmSelectedDataMemory *seldata, tmRenderer *renderer, tmGISScale *scale);
+  public:
+    tmToolManager(wxWindow* parent, tmSelectedDataMemory* seldata, tmRenderer* renderer, tmGISScale* scale);
 
-  ~tmToolManager();
+    ~tmToolManager();
 
-  void SetDatabase(DataBaseTM *db) {
-    m_pDB = db;
-  }
+    void SetDatabase(DataBaseTM* db) {
+        m_pDB = db;
+    }
 
-  bool FindDanglingNodes();
+    bool FindDanglingNodes();
 
-  long DrawDanglingNodes(wxGCDC *dc);
+    long DrawDanglingNodes(wxGCDC* dc);
 };
 
 #endif

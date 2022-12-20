@@ -19,97 +19,97 @@
 IMPLEMENT_DYNAMIC_CLASS(DirOperation, wxObject)
 
 DirOperation::DirOperation() {
-  // init default members values
-  InitMembers();
+    // init default members values
+    InitMembers();
 }
 
 DirOperation::DirOperation(wxString OriginPath, wxString DestinationPath) {
-  // init default members values
-  InitMembers();
+    // init default members values
+    InitMembers();
 
-  m_Path[DIROP_PATH_ORIGIN] = OriginPath;
-  m_Path[DIROP_PATH_DESTINATION] = DestinationPath;
+    m_Path[DIROP_PATH_ORIGIN] = OriginPath;
+    m_Path[DIROP_PATH_DESTINATION] = DestinationPath;
 }
 
 DirOperation::~DirOperation() {}
 
 void DirOperation::InitPath(wxString OriginPath, wxString DestinationPath) {
-  m_Path[DIROP_PATH_ORIGIN] = OriginPath;
-  m_Path[DIROP_PATH_DESTINATION] = DestinationPath;
+    m_Path[DIROP_PATH_ORIGIN] = OriginPath;
+    m_Path[DIROP_PATH_DESTINATION] = DestinationPath;
 }
 
 void DirOperation::InitMembers() {
-  // init default members values
-  m_Path[DIROP_PATH_ORIGIN] = _T("");
-  m_Path[DIROP_PATH_DESTINATION] = _T("");
+    // init default members values
+    m_Path[DIROP_PATH_ORIGIN] = _T("");
+    m_Path[DIROP_PATH_DESTINATION] = _T("");
 }
 
 double DirOperation::GetDirectorySize(DIROP_SELECTDIR dirselection) {
-  wxLongLong myBigSize;
-  if (wxDirExists(m_Path[dirselection])) {
-    // compute the size
-    myBigSize = wxDir::GetTotalSize(m_Path[dirselection]);
-    return myBigSize.ToDouble() / 1048576;
-  }
+    wxLongLong myBigSize;
+    if (wxDirExists(m_Path[dirselection])) {
+        // compute the size
+        myBigSize = wxDir::GetTotalSize(m_Path[dirselection]);
+        return myBigSize.ToDouble() / 1048576;
+    }
 
-  return -1;
+    return -1;
 }
 
-long DirOperation::GetAllDirectoryFiles(wxArrayString &filesNames, DIROP_SELECTDIR dirselection) {
-  // clear the array
-  filesNames.Clear();
+long DirOperation::GetAllDirectoryFiles(wxArrayString& filesNames, DIROP_SELECTDIR dirselection) {
+    // clear the array
+    filesNames.Clear();
 
-  if (wxDirExists(m_Path[dirselection])) {
-    wxDir::GetAllFiles(m_Path[dirselection], &filesNames);
-    return filesNames.GetCount();
-  }
-  return -1;
+    if (wxDirExists(m_Path[dirselection])) {
+        wxDir::GetAllFiles(m_Path[dirselection], &filesNames);
+        return filesNames.GetCount();
+    }
+    return -1;
 }
 
 bool DirOperation::HasEnoughFreeSpace(double megabyteSize, DIROP_SELECTDIR dirselection) {
-  wxLongLong myFreeSizeBytes;
-  wxGetDiskSpace(m_Path[dirselection], nullptr, &myFreeSizeBytes);
+    wxLongLong myFreeSizeBytes;
+    wxGetDiskSpace(m_Path[dirselection], nullptr, &myFreeSizeBytes);
 
-  // avoid division problem
-  if (myFreeSizeBytes > 0) {
-    double myFreeSizeMB = myFreeSizeBytes.ToDouble() / 1048576;
-    wxLogDebug(_T("Free space is : %.*f [MB]"), 3, myFreeSizeMB);
-    if (myFreeSizeMB > megabyteSize) return true;
-  }
-  return false;
+    // avoid division problem
+    if (myFreeSizeBytes > 0) {
+        double myFreeSizeMB = myFreeSizeBytes.ToDouble() / 1048576;
+        wxLogDebug(_T("Free space is : %.*f [MB]"), 3, myFreeSizeMB);
+        if (myFreeSizeMB > megabyteSize) return true;
+    }
+    return false;
 }
 
 bool DirOperation::IsPathWritable(DIROP_SELECTDIR dirselection) {
-  // try to create the directory, if an error occur
-  // we return FALSE.
+    // try to create the directory, if an error occur
+    // we return FALSE.
 
-  return wxMkdir(m_Path[dirselection]);
+    return wxMkdir(m_Path[dirselection]);
 }
 
-bool DirOperation::CopyDirectory(const wxArrayString &filesNames, bool showprogress) {
-  wxBusyCursor *wait = nullptr;
-  wxString myfileName = _T("");
-  wxFileName myFileDestinationPathName;
-  wxString myFileDestinationName;
+bool DirOperation::CopyDirectory(const wxArrayString& filesNames, bool showprogress) {
+    wxBusyCursor* wait = nullptr;
+    wxString myfileName = _T("");
+    wxFileName myFileDestinationPathName;
+    wxString myFileDestinationName;
 
-  bool bResult = TRUE;
+    bool bResult = TRUE;
 
-  if (showprogress) {
-    wait = new wxBusyCursor();
-  }
+    if (showprogress) {
+        wait = new wxBusyCursor();
+    }
 
-  long lNumOfFiles = filesNames.GetCount();
+    long lNumOfFiles = filesNames.GetCount();
 
-  // copy loop
-  for (long l = 0; l < lNumOfFiles; l++) {
-    myfileName = filesNames.Item(l);
-    myFileDestinationPathName.Assign(myfileName);
-    myFileDestinationName = myFileDestinationPathName.GetFullName();
-    myFileDestinationPathName.Assign(m_Path[DIROP_PATH_DESTINATION], myFileDestinationName);
+    // copy loop
+    for (long l = 0; l < lNumOfFiles; l++) {
+        myfileName = filesNames.Item(l);
+        myFileDestinationPathName.Assign(myfileName);
+        myFileDestinationName = myFileDestinationPathName.GetFullName();
+        myFileDestinationPathName.Assign(m_Path[DIROP_PATH_DESTINATION], myFileDestinationName);
 
-    bResult = bResult && wxCopyFile(myfileName, myFileDestinationPathName.GetFullPath());
-  }
+        bResult = bResult && wxCopyFile(myfileName, myFileDestinationPathName.GetFullPath());
+    }
 
-  wxDELETE(wait);
-  return bResult;
+    wxDELETE(wait);
+    return bResult;
 }

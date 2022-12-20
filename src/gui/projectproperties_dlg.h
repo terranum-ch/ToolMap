@@ -55,103 +55,108 @@ class DataBaseTM;
 
 /********************* ENUMERATION FOR ORDER OPTIONS ************************/
 // this is used in the wxChoice
-enum PRJPROPERTIES_SCALE_ORDER { SCALE_ORDER_USER = 0, SCALE_ORDER_ASCENDING, SCALE_ORDER_DESCENDING };
+enum PRJPROPERTIES_SCALE_ORDER {
+    SCALE_ORDER_USER = 0,
+    SCALE_ORDER_ASCENDING,
+    SCALE_ORDER_DESCENDING
+};
 
 const wxString PRJPROPERTIES_SCALE_ORDER_STRING[] = {wxTRANSLATE("User defined"), wxTRANSLATE("Sort ascending"),
                                                      wxTRANSLATE("Sort descending")};
 
 class ProjectPropertiesDLG : public wxDialog {
-  DataBaseTM *m_DBHandler;
-  PrjDefMemManage m_PrjDefinition;
+    DataBaseTM* m_DBHandler;
+    PrjDefMemManage m_PrjDefinition;
 
-  // event function
-  void OnSaveButton(wxCommandEvent &event);
+    // event function
+    void OnSaveButton(wxCommandEvent& event);
 
-  void OnAddScaleButton(wxCommandEvent &event);
+    void OnAddScaleButton(wxCommandEvent& event);
 
-  void OnRemoveScaleButton(wxCommandEvent &event);
+    void OnRemoveScaleButton(wxCommandEvent& event);
 
-  void OnChooseScaleOrder(wxCommandEvent &event);
+    void OnChooseScaleOrder(wxCommandEvent& event);
 
-  // controls
-  wxNotebook *m_DLGPS_Notebook;
-  wxChoice *m_DLGPS_Export_Type_Choice;
-  wxDirPickerCtrlBest *m_DLGPS_Export_Path;
-  wxDirPickerCtrlBest *m_DLGPS_Backup_Path;
-  ScaleList *m_DLGPS_Scale_List;
-  wxChoice *m_DLGPS_Scale_Order_Choice;
+    // controls
+    wxNotebook* m_DLGPS_Notebook;
+    wxChoice* m_DLGPS_Export_Type_Choice;
+    wxDirPickerCtrlBest* m_DLGPS_Export_Path;
+    wxDirPickerCtrlBest* m_DLGPS_Backup_Path;
+    ScaleList* m_DLGPS_Scale_List;
+    wxChoice* m_DLGPS_Scale_Order_Choice;
 
-  void _Init();
+    void _Init();
 
-  void _CreateControls();
+    void _CreateControls();
 
-  DECLARE_DYNAMIC_CLASS(ProjectPropertiesDLG);
-  DECLARE_EVENT_TABLE();
+    DECLARE_DYNAMIC_CLASS(ProjectPropertiesDLG);
+    DECLARE_EVENT_TABLE();
 
- public:
-  /// Constructors
-  ProjectPropertiesDLG();
+  public:
+    /// Constructors
+    ProjectPropertiesDLG();
 
-  ProjectPropertiesDLG(wxWindow *parent, DataBaseTM *database, wxWindowID id = SYMBOL_PROJECTPROPERTIESDLG_IDNAME,
-                       const wxString &caption = SYMBOL_PROJECTPROPERTIESDLG_TITLE,
-                       const wxPoint &pos = SYMBOL_PROJECTPROPERTIESDLG_POSITION,
-                       const wxSize &size = SYMBOL_PROJECTPROPERTIESDLG_SIZE,
-                       long style = SYMBOL_PROJECTPROPERTIESDLG_STYLE);
+    ProjectPropertiesDLG(wxWindow* parent, DataBaseTM* database, wxWindowID id = SYMBOL_PROJECTPROPERTIESDLG_IDNAME,
+                         const wxString& caption = SYMBOL_PROJECTPROPERTIESDLG_TITLE,
+                         const wxPoint& pos = SYMBOL_PROJECTPROPERTIESDLG_POSITION,
+                         const wxSize& size = SYMBOL_PROJECTPROPERTIESDLG_SIZE,
+                         long style = SYMBOL_PROJECTPROPERTIESDLG_STYLE);
 
-  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_PROJECTPROPERTIESDLG_IDNAME,
-              const wxString &caption = SYMBOL_PROJECTPROPERTIESDLG_TITLE,
-              const wxPoint &pos = SYMBOL_PROJECTPROPERTIESDLG_POSITION,
-              const wxSize &size = SYMBOL_PROJECTPROPERTIESDLG_SIZE, long style = SYMBOL_PROJECTPROPERTIESDLG_STYLE);
+    bool Create(wxWindow* parent, wxWindowID id = SYMBOL_PROJECTPROPERTIESDLG_IDNAME,
+                const wxString& caption = SYMBOL_PROJECTPROPERTIESDLG_TITLE,
+                const wxPoint& pos = SYMBOL_PROJECTPROPERTIESDLG_POSITION,
+                const wxSize& size = SYMBOL_PROJECTPROPERTIESDLG_SIZE, long style = SYMBOL_PROJECTPROPERTIESDLG_STYLE);
 
-  ~ProjectPropertiesDLG();
+    ~ProjectPropertiesDLG();
 
-  virtual bool TransferDataToWindow();
+    virtual bool TransferDataToWindow();
 
-  void SetScaleListFocus();
+    void SetScaleListFocus();
 };
 
 class ScaleList : public ListGenReportWithDialog {
- private:
-  DataBaseTM *m_DBHandler;
-  wxChoice *m_ChoiceOrder;
-  PrjDefMemManage *m_pPrjDefinition;
-  long m_ActualScale;
+  private:
+    DataBaseTM* m_DBHandler;
+    wxChoice* m_ChoiceOrder;
+    PrjDefMemManage* m_pPrjDefinition;
+    long m_ActualScale;
 
-  // init values into the list
-  void LoadValueIntoList();
+    // init values into the list
+    void LoadValueIntoList();
 
-  // derived functions to implement
-  virtual void BeforeAdding();
+    // derived functions to implement
+    virtual void BeforeAdding();
 
-  virtual void AfterAdding(bool bRealyAddItem);
+    virtual void AfterAdding(bool bRealyAddItem);
 
-  virtual void BeforeDeleting();
+    virtual void BeforeDeleting();
 
-  virtual void BeforeEditing();
+    virtual void BeforeEditing();
 
-  virtual void AfterEditing(bool bRealyEdited);
+    virtual void AfterEditing(bool bRealyEdited);
 
-  DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
- public:
-  /// Constructor
-  ScaleList(wxWindow *parent, wxWindowID id, DataBaseTM *database, PrjDefMemManage *pProjectMem,
-            wxSize size = wxDefaultSize);
+  public:
+    /// Constructor
+    ScaleList(wxWindow* parent, wxWindowID id, DataBaseTM* database, PrjDefMemManage* pProjectMem,
+              wxSize size = wxDefaultSize);
 
-  /// Destructor
-  ~ScaleList();
+    /// Destructor
+    ~ScaleList();
 
-  // specific compare function for dealing with scales
-  virtual int Compare(int iColumnCompareType, const wxString &x_strValue1, const wxString &x_strValue2, bool bAsending);
+    // specific compare function for dealing with scales
+    virtual int Compare(int iColumnCompareType, const wxString& x_strValue1, const wxString& x_strValue2,
+                        bool bAsending);
 
-  // pass pointer to ctrls to the list
-  void SetListCtrls(wxChoice *orderchoice = nullptr) {
-    m_ChoiceOrder = orderchoice;
-  }
+    // pass pointer to ctrls to the list
+    void SetListCtrls(wxChoice* orderchoice = nullptr) {
+        m_ChoiceOrder = orderchoice;
+    }
 
-  void SetScaleToList(long lscale, int index = -1);
+    void SetScaleToList(long lscale, int index = -1);
 
-  long GetScaleFromList(int index);
+    long GetScaleFromList(int index);
 };
 
 #endif

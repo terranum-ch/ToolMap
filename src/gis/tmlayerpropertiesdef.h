@@ -27,38 +27,41 @@
 // TOC Generics values
 // Definitions for the generic layers, we define the text and  the id of
 // each string.
-static wxString TOC_GENERIC_NAME_STRING[] = {wxTRANSLATE("Lines"),  wxTRANSLATE("Points"),
-                                             wxTRANSLATE("Labels"), wxTRANSLATE("Notes"),
-                                             wxTRANSLATE("Frame"), wxTRANSLATE("Folder"),
+static wxString TOC_GENERIC_NAME_STRING[] = {wxTRANSLATE("Lines"),
+                                             wxTRANSLATE("Points"),
+                                             wxTRANSLATE("Labels"),
+                                             wxTRANSLATE("Notes"),
+                                             wxTRANSLATE("Frame"),
+                                             wxTRANSLATE("Folder"),
                                              wxTRANSLATE("Not Generic layers")};
 
 // warning, max values are 127 because stored in a tiny int
 // into the database
 enum TOC_GENERIC_NAME {
-  TOC_NAME_LINES = 0,
-  TOC_NAME_POINTS,
-  TOC_NAME_LABELS,
-  TOC_NAME_ANNOTATIONS,
-  TOC_NAME_FRAME,
-  TOC_NAME_GROUP,
-  TOC_NAME_NOT_GENERIC = 100,
-  TOC_NAME_TIFF,
-  TOC_NAME_EGRID,
-  TOC_NAME_JPEG,
-  TOC_NAME_WEB,
-  TOC_NAME_SHP,
-  TOC_NAME_UNKNOWN = 120
+    TOC_NAME_LINES = 0,
+    TOC_NAME_POINTS,
+    TOC_NAME_LABELS,
+    TOC_NAME_ANNOTATIONS,
+    TOC_NAME_FRAME,
+    TOC_NAME_GROUP,
+    TOC_NAME_NOT_GENERIC = 100,
+    TOC_NAME_TIFF,
+    TOC_NAME_EGRID,
+    TOC_NAME_JPEG,
+    TOC_NAME_WEB,
+    TOC_NAME_SHP,
+    TOC_NAME_UNKNOWN = 120
 };
 static const int TOC_GENERIC_NAME_NUMBER = 7;
 
 enum TM_GIS_SPATIAL_TYPES {
-  LAYER_SPATIAL_LINE = 0,
-  LAYER_SPATIAL_POINT,
-  LAYER_SPATIAL_POLYGON,
-  LAYER_SPATIAL_RASTER,
-  LAYER_SPATIAL_UNKNOWN,
-  LAYER_EMPTY,
-  LAYER_ERR
+    LAYER_SPATIAL_LINE = 0,
+    LAYER_SPATIAL_POINT,
+    LAYER_SPATIAL_POLYGON,
+    LAYER_SPATIAL_RASTER,
+    LAYER_SPATIAL_UNKNOWN,
+    LAYER_EMPTY,
+    LAYER_ERR
 };
 
 const wxString TM_GIS_SPATIAL_TYPES_STRING[] = {wxTRANSLATE("Lines"),
@@ -70,6 +73,10 @@ const wxString TM_GIS_SPATIAL_TYPES_STRING[] = {wxTRANSLATE("Lines"),
                                                 wxTRANSLATE("Error getting layers type")};
 
 // enum for drawing vertex
-enum tmDRAWING_FLAGS { tmDRAW_VERTEX_NONE = 0, tmDRAW_VERTEX_ALL, tmDRAW_VERTEX_BEGIN_END };
+enum tmDRAWING_FLAGS {
+    tmDRAW_VERTEX_NONE = 0,
+    tmDRAW_VERTEX_ALL,
+    tmDRAW_VERTEX_BEGIN_END
+};
 
 #endif

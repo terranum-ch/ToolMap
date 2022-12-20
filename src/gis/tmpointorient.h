@@ -30,30 +30,30 @@
 #include <wx/graphics.h>
 
 class tmPointOrient : public wxObject {
- private:
-  wxPoint m_StartPoint;
-  wxPoint m_EndPoint;
+  private:
+    wxPoint m_StartPoint;
+    wxPoint m_EndPoint;
 
-  void InitMemberValues();
+    void InitMemberValues();
 
- protected:
- public:
-  // ctor - dtor
-  tmPointOrient();
+  protected:
+  public:
+    // ctor - dtor
+    tmPointOrient();
 
-  ~tmPointOrient();
+    ~tmPointOrient();
 
-  // setter - getter
-  void SetStartPoint(const wxPoint &start);
+    // setter - getter
+    void SetStartPoint(const wxPoint& start);
 
-  void SetEndPoint(const wxPoint &end);
+    void SetEndPoint(const wxPoint& end);
 
-  int GetOrientationInt();
+    int GetOrientationInt();
 
-  double GetOrientationDouble();
+    double GetOrientationDouble();
 
-  // checks
-  virtual bool IsValid();
+    // checks
+    virtual bool IsValid();
 };
 
 #endif

@@ -27,26 +27,27 @@
 #include "tmsymboldlg.h"
 
 class tmSymbolVector : public tmSymbol {
- private:
-  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+  private:
+    virtual tmSymbolDLG* GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos);
 
- public:
-  tmSymbolVector();
+  public:
+    tmSymbolVector();
 
-  ~tmSymbolVector();
+    ~tmSymbolVector();
 
-  static tmSymbolVector *CreateSymbolVectorBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname);
+    static tmSymbolVector* CreateSymbolVectorBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname);
 
-  static tmSymbolVector *CreateCopySymbolVectorBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname,
-                                                           tmSymbol *origin);
+    static tmSymbolVector* CreateCopySymbolVectorBasedOnType(TM_GIS_SPATIAL_TYPES spattype, TOC_GENERIC_NAME tocname,
+                                                             tmSymbol* origin);
 
-  wxColour GetColourWithTransparency(const wxColour &col, int trans);
+    wxColour GetColourWithTransparency(const wxColour& col, int trans);
 
-  virtual void SetColour(const wxColour &colour) {
-    ;
-  }
+    virtual void SetColour(const wxColour& colour) {
+        ;
+    }
 
-  virtual int ShowLabelDialog(wxWindow *parent, tmLayerProperties *properties, const wxPoint &pos = wxDefaultPosition);
+    virtual int ShowLabelDialog(wxWindow* parent, tmLayerProperties* properties,
+                                const wxPoint& pos = wxDefaultPosition);
 };
 
 #endif

@@ -47,34 +47,34 @@
   @date 04 December 2007
   *******************************************************************************/
 class ImportLogDLG : public wxDialog {
- private:
-  void OnCloseLogWindow(wxCommandEvent &event);
+  private:
+    void OnCloseLogWindow(wxCommandEvent& event);
 
-  DECLARE_DYNAMIC_CLASS(ImportLog);
-  DECLARE_EVENT_TABLE();
+    DECLARE_DYNAMIC_CLASS(ImportLog);
+    DECLARE_EVENT_TABLE();
 
- public:
-  /// Default Constructors
-  ImportLogDLG();
+  public:
+    /// Default Constructors
+    ImportLogDLG();
 
-  /// Use this constructor for creating the dialog
-  ImportLogDLG(wxWindow *parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME,
-               const wxString &caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint &pos = SYMBOL_IMPORTLOG_POSITION,
-               const wxSize &size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE);
+    /// Use this constructor for creating the dialog
+    ImportLogDLG(wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME,
+                 const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION,
+                 const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE);
 
-  /// Window creation
-  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME,
-              const wxString &caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint &pos = SYMBOL_IMPORTLOG_POSITION,
-              const wxSize &size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE);
+    /// Window creation
+    bool Create(wxWindow* parent, wxWindowID id = SYMBOL_IMPORTLOG_IDNAME,
+                const wxString& caption = SYMBOL_IMPORTLOG_TITLE, const wxPoint& pos = SYMBOL_IMPORTLOG_POSITION,
+                const wxSize& size = SYMBOL_IMPORTLOG_SIZE, long style = SYMBOL_IMPORTLOG_STYLE);
 
-  /// Destructor
-  ~ImportLogDLG();
+    /// Destructor
+    ~ImportLogDLG();
 
-  /// Initialises member variables
-  void Init();
+    /// Initialises member variables
+    void Init();
 
-  /// Creates the controls and sizers
-  void CreateControls();
+    /// Creates the controls and sizers
+    void CreateControls();
 };
 
 #endif

@@ -18,11 +18,11 @@
 
 /**************** TOC WINDOW CONTENT (BASE CLASS) ****************************/
 TocWindowContent::TocWindowContent() {
-  m_TocCtrl = nullptr;
+    m_TocCtrl = nullptr;
 }
 
 TocWindowContent::~TocWindowContent() {
-  delete m_TocCtrl;
+    delete m_TocCtrl;
 }
 
 IMPLEMENT_DYNAMIC_CLASS(TocWindowContent, wxEvtHandler)
@@ -30,82 +30,82 @@ IMPLEMENT_DYNAMIC_CLASS(TocWindowContent, wxEvtHandler)
 /*!
  * Control creation for TocWindowDlg
  */
-wxSizer *TocWindowContent::CreateControls(wxWindow *parent, bool call_fit, bool set_sizer) {
-  wxBoxSizer *itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
+wxSizer* TocWindowContent::CreateControls(wxWindow* parent, bool call_fit, bool set_sizer) {
+    wxBoxSizer* itemBoxSizer2 = new wxBoxSizer(wxVERTICAL);
 
-  m_TocCtrl = new TocCtrl(parent, ID_TREECTRL1);  // | wxTR_MULTIPLE);
-  itemBoxSizer2->Add(m_TocCtrl, 1, wxGROW | wxALL, 0);
+    m_TocCtrl = new TocCtrl(parent, ID_TREECTRL1);  // | wxTR_MULTIPLE);
+    itemBoxSizer2->Add(m_TocCtrl, 1, wxGROW | wxALL, 0);
 
-  if (set_sizer) {
-    parent->SetSizer(itemBoxSizer2);
-    if (call_fit) itemBoxSizer2->SetSizeHints(parent);
-  }
+    if (set_sizer) {
+        parent->SetSizer(itemBoxSizer2);
+        if (call_fit) itemBoxSizer2->SetSizeHints(parent);
+    }
 
-  return itemBoxSizer2;
+    return itemBoxSizer2;
 }
 
 /*************************** TOC WINDOW DLG GEN *********************************/
 TocWindowDlgGen::TocWindowDlgGen() {
-  Init();
+    Init();
 }
 
-TocWindowDlgGen::TocWindowDlgGen(wxAuiManager *myAuiManager, wxWindow *parent, wxWindowID id, const wxString &title) {
-  Init();
+TocWindowDlgGen::TocWindowDlgGen(wxAuiManager* myAuiManager, wxWindow* parent, wxWindowID id, const wxString& title) {
+    Init();
 
-  m_TocAui = myAuiManager;
+    m_TocAui = myAuiManager;
 
-  m_ParentEvt = parent;
-  m_ParentEvt->PushEventHandler(this);
+    m_ParentEvt = parent;
+    m_ParentEvt->PushEventHandler(this);
 
-  m_ContentFrame = new wxPanel(parent, wxID_ANY);
-  CreateControls(m_ContentFrame);
+    m_ContentFrame = new wxPanel(parent, wxID_ANY);
+    CreateControls(m_ContentFrame);
 
-  m_TocAui->AddPane(m_ContentFrame, wxAuiPaneInfo()
-                                        .Name(SYMBOL_TOCWINDOW_DLG_TITLE)
-                                        .Caption(SYMBOL_TOCWINDOW_DLG_TITLE)
-                                        .Left()
-                                        .Layer(1)
-                                        .Position(1)
-                                        .MinSize(SYMBOL_TOCWINDOW_DLG_SIZE)
-                                        .CloseButton(FALSE));
-  // m_TocAui->GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE, wxAUI_GRADIENT_NONE);
+    m_TocAui->AddPane(m_ContentFrame, wxAuiPaneInfo()
+                                          .Name(SYMBOL_TOCWINDOW_DLG_TITLE)
+                                          .Caption(SYMBOL_TOCWINDOW_DLG_TITLE)
+                                          .Left()
+                                          .Layer(1)
+                                          .Position(1)
+                                          .MinSize(SYMBOL_TOCWINDOW_DLG_SIZE)
+                                          .CloseButton(FALSE));
+    // m_TocAui->GetArtProvider()->SetMetric(wxAUI_DOCKART_GRADIENT_TYPE, wxAUI_GRADIENT_NONE);
 
-  wxAuiDockArt *myDockArt = m_TocAui->GetArtProvider();
-  wxASSERT(myDockArt);
-  myDockArt->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 1);
-  myDockArt->SetMetric(wxAUI_DOCKART_SASH_SIZE, 2);
-  // myDockArt->SetColor(wxAUI_DOCKART_BORDER_COLOUR, wxColour(*wxBLACK));
-  // myDockArt->SetColor(wxAUI_DOCKART_SASH_COLOUR, wxColour(*wxBLACK));
+    wxAuiDockArt* myDockArt = m_TocAui->GetArtProvider();
+    wxASSERT(myDockArt);
+    myDockArt->SetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE, 1);
+    myDockArt->SetMetric(wxAUI_DOCKART_SASH_SIZE, 2);
+    // myDockArt->SetColor(wxAUI_DOCKART_BORDER_COLOUR, wxColour(*wxBLACK));
+    // myDockArt->SetColor(wxAUI_DOCKART_SASH_COLOUR, wxColour(*wxBLACK));
 
-  m_TocAui->Update();
+    m_TocAui->Update();
 }
 
 TocWindowDlgGen::~TocWindowDlgGen() {
-  // delete m_TocAui;
-  // delete m_ContentFrame;
-  m_ParentEvt->PopEventHandler(FALSE);
+    // delete m_TocAui;
+    // delete m_ContentFrame;
+    m_ParentEvt->PopEventHandler(FALSE);
 }
 
 void TocWindowDlgGen::Init() {
-  m_TocAui = nullptr;
-  m_ContentFrame = nullptr;
-  m_ParentEvt = nullptr;
+    m_TocAui = nullptr;
+    m_ContentFrame = nullptr;
+    m_ParentEvt = nullptr;
 }
 
 IMPLEMENT_DYNAMIC_CLASS(TocWindowDlgGen, TocWindowContent)
 
 void TocWindowDlgGen::Show() {
-  m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).Show();
-  m_TocAui->Update();
+    m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).Show();
+    m_TocAui->Update();
 }
 
 void TocWindowDlgGen::Hide() {
-  m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).Hide();
-  m_TocAui->Update();
+    m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).Hide();
+    m_TocAui->Update();
 }
 
 bool TocWindowDlgGen::IsShown() {
-  return m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).IsShown();
+    return m_TocAui->GetPane(SYMBOL_TOCWINDOW_DLG_TITLE).IsShown();
 }
 
 /*BEGIN_EVENT_TABLE(TocWindowDlgGen, TocWindowContent)

@@ -37,43 +37,43 @@
 class DataBaseTM;
 
 class Shortcut_Panel_DLG : public wxDialog {
- private:
-  wxChoice *m_ShortcutKey;
-  wxTextCtrl *m_ShortcutDescription;
-  tmCheckListBox *m_TypeList;
-  wxButton *m_SaveButton;
+  private:
+    wxChoice* m_ShortcutKey;
+    wxTextCtrl* m_ShortcutDescription;
+    tmCheckListBox* m_TypeList;
+    wxButton* m_SaveButton;
 
-  DataBaseTM *m_pDB;
+    DataBaseTM* m_pDB;
 
-  // create controls
-  void CreateControls();
+    // create controls
+    void CreateControls();
 
- protected:
- public:
-  Shortcut_Panel_DLG(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Edit Shortcut"),
-                     const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-                     long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+  protected:
+  public:
+    Shortcut_Panel_DLG(wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Edit Shortcut"),
+                       const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                       long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-  ~Shortcut_Panel_DLG();
+    ~Shortcut_Panel_DLG();
 
-  // key setter
-  void SetKeyList(const wxArrayString &keys);
+    // key setter
+    void SetKeyList(const wxArrayString& keys);
 
-  void SetDataBase(DataBaseTM *database) {
-    wxASSERT(database);
-    m_pDB = database;
-  }
+    void SetDataBase(DataBaseTM* database) {
+        wxASSERT(database);
+        m_pDB = database;
+    }
 
-  bool SetTypeList(DataBaseTM *database, int layer_type, int key = 0);
+    bool SetTypeList(DataBaseTM* database, int layer_type, int key = 0);
 
-  // transfer data from windows
-  virtual bool TransferDataFromWindow();
+    // transfer data from windows
+    virtual bool TransferDataFromWindow();
 
-  virtual bool TransferDataToWindow();
+    virtual bool TransferDataToWindow();
 
-  wxArrayLong m_CheckedTypes;
-  int m_SelectedKey;
-  wxString m_Description;
+    wxArrayLong m_CheckedTypes;
+    int m_SelectedKey;
+    wxString m_Description;
 };
 
 #endif

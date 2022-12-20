@@ -34,79 +34,79 @@ const wxString tmSERIAL_MAINSEP = _T("|");
 const wxString tmSERIAL_AUXSEP = _T("§");
 
 class tmSerialize {
- private:
-  bool m_outdirection;
-  wxString m_stream;
-  wxStringTokenizer m_divStream;
+  private:
+    bool m_outdirection;
+    wxString m_stream;
+    wxStringTokenizer m_divStream;
 
-  bool CanStore() {
-    return m_outdirection;
-  }
+    bool CanStore() {
+        return m_outdirection;
+    }
 
-  bool CanRead();
+    bool CanRead();
 
-  void AddSeparator() {
-    m_stream.Append(tmSERIAL_MAINSEP);
-  }
-  // void AddAuxSeparator() {m_stream.Append(tmSERIAL_AUXSEP);}
+    void AddSeparator() {
+        m_stream.Append(tmSERIAL_MAINSEP);
+    }
+    // void AddAuxSeparator() {m_stream.Append(tmSERIAL_AUXSEP);}
 
-  void WriteInt(int value);
+    void WriteInt(int value);
 
-  int ReadInt(const wxString &part);
+    int ReadInt(const wxString& part);
 
-  bool ReadStream(wxString &part);
+    bool ReadStream(wxString& part);
 
- protected:
- public:
-  tmSerialize();
+  protected:
+  public:
+    tmSerialize();
 
-  tmSerialize(wxString stream);
+    tmSerialize(wxString stream);
 
-  virtual ~tmSerialize() {
-    ;
-  }
+    virtual ~tmSerialize() {
+        ;
+    }
 
-  virtual tmSerialize &operator<<(bool value);
+    virtual tmSerialize& operator<<(bool value);
 
-  // virtual tmSerialize &operator << (wxString value);
-  virtual tmSerialize &operator<<(const wxString &value);
+    // virtual tmSerialize &operator << (wxString value);
+    virtual tmSerialize& operator<<(const wxString& value);
 
-  virtual tmSerialize &operator<<(const wxChar *pvalue);
+    virtual tmSerialize& operator<<(const wxChar* pvalue);
 
-  virtual tmSerialize &operator<<(wxColour value);
+    virtual tmSerialize& operator<<(wxColour value);
 
-  virtual tmSerialize &operator<<(int value);
+    virtual tmSerialize& operator<<(int value);
 
-  virtual tmSerialize &operator<<(long value);
+    virtual tmSerialize& operator<<(long value);
 
-  virtual tmSerialize &operator>>(bool &value);
+    virtual tmSerialize& operator>>(bool& value);
 
-  virtual tmSerialize &operator>>(wxString &value);
+    virtual tmSerialize& operator>>(wxString& value);
 
-  virtual tmSerialize &operator>>(wxColour &value);
+    virtual tmSerialize& operator>>(wxColour& value);
 
-  virtual tmSerialize &operator>>(int &value);
+    virtual tmSerialize& operator>>(int& value);
 
-  virtual tmSerialize &operator>>(long &value);
+    virtual tmSerialize& operator>>(long& value);
 
-  wxString GetString() {
-    return m_stream;
-  }
+    wxString GetString() {
+        return m_stream;
+    }
 
-  bool IsStoring();
+    bool IsStoring();
 
-  bool IsOk() {
-    return TRUE;
-  }
+    bool IsOk() {
+        return TRUE;
+    }
 
-  // for compatibility with wxSerialize
-  void EnterObject() {
-    ;
-  }
+    // for compatibility with wxSerialize
+    void EnterObject() {
+        ;
+    }
 
-  void LeaveObject() {
-    ;
-  }
+    void LeaveObject() {
+        ;
+    }
 };
 
 #endif

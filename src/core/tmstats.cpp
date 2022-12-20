@@ -26,160 +26,160 @@ DEFINE_EVENT_TYPE(tmEVT_STAT_ATTRIB);
 DEFINE_EVENT_TYPE(tmEVT_STAT_INTERSECTION);
 
 tmStatsData::tmStatsData() {
-  Reset();
+    Reset();
 }
 
 tmStatsData::~tmStatsData() {}
 
 void tmStatsData::Reset() {
-  m_Id = wxNOT_FOUND;
-  m_TimeStart = wxInvalidDateTime;
-  ResetPartial();
+    m_Id = wxNOT_FOUND;
+    m_TimeStart = wxInvalidDateTime;
+    ResetPartial();
 }
 
 void tmStatsData::ResetPartial() {
-  // don't clean Id and start time!
-  m_NbClick = 0;
-  m_NbAttribution = 0;
-  m_NbIntersection = 0;
-  m_TimeElapsed = wxTimeSpan();
+    // don't clean Id and start time!
+    m_NbClick = 0;
+    m_NbAttribution = 0;
+    m_NbIntersection = 0;
+    m_TimeElapsed = wxTimeSpan();
 }
 
 bool tmStatsData::IsOk() const {
-  if (!m_TimeStart.IsValid()) {
-    return false;
-  }
+    if (!m_TimeStart.IsValid()) {
+        return false;
+    }
 
-  if (m_TimeElapsed.IsNull()) {
-    return false;
-  }
-  return true;
+    if (m_TimeElapsed.IsNull()) {
+        return false;
+    }
+    return true;
 }
 
 void tmStatsManager::AppendToBuffer(long click, long attrib, long intersection) {
-  wxLogMessage("Received statistics (C/A/I): %ld, %ld, %ld", click, attrib, intersection);
+    wxLogMessage("Received statistics (C/A/I): %ld, %ld, %ld", click, attrib, intersection);
 
-  // Check that statistics is started here!
-  if (!m_IsStarted) {
-    return;
-  }
+    // Check that statistics is started here!
+    if (!m_IsStarted) {
+        return;
+    }
 
-  m_StatBufferData.m_NbClick = m_StatBufferData.m_NbClick + click;
-  m_StatBufferData.m_NbAttribution = m_StatBufferData.m_NbAttribution + attrib;
-  m_StatBufferData.m_NbIntersection = m_StatBufferData.m_NbIntersection + intersection;
+    m_StatBufferData.m_NbClick = m_StatBufferData.m_NbClick + click;
+    m_StatBufferData.m_NbAttribution = m_StatBufferData.m_NbAttribution + attrib;
+    m_StatBufferData.m_NbIntersection = m_StatBufferData.m_NbIntersection + intersection;
 
-  if (m_StatBufferData.m_NbClick >= m_BufferSize || m_StatBufferData.m_NbAttribution >= m_BufferSize ||
-      m_StatBufferData.m_NbIntersection >= m_BufferSize) {
-    _FlushBuffer();
-  }
+    if (m_StatBufferData.m_NbClick >= m_BufferSize || m_StatBufferData.m_NbAttribution >= m_BufferSize ||
+        m_StatBufferData.m_NbIntersection >= m_BufferSize) {
+        _FlushBuffer();
+    }
 }
 
 void tmStatsManager::_FlushBuffer() {
-  wxASSERT(m_Database);
-  tmStatsRecords myRecord(m_Database);
-  if (!myRecord.Add(m_StatBufferData.m_Id, m_StatBufferData)) {
-    wxLogError(_("Error adding data to statistics!"));
-  }
-  m_StatBufferData.ResetPartial();
+    wxASSERT(m_Database);
+    tmStatsRecords myRecord(m_Database);
+    if (!myRecord.Add(m_StatBufferData.m_Id, m_StatBufferData)) {
+        wxLogError(_("Error adding data to statistics!"));
+    }
+    m_StatBufferData.ResetPartial();
 }
 
 void tmStatsManager::_StartRecord() {
-  wxLogMessage("Starting to record!");
-  wxASSERT(m_Database);
+    wxLogMessage("Starting to record!");
+    wxASSERT(m_Database);
 
-  // Create record here
-  tmStatsRecords myRecord(m_Database);
-  m_StatBufferData.Reset();
-  m_StatBufferData.m_TimeStart = wxDateTime::Now();
-  long myRecordId = myRecord.Create(m_StatBufferData);
-  if (myRecordId == wxNOT_FOUND) {
-    wxLogError(_("Error starting statistics!"));
-    m_IsStarted = false;
-    return;
-  }
-  m_StatBufferData.m_Id = myRecordId;
-  m_IsStarted = true;
+    // Create record here
+    tmStatsRecords myRecord(m_Database);
+    m_StatBufferData.Reset();
+    m_StatBufferData.m_TimeStart = wxDateTime::Now();
+    long myRecordId = myRecord.Create(m_StatBufferData);
+    if (myRecordId == wxNOT_FOUND) {
+        wxLogError(_("Error starting statistics!"));
+        m_IsStarted = false;
+        return;
+    }
+    m_StatBufferData.m_Id = myRecordId;
+    m_IsStarted = true;
 }
 
 void tmStatsManager::_StopRecord() {
-  if (!m_IsStarted) {
-    return;
-  }
+    if (!m_IsStarted) {
+        return;
+    }
 
-  wxLogMessage("Stoping to record!");
-  m_IsStarted = false;
-  _FlushBuffer();
+    wxLogMessage("Stoping to record!");
+    m_IsStarted = false;
+    _FlushBuffer();
 }
 
 tmStatsManager::tmStatsManager() {
-  Create(nullptr);
+    Create(nullptr);
 }
 
 tmStatsManager::~tmStatsManager() {
-  _StopRecord();
+    _StopRecord();
 }
 
-void tmStatsManager::Create(DataBaseTM *database) {
-  m_Database = database;
-  m_StatBufferData.Reset();
-  wxASSERT(!m_StatBufferData.IsOk());
-  m_IsStarted = false;
+void tmStatsManager::Create(DataBaseTM* database) {
+    m_Database = database;
+    m_StatBufferData.Reset();
+    wxASSERT(!m_StatBufferData.IsOk());
+    m_IsStarted = false;
 }
 
 bool tmStatsManager::IsReady() {
-  if (m_Database == nullptr) {
-    return false;
-  }
-  return true;
+    if (m_Database == nullptr) {
+        return false;
+    }
+    return true;
 }
 
-void tmStatsManager::ShowStatsDialog(wxWindow *parent) {
-  if (!IsReady()) {
-    wxLogError(_("No project open! Statistics unavaillable"));
-    return;
-  }
-
-  if (m_IsStarted) {
-    _FlushBuffer();
-  }
-
-  wxASSERT(parent);
-  wxASSERT(m_Database);
-  tmStatsRecords myRecord(m_Database);
-  long myRecordNb = myRecord.GetCount();
-  tmStatsData myDataTotal;
-  myDataTotal.m_TimeElapsed = wxTimeSpan(0, 0, 0);
-  if (myRecordNb > 0) {
-    if (!myRecord.LoadTotal(myDataTotal)) {
-      wxLogError(_("Error loading statistics total!"));
+void tmStatsManager::ShowStatsDialog(wxWindow* parent) {
+    if (!IsReady()) {
+        wxLogError(_("No project open! Statistics unavaillable"));
+        return;
     }
-  }
 
-  tmStatsData myDataActual;
-  if (m_IsStarted) {
-    myRecord.Load(m_StatBufferData.m_Id, myDataActual);
-  }
+    if (m_IsStarted) {
+        _FlushBuffer();
+    }
 
-  tmStats_DLG myDlg(parent, &myDataActual, &myDataTotal, myRecordNb, m_Database);
-  myDlg.SetStarted(m_IsStarted);
+    wxASSERT(parent);
+    wxASSERT(m_Database);
+    tmStatsRecords myRecord(m_Database);
+    long myRecordNb = myRecord.GetCount();
+    tmStatsData myDataTotal;
+    myDataTotal.m_TimeElapsed = wxTimeSpan(0, 0, 0);
+    if (myRecordNb > 0) {
+        if (!myRecord.LoadTotal(myDataTotal)) {
+            wxLogError(_("Error loading statistics total!"));
+        }
+    }
 
-  int myReturnCode = myDlg.ShowModal();
-  switch (myReturnCode) {
-    case wxID_CANCEL:
-      break;
+    tmStatsData myDataActual;
+    if (m_IsStarted) {
+        myRecord.Load(m_StatBufferData.m_Id, myDataActual);
+    }
 
-    case wxID_EXECUTE:
-      _StartRecord();
-      break;
+    tmStats_DLG myDlg(parent, &myDataActual, &myDataTotal, myRecordNb, m_Database);
+    myDlg.SetStarted(m_IsStarted);
 
-    case wxID_STOP:
-      _StopRecord();
-      break;
+    int myReturnCode = myDlg.ShowModal();
+    switch (myReturnCode) {
+        case wxID_CANCEL:
+            break;
 
-    default:
-      wxLogError("Unsupported return code from Statistics dialog!");
-      break;
-  }
+        case wxID_EXECUTE:
+            _StartRecord();
+            break;
+
+        case wxID_STOP:
+            _StopRecord();
+            break;
+
+        default:
+            wxLogError("Unsupported return code from Statistics dialog!");
+            break;
+    }
 }
 
 BEGIN_EVENT_TABLE(tmStats_DLG, wxDialog)
@@ -188,217 +188,217 @@ EVT_BUTTON(wxID_STOP, tmStats_DLG::OnRecordStop)
 EVT_BUTTON(wxID_SAVE, tmStats_DLG::OnExport)
 END_EVENT_TABLE()
 
-void tmStats_DLG::OnRecordStart(wxCommandEvent &event) {
-  EndModal(wxID_EXECUTE);
+void tmStats_DLG::OnRecordStart(wxCommandEvent& event) {
+    EndModal(wxID_EXECUTE);
 }
 
-void tmStats_DLG::OnRecordStop(wxCommandEvent &event) {
-  EndModal(wxID_STOP);
+void tmStats_DLG::OnRecordStop(wxCommandEvent& event) {
+    EndModal(wxID_STOP);
 }
 
-void tmStats_DLG::OnExport(wxCommandEvent &event) {
-  // select export folder
-  wxFileDialog saveFileDialog(this, _("Export Statistics data"), wxEmptyString, wxEmptyString,
-                              _("CSV files (*.csv)|*.csv"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-  if (saveFileDialog.ShowModal() == wxID_CANCEL) {
-    return;
-  }
-  wxFileName myPath(saveFileDialog.GetPath());
+void tmStats_DLG::OnExport(wxCommandEvent& event) {
+    // select export folder
+    wxFileDialog saveFileDialog(this, _("Export Statistics data"), wxEmptyString, wxEmptyString,
+                                _("CSV files (*.csv)|*.csv"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    if (saveFileDialog.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxFileName myPath(saveFileDialog.GetPath());
 
-  // export
-  bool myExportSucess = false;
-  {
-    wxWindowDisabler disableAll;
-    wxBusyInfo wait("Please wait, exporting ...");
-    TableExport myExport(m_Database);
-    myExportSucess = myExport.ExportCSV(TABLE_NAME_STAT, myPath);
-  }
+    // export
+    bool myExportSucess = false;
+    {
+        wxWindowDisabler disableAll;
+        wxBusyInfo wait("Please wait, exporting ...");
+        TableExport myExport(m_Database);
+        myExportSucess = myExport.ExportCSV(TABLE_NAME_STAT, myPath);
+    }
 
-  if (!myExportSucess) {
-    wxLogError(_("Exporting statistics failed!"));
-  } else {
-    wxMessageBox(wxString::Format(_("Exporting statistics to '%s' succeed!"), myPath.GetFullPath()));
-  }
+    if (!myExportSucess) {
+        wxLogError(_("Exporting statistics failed!"));
+    } else {
+        wxMessageBox(wxString::Format(_("Exporting statistics to '%s' succeed!"), myPath.GetFullPath()));
+    }
 }
 
 void tmStats_DLG::_CreateControls() {
-  this->SetSizeHints(wxDefaultSize, wxDefaultSize);
+    this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-  wxBoxSizer *bSizer1;
-  bSizer1 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-  wxBoxSizer *bSizer2;
-  bSizer2 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* bSizer2;
+    bSizer2 = new wxBoxSizer(wxHORIZONTAL);
 
-  m_SessionSizerCtrl = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Actual session")), wxVERTICAL);
+    m_SessionSizerCtrl = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Actual session")), wxVERTICAL);
 
-  wxFlexGridSizer *fgSizer1;
-  fgSizer1 = new wxFlexGridSizer(4, 2, 0, 0);
-  fgSizer1->SetFlexibleDirection(wxBOTH);
-  fgSizer1->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
+    wxFlexGridSizer* fgSizer1;
+    fgSizer1 = new wxFlexGridSizer(4, 2, 0, 0);
+    fgSizer1->SetFlexibleDirection(wxBOTH);
+    fgSizer1->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
-  wxStaticText *m_staticText1;
-  m_staticText1 = new wxStaticText(this, wxID_ANY, _("Mouse clicks:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText1->Wrap(-1);
-  fgSizer1->Add(m_staticText1, 0, wxALL | wxEXPAND, 5);
+    wxStaticText* m_staticText1;
+    m_staticText1 = new wxStaticText(this, wxID_ANY, _("Mouse clicks:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText1->Wrap(-1);
+    fgSizer1->Add(m_staticText1, 0, wxALL | wxEXPAND, 5);
 
-  m_SessionClickCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_SessionClickCtrl->Wrap(-1);
-  fgSizer1->Add(m_SessionClickCtrl, 0, wxALL | wxEXPAND, 5);
+    m_SessionClickCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_SessionClickCtrl->Wrap(-1);
+    fgSizer1->Add(m_SessionClickCtrl, 0, wxALL | wxEXPAND, 5);
 
-  wxStaticText *m_staticText3;
-  m_staticText3 = new wxStaticText(this, wxID_ANY, _("Attributions:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText3->Wrap(-1);
-  fgSizer1->Add(m_staticText3, 0, wxALL | wxEXPAND, 5);
+    wxStaticText* m_staticText3;
+    m_staticText3 = new wxStaticText(this, wxID_ANY, _("Attributions:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText3->Wrap(-1);
+    fgSizer1->Add(m_staticText3, 0, wxALL | wxEXPAND, 5);
 
-  m_SessionAttribCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_SessionAttribCtrl->Wrap(-1);
-  fgSizer1->Add(m_SessionAttribCtrl, 0, wxALL | wxEXPAND, 5);
+    m_SessionAttribCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_SessionAttribCtrl->Wrap(-1);
+    fgSizer1->Add(m_SessionAttribCtrl, 0, wxALL | wxEXPAND, 5);
 
-  wxStaticText *m_staticText9;
-  m_staticText9 = new wxStaticText(this, wxID_ANY, _("Intersections:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText9->Wrap(-1);
-  fgSizer1->Add(m_staticText9, 0, wxALL, 5);
+    wxStaticText* m_staticText9;
+    m_staticText9 = new wxStaticText(this, wxID_ANY, _("Intersections:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText9->Wrap(-1);
+    fgSizer1->Add(m_staticText9, 0, wxALL, 5);
 
-  m_SessionIntersectCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_SessionIntersectCtrl->Wrap(-1);
-  fgSizer1->Add(m_SessionIntersectCtrl, 0, wxALL, 5);
+    m_SessionIntersectCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_SessionIntersectCtrl->Wrap(-1);
+    fgSizer1->Add(m_SessionIntersectCtrl, 0, wxALL, 5);
 
-  wxStaticText *m_staticText11;
-  m_staticText11 = new wxStaticText(this, wxID_ANY, _("Elapsed time:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText11->Wrap(-1);
-  fgSizer1->Add(m_staticText11, 0, wxALL, 5);
+    wxStaticText* m_staticText11;
+    m_staticText11 = new wxStaticText(this, wxID_ANY, _("Elapsed time:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText11->Wrap(-1);
+    fgSizer1->Add(m_staticText11, 0, wxALL, 5);
 
-  m_SessionElapsedTimeCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_SessionElapsedTimeCtrl->Wrap(-1);
-  fgSizer1->Add(m_SessionElapsedTimeCtrl, 0, wxALL, 5);
+    m_SessionElapsedTimeCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_SessionElapsedTimeCtrl->Wrap(-1);
+    fgSizer1->Add(m_SessionElapsedTimeCtrl, 0, wxALL, 5);
 
-  m_SessionSizerCtrl->Add(fgSizer1, 1, wxEXPAND, 5);
+    m_SessionSizerCtrl->Add(fgSizer1, 1, wxEXPAND, 5);
 
-  bSizer2->Add(m_SessionSizerCtrl, 1, wxALL, 5);
+    bSizer2->Add(m_SessionSizerCtrl, 1, wxALL, 5);
 
-  m_TotalSizerCtrl = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, ""), wxVERTICAL);
+    m_TotalSizerCtrl = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, ""), wxVERTICAL);
 
-  wxFlexGridSizer *fgSizer11;
-  fgSizer11 = new wxFlexGridSizer(4, 2, 0, 0);
-  fgSizer11->SetFlexibleDirection(wxBOTH);
-  fgSizer11->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
+    wxFlexGridSizer* fgSizer11;
+    fgSizer11 = new wxFlexGridSizer(4, 2, 0, 0);
+    fgSizer11->SetFlexibleDirection(wxBOTH);
+    fgSizer11->SetNonFlexibleGrowMode(wxFLEX_GROWMODE_SPECIFIED);
 
-  wxStaticText *m_staticText12;
-  m_staticText12 = new wxStaticText(this, wxID_ANY, _("Mouse clicks:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText12->Wrap(-1);
-  fgSizer11->Add(m_staticText12, 0, wxALL | wxEXPAND, 5);
+    wxStaticText* m_staticText12;
+    m_staticText12 = new wxStaticText(this, wxID_ANY, _("Mouse clicks:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText12->Wrap(-1);
+    fgSizer11->Add(m_staticText12, 0, wxALL | wxEXPAND, 5);
 
-  m_TotalClickCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_TotalClickCtrl->Wrap(-1);
-  fgSizer11->Add(m_TotalClickCtrl, 0, wxALL | wxEXPAND, 5);
+    m_TotalClickCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_TotalClickCtrl->Wrap(-1);
+    fgSizer11->Add(m_TotalClickCtrl, 0, wxALL | wxEXPAND, 5);
 
-  wxStaticText *m_staticText31;
-  m_staticText31 = new wxStaticText(this, wxID_ANY, _("Attributions:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText31->Wrap(-1);
-  fgSizer11->Add(m_staticText31, 0, wxALL | wxEXPAND, 5);
+    wxStaticText* m_staticText31;
+    m_staticText31 = new wxStaticText(this, wxID_ANY, _("Attributions:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText31->Wrap(-1);
+    fgSizer11->Add(m_staticText31, 0, wxALL | wxEXPAND, 5);
 
-  m_TotalAttribCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_TotalAttribCtrl->Wrap(-1);
-  fgSizer11->Add(m_TotalAttribCtrl, 0, wxALL | wxEXPAND, 5);
+    m_TotalAttribCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_TotalAttribCtrl->Wrap(-1);
+    fgSizer11->Add(m_TotalAttribCtrl, 0, wxALL | wxEXPAND, 5);
 
-  wxStaticText *m_staticText91;
-  m_staticText91 = new wxStaticText(this, wxID_ANY, _("Intersections:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText91->Wrap(-1);
-  fgSizer11->Add(m_staticText91, 0, wxALL, 5);
+    wxStaticText* m_staticText91;
+    m_staticText91 = new wxStaticText(this, wxID_ANY, _("Intersections:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText91->Wrap(-1);
+    fgSizer11->Add(m_staticText91, 0, wxALL, 5);
 
-  m_TotalIntersectCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_TotalIntersectCtrl->Wrap(-1);
-  fgSizer11->Add(m_TotalIntersectCtrl, 0, wxALL, 5);
+    m_TotalIntersectCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_TotalIntersectCtrl->Wrap(-1);
+    fgSizer11->Add(m_TotalIntersectCtrl, 0, wxALL, 5);
 
-  wxStaticText *m_staticText111;
-  m_staticText111 = new wxStaticText(this, wxID_ANY, _("Elapsed time:"), wxDefaultPosition, wxDefaultSize, 0);
-  m_staticText111->Wrap(-1);
-  fgSizer11->Add(m_staticText111, 0, wxALL, 5);
+    wxStaticText* m_staticText111;
+    m_staticText111 = new wxStaticText(this, wxID_ANY, _("Elapsed time:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText111->Wrap(-1);
+    fgSizer11->Add(m_staticText111, 0, wxALL, 5);
 
-  m_TotalElapsedTimeCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
-  m_TotalElapsedTimeCtrl->Wrap(-1);
-  fgSizer11->Add(m_TotalElapsedTimeCtrl, 0, wxALL, 5);
+    m_TotalElapsedTimeCtrl = new wxStaticText(this, wxID_ANY, _T("-"), wxDefaultPosition, wxDefaultSize, 0);
+    m_TotalElapsedTimeCtrl->Wrap(-1);
+    fgSizer11->Add(m_TotalElapsedTimeCtrl, 0, wxALL, 5);
 
-  m_TotalSizerCtrl->Add(fgSizer11, 1, wxEXPAND, 5);
+    m_TotalSizerCtrl->Add(fgSizer11, 1, wxEXPAND, 5);
 
-  bSizer2->Add(m_TotalSizerCtrl, 1, wxALL, 5);
+    bSizer2->Add(m_TotalSizerCtrl, 1, wxALL, 5);
 
-  bSizer1->Add(bSizer2, 0, wxEXPAND, 5);
+    bSizer1->Add(bSizer2, 0, wxEXPAND, 5);
 
-  wxStaticBoxSizer *sbSizer6;
-  sbSizer6 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Recording")), wxHORIZONTAL);
+    wxStaticBoxSizer* sbSizer6;
+    sbSizer6 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Recording")), wxHORIZONTAL);
 
-  m_BtnStartCtrl = new wxButton(this, wxID_EXECUTE, _("Start"), wxDefaultPosition, wxDefaultSize, 0);
-  sbSizer6->Add(m_BtnStartCtrl, 0, wxALL, 5);
+    m_BtnStartCtrl = new wxButton(this, wxID_EXECUTE, _("Start"), wxDefaultPosition, wxDefaultSize, 0);
+    sbSizer6->Add(m_BtnStartCtrl, 0, wxALL, 5);
 
-  m_BtnStopCtrl = new wxButton(this, wxID_STOP, _("Stop"), wxDefaultPosition, wxDefaultSize, 0);
-  sbSizer6->Add(m_BtnStopCtrl, 0, wxALL, 5);
+    m_BtnStopCtrl = new wxButton(this, wxID_STOP, _("Stop"), wxDefaultPosition, wxDefaultSize, 0);
+    sbSizer6->Add(m_BtnStopCtrl, 0, wxALL, 5);
 
-  bSizer1->Add(sbSizer6, 0, wxEXPAND | wxALL, 5);
+    bSizer1->Add(sbSizer6, 0, wxEXPAND | wxALL, 5);
 
-  bSizer1->Add(0, 0, 1, wxEXPAND, 5);
+    bSizer1->Add(0, 0, 1, wxEXPAND, 5);
 
-  wxBoxSizer *bSizer3;
-  bSizer3 = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* bSizer3;
+    bSizer3 = new wxBoxSizer(wxHORIZONTAL);
 
-  bSizer3->Add(0, 0, 1, wxEXPAND, 5);
+    bSizer3->Add(0, 0, 1, wxEXPAND, 5);
 
-  m_BtnExportCtrl = new wxButton(this, wxID_SAVE, _("Export..."), wxDefaultPosition, wxDefaultSize, 0);
-  bSizer3->Add(m_BtnExportCtrl, 0, wxALL, 5);
+    m_BtnExportCtrl = new wxButton(this, wxID_SAVE, _("Export..."), wxDefaultPosition, wxDefaultSize, 0);
+    bSizer3->Add(m_BtnExportCtrl, 0, wxALL, 5);
 
-  m_BtnCloseCtrl = new wxButton(this, wxID_CANCEL, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
-  m_BtnCloseCtrl->SetDefault();
-  bSizer3->Add(m_BtnCloseCtrl, 0, wxALL, 5);
+    m_BtnCloseCtrl = new wxButton(this, wxID_CANCEL, _("Close"), wxDefaultPosition, wxDefaultSize, 0);
+    m_BtnCloseCtrl->SetDefault();
+    bSizer3->Add(m_BtnCloseCtrl, 0, wxALL, 5);
 
-  bSizer1->Add(bSizer3, 0, wxALL | wxEXPAND, 5);
+    bSizer1->Add(bSizer3, 0, wxALL | wxEXPAND, 5);
 
-  this->SetSizer(bSizer1);
-  this->Layout();
-  bSizer1->Fit(this);
-  this->Centre(wxBOTH);
+    this->SetSizer(bSizer1);
+    this->Layout();
+    bSizer1->Fit(this);
+    this->Centre(wxBOTH);
 }
 
-tmStats_DLG::tmStats_DLG(wxWindow *parent, const tmStatsData *actual, const tmStatsData *total, long nbrecords,
-                         DataBaseTM *database, wxWindowID id, const wxString &title, const wxPoint &pos,
-                         const wxSize &size, long style)
+tmStats_DLG::tmStats_DLG(wxWindow* parent, const tmStatsData* actual, const tmStatsData* total, long nbrecords,
+                         DataBaseTM* database, wxWindowID id, const wxString& title, const wxPoint& pos,
+                         const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
-  m_DataActual = actual;
-  m_DataTotal = total;
-  m_DataTotalRecord = nbrecords;
-  m_Database = database;
-  wxASSERT(m_Database);
-  _CreateControls();
-  _UpdateControls();
+    m_DataActual = actual;
+    m_DataTotal = total;
+    m_DataTotalRecord = nbrecords;
+    m_Database = database;
+    wxASSERT(m_Database);
+    _CreateControls();
+    _UpdateControls();
 }
 
 tmStats_DLG::~tmStats_DLG() {}
 
 void tmStats_DLG::SetStarted(bool recordstarted) {
-  if (recordstarted) {
-    m_BtnStartCtrl->Enable(false);
-  } else {
-    m_BtnStopCtrl->Enable(false);
-  }
+    if (recordstarted) {
+        m_BtnStartCtrl->Enable(false);
+    } else {
+        m_BtnStopCtrl->Enable(false);
+    }
 }
 
 void tmStats_DLG::_UpdateControls() {
-  if (m_DataActual != nullptr && m_DataActual->IsOk()) {
-    m_SessionClickCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbClick));
-    m_SessionAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbAttribution));
-    m_SessionIntersectCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbIntersection));
-    m_SessionElapsedTimeCtrl->SetLabel(m_DataActual->m_TimeElapsed.Format());
-  }
+    if (m_DataActual != nullptr && m_DataActual->IsOk()) {
+        m_SessionClickCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbClick));
+        m_SessionAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbAttribution));
+        m_SessionIntersectCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataActual->m_NbIntersection));
+        m_SessionElapsedTimeCtrl->SetLabel(m_DataActual->m_TimeElapsed.Format());
+    }
 
-  m_TotalSizerCtrl->GetStaticBox()->SetLabel(wxString::Format(_("Total (%ld sessions)"), m_DataTotalRecord));
-  if (m_DataTotal != nullptr) {
-    m_TotalClickCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbClick));
-    m_TotalAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbAttribution));
-    m_TotalIntersectCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbIntersection));
-    m_TotalElapsedTimeCtrl->SetLabel(m_DataTotal->m_TimeElapsed.Format());
-  }
+    m_TotalSizerCtrl->GetStaticBox()->SetLabel(wxString::Format(_("Total (%ld sessions)"), m_DataTotalRecord));
+    if (m_DataTotal != nullptr) {
+        m_TotalClickCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbClick));
+        m_TotalAttribCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbAttribution));
+        m_TotalIntersectCtrl->SetLabel(wxString::Format(_T("%ld"), m_DataTotal->m_NbIntersection));
+        m_TotalElapsedTimeCtrl->SetLabel(m_DataTotal->m_TimeElapsed.Format());
+    }
 
-  this->Layout();
-  GetSizer()->Fit(this);
-  this->Centre(wxBOTH);
+    this->Layout();
+    GetSizer()->Fit(this);
+    this->Centre(wxBOTH);
 }

@@ -24,16 +24,16 @@
 
 #include <wx/regex.h>
 
-#include "tmdrawer.h"                    // for drawing into bitmaps
-#include "tocctrl.h"                    // class TOC ctrl
-#include "../database/database_tm.h"    // class database
-#include "tmgisdata.h"                    // for GISdata
-#include "tmgisdatavectormysql.h"        // for direct access to GIS mysql
-#include "tmrenderer.h"                    // for GIS rendering
-#include "tmscalectrl.h"                // for combo box scale control
-#include "tmselecteddatamemory.h"        // for storing selected data into memory
-#include "tmmanagerevent.h"                // for shared event with other manager
-#include "tmmemoryzoom.h"                // for storing previous zoom in memory.
+#include "../database/database_tm.h"  // class database
+#include "tmdrawer.h"                 // for drawing into bitmaps
+#include "tmgisdata.h"                // for GISdata
+#include "tmgisdatavectormysql.h"     // for direct access to GIS mysql
+#include "tmmanagerevent.h"           // for shared event with other manager
+#include "tmmemoryzoom.h"             // for storing previous zoom in memory.
+#include "tmrenderer.h"               // for GIS rendering
+#include "tmscalectrl.h"              // for combo box scale control
+#include "tmselecteddatamemory.h"     // for storing selected data into memory
+#include "tocctrl.h"                  // class TOC ctrl
 
 #define ID_MENU_UNLINK_SPATIAL_DATA 10023
 
@@ -54,193 +54,193 @@ class tmScaleCtrlCombo;
   @date 07 July 2008
   *******************************************************************************/
 class tmLayerManager : public wxEvtHandler {
- private:
-  TocCtrl *m_TocCtrl;
-  tmRenderer *m_GISRenderer;
-  wxWindow *m_Parent;
-  DataBaseTM *m_DB;
-  tmGISScale m_Scale;
-  tmDrawer m_Drawer;
-  tmGISLoadingDataThread *m_Thread;
-  wxBitmap *m_Bitmap;
-  wxStatusBar *m_StatusBar;
-  tmScaleCtrlCombo *m_ScaleCtrl;
-  static bool m_LogOn;
-  tmSelectedDataMemory m_SelectedData;
-  bool m_BlockRefresh;
-  tmMemoryZoomManager m_ZoomManager;
-  PrjDefMemManage *m_MemoryPrjRef;
-  bool m_isUsingRAM;
-  long m_InternetRefreshTime;
+  private:
+    TocCtrl* m_TocCtrl;
+    tmRenderer* m_GISRenderer;
+    wxWindow* m_Parent;
+    DataBaseTM* m_DB;
+    tmGISScale m_Scale;
+    tmDrawer m_Drawer;
+    tmGISLoadingDataThread* m_Thread;
+    wxBitmap* m_Bitmap;
+    wxStatusBar* m_StatusBar;
+    tmScaleCtrlCombo* m_ScaleCtrl;
+    static bool m_LogOn;
+    tmSelectedDataMemory m_SelectedData;
+    bool m_BlockRefresh;
+    tmMemoryZoomManager m_ZoomManager;
+    PrjDefMemManage* m_MemoryPrjRef;
+    bool m_isUsingRAM;
+    long m_InternetRefreshTime;
 
-  // shared member data with thread
-  // tmTHREAD_STATUS m_Shared_ThreadStatus;
-  wxBitmap *m_ThreadBitmap;
+    // shared member data with thread
+    // tmTHREAD_STATUS m_Shared_ThreadStatus;
+    wxBitmap* m_ThreadBitmap;
 
-  // TOC specific functions
-  void FillTOCArray();
+    // TOC specific functions
+    void FillTOCArray();
 
-  bool SaveTOCStatus(bool isClosing = false);
+    bool SaveTOCStatus(bool isClosing = false);
 
-  bool IsOK();
+    bool IsOK();
 
-  // rotation warning function
-  wxArrayString m_RotationName;
-  wxArrayShort m_RotationStatus;
-  wxArrayString m_RotationLayerNames;
+    // rotation warning function
+    wxArrayString m_RotationName;
+    wxArrayShort m_RotationStatus;
+    wxArrayString m_RotationLayerNames;
 
-  // function called when view is updated
-  void _ZoomChanged();
+    // function called when view is updated
+    void _ZoomChanged();
 
-  bool _ReplaceLayer(const wxFileName &filename, const wxString &originalname);
+    bool _ReplaceLayer(const wxFileName& filename, const wxString& originalname);
 
-  void _BuildOverviewsIfNeeded(tmGISData *layer, const wxString &displayname);
+    void _BuildOverviewsIfNeeded(tmGISData* layer, const wxString& displayname);
 
-  // event functions
-  void OnZoomRectangleIn(wxCommandEvent &event);
+    // event functions
+    void OnZoomRectangleIn(wxCommandEvent& event);
 
-  void OnZoomRectangleOut(wxCommandEvent &event);
+    void OnZoomRectangleOut(wxCommandEvent& event);
 
-  void OnZoomToFeature(wxCommandEvent &event);
+    void OnZoomToFeature(wxCommandEvent& event);
 
-  void OnMoveToFeature(wxCommandEvent &event);
+    void OnMoveToFeature(wxCommandEvent& event);
 
-  void OnPanFinished(wxCommandEvent &event);
+    void OnPanFinished(wxCommandEvent& event);
 
-  void OnScrolled(wxCommandEvent &event);
+    void OnScrolled(wxCommandEvent& event);
 
-  void OnSelection(wxCommandEvent &event);
+    void OnSelection(wxCommandEvent& event);
 
-  void OnRemoveLayers(wxCommandEvent &event);
+    void OnRemoveLayers(wxCommandEvent& event);
 
-  void OnRotationWarning(wxCommandEvent &event);
+    void OnRotationWarning(wxCommandEvent& event);
 
-  void OnIncompatibleLayerWarning(wxCommandEvent &event);
+    void OnIncompatibleLayerWarning(wxCommandEvent& event);
 
-  // bitmap specific functions
-  void CreateEmptyBitmap(const wxSize &size);
+    // bitmap specific functions
+    void CreateEmptyBitmap(const wxSize& size);
 
-  // Reading all layers for extent or drawing
-  int ReadLayerExtent(bool loginfo = false, bool buildpyramids = false);
+    // Reading all layers for extent or drawing
+    int ReadLayerExtent(bool loginfo = false, bool buildpyramids = false);
 
-  int ReadLayerDraw();
+    int ReadLayerDraw();
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
- public:
-  // ctor / dtor
-  tmLayerManager(wxWindow *parent, TocCtrl *tocctrl, tmRenderer *renderer, wxStatusBar *status,
-                 tmScaleCtrlCombo *scalectrl);
+  public:
+    // ctor / dtor
+    tmLayerManager(wxWindow* parent, TocCtrl* tocctrl, tmRenderer* renderer, wxStatusBar* status,
+                   tmScaleCtrlCombo* scalectrl);
 
-  ~tmLayerManager();
+    ~tmLayerManager();
 
-  // scale ctrl functions
-  void InitScaleCtrlList();
+    // scale ctrl functions
+    void InitScaleCtrlList();
 
-  // Init layermanager
-  bool InitLayerManager(DataBaseTM *db);
+    // Init layermanager
+    bool InitLayerManager(DataBaseTM* db);
 
-  bool UnInitLayerManager();
+    bool UnInitLayerManager();
 
-  void SetMemoryProject(PrjDefMemManage *memoryprj);
+    void SetMemoryProject(PrjDefMemManage* memoryprj);
 
-  // layers operations
-  void RemoveLayer(wxCommandEvent &event);
+    // layers operations
+    void RemoveLayer(wxCommandEvent& event);
 
-  void AddLayer(wxCommandEvent &event);
+    void AddLayer(wxCommandEvent& event);
 
-  void AddWebLayer();
+    void AddWebLayer();
 
-  void GroupAdd(wxCommandEvent &event);
+    void GroupAdd(wxCommandEvent& event);
 
-  bool OpenLayer(const wxFileName &filename, bool replace = false, const wxString &originalname = wxEmptyString);
+    bool OpenLayer(const wxFileName& filename, bool replace = false, const wxString& originalname = wxEmptyString);
 
-  tmGISScale *GetScale() {
-    return &m_Scale;
-  }
+    tmGISScale* GetScale() {
+        return &m_Scale;
+    }
 
-  bool ZoomToLayer(long layerid);
+    bool ZoomToLayer(long layerid);
 
-  void ZoomToSelectedLayer();
+    void ZoomToSelectedLayer();
 
-  void ZoomToFrameLayer();
+    void ZoomToFrameLayer();
 
-  // event operations
-  void OnSizeChange(wxCommandEvent &event);
+    // event operations
+    void OnSizeChange(wxCommandEvent& event);
 
-  void OnUpdateCoordinates(wxCommandEvent &event);
+    void OnUpdateCoordinates(wxCommandEvent& event);
 
-  void OnUpdateAngle(wxCommandEvent &event);
+    void OnUpdateAngle(wxCommandEvent& event);
 
-  void OnShowLayer(wxCommandEvent &event);
+    void OnShowLayer(wxCommandEvent& event);
 
-  void OnScaleChanged(wxCommandEvent &event);
+    void OnScaleChanged(wxCommandEvent& event);
 
-  void OnDisplayProperties(wxCommandEvent &event);
+    void OnDisplayProperties(wxCommandEvent& event);
 
-  void OnDisplayLabels(wxCommandEvent &event);
+    void OnDisplayLabels(wxCommandEvent& event);
 
-  void OnTocEdited(wxCommandEvent &event);
+    void OnTocEdited(wxCommandEvent& event);
 
-  // for logging (only one thread may acces the GUI.
-  static void EnableLogging(bool enable = true) {
-    m_LogOn = enable;
-  }
+    // for logging (only one thread may acces the GUI.
+    static void EnableLogging(bool enable = true) {
+        m_LogOn = enable;
+    }
 
-  static bool IsLoggingEnabled() {
-    return m_LogOn;
-  }
+    static bool IsLoggingEnabled() {
+        return m_LogOn;
+    }
 
-  // tool operations
-  void OnZoomToFit();
+    // tool operations
+    void OnZoomToFit();
 
-  void OnZoomRectangle();
+    void OnZoomRectangle();
 
-  void OnPan();
+    void OnPan();
 
-  void OnSelect();
+    void OnSelect();
 
-  bool ZoomPrevious();
+    bool ZoomPrevious();
 
-  bool HasZoomPrevious();
+    bool HasZoomPrevious();
 
-  // selection function
-  bool SelectedSearch(const wxRect &rect, bool shiftdown = false);
+    // selection function
+    bool SelectedSearch(const wxRect& rect, bool shiftdown = false);
 
-  bool SelectedClear();
+    bool SelectedClear();
 
-  bool SelectedInvert();
+    bool SelectedInvert();
 
-  bool SelectByOid();
+    bool SelectByOid();
 
-  void CheckGeometryValidity();
+    void CheckGeometryValidity();
 
-  void ExportSelectedGeometries(const wxFileName &file);
+    void ExportSelectedGeometries(const wxFileName& file);
 
-  bool LoadProjectLayers();
+    bool LoadProjectLayers();
 
-  bool ReloadProjectLayers(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
+    bool ReloadProjectLayers(bool bFullExtent = TRUE, bool bInvalidateFullExt = TRUE);
 
-  tmSelectedDataMemory *GetSelectedDataMemory() {
-    return &m_SelectedData;
-  }
+    tmSelectedDataMemory* GetSelectedDataMemory() {
+        return &m_SelectedData;
+    }
 
-  // blocking, unblocking the refresh process
-  void BlockRefreshProcess(bool block = true) {
-    m_BlockRefresh = block;
-  }
+    // blocking, unblocking the refresh process
+    void BlockRefreshProcess(bool block = true) {
+        m_BlockRefresh = block;
+    }
 
-  bool GetRefreshBlocked() {
-    return m_BlockRefresh;
-  }
+    bool GetRefreshBlocked() {
+        return m_BlockRefresh;
+    }
 
-  void SetSelectionColour(const wxColour &col) {
-    m_SelectedData.SetSelectionColour(col);
-  }
+    void SetSelectionColour(const wxColour& col) {
+        m_SelectedData.SetSelectionColour(col);
+    }
 
-  void SetSelectionHalo(bool hashalo) {
-    m_SelectedData.SetSelectionHalo(hashalo);
-  }
+    void SetSelectionHalo(bool hashalo) {
+        m_SelectedData.SetSelectionHalo(hashalo);
+    }
 };
 
 #endif

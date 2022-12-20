@@ -36,94 +36,94 @@ class DataBaseTM;
 #define IDDLG_SHORT_LIST 21001
 #define IDDLG_SHORT_ADD_BTN 21002
 #define IDDLG_SHORT_DEL_BTN 21003
-//#define IDDLG_SHORT_EDIT_BTN 21004
+// #define IDDLG_SHORT_EDIT_BTN 21004
 #define SHORTCUT_PANEL_TITLE _("Shortcut")
 #define SHORTCUT_PANEL_SIZE wxSize(230, 150)
 
 class ShortcutList : public ListGenReportWithDialog {
- private:
-  DataBaseTM *m_pDB;
-  int m_LayerType;
-  int m_OldKey;
-  wxWindow *m_ParentEvt;
+  private:
+    DataBaseTM* m_pDB;
+    int m_LayerType;
+    int m_OldKey;
+    wxWindow* m_ParentEvt;
 
-  virtual void BeforeAdding();
+    virtual void BeforeAdding();
 
-  virtual void AfterAdding(bool bRealyAddItem);
+    virtual void AfterAdding(bool bRealyAddItem);
 
-  virtual void BeforeDeleting();
+    virtual void BeforeDeleting();
 
-  virtual void BeforeEditing();
+    virtual void BeforeEditing();
 
-  virtual void AfterEditing(bool bRealyEdited);
+    virtual void AfterEditing(bool bRealyEdited);
 
- protected:
- public:
-  ShortcutList(wxWindow *parent, wxWindow *parent_evt, wxWindowID id, wxArrayString *pColsName,
-               wxArrayInt *pColsSize = nullptr, wxSize size = wxDefaultSize);
+  protected:
+  public:
+    ShortcutList(wxWindow* parent, wxWindow* parent_evt, wxWindowID id, wxArrayString* pColsName,
+                 wxArrayInt* pColsSize = nullptr, wxSize size = wxDefaultSize);
 
-  ~ShortcutList();
+    ~ShortcutList();
 
-  // setter
-  void SetDataBase(DataBaseTM *database) {
-    m_pDB = database;
-  }
+    // setter
+    void SetDataBase(DataBaseTM* database) {
+        m_pDB = database;
+    }
 
-  void SetLayerType(int iLayertype) {
-    m_LayerType = iLayertype;
-  }
+    void SetLayerType(int iLayertype) {
+        m_LayerType = iLayertype;
+    }
 
-  // key function
-  int GetShortcutInt(const wxString &myShortCut);
+    // key function
+    int GetShortcutInt(const wxString& myShortCut);
 
-  wxString GetKeyFromInt(int key) {
-    return wxString::Format(_T("F%d"), key);
-  }
+    wxString GetKeyFromInt(int key) {
+        return wxString::Format(_T("F%d"), key);
+    }
 
-  // send order to attribution manager
-  void RefreshShortcuts();
+    // send order to attribution manager
+    void RefreshShortcuts();
 };
 
 class Shortcuts_PANEL : public ManagedAuiWnd {
- private:
-  // Control Member
-  wxChoice *m_TargetChoice;
-  ShortcutList *m_ListShortcuts;
+  private:
+    // Control Member
+    wxChoice* m_TargetChoice;
+    ShortcutList* m_ListShortcuts;
 
-  // other member
-  wxWindow *m_ParentEvt;
-  wxAuiPaneInfo m_PaneInfo;
-  DataBaseTM *m_pDB;
-  bool m_ProjectOpen;
+    // other member
+    wxWindow* m_ParentEvt;
+    wxAuiPaneInfo m_PaneInfo;
+    DataBaseTM* m_pDB;
+    bool m_ProjectOpen;
 
-  // event function for panel
-  void OnChangeTarget(wxCommandEvent &event);
+    // event function for panel
+    void OnChangeTarget(wxCommandEvent& event);
 
-  void OnShortcutAdd(wxCommandEvent &event);
+    void OnShortcutAdd(wxCommandEvent& event);
 
-  void OnShortcutDel(wxCommandEvent &event);
-  // void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
+    void OnShortcutDel(wxCommandEvent& event);
+    // void OnShortcutEdit( wxCommandEvent& event ){ event.Skip(); }
 
-  /// Creates the controls and sizers
-  wxSizer *CreateControls(wxWindow *parent, bool call_fit = true, bool set_sizer = true);
+    /// Creates the controls and sizers
+    wxSizer* CreateControls(wxWindow* parent, bool call_fit = true, bool set_sizer = true);
 
-  void InitMemberValues();
+    void InitMemberValues();
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
- public:
-  Shortcuts_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auimanager);
+  public:
+    Shortcuts_PANEL(wxWindow* parent, wxWindowID id, wxAuiManager* auimanager);
 
-  ~Shortcuts_PANEL();
+    ~Shortcuts_PANEL();
 
-  int LoadShortcutList(bool bStoreShortcutinmemory = false);
+    int LoadShortcutList(bool bStoreShortcutinmemory = false);
 
-  // setter
-  void SetProjectOpen(bool bStatus = true) {
-    m_ProjectOpen = bStatus;
-  }
+    // setter
+    void SetProjectOpen(bool bStatus = true) {
+        m_ProjectOpen = bStatus;
+    }
 
-  void SetDataBase(DataBaseTM *database);
+    void SetDataBase(DataBaseTM* database);
 };
 
 #endif

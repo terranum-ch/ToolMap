@@ -30,7 +30,10 @@
 #include <wx/dir.h>
 #include <wx/filename.h>
 
-enum DIROP_SELECTDIR { DIROP_PATH_ORIGIN = 0, DIROP_PATH_DESTINATION };
+enum DIROP_SELECTDIR {
+    DIROP_PATH_ORIGIN = 0,
+    DIROP_PATH_DESTINATION
+};
 
 /***************************************************************************/ /**
   @brief For directory operations (copy, delete...)
@@ -40,32 +43,32 @@ enum DIROP_SELECTDIR { DIROP_PATH_ORIGIN = 0, DIROP_PATH_DESTINATION };
   @date 05 February 2008
   *******************************************************************************/
 class DirOperation : public wxObject {
-  DECLARE_DYNAMIC_CLASS(DirOperation)
+    DECLARE_DYNAMIC_CLASS(DirOperation)
 
- protected:
-  wxString m_Path[2];
-  // wxString m_DestinationPath;
+  protected:
+    wxString m_Path[2];
+    // wxString m_DestinationPath;
 
-  void InitMembers();
+    void InitMembers();
 
- public:
-  DirOperation();
+  public:
+    DirOperation();
 
-  DirOperation(wxString OriginPath, wxString DestinationPath = _T(""));
+    DirOperation(wxString OriginPath, wxString DestinationPath = _T(""));
 
-  ~DirOperation();
+    ~DirOperation();
 
-  void InitPath(wxString OriginPath = _T(""), wxString DestinationPath = _T(""));
+    void InitPath(wxString OriginPath = _T(""), wxString DestinationPath = _T(""));
 
-  double GetDirectorySize(DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
+    double GetDirectorySize(DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
 
-  long GetAllDirectoryFiles(wxArrayString &filesNames, DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
+    long GetAllDirectoryFiles(wxArrayString& filesNames, DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
 
-  bool HasEnoughFreeSpace(double megabyteSize, DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
+    bool HasEnoughFreeSpace(double megabyteSize, DIROP_SELECTDIR dirselection = DIROP_PATH_ORIGIN);
 
-  bool IsPathWritable(DIROP_SELECTDIR dirselection = DIROP_PATH_DESTINATION);
+    bool IsPathWritable(DIROP_SELECTDIR dirselection = DIROP_PATH_DESTINATION);
 
-  bool CopyDirectory(const wxArrayString &filesNames, bool showprogress = FALSE);
+    bool CopyDirectory(const wxArrayString& filesNames, bool showprogress = FALSE);
 };
 
 #endif

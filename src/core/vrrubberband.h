@@ -24,30 +24,30 @@
 #include <wx/overlay.h>
 
 class vrRubberBand {
- private:
-  wxWindow *m_Window;
-  wxPoint m_PointStart;
-  wxPoint m_PointEnd;
-  wxOverlay m_Overlay;
+  private:
+    wxWindow* m_Window;
+    wxPoint m_PointStart;
+    wxPoint m_PointEnd;
+    wxOverlay m_Overlay;
 
-  wxRect _CreateRect();
+    wxRect _CreateRect();
 
- public:
-  vrRubberBand(wxWindow *window);
+  public:
+    vrRubberBand(wxWindow* window);
 
-  virtual ~vrRubberBand();
+    virtual ~vrRubberBand();
 
-  void SetPointFirst(const wxPoint &pt);
+    void SetPointFirst(const wxPoint& pt);
 
-  void SetPointLast(const wxPoint &pt);
+    void SetPointLast(const wxPoint& pt);
 
-  wxRect GetRect();
+    wxRect GetRect();
 
-  bool IsValid();
+    bool IsValid();
 
-  bool IsPositive();
+    bool IsPositive();
 
-  void Update();
+    void Update();
 };
 
 #endif

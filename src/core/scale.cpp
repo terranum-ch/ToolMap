@@ -15,21 +15,21 @@
  ***************************************************************************/
 #include "scale.h"
 
-bool ScaleTM::GetScaleFromLong(const long &scale, wxString &stringscale) {
-  stringscale = wxString::Format(_T("1:%ld"), scale);
-  if (stringscale.Len() > 2) {
-    return true;
-  }
-  return false;
+bool ScaleTM::GetScaleFromLong(const long& scale, wxString& stringscale) {
+    stringscale = wxString::Format(_T("1:%ld"), scale);
+    if (stringscale.Len() > 2) {
+        return true;
+    }
+    return false;
 }
 
-long ScaleTM::GetScaleFromString(const wxString &scale) {
-  long myLongScale = -1;
+long ScaleTM::GetScaleFromString(const wxString& scale) {
+    long myLongScale = -1;
 
-  wxString myTempscale = scale.AfterFirst(':');
-  // check that the scale string isn't empty
-  if (!myTempscale.IsEmpty()) {
-    myTempscale.ToLong(&myLongScale);
-  }
-  return myLongScale;
+    wxString myTempscale = scale.AfterFirst(':');
+    // check that the scale string isn't empty
+    if (!myTempscale.IsEmpty()) {
+        myTempscale.ToLong(&myLongScale);
+    }
+    return myLongScale;
 }

@@ -48,50 +48,50 @@ const int ID_QUERIES_EDIT = 10067;
 DECLARE_EVENT_TYPE(tmEVT_QUERY_MENU, -1)
 
 class QueriesList : public ListGenReportWithDialog {
- private:
-  DataBaseTM *m_pDB;
-  tmSelectedDataMemory *m_Selected;
-  Queries_PANEL *m_QueryPanel;
+  private:
+    DataBaseTM* m_pDB;
+    tmSelectedDataMemory* m_Selected;
+    Queries_PANEL* m_QueryPanel;
 
-  virtual void BeforeAdding();
+    virtual void BeforeAdding();
 
-  virtual void AfterAdding(bool bRealyAddItem);
+    virtual void AfterAdding(bool bRealyAddItem);
 
-  virtual void BeforeDeleting();
+    virtual void BeforeDeleting();
 
-  virtual void BeforeEditing();
+    virtual void BeforeEditing();
 
-  virtual void AfterEditing(bool bRealyEdited);
+    virtual void AfterEditing(bool bRealyEdited);
 
-  virtual void OnDoubleClickItem(wxListEvent &event);
+    virtual void OnDoubleClickItem(wxListEvent& event);
 
-  void OnQueryEdit(wxCommandEvent &event);
+    void OnQueryEdit(wxCommandEvent& event);
 
-  void OnQueryMenuUpdateUISelected(wxUpdateUIEvent &event);
+    void OnQueryMenuUpdateUISelected(wxUpdateUIEvent& event);
 
-  DECLARE_EVENT_TABLE();
+    DECLARE_EVENT_TABLE();
 
- protected:
-  virtual void OnContextMenu(wxListEvent &event);
+  protected:
+    virtual void OnContextMenu(wxListEvent& event);
 
- public:
-  QueriesList(wxWindow *parent, Queries_PANEL *queryparent, wxWindowID id, wxArrayString *pColsName,
-              wxArrayInt *pColsSize = nullptr, wxSize size = wxDefaultSize);
+  public:
+    QueriesList(wxWindow* parent, Queries_PANEL* queryparent, wxWindowID id, wxArrayString* pColsName,
+                wxArrayInt* pColsSize = nullptr, wxSize size = wxDefaultSize);
 
-  ~QueriesList();
+    ~QueriesList();
 
-  void OnContextualMenu(wxContextMenuEvent &event);
+    void OnContextualMenu(wxContextMenuEvent& event);
 
-  // setter
-  void SetDataBase(DataBaseTM *database) {
-    m_pDB = database;
-  }
+    // setter
+    void SetDataBase(DataBaseTM* database) {
+        m_pDB = database;
+    }
 
-  void SetSelected(tmSelectedDataMemory *selected) {
-    m_Selected = selected;
-  }
+    void SetSelected(tmSelectedDataMemory* selected) {
+        m_Selected = selected;
+    }
 
-  virtual void AddItem();
+    virtual void AddItem();
 };
 
 /***************************************************************************/ /**
@@ -101,54 +101,54 @@ class QueriesList : public ListGenReportWithDialog {
   @date 09 November 2008
   *******************************************************************************/
 class Queries_PANEL : public ManagedAuiWnd {
- private:
-  wxAuiPaneInfo m_PaneInfo;
-  DataBaseTM *m_pDB;
-  QueriesList *m_QueriesList;
-  wxWindow *m_ParentEvt;
-  bool m_IsProjectOpen;
-  TocCtrl *m_TocCtrl;
+  private:
+    wxAuiPaneInfo m_PaneInfo;
+    DataBaseTM* m_pDB;
+    QueriesList* m_QueriesList;
+    wxWindow* m_ParentEvt;
+    bool m_IsProjectOpen;
+    TocCtrl* m_TocCtrl;
 
-  /// Initialises member variables
-  void InitMemberValues();
+    /// Initialises member variables
+    void InitMemberValues();
 
-  // event function
-  void OnPressQueryMenu(wxCommandEvent &event);
+    // event function
+    void OnPressQueryMenu(wxCommandEvent& event);
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
- public:
-  /// Constructors
-  Queries_PANEL(wxWindow *parent, wxWindowID id, wxAuiManager *auimanager);
+  public:
+    /// Constructors
+    Queries_PANEL(wxWindow* parent, wxWindowID id, wxAuiManager* auimanager);
 
-  // public event function
-  void OnAddQueries(wxCommandEvent &event);
+    // public event function
+    void OnAddQueries(wxCommandEvent& event);
 
-  void OnRemoveQueries(wxCommandEvent &event);
+    void OnRemoveQueries(wxCommandEvent& event);
 
-  void OnRunQueries(wxCommandEvent &event);
+    void OnRunQueries(wxCommandEvent& event);
 
-  void OnQueryApplySymbology(wxCommandEvent &event);
+    void OnQueryApplySymbology(wxCommandEvent& event);
 
-  /// Destructor
-  ~Queries_PANEL();
+    /// Destructor
+    ~Queries_PANEL();
 
-  /// Creates the controls and sizers
-  wxSizer *CreateControls(wxWindow *parent, bool call_fit = true, bool set_sizer = true);
+    /// Creates the controls and sizers
+    wxSizer* CreateControls(wxWindow* parent, bool call_fit = true, bool set_sizer = true);
 
-  void SetDataBase(DataBaseTM *database);
+    void SetDataBase(DataBaseTM* database);
 
-  void SetSelectedData(tmSelectedDataMemory *selected);
+    void SetSelectedData(tmSelectedDataMemory* selected);
 
-  void SetTOCCtrl(TocCtrl *toc) {
-    m_TocCtrl = toc;
-  }
+    void SetTOCCtrl(TocCtrl* toc) {
+        m_TocCtrl = toc;
+    }
 
-  bool LoadQueries(DataBaseTM *database);
+    bool LoadQueries(DataBaseTM* database);
 
-  void EnableQueriesPanel(bool projectopen = true);
+    void EnableQueriesPanel(bool projectopen = true);
 
-  bool IsQuerySelected();
+    bool IsQuerySelected();
 };
 
 #endif

@@ -31,16 +31,16 @@ const wxString tmSNAPPING_TEXT_YES = wxTRANSLATE("Yes");
 const wxString tmSNAPPING_TEXT[] = {_T(""), wxTRANSLATE("all vertex"), wxTRANSLATE("begin / end")};
 
 class tmSnappingObject {
- private:
-  void InitMemberValues();
+  private:
+    void InitMemberValues();
 
- public:
-  long m_LayerID;
-  int m_SnappingStatus;
+  public:
+    long m_LayerID;
+    int m_SnappingStatus;
 
-  tmSnappingObject();
+    tmSnappingObject();
 
-  ~tmSnappingObject();
+    ~tmSnappingObject();
 };
 // Creating a list of MemoryObjects
 WX_DECLARE_OBJARRAY(tmSnappingObject, tmSnappingObjArray);
@@ -57,50 +57,50 @@ WX_DECLARE_OBJARRAY(tmSnappingObject, tmSnappingObjArray);
   @date 21 January 2009
   *******************************************************************************/
 class tmSnappingMemory : public wxObject {
- private:
-  tmSnappingObjArray m_Snapping;
-  int m_Tolerence;
+  private:
+    tmSnappingObjArray m_Snapping;
+    int m_Tolerence;
 
- protected:
-  int FindSnappingItem(const long &lid);
+  protected:
+    int FindSnappingItem(const long& lid);
 
- public:
-  tmSnappingMemory();
+  public:
+    tmSnappingMemory();
 
-  ~tmSnappingMemory();
+    ~tmSnappingMemory();
 
-  // snapping operations
-  void AddSnappingMemory(long lid, int snapstatus);
+    // snapping operations
+    void AddSnappingMemory(long lid, int snapstatus);
 
-  unsigned int GetCount() {
-    return m_Snapping.GetCount();
-  }
+    unsigned int GetCount() {
+        return m_Snapping.GetCount();
+    }
 
-  bool DeleteSnappingMemory(const long &lid);
+    bool DeleteSnappingMemory(const long& lid);
 
-  int GetSnappingMemoryStatus(const long &lid);
+    int GetSnappingMemoryStatus(const long& lid);
 
-  bool SetSnappingMemoryStatus(const long &lid, int snapstatus);
+    bool SetSnappingMemoryStatus(const long& lid, int snapstatus);
 
-  bool GetSnappingInfo(unsigned int iIndex, long &lid, int &snapstatus);
+    bool GetSnappingInfo(unsigned int iIndex, long& lid, int& snapstatus);
 
-  void Clear() {
-    m_Snapping.Clear();
-  }
+    void Clear() {
+        m_Snapping.Clear();
+    }
 
-  void ClearSnappingStatus();
+    void ClearSnappingStatus();
 
-  // tolerence operations
-  void SetTolerence(int tolereance) {
-    m_Tolerence = tolereance;
-  }
+    // tolerence operations
+    void SetTolerence(int tolereance) {
+        m_Tolerence = tolereance;
+    }
 
-  int GetTolerence() {
-    return m_Tolerence;
-  }
+    int GetTolerence() {
+        return m_Tolerence;
+    }
 
-  // misc function
-  bool IsSnappingEnabled();
+    // misc function
+    bool IsSnappingEnabled();
 };
 
 #endif

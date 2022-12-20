@@ -29,43 +29,43 @@
 #include "tmsymbolvectorline.h"  // tmSymbol class definition
 
 class tmSymbolVectorLineMultiple : public tmSymbolVectorLine {
- private:
-  tmSymbolDataLineMultiple m_lSymMultiple;
+  private:
+    tmSymbolDataLineMultiple m_lSymMultiple;
 
-  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+    virtual tmSymbolDLG* GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos);
 
-  virtual bool GetDialogData(tmSymbolDLG *dlg);
+    virtual bool GetDialogData(tmSymbolDLG* dlg);
 
- public:
-  tmSymbolVectorLineMultiple();
+  public:
+    tmSymbolVectorLineMultiple();
 
-  tmSymbolVectorLineMultiple(const tmSymbolVectorLineMultiple &origin);
+    tmSymbolVectorLineMultiple(const tmSymbolVectorLineMultiple& origin);
 
-  ~tmSymbolVectorLineMultiple();
+    ~tmSymbolVectorLineMultiple();
 
-  virtual bool Serialize(tmSerialize &s);
+    virtual bool Serialize(tmSerialize& s);
 
-  virtual wxColour GetColour();
+    virtual wxColour GetColour();
 
-  virtual int GetWidth() {
-    return m_lSymMultiple.m_Width;
-  }
+    virtual int GetWidth() {
+        return m_lSymMultiple.m_Width;
+    }
 
-  virtual int GetShape() {
-    return tmSYMBOLPENSYLES[m_lSymMultiple.m_Shape];
-  }
+    virtual int GetShape() {
+        return tmSYMBOLPENSYLES[m_lSymMultiple.m_Shape];
+    }
 
-  virtual int GetTransparency() {
-    return m_lSymMultiple.m_GlobalTransparency;
-  }
+    virtual int GetTransparency() {
+        return m_lSymMultiple.m_GlobalTransparency;
+    }
 
-  int GetSelectedSymbology() {
-    return m_lSymMultiple.m_PanelNo;
-  }
+    int GetSelectedSymbology() {
+        return m_lSymMultiple.m_PanelNo;
+    }
 
-  tmSymbolDataLineMultiple *GetSymbology() {
-    return &m_lSymMultiple;
-  }
+    tmSymbolDataLineMultiple* GetSymbology() {
+        return &m_lSymMultiple;
+    }
 };
 
 #endif

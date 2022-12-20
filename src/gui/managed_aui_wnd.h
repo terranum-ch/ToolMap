@@ -30,25 +30,25 @@
 #include <wx/aui/aui.h>
 
 class ManagedAuiWnd : public wxEvtHandler {
- protected:
-  wxAuiManager *m_AuiMgr;
-  wxString m_AuiPanelName;
+  protected:
+    wxAuiManager* m_AuiMgr;
+    wxString m_AuiPanelName;
 
-  // private member function
-  void InitValues();
+    // private member function
+    void InitValues();
 
- public:
-  ManagedAuiWnd(wxAuiManager *AuiManager);
+  public:
+    ManagedAuiWnd(wxAuiManager* AuiManager);
 
-  ~ManagedAuiWnd();
+    ~ManagedAuiWnd();
 
-  void AddManagedPane(wxWindow *window, const wxAuiPaneInfo &paneinfo, bool bShow = FALSE);
+    void AddManagedPane(wxWindow* window, const wxAuiPaneInfo& paneinfo, bool bShow = FALSE);
 
-  void ShowPanel();
+    void ShowPanel();
 
-  void HidePanel();
+    void HidePanel();
 
-  bool IsPanelShown();
+    bool IsPanelShown();
 };
 
 #endif

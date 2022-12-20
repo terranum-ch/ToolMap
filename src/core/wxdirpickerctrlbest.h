@@ -31,21 +31,21 @@
   @date 28 March 2008
   *******************************************************************************/
 enum PATH_ERROR {
-  PATH_OK = 0,             ///<  No errors where detected with the path
-  PATH_EMPTY = 1,          ///<  Path stored into the database is empty
-  PATH_INVALID = 2,        ///<  The returned path isn't valid (for exemple because of different OS)
-  PATH_DATABASE_ERROR = 4  ///< Error retrieving the path from the database
+    PATH_OK = 0,             ///<  No errors where detected with the path
+    PATH_EMPTY = 1,          ///<  Path stored into the database is empty
+    PATH_INVALID = 2,        ///<  The returned path isn't valid (for exemple because of different OS)
+    PATH_DATABASE_ERROR = 4  ///< Error retrieving the path from the database
 };
 
 class wxDirPickerCtrlBest : public wxDirPickerCtrl {
- public:
-  wxDirPickerCtrlBest(wxWindow *parent, wxWindowID id, const wxString &path = wxEmptyString,
-                      const wxString &message = _("Select a folder"), const wxPoint &pos = wxDefaultPosition,
-                      const wxSize &size = wxDefaultSize, long style = wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
+  public:
+    wxDirPickerCtrlBest(wxWindow* parent, wxWindowID id, const wxString& path = wxEmptyString,
+                        const wxString& message = _("Select a folder"), const wxPoint& pos = wxDefaultPosition,
+                        const wxSize& size = wxDefaultSize, long style = wxDIRP_USE_TEXTCTRL | wxDIRP_SMALL);
 
-  ~wxDirPickerCtrlBest();
+    ~wxDirPickerCtrlBest();
 
-  void SetPathWithError(PATH_ERROR flags, const wxString &spath);
+    void SetPathWithError(PATH_ERROR flags, const wxString& spath);
 };
 
 #endif

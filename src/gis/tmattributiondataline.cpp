@@ -33,8 +33,8 @@ tmAttributionDataLine::tmAttributionDataLine() {}
   @author Lucien Schreiber (c) CREALP 2008
   @date 06 November 2008
   *******************************************************************************/
-tmAttributionDataLine::tmAttributionDataLine(wxArrayLong *selected, DataBaseTM *database) {
-  Create(selected, database);
+tmAttributionDataLine::tmAttributionDataLine(wxArrayLong* selected, DataBaseTM* database) {
+    Create(selected, database);
 }
 
 /***************************************************************************/ /**
@@ -46,9 +46,9 @@ tmAttributionDataLine::tmAttributionDataLine(wxArrayLong *selected, DataBaseTM *
   @author Lucien Schreiber (c) CREALP 2008
   @date 06 November 2008
   *******************************************************************************/
-void tmAttributionDataLine::Create(wxArrayLong *selected, DataBaseTM *database) {
-  tmAttributionData::Create(selected, database);
-  SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[0]);
+void tmAttributionDataLine::Create(wxArrayLong* selected, DataBaseTM* database) {
+    tmAttributionData::Create(selected, database);
+    SetDataBaseTable(TABLE_NAME_GIS_ATTRIBUTION[0]);
 }
 
 /***************************************************************************/ /**
@@ -68,24 +68,24 @@ tmAttributionDataLine::~tmAttributionDataLine() {}
   @author Lucien Schreiber (c) CREALP 2008
   @date 06 November 2008
   *******************************************************************************/
-bool tmAttributionDataLine::SetAttributeBasic(AttribObjType_PANEL *panel) {
-  if (!IsValid()) return false;
+bool tmAttributionDataLine::SetAttributeBasic(AttribObjType_PANEL* panel) {
+    if (!IsValid()) return false;
 
-  wxArrayLong myChekedValues;
-  wxString myStatement = _T("");
-  if (GetPanelValues(panel, myChekedValues))  // attribution
-  {
-    PrepareAttributionStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[0], &myChekedValues);
-  } else  // cleaning data
-  {
-    PrepareCleaningStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
-  }
+    wxArrayLong myChekedValues;
+    wxString myStatement = _T("");
+    if (GetPanelValues(panel, myChekedValues))  // attribution
+    {
+        PrepareAttributionStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[0], &myChekedValues);
+    } else  // cleaning data
+    {
+        PrepareCleaningStatement(myStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
+    }
 
-  if (!m_pDB->DataBaseQueryNoResults(myStatement)) {
-    wxLogDebug(_T("Error attributing data"));
-    return false;
-  }
-  return true;
+    if (!m_pDB->DataBaseQueryNoResults(myStatement)) {
+        wxLogDebug(_T("Error attributing data"));
+        return false;
+    }
+    return true;
 }
 
 /***************************************************************************/ /**
@@ -98,14 +98,14 @@ bool tmAttributionDataLine::SetAttributeBasic(AttribObjType_PANEL *panel) {
   @author Lucien Schreiber (c) CREALP 2008
   @date 06 November 2008
   *******************************************************************************/
-bool tmAttributionDataLine::GetPanelValues(AttribObjType_PANEL *panel, wxArrayLong &valueids) {
-  // get values for frequent lines and less frequent
-  panel->GetSelectedValues(TOC_NAME_LINES, valueids, false);
-  panel->GetSelectedValues(TOC_NAME_LINES, valueids, true);
+bool tmAttributionDataLine::GetPanelValues(AttribObjType_PANEL* panel, wxArrayLong& valueids) {
+    // get values for frequent lines and less frequent
+    panel->GetSelectedValues(TOC_NAME_LINES, valueids, false);
+    panel->GetSelectedValues(TOC_NAME_LINES, valueids, true);
 
-  if (valueids.GetCount() > 0) return true;
+    if (valueids.GetCount() > 0) return true;
 
-  return false;
+    return false;
 }
 
 /***************************************************************************/ /**
@@ -116,28 +116,28 @@ bool tmAttributionDataLine::GetPanelValues(AttribObjType_PANEL *panel, wxArrayLo
   @author Lucien Schreiber (c) CREALP 2008
   @date 06 November 2008
   *******************************************************************************/
-bool tmAttributionDataLine::GetInfoBasic(AttribObjType_PANEL *panel) {
-  // checking
-  if (!IsValid()) return false;
+bool tmAttributionDataLine::GetInfoBasic(AttribObjType_PANEL* panel) {
+    // checking
+    if (!IsValid()) return false;
 
-  // getting values
-  wxString sStatement = _T("");
-  PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
-  if (!m_pDB->DataBaseQuery(sStatement)) {
-    wxLogDebug(_T("Error getting info "));
-    return false;
-  }
+    // getting values
+    wxString sStatement = _T("");
+    PrepareGetInfoStatement(sStatement, TABLE_NAME_GIS_ATTRIBUTION[0]);
+    if (!m_pDB->DataBaseQuery(sStatement)) {
+        wxLogDebug(_T("Error getting info "));
+        return false;
+    }
 
-  wxArrayLong mySelValues;
-  m_pDB->DataBaseGetResults(mySelValues);
+    wxArrayLong mySelValues;
+    m_pDB->DataBaseGetResults(mySelValues);
 
-  // updating panel
-  SetPanelValues(panel, mySelValues);
-  return true;
+    // updating panel
+    SetPanelValues(panel, mySelValues);
+    return true;
 }
 
-bool tmAttributionDataLine::GetInfoBasic(long oid, wxArrayLong &objid, wxArrayString &objcode, wxArrayString &objname) {
-  return _GetInfoBasic(oid, objid, objcode, objname, 0);
+bool tmAttributionDataLine::GetInfoBasic(long oid, wxArrayLong& objid, wxArrayString& objcode, wxArrayString& objname) {
+    return _GetInfoBasic(oid, objid, objcode, objname, 0);
 }
 
 /***************************************************************************/ /**
@@ -148,9 +148,9 @@ bool tmAttributionDataLine::GetInfoBasic(long oid, wxArrayLong &objid, wxArraySt
   @author Lucien Schreiber (c) CREALP 2008
   @date 06 November 2008
   *******************************************************************************/
-void tmAttributionDataLine::SetPanelValues(AttribObjType_PANEL *panel, const wxArrayLong &valueids) {
-  panel->SetSelectedValues(TOC_NAME_LINES, valueids, false);
-  panel->SetSelectedValues(TOC_NAME_LINES, valueids, true);
+void tmAttributionDataLine::SetPanelValues(AttribObjType_PANEL* panel, const wxArrayLong& valueids) {
+    panel->SetSelectedValues(TOC_NAME_LINES, valueids, false);
+    panel->SetSelectedValues(TOC_NAME_LINES, valueids, true);
 }
 
 /***************************************************************************/ /**
@@ -159,11 +159,12 @@ void tmAttributionDataLine::SetPanelValues(AttribObjType_PANEL *panel, const wxA
   @author Lucien Schreiber (c) CREALP 2009
   @date 16 March 2009
   *******************************************************************************/
-bool tmAttributionDataLine::GetAttributionLayersID(const long &geomid, tmLayerValueArray &layersid) {
-  return tmAttributionData::PrepareGetAttributionLayersID(geomid, layersid, TABLE_NAME_GIS_ATTRIBUTION[0],
-                                                          LAYER_SPATIAL_LINE);
+bool tmAttributionDataLine::GetAttributionLayersID(const long& geomid, tmLayerValueArray& layersid) {
+    return tmAttributionData::PrepareGetAttributionLayersID(geomid, layersid, TABLE_NAME_GIS_ATTRIBUTION[0],
+                                                            LAYER_SPATIAL_LINE);
 }
 
-bool tmAttributionDataLine::GetAttributionLayersIDFull(const long &geomid, tmLayerValueArray &layersid) {
-  return tmAttributionData::PrepareGetAttributionLayersID(geomid, layersid, TABLE_NAME_GIS_ATTRIBUTION[0], wxNOT_FOUND);
+bool tmAttributionDataLine::GetAttributionLayersIDFull(const long& geomid, tmLayerValueArray& layersid) {
+    return tmAttributionData::PrepareGetAttributionLayersID(geomid, layersid, TABLE_NAME_GIS_ATTRIBUTION[0],
+                                                            wxNOT_FOUND);
 }

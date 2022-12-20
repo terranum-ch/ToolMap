@@ -29,26 +29,26 @@
 DECLARE_EVENT_TYPE(tmEVT_SCALE_USER_CHANGED, -1)
 
 class tmScaleCtrlCombo : public wxComboBox {
- private:
-  wxWindow *m_ParentEvent;
-  DECLARE_EVENT_TABLE();
+  private:
+    wxWindow* m_ParentEvent;
+    DECLARE_EVENT_TABLE();
 
- protected:
- public:
-  tmScaleCtrlCombo();
+  protected:
+  public:
+    tmScaleCtrlCombo();
 
-  tmScaleCtrlCombo(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size,
-                   const wxArrayString &arraystring);
+    tmScaleCtrlCombo(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size,
+                     const wxArrayString& arraystring);
 
-  ~tmScaleCtrlCombo() {
-    ;
-  }
+    ~tmScaleCtrlCombo() {
+        ;
+    }
 
-  void InitScaleFromDatabase(const wxArrayLong &scale_values);
+    void InitScaleFromDatabase(const wxArrayLong& scale_values);
 
-  void SetValueScale(const long &scale);
+    void SetValueScale(const long& scale);
 
-  void OnUserSetValue(wxCommandEvent &event);
+    void OnUserSetValue(wxCommandEvent& event);
 };
 
 #endif

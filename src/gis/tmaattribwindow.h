@@ -40,55 +40,55 @@
   @date 05 March 2009
   *******************************************************************************/
 class tmAAttribWindow : public wxDialog {
- private:
-  // windows position
-  static wxRect m_WndPos;
+  private:
+    // windows position
+    static wxRect m_WndPos;
 
-  void GetWindowPosition();
+    void GetWindowPosition();
 
-  void SetWindowPosition();
+    void SetWindowPosition();
 
-  // member controls
-  tmAAttribTree *m_AAttribTree;
-  wxStatusBar *m_Status;
-  wxButton *m_CancelBtn;
+    // member controls
+    tmAAttribTree* m_AAttribTree;
+    wxStatusBar* m_Status;
+    wxButton* m_CancelBtn;
 
-  // member initialized by ctor
-  PrjMemLayersArray *m_Layers;
-  wxArrayString *m_Values;
-  tmLayerValueArray m_LayerNameID;
+    // member initialized by ctor
+    PrjMemLayersArray* m_Layers;
+    wxArrayString* m_Values;
+    tmLayerValueArray m_LayerNameID;
 
-  // member
-  int m_iTotalControls;
-  tmAAttribCtrlArray m_Ctrls;
+    // member
+    int m_iTotalControls;
+    tmAAttribCtrlArray m_Ctrls;
 
-  // member function
-  void InitMemberValue();
+    // member function
+    void InitMemberValue();
 
-  void CreateControls();
+    void CreateControls();
 
-  int GetNumberControls();
+    int GetNumberControls();
 
-  bool CheckValuesAndControls();
+    bool CheckValuesAndControls();
 
-  bool SetValue(unsigned int pos, tmAAttribCtrl *ctrl);
+    bool SetValue(unsigned int pos, tmAAttribCtrl* ctrl);
 
-  void SetStatusNumberControl(int ictrl, unsigned int layers);
+    void SetStatusNumberControl(int ictrl, unsigned int layers);
 
- protected:
- public:
-  tmAAttribWindow(wxWindow *parent, PrjMemLayersArray *layers, wxArrayString *values,
-                  const tmLayerValueArray &arrayidname, wxWindowID id = wxID_ANY,
-                  const wxString &title = _("Object attribute (single feature)"),
-                  const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
-                  long style = wxDEFAULT_DIALOG_STYLE | wxMAXIMIZE_BOX | wxRESIZE_BORDER);
+  protected:
+  public:
+    tmAAttribWindow(wxWindow* parent, PrjMemLayersArray* layers, wxArrayString* values,
+                    const tmLayerValueArray& arrayidname, wxWindowID id = wxID_ANY,
+                    const wxString& title = _("Object attribute (single feature)"),
+                    const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize,
+                    long style = wxDEFAULT_DIALOG_STYLE | wxMAXIMIZE_BOX | wxRESIZE_BORDER);
 
-  ~tmAAttribWindow();
+    ~tmAAttribWindow();
 
-  // data transfert
-  virtual bool TransferDataToWindow();
+    // data transfert
+    virtual bool TransferDataToWindow();
 
-  virtual bool TransferDataFromWindow();
+    virtual bool TransferDataFromWindow();
 };
 
 #endif

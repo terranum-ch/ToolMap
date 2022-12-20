@@ -22,17 +22,17 @@
 WX_DEFINE_OBJARRAY(tmShortCutObjArray);
 
 tmShortcutObject::tmShortcutObject() {
-  InitMemberValues();
+    InitMemberValues();
 }
 
 tmShortcutObject::~tmShortcutObject() {}
 
 void tmShortcutObject::InitMemberValues() {
-  m_LayerType = -1;
-  m_ShortcutKey = 0;
-  m_ShortcutDescription = _T("");
-  m_ShortcutValues.Clear();
-  m_ShortcutValid = false;
+    m_LayerType = -1;
+    m_ShortcutKey = 0;
+    m_ShortcutDescription = _T("");
+    m_ShortcutValues.Clear();
+    m_ShortcutValid = false;
 }
 
 /******************************* tmShortcutMemory *******************/
@@ -52,22 +52,22 @@ tmShortcutMemory::~tmShortcutMemory() {}
   @author Lucien Schreiber (c) CREALP 2008
   @date 18 December 2008
   *******************************************************************************/
-void tmShortcutMemory::AddShortcutMemory(int iLayerType, int iKey, const wxString &description, long lShortcutValue) {
-  // find if the key already exists in the memory array
-  for (unsigned int i = 0; i < m_Shortcuts.GetCount(); i++)
-    if (m_Shortcuts.Item(i).m_ShortcutKey == iKey) {
-      m_Shortcuts.Item(i).m_ShortcutValues.Add(lShortcutValue);
-      return;
-    }
+void tmShortcutMemory::AddShortcutMemory(int iLayerType, int iKey, const wxString& description, long lShortcutValue) {
+    // find if the key already exists in the memory array
+    for (unsigned int i = 0; i < m_Shortcuts.GetCount(); i++)
+        if (m_Shortcuts.Item(i).m_ShortcutKey == iKey) {
+            m_Shortcuts.Item(i).m_ShortcutValues.Add(lShortcutValue);
+            return;
+        }
 
-  // adding non existant item
-  tmShortcutObject myShortcutObj;
-  myShortcutObj.m_LayerType = iLayerType;
-  myShortcutObj.m_ShortcutKey = iKey;
-  myShortcutObj.m_ShortcutDescription = description;
-  myShortcutObj.m_ShortcutValues.Add(lShortcutValue);
-  myShortcutObj.m_ShortcutValid = true;
-  m_Shortcuts.Add(myShortcutObj);
+    // adding non existant item
+    tmShortcutObject myShortcutObj;
+    myShortcutObj.m_LayerType = iLayerType;
+    myShortcutObj.m_ShortcutKey = iKey;
+    myShortcutObj.m_ShortcutDescription = description;
+    myShortcutObj.m_ShortcutValues.Add(lShortcutValue);
+    myShortcutObj.m_ShortcutValid = true;
+    m_Shortcuts.Add(myShortcutObj);
 }
 
 /***************************************************************************/ /**
@@ -76,7 +76,7 @@ void tmShortcutMemory::AddShortcutMemory(int iLayerType, int iKey, const wxStrin
   @date 18 December 2008
   *******************************************************************************/
 void tmShortcutMemory::Clear() {
-  m_Shortcuts.Clear();
+    m_Shortcuts.Clear();
 }
 
 /***************************************************************************/ /**
@@ -90,22 +90,22 @@ void tmShortcutMemory::Clear() {
   @author Lucien Schreiber (c) CREALP 2008
   @date 18 December 2008
   *******************************************************************************/
-int tmShortcutMemory::GetShortcut(int iKey, int &iLayerType, wxString &description, wxArrayLong &shortcutvalues) {
-  tmShortcutObject myShortcutObj;
+int tmShortcutMemory::GetShortcut(int iKey, int& iLayerType, wxString& description, wxArrayLong& shortcutvalues) {
+    tmShortcutObject myShortcutObj;
 
-  for (unsigned int i = 0; i < m_Shortcuts.GetCount(); i++) {
-    if (m_Shortcuts.Item(i).m_ShortcutKey == iKey) {
-      // shortcut found
-      myShortcutObj = m_Shortcuts.Item(i);
-      iLayerType = myShortcutObj.m_LayerType;
-      description = myShortcutObj.m_ShortcutDescription;
-      shortcutvalues = myShortcutObj.m_ShortcutValues;
+    for (unsigned int i = 0; i < m_Shortcuts.GetCount(); i++) {
+        if (m_Shortcuts.Item(i).m_ShortcutKey == iKey) {
+            // shortcut found
+            myShortcutObj = m_Shortcuts.Item(i);
+            iLayerType = myShortcutObj.m_LayerType;
+            description = myShortcutObj.m_ShortcutDescription;
+            shortcutvalues = myShortcutObj.m_ShortcutValues;
 
-      int iNbValues = shortcutvalues.GetCount();
-      wxASSERT(iNbValues > 0);
-      return iNbValues;
+            int iNbValues = shortcutvalues.GetCount();
+            wxASSERT(iNbValues > 0);
+            return iNbValues;
+        }
     }
-  }
 
-  return wxNOT_FOUND;
+    return wxNOT_FOUND;
 }

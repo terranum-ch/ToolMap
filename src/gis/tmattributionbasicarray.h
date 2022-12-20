@@ -28,32 +28,32 @@
 #endif
 
 class tmAttributionBasic : public wxObject {
- private:
-  void InitMemberValues();
+  private:
+    void InitMemberValues();
 
- public:
-  // ctor - dtor
-  tmAttributionBasic();
+  public:
+    // ctor - dtor
+    tmAttributionBasic();
 
-  ~tmAttributionBasic();
+    ~tmAttributionBasic();
 
-  long m_Oid;
-  wxArrayLong m_Values;
+    long m_Oid;
+    wxArrayLong m_Values;
 };
 
 WX_DECLARE_OBJARRAY(tmAttributionBasic, tmAttributionBasicArray);
 
 class tmLayerValue : public wxObject {
- private:
-  void InitMemberValues();
+  private:
+    void InitMemberValues();
 
- public:
-  tmLayerValue();
+  public:
+    tmLayerValue();
 
-  ~tmLayerValue();
+    ~tmLayerValue();
 
-  long m_Oid;
-  wxString m_Value;
+    long m_Oid;
+    wxString m_Value;
 };
 
 WX_DECLARE_OBJARRAY(tmLayerValue, tmLayerValueArray);

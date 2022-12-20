@@ -46,116 +46,117 @@ class tmCoordConvert;
   @date 14 July 2008
   *******************************************************************************/
 class tmGISData : public wxObject {
- private:
-  static bool m_LogOn;
-  wxString m_ShortFileName;
-  wxString m_FullFileName;
-  tmCoordConvert *m_CoordConvert;
+  private:
+    static bool m_LogOn;
+    wxString m_ShortFileName;
+    wxString m_FullFileName;
+    tmCoordConvert* m_CoordConvert;
 
-  void InitMemberValue();
+    void InitMemberValue();
 
- protected:
-  wxString GetMinimalBoundingRectangleAsHtml(int iprecision = 2);
+  protected:
+    wxString GetMinimalBoundingRectangleAsHtml(int iprecision = 2);
 
-  int m_ClassType;
+    int m_ClassType;
 
- public:
-  tmGISData();
+  public:
+    tmGISData();
 
-  ~tmGISData();
+    ~tmGISData();
 
-  // get type of class
-  int GetDataType() {
-    return m_ClassType;
-  }
+    // get type of class
+    int GetDataType() {
+        return m_ClassType;
+    }
 
-  void SetCoordConvert(tmCoordConvert *coordconvert) {
-    m_CoordConvert = coordconvert;
-  }
+    void SetCoordConvert(tmCoordConvert* coordconvert) {
+        m_CoordConvert = coordconvert;
+    }
 
-  tmCoordConvert *GetCoordConvert() {
-    return m_CoordConvert;
-  }
+    tmCoordConvert* GetCoordConvert() {
+        return m_CoordConvert;
+    }
 
-  // static functions for init
-  static void InitGISDrivers(bool bRaster = TRUE, bool bVector = TRUE);
+    // static functions for init
+    static void InitGISDrivers(bool bRaster = TRUE, bool bVector = TRUE);
 
-  static wxString GetAllSupportedGISFormatsWildcards();
+    static wxString GetAllSupportedGISFormatsWildcards();
 
-  static wxArrayString GetAllSupportedGISFormatsExtensions();
+    static wxArrayString GetAllSupportedGISFormatsExtensions();
 
-  static tmGISData *CreateGISBasedOnType(const int &gis_format_index);
+    static tmGISData* CreateGISBasedOnType(const int& gis_format_index);
 
-  static tmGISData *CreateGISBasedOnExt(const wxString &extension);
+    static tmGISData* CreateGISBasedOnExt(const wxString& extension);
 
-  // load layer
-  static tmGISData *LoadLayer(tmLayerProperties *layerprop);
+    // load layer
+    static tmGISData* LoadLayer(tmLayerProperties* layerprop);
 
-  static void EnableLogging(bool enable = true) {
-    m_LogOn = enable;
-  }
+    static void EnableLogging(bool enable = true) {
+        m_LogOn = enable;
+    }
 
-  static bool IsLoggingEnabled() {
-    return m_LogOn;
-  }
+    static bool IsLoggingEnabled() {
+        return m_LogOn;
+    }
 
-  // gis function
-  virtual bool Open(const wxString &filename, bool bReadWrite = TRUE);
+    // gis function
+    virtual bool Open(const wxString& filename, bool bReadWrite = TRUE);
 
-  virtual bool Close() {
-    return false;
-  }
+    virtual bool Close() {
+        return false;
+    }
 
-  virtual tmRealRect GetMinimalBoundingRectangle() {
-    return tmRealRect(0, 0, 0, 0);
-  }
+    virtual tmRealRect GetMinimalBoundingRectangle() {
+        return tmRealRect(0, 0, 0, 0);
+    }
 
-  virtual TM_GIS_SPATIAL_TYPES GetSpatialType() {
-    return LAYER_ERR;
-  }
+    virtual TM_GIS_SPATIAL_TYPES GetSpatialType() {
+        return LAYER_ERR;
+    }
 
-  // misc function
-  wxString GetShortFileName() {
-    return m_ShortFileName;
-  }
+    // misc function
+    wxString GetShortFileName() {
+        return m_ShortFileName;
+    }
 
-  wxString GetFullFileName() {
-    return m_FullFileName;
-  }
+    wxString GetFullFileName() {
+        return m_FullFileName;
+    }
 
-  // metadata functions
-  virtual wxString GetMetaDataAsHtml() {
-    return wxEmptyString;
-  }
+    // metadata functions
+    virtual wxString GetMetaDataAsHtml() {
+        return wxEmptyString;
+    }
 
-  virtual wxString GetDataSizeAsHtml(int iPrecision = 2) {
-    return wxEmptyString;
-  }
+    virtual wxString GetDataSizeAsHtml(int iPrecision = 2) {
+        return wxEmptyString;
+    }
 
-  // search function
-  virtual wxArrayLong *SearchData(const tmRealRect &rect, int type) {
-    return nullptr;
-  }
+    // search function
+    virtual wxArrayLong* SearchData(const tmRealRect& rect, int type) {
+        return nullptr;
+    }
 
-  virtual wxArrayLong *GetAllData() {
-    return nullptr;
-  }
+    virtual wxArrayLong* GetAllData() {
+        return nullptr;
+    }
 
-  virtual bool GetSnapCoord(const wxRealPoint &clickpt, double buffersize, wxArrayRealPoints &snapppts, int snaptype) {
-    return false;
-  }
+    virtual bool GetSnapCoord(const wxRealPoint& clickpt, double buffersize, wxArrayRealPoints& snapppts,
+                              int snaptype) {
+        return false;
+    }
 
-  virtual bool IsPointSnapped(const wxRealPoint &point, int snaptype, long excludeoid = wxNOT_FOUND) {
-    return false;
-  }
+    virtual bool IsPointSnapped(const wxRealPoint& point, int snaptype, long excludeoid = wxNOT_FOUND) {
+        return false;
+    }
 
-  virtual bool CreateSpatialIndex(GDALProgressFunc progress, void *pfProgressData) {
-    return false;
-  }
+    virtual bool CreateSpatialIndex(GDALProgressFunc progress, void* pfProgressData) {
+        return false;
+    }
 
-  virtual int IsRaster() {
-    return wxNOT_FOUND;
-  }
+    virtual int IsRaster() {
+        return wxNOT_FOUND;
+    }
 };
 
 #endif

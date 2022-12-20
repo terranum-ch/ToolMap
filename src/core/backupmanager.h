@@ -33,95 +33,95 @@
 class DataBaseTM;
 
 class BackupFile {
- private:
-  wxFileName m_OutFileName;
-  wxFileName m_InDirectory;
-  wxString m_Comment;
-  wxString m_Author;
-  wxDateTime m_Date;
-  bool m_UseDate;
+  private:
+    wxFileName m_OutFileName;
+    wxFileName m_InDirectory;
+    wxString m_Comment;
+    wxString m_Author;
+    wxDateTime m_Date;
+    bool m_UseDate;
 
- public:
-  BackupFile();
+  public:
+    BackupFile();
 
-  virtual ~BackupFile();
+    virtual ~BackupFile();
 
-  bool IsValid() const;
+    bool IsValid() const;
 
-  inline const wxFileName GetOutputName() const;
+    inline const wxFileName GetOutputName() const;
 
-  void SetOutputName(const wxFileName &value);
+    void SetOutputName(const wxFileName& value);
 
-  inline const wxFileName GetInputDirectory() const;
+    inline const wxFileName GetInputDirectory() const;
 
-  void SetInputDirectory(const wxFileName &value);
+    void SetInputDirectory(const wxFileName& value);
 
-  inline const wxString GetComment() const;
+    inline const wxString GetComment() const;
 
-  void SetComment(const wxString &value);
+    void SetComment(const wxString& value);
 
-  inline const wxString GetAuthor() const;
+    inline const wxString GetAuthor() const;
 
-  void SetAuthor(const wxString &value);
+    void SetAuthor(const wxString& value);
 
-  inline const wxDateTime GetDate() const;
+    inline const wxDateTime GetDate() const;
 
-  void SetDate(wxDateTime value);
+    void SetDate(wxDateTime value);
 
-  inline const bool IsUsingDate() const;
+    inline const bool IsUsingDate() const;
 
-  void SetUseDate(bool value);
+    void SetUseDate(bool value);
 };
 
 inline const wxFileName BackupFile::GetOutputName() const {
-  return m_OutFileName;
+    return m_OutFileName;
 }
 
 inline const wxFileName BackupFile::GetInputDirectory() const {
-  return m_InDirectory;
+    return m_InDirectory;
 }
 
 inline const wxString BackupFile::GetComment() const {
-  return m_Comment;
+    return m_Comment;
 }
 
 inline const wxString BackupFile::GetAuthor() const {
-  return m_Author;
+    return m_Author;
 }
 
 inline const wxDateTime BackupFile::GetDate() const {
-  return m_Date;
+    return m_Date;
 }
 
 inline const bool BackupFile::IsUsingDate() const {
-  return m_UseDate;
+    return m_UseDate;
 }
 
 /***************** BACKUP MANAGER **********************/
 class BackupManager {
- private:
-  DataBaseTM *m_Database;
+  private:
+    DataBaseTM* m_Database;
 
-  void _ListMySQLFiles(const wxString &directory, wxArrayString &files);
+    void _ListMySQLFiles(const wxString& directory, wxArrayString& files);
 
- public:
-  BackupManager(DataBaseTM *database);
+  public:
+    BackupManager(DataBaseTM* database);
 
-  virtual ~BackupManager();
+    virtual ~BackupManager();
 
-  bool Backup(const BackupFile &fileinfo, wxWindow *progressparent = nullptr);
+    bool Backup(const BackupFile& fileinfo, wxWindow* progressparent = nullptr);
 
-  bool Restore(const BackupFile &fileinfo, wxWindow *progressparent = nullptr);
+    bool Restore(const BackupFile& fileinfo, wxWindow* progressparent = nullptr);
 
-  bool GetFileInfo(const wxFileName &file, BackupFile &fileinfo);
+    bool GetFileInfo(const wxFileName& file, BackupFile& fileinfo);
 
-  bool SetMetadata(const BackupFile &fileinfo, wxZipOutputStream *zip);
+    bool SetMetadata(const BackupFile& fileinfo, wxZipOutputStream* zip);
 
-  inline DataBaseTM *GetDatabase();
+    inline DataBaseTM* GetDatabase();
 };
 
-inline DataBaseTM *BackupManager::GetDatabase() {
-  return m_Database;
+inline DataBaseTM* BackupManager::GetDatabase() {
+    return m_Database;
 }
 
 #endif

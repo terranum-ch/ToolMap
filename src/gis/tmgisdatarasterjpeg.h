@@ -31,14 +31,14 @@
 #include "tmgisdataraster.h"
 
 class tmGISDataRasterJPEG : public tmGISDataRaster {
- private:
- protected:
- public:
-  tmGISDataRasterJPEG();
+  private:
+  protected:
+  public:
+    tmGISDataRasterJPEG();
 
-  ~tmGISDataRasterJPEG();
+    ~tmGISDataRasterJPEG();
 
-  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
+    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
 
 #endif

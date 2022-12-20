@@ -35,7 +35,7 @@
 #include "tmattributiondatapoint.h"       // for point attribution
 #include "tmmanagerevent.h"               // for shared event with other manager
 #include "tmselecteddatamemory.h"         // for selection data
-#include "tocctrl.h"                    // for TOC ctrl
+#include "tocctrl.h"                      // for TOC ctrl
 
 class InformationDLG;
 
@@ -55,94 +55,95 @@ DECLARE_EVENT_TYPE(tmEVT_SHORTCUT_ATTRIBUTION_DONE, -1);
   @date 04 November 2008
   *******************************************************************************/
 class tmAttributionManager : public wxEvtHandler {
- private:
-  // member data
-  wxWindow *m_Parent;
-  AttribObjType_PANEL *m_Panel;
-  tmSelectedDataMemory *m_SelData;
-  TocCtrl *m_TocCtrl;
-  DataBaseTM *m_pDB;
-  bool m_ShortcutLoaded;
-  PrjDefMemManage *m_pPrjMem;
-  InformationDLG *m_InfoDLG;
+  private:
+    // member data
+    wxWindow* m_Parent;
+    AttribObjType_PANEL* m_Panel;
+    tmSelectedDataMemory* m_SelData;
+    TocCtrl* m_TocCtrl;
+    DataBaseTM* m_pDB;
+    bool m_ShortcutLoaded;
+    PrjDefMemManage* m_pPrjMem;
+    InformationDLG* m_InfoDLG;
 
-  tmLayerProperties *m_pLayerProperties;
-  tmShortcutMemory m_ShortcutMem;
+    tmLayerProperties* m_pLayerProperties;
+    tmShortcutMemory m_ShortcutMem;
 
-  // event function
-  void OnSelection(wxCommandEvent &event);
+    // event function
+    void OnSelection(wxCommandEvent& event);
 
-  // void OnAttributeBtn (wxCommandEvent & event);
-  void OnAddBtn(wxCommandEvent &event);
+    // void OnAttributeBtn (wxCommandEvent & event);
+    void OnAddBtn(wxCommandEvent& event);
 
-  void OnRemoveBtn(wxCommandEvent &event);
+    void OnRemoveBtn(wxCommandEvent& event);
 
-  void OnInfoBtn(wxCommandEvent &event);
+    void OnInfoBtn(wxCommandEvent& event);
 
-  // message event functions
-  void OnLayerChanged(wxCommandEvent &event);
+    // message event functions
+    void OnLayerChanged(wxCommandEvent& event);
 
-  void OnSelectionChanged(wxCommandEvent &event);
+    void OnSelectionChanged(wxCommandEvent& event);
 
-  // shortcut function
-  void OnRefreshShortcut(wxCommandEvent &event);
+    // shortcut function
+    void OnRefreshShortcut(wxCommandEvent& event);
 
-  int LoadShortcutIntoMemory();
+    int LoadShortcutIntoMemory();
 
-  void ConnectShortcutEvent();
+    void ConnectShortcutEvent();
 
-  void DisconnectShortcutEvent();
+    void DisconnectShortcutEvent();
 
-  void OnShortcutPressed(wxCommandEvent &event);
+    void OnShortcutPressed(wxCommandEvent& event);
 
-  bool ShortcutAttributionChecking(int iCount, int shortcutlayer_type);
+    bool ShortcutAttributionChecking(int iCount, int shortcutlayer_type);
 
-  // query function
-  void OnRunQuery(wxCommandEvent &event);
+    // query function
+    void OnRunQuery(wxCommandEvent& event);
 
-  // copy attribution function
-  void OnCopyAttribution(wxCommandEvent &event);
+    // copy attribution function
+    void OnCopyAttribution(wxCommandEvent& event);
 
-  // advanced attribution
-  int DisplayAAttributionWindow(wxArrayString *values, PrjMemLayersArray *layers, const tmLayerValueArray &arrayidname);
+    // advanced attribution
+    int DisplayAAttributionWindow(wxArrayString* values, PrjMemLayersArray* layers,
+                                  const tmLayerValueArray& arrayidname);
 
-  // verification
-  bool IsAttributionManagerReady();
+    // verification
+    bool IsAttributionManagerReady();
 
-  bool IsOnlyOneObjSelected();
+    bool IsOnlyOneObjSelected();
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 
- protected:
- public:
-  // ctor and dtor
-  tmAttributionManager(wxWindow *parent, TocCtrl *toc, AttribObjType_PANEL *panel, tmSelectedDataMemory *selection);
+  protected:
+  public:
+    // ctor and dtor
+    tmAttributionManager(wxWindow* parent, TocCtrl* toc, AttribObjType_PANEL* panel, tmSelectedDataMemory* selection);
 
-  ~tmAttributionManager();
+    ~tmAttributionManager();
 
-  // Init attribution
-  bool InitAttributionManager(DataBaseTM *pDb, PrjDefMemManage *memprojdef);
+    // Init attribution
+    bool InitAttributionManager(DataBaseTM* pDb, PrjDefMemManage* memprojdef);
 
-  void UnInitAttributionManager();
+    void UnInitAttributionManager();
 
-  // selection informations
-  int GetSelectionCount() {
-    return m_SelData->GetCount();
-  }
+    // selection informations
+    int GetSelectionCount() {
+        return m_SelData->GetCount();
+    }
 
-  // advanced attribution
-  bool AAttributionButtonShow();
+    // advanced attribution
+    bool AAttributionButtonShow();
 
-  void AAttributionBatchShow();
+    void AAttributionBatchShow();
 
-  // informations
-  void DisplayInformationsWnd();
+    // informations
+    void DisplayInformationsWnd();
 
-  // Attribution data creation
-  static tmAttributionData *CreateAttributionData(int type);
-  // orientedpoints
-  // void OrientedPointEdit();
-  // void OrientedPointDraw();
+    // Attribution data creation
+    static tmAttributionData* CreateAttributionData(int type);
+    // orientedpoints
+    // void OrientedPointEdit();
+    // void OrientedPointDraw();
 };
 
 #endif

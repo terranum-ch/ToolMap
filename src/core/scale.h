@@ -30,20 +30,20 @@
   @date 01 April 2008
   *******************************************************************************/
 class ScaleTM : public wxObject {
- private:
- public:
-  ScaleTM() {
-    ;
-  }
+  private:
+  public:
+    ScaleTM() {
+        ;
+    }
 
-  ~ScaleTM() {
-    ;
-  }
+    ~ScaleTM() {
+        ;
+    }
 
-  // static function for converting string
-  static bool GetScaleFromLong(const long &scale, wxString &stringscale);
+    // static function for converting string
+    static bool GetScaleFromLong(const long& scale, wxString& stringscale);
 
-  static long GetScaleFromString(const wxString &scale);
+    static long GetScaleFromString(const wxString& scale);
 };
 
 #endif

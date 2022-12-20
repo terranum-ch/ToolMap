@@ -38,29 +38,29 @@ class QueriesPageLayer;
 class DataBaseTM;
 
 class QueriesWizard : public wxWizard {
- private:
-  DataBaseTM *m_pDB;
-  QueriesData *m_QueryData;
-  // Wizard's page
-  QueriesPageIntro *m_PageIntro;
+  private:
+    DataBaseTM* m_pDB;
+    QueriesData* m_QueryData;
+    // Wizard's page
+    QueriesPageIntro* m_PageIntro;
 
- public:
-  // Used by first panel
-  tmQUERIES_TYPE m_QueryType;
-  long m_QueryObjectGeomID;
+  public:
+    // Used by first panel
+    tmQUERIES_TYPE m_QueryType;
+    long m_QueryObjectGeomID;
 
- public:
-  QueriesWizard(wxWindow *parent, DataBaseTM *database, int id = wxID_ANY);
+  public:
+    QueriesWizard(wxWindow* parent, DataBaseTM* database, int id = wxID_ANY);
 
-  virtual ~QueriesWizard();
+    virtual ~QueriesWizard();
 
-  virtual int ShowWizard();
+    virtual int ShowWizard();
 
-  inline QueriesData *GetData();
+    inline QueriesData* GetData();
 };
 
-inline QueriesData *QueriesWizard::GetData() {
-  return m_QueryData;
+inline QueriesData* QueriesWizard::GetData() {
+    return m_QueryData;
 }
 
 #endif

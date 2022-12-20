@@ -29,53 +29,53 @@
 #include "tmimport.h"
 
 class tmImportCSV : public tmImport {
- private:
-  int m_Xcolumn;
-  int m_Ycolumn;
-  wxFileInputStream *m_FileStream;
-  wxTextInputStream *m_TextStream;
-  wxArrayString m_Fields;
+  private:
+    int m_Xcolumn;
+    int m_Ycolumn;
+    wxFileInputStream* m_FileStream;
+    wxTextInputStream* m_TextStream;
+    wxArrayString m_Fields;
 
-  bool _ResetReading();
+    bool _ResetReading();
 
-  bool _GetNextData(wxArrayString &tokenArray);
+    bool _GetNextData(wxArrayString& tokenArray);
 
-  bool _GetCoordinates(const wxArrayString &tokenArray, double &x, double &y);
+    bool _GetCoordinates(const wxArrayString& tokenArray, double& x, double& y);
 
-  bool _ImportToPointLayer(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
+    bool _ImportToPointLayer(DataBaseTM* database, PrjDefMemManage* prj, wxProgressDialog* progress = nullptr);
 
- public:
-  tmImportCSV();
+  public:
+    tmImportCSV();
 
-  virtual ~tmImportCSV();
+    virtual ~tmImportCSV();
 
-  virtual bool Open(const wxFileName &filename);
+    virtual bool Open(const wxFileName& filename);
 
-  virtual bool Import(DataBaseTM *database, PrjDefMemManage *prj, wxProgressDialog *progress = nullptr);
+    virtual bool Import(DataBaseTM* database, PrjDefMemManage* prj, wxProgressDialog* progress = nullptr);
 
-  virtual bool GetExistingAttributeValues(const wxString &attName, wxArrayString &values);
+    virtual bool GetExistingAttributeValues(const wxString& attName, wxArrayString& values);
 
-  virtual bool IsOk();
+    virtual bool IsOk();
 
-  void ListFields();
+    void ListFields();
 
-  wxArrayString GetFieldsList();
+    wxArrayString GetFieldsList();
 
-  void GuessXYfields();
+    void GuessXYfields();
 
-  virtual bool GetFieldNames(wxArrayString &Fields);
+    virtual bool GetFieldNames(wxArrayString& Fields);
 
-  int GetColumnX() {
-    return m_Xcolumn;
-  }
+    int GetColumnX() {
+        return m_Xcolumn;
+    }
 
-  int GetColumnY() {
-    return m_Ycolumn;
-  }
+    int GetColumnY() {
+        return m_Ycolumn;
+    }
 
-  void SetXYColumn(int x, int y);
+    void SetXYColumn(int x, int y);
 
-  virtual wxArrayInt GetTargetSupported();
+    virtual wxArrayInt GetTargetSupported();
 };
 
 #endif

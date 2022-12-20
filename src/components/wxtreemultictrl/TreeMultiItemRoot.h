@@ -27,15 +27,15 @@
  * TreeMultiItemNode classes.
  */
 class TreeMultiItemRoot : public TreeMultiItemNode {
- public:
-  TreeMultiItemRoot();
+  public:
+    TreeMultiItemRoot();
 
-  virtual ~TreeMultiItemRoot();
+    virtual ~TreeMultiItemRoot();
 
-  // IsClass method
-  virtual TreeMultiItemRoot *IsTreeMultiItemRoot() const {
-    return (TreeMultiItemRoot *)this;
-  };
+    // IsClass method
+    virtual TreeMultiItemRoot* IsTreeMultiItemRoot() const {
+        return (TreeMultiItemRoot*)this;
+    };
 };
 
 #endif

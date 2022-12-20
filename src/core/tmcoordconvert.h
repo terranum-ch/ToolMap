@@ -31,39 +31,39 @@
 class tmRealRect;
 
 class tmCoordConvert {
- private:
-  PRJDEF_PROJ_TYPE m_ProjType;
+  private:
+    PRJDEF_PROJ_TYPE m_ProjType;
 
-  OGRSpatialReference *_CreateSpatialRef(PRJDEF_PROJ_TYPE proj);
+    OGRSpatialReference* _CreateSpatialRef(PRJDEF_PROJ_TYPE proj);
 
-  OGRSpatialReference *_CreateSpatialRefGoogle();
+    OGRSpatialReference* _CreateSpatialRefGoogle();
 
-  wxRealPoint _Transform(OGRSpatialReference *refin, OGRSpatialReference *refout, const wxRealPoint &in);
+    wxRealPoint _Transform(OGRSpatialReference* refin, OGRSpatialReference* refout, const wxRealPoint& in);
 
-  wxRealPoint _GetPointLocalFromWGS(const wxRealPoint &pt);
+    wxRealPoint _GetPointLocalFromWGS(const wxRealPoint& pt);
 
- public:
-  tmCoordConvert(PRJDEF_PROJ_TYPE projtype);
+  public:
+    tmCoordConvert(PRJDEF_PROJ_TYPE projtype);
 
-  virtual ~tmCoordConvert();
+    virtual ~tmCoordConvert();
 
-  wxRealPoint GetPointWGS(const wxRealPoint &in);
+    wxRealPoint GetPointWGS(const wxRealPoint& in);
 
-  wxRealPoint GetPointGoogle(const wxRealPoint &in);
+    wxRealPoint GetPointGoogle(const wxRealPoint& in);
 
-  wxBitmap *GetProjectGoogleRaster(wxBitmap *web_raster, tmRealRect *coord_web, tmRealRect *coord_local);
+    wxBitmap* GetProjectGoogleRaster(wxBitmap* web_raster, tmRealRect* coord_web, tmRealRect* coord_local);
 
-  double GetDistance(const wxRealPoint &p1, const wxRealPoint &p2);
+    double GetDistance(const wxRealPoint& p1, const wxRealPoint& p2);
 
-  wxRealPoint GetPointAtDistance(const wxRealPoint &p1, double distance, double azimut);
+    wxRealPoint GetPointAtDistance(const wxRealPoint& p1, double distance, double azimut);
 
-  wxString GetDistanceHuman(double distanceM);
+    wxString GetDistanceHuman(double distanceM);
 
-  char *GetWKTProjectionGoogle();
+    char* GetWKTProjectionGoogle();
 
-  char *GetWKTProjectionLocal();
+    char* GetWKTProjectionLocal();
 
-  char *GetESRIWKTProjectionLocal();
+    char* GetESRIWKTProjectionLocal();
 };
 
 #endif

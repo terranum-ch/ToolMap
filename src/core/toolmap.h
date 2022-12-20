@@ -95,13 +95,13 @@
 #include "../gui/logwindow_dlg.h"    // log window definition
 #include "../gui/project_def_dlg.h"  // project definition dialog
 #include "../gui/tocwindow_dlg.h"    // Table of content (TOC) definition
-//#include "../database/db_project.h"
+// #include "../database/db_project.h"
 #include "../gui/menumanager.h"  // for menu management (enable / diable)
 
 // GIS Includes
 #include "../gis/tmlayermanager.h"  // gis central manager
 
-//#include "../gui/attribution_obj_type.h"
+// #include "../gui/attribution_obj_type.h"
 #include <wx/fileconf.h>  // for using file configuration even on windows
 
 #include "../gis/tmattributionmanager.h"  // attribution manager
@@ -144,7 +144,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_PRJ_MERGE 10307
 #define ID_MENU_EXPORT 10307
 #define ID_MENU_EXPORT_LAYER 10308
-//#define ID_MENU_EXPORT_FULL 10309
+// #define ID_MENU_EXPORT_FULL 10309
 #define ID_MENU_PRJ_EDIT 10309
 #define ID_MENU_PRJ_DEF 10310
 #define ID_MENU_OBJ_DEF 10311
@@ -158,7 +158,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_EXPORT_GIS_GEOMETRIES 10113
 #define ID_MENU_ADD_GROUP 10114
 
-//#define ID_MENU_ZOOM_PREVIOUS 10313
+// #define ID_MENU_ZOOM_PREVIOUS 10313
 #define ID_MENU_ZOOM 10315
 #define ID_MENU_PAN 10316
 #define ID_MENU_ZOOM_FIT 10317
@@ -171,7 +171,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_SELECTION 10323
 
 #define ID_MENU_UNDO 10179
-//#define ID_MENU_REDO 10180
+// #define ID_MENU_REDO 10180
 #define ID_MENU_DRAW 10176
 #define ID_MENU_DRAW_BEZIER 10191
 #define ID_MENU_MODIFY_BEZIER 10192
@@ -189,8 +189,8 @@ class AttribObjType_PANEL;
 #define ID_MENU_ORIENT_POINT 10190
 #define ID_MENU_ADJUST_SNAPPING 10001
 #define ID_MENU_SHOW_BEZIER_SETTINGS 10078
-//#define ID_MENU_SNAPPING_ADD 10168
-//#define ID_MENU_SNAPPING_REMOVE 10169
+// #define ID_MENU_SNAPPING_ADD 10168
+// #define ID_MENU_SNAPPING_REMOVE 10169
 #define ID_MENU_SNAPPING_SHOWONMAP 10170
 #define ID_MENU_ATTRIB_TYPES 10166
 #define ID_MENU_ATTRIB_ATTRIBUTES 10175
@@ -204,7 +204,7 @@ class AttribObjType_PANEL;
 #define ID_MENU_SELECT_NONE 10160
 #define ID_MENU_SELECT_INVERSE 10161
 #define ID_MENU_QUERIES 10019
-//#define ID_MENU_QUERIES_RUN 10020
+// #define ID_MENU_QUERIES_RUN 10020
 #define ID_MENUITEM11 10046
 #define ID_MENUITEM12 10047
 #define ID_MENU_TOC_WINDOW 10037
@@ -235,7 +235,11 @@ const int ID_MENU_ADD_WEBDATA = wxWindow::NewControlId();
 const wxString g_ProgName = _T("ToolMap");
 
 // define perspectives for auimanager
-enum tmPERSPECTIVE_MODE { tmPERSPECTIVE_MODE_DEFAULT = 0, tmPERSPECTIVE_MODE_VERTICAL, tmPERSPECTIVE_MODE_HORIZONTAL };
+enum tmPERSPECTIVE_MODE {
+    tmPERSPECTIVE_MODE_DEFAULT = 0,
+    tmPERSPECTIVE_MODE_VERTICAL,
+    tmPERSPECTIVE_MODE_HORIZONTAL
+};
 
 /***************************************************************************/ /**
   @brief Implement the Application
@@ -243,15 +247,15 @@ enum tmPERSPECTIVE_MODE { tmPERSPECTIVE_MODE_DEFAULT = 0, tmPERSPECTIVE_MODE_VER
   @date 04 December 2007
   *******************************************************************************/
 class ToolMapApp : public wxApp {
- private:
-  void _RemoveLogFile();
+  private:
+    void _RemoveLogFile();
 
- public:
-  ToolMapApp();
+  public:
+    ToolMapApp();
 
-  virtual bool OnInit();
+    virtual bool OnInit();
 
-  virtual void OnFatalException();
+    virtual void OnFatalException();
 };
 
 DECLARE_APP(ToolMapApp);
@@ -264,13 +268,13 @@ DECLARE_APP(ToolMapApp);
 class ToolMapFrame;
 
 class tmDropFiles : public wxFileDropTarget {
- private:
-  ToolMapFrame *m_Frame;
+  private:
+    ToolMapFrame* m_Frame;
 
- public:
-  tmDropFiles(ToolMapFrame *parent);
+  public:
+    tmDropFiles(ToolMapFrame* parent);
 
-  virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString &filenames);
+    virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
 };
 
 /***************************************************************************/ /**
@@ -281,263 +285,263 @@ class tmDropFiles : public wxFileDropTarget {
   @date 04 December 2007
   *******************************************************************************/
 class ToolMapFrame : public wxFrame {
- private:
-  wxMenuBar *m_MenuBar;
-  wxAcceleratorTable *m_MenuBarAcceleratorTable;
+  private:
+    wxMenuBar* m_MenuBar;
+    wxAcceleratorTable* m_MenuBarAcceleratorTable;
 
-  wxAuiManager *m_AuiManager;
-  AttribObjType_PANEL *m_AttribObjPanel;
-  Main_PANEL *m_MainPanel;
-  Queries_PANEL *m_QueriesPanel;
-  Shortcuts_PANEL *m_ShortCutPanel;
-  Snapping_PANEL *m_SnappingPanel;
+    wxAuiManager* m_AuiManager;
+    AttribObjType_PANEL* m_AttribObjPanel;
+    Main_PANEL* m_MainPanel;
+    Queries_PANEL* m_QueriesPanel;
+    Shortcuts_PANEL* m_ShortCutPanel;
+    Snapping_PANEL* m_SnappingPanel;
 
-  ProjectManager *m_PManager;
-  MenuManager *m_MManager;
+    ProjectManager* m_PManager;
+    MenuManager* m_MManager;
 
-  tmLayerManager *m_LayerManager;
-  tmScaleCtrlCombo *m_ScaleCombo;
+    tmLayerManager* m_LayerManager;
+    tmScaleCtrlCombo* m_ScaleCombo;
 
-  tmAttributionManager *m_AttribManager;
+    tmAttributionManager* m_AttribManager;
 
-  tmEditManager *m_EditManager;
-  tmToolManager *m_ToolManager;
-  WebUpdateInformationBar *m_InfoBar;
+    tmEditManager* m_EditManager;
+    tmToolManager* m_ToolManager;
+    WebUpdateInformationBar* m_InfoBar;
 
-  tmStatsManager *m_StatManager;
+    tmStatsManager* m_StatManager;
 
-  wxLogWindow *m_LogWindow;
-  TocWindowDlgGen *m_TocWindow;
-  wxArrayString m_Perspectives;
+    wxLogWindow* m_LogWindow;
+    TocWindowDlgGen* m_TocWindow;
+    wxArrayString m_Perspectives;
 
-  void SaveAcceleratorTable();
+    void SaveAcceleratorTable();
 
-  void DisableAcceleratorTable(wxCommandEvent &event);
+    void DisableAcceleratorTable(wxCommandEvent& event);
 
-  void EnableAcceleratorTable(wxCommandEvent &event);
+    void EnableAcceleratorTable(wxCommandEvent& event);
 
-  void OnQuit(wxCommandEvent &event);
+    void OnQuit(wxCommandEvent& event);
 
-  void OnClose(wxCloseEvent &event);
+    void OnClose(wxCloseEvent& event);
 
-  void OnAbout(wxCommandEvent &event);
+    void OnAbout(wxCommandEvent& event);
 
-  void OnNewProject(wxCommandEvent &event);
+    void OnNewProject(wxCommandEvent& event);
 
-  void OnNewProjectExisting(wxCommandEvent &event);
+    void OnNewProjectExisting(wxCommandEvent& event);
 
-  void OnOpenProject(wxCommandEvent &event);
+    void OnOpenProject(wxCommandEvent& event);
 
-  void OnOpenRecentProject(wxCommandEvent &event);
+    void OnOpenRecentProject(wxCommandEvent& event);
 
-  void OnEditProjectObjects(wxCommandEvent &event);
+    void OnEditProjectObjects(wxCommandEvent& event);
 
-  void OnEditProjectSettings(wxCommandEvent &event);
+    void OnEditProjectSettings(wxCommandEvent& event);
 
-  void OnEditObjectAttributes(wxCommandEvent &event);
+    void OnEditObjectAttributes(wxCommandEvent& event);
 
-  void OnEditProject(wxCommandEvent &event);
+    void OnEditProject(wxCommandEvent& event);
 
-  void OnExportProjectModel(wxCommandEvent &event);
+    void OnExportProjectModel(wxCommandEvent& event);
 
-  void OnLogWindow(wxCommandEvent &event);
+    void OnLogWindow(wxCommandEvent& event);
 
-  void OnTocWindow(wxCommandEvent &event);
+    void OnTocWindow(wxCommandEvent& event);
 
-  void OnShowObjectAttributionWindow(wxCommandEvent &event);
+    void OnShowObjectAttributionWindow(wxCommandEvent& event);
 
-  void OnShowQueriesWindow(wxCommandEvent &event);
+    void OnShowQueriesWindow(wxCommandEvent& event);
 
-  void OnProjectBackup(wxCommandEvent &event);
+    void OnProjectBackup(wxCommandEvent& event);
 
-  void OnProjectBackupManage(wxCommandEvent &event);
+    void OnProjectBackupManage(wxCommandEvent& event);
 
-  void OnProjectSaveTemplate(wxCommandEvent &event);
+    void OnProjectSaveTemplate(wxCommandEvent& event);
 
-  void OnProjectMerge(wxCommandEvent &event);
+    void OnProjectMerge(wxCommandEvent& event);
 
-  void OnToolChanged(wxCommandEvent &event);
+    void OnToolChanged(wxCommandEvent& event);
 
-  void OnZoomPrevious(wxCommandEvent &event);
+    void OnZoomPrevious(wxCommandEvent& event);
 
-  void OnZoomToSelectedLayer(wxCommandEvent &event);
+    void OnZoomToSelectedLayer(wxCommandEvent& event);
 
-  void OnZoomToFrame(wxCommandEvent &event);
+    void OnZoomToFrame(wxCommandEvent& event);
 
-  void OnExportSelected(wxCommandEvent &event);
+    void OnExportSelected(wxCommandEvent& event);
 
-  // void OnExportAll (wxCommandEvent & event);
-  void OnExportConcatenated(wxCommandEvent &event);
+    // void OnExportAll (wxCommandEvent & event);
+    void OnExportConcatenated(wxCommandEvent& event);
 
-  void OnShowShortcutWindow(wxCommandEvent &event);
+    void OnShowShortcutWindow(wxCommandEvent& event);
 
-  void OnShowSnappingWindow(wxCommandEvent &event);
+    void OnShowSnappingWindow(wxCommandEvent& event);
 
-  void OnShowSnappingOnMap(wxCommandEvent &event);
+    void OnShowSnappingOnMap(wxCommandEvent& event);
 
-  void OnEditSwitch(wxCommandEvent &event);
+    void OnEditSwitch(wxCommandEvent& event);
 
-  void OnEditDeleteSelected(wxCommandEvent &event);
+    void OnEditDeleteSelected(wxCommandEvent& event);
 
-  void OnEditUndo(wxCommandEvent &event);
+    void OnEditUndo(wxCommandEvent& event);
 
-  void OnCreateIntersections(wxCommandEvent &event);
+    void OnCreateIntersections(wxCommandEvent& event);
 
-  void OnEditVertexPosition(wxCommandEvent &event);
+    void OnEditVertexPosition(wxCommandEvent& event);
 
-  void OnMergeSelectedLines(wxCommandEvent &event);
+    void OnMergeSelectedLines(wxCommandEvent& event);
 
-  void OnShowAAttributionWindow(wxCommandEvent &event);
+    void OnShowAAttributionWindow(wxCommandEvent& event);
 
-  void OnAAttributionBatchWindow(wxCommandEvent &event);
+    void OnAAttributionBatchWindow(wxCommandEvent& event);
 
-  void OnShowInformationDialog(wxCommandEvent &event);
+    void OnShowInformationDialog(wxCommandEvent& event);
 
-  void OnBezierSettings(wxCommandEvent &event);
+    void OnBezierSettings(wxCommandEvent& event);
 
-  // void OnMenuHighlightOn (wxMenuEvent & event);
-  // void OnMenuHighligntOff(wxMenuEvent & event);
-  void OnCheckUpdates(wxCommandEvent &event);
+    // void OnMenuHighlightOn (wxMenuEvent & event);
+    // void OnMenuHighligntOff(wxMenuEvent & event);
+    void OnCheckUpdates(wxCommandEvent& event);
 
-  void OnContactUs(wxCommandEvent &event);
+    void OnContactUs(wxCommandEvent& event);
 
-  void OnImportGISData(wxCommandEvent &event);
+    void OnImportGISData(wxCommandEvent& event);
 
-  void OnExportSelectedGISData(wxCommandEvent &event);
+    void OnExportSelectedGISData(wxCommandEvent& event);
 
-  void OnUserManual(wxCommandEvent &event);
+    void OnUserManual(wxCommandEvent& event);
 
-  void OnFlipLine(wxCommandEvent &event);
+    void OnFlipLine(wxCommandEvent& event);
 
-  void OnSmoothLine(wxCommandEvent &event);
+    void OnSmoothLine(wxCommandEvent& event);
 
-  void OnPreferences(wxCommandEvent &event);
+    void OnPreferences(wxCommandEvent& event);
 
-  void OnRefreshView(wxCommandEvent &event);
+    void OnRefreshView(wxCommandEvent& event);
 
-  // selection
-  void OnSelectNone(wxCommandEvent &event);
+    // selection
+    void OnSelectNone(wxCommandEvent& event);
 
-  void OnSelectByOid(wxCommandEvent &event);
+    void OnSelectByOid(wxCommandEvent& event);
 
-  void OnSelectInvert(wxCommandEvent &event);
+    void OnSelectInvert(wxCommandEvent& event);
 
-  // changing status function
-  void OnUpdateSelection(wxCommandEvent &event);
+    // changing status function
+    void OnUpdateSelection(wxCommandEvent& event);
 
-  void OnEditObjectFrequency(wxCommandEvent &event);
+    void OnEditObjectFrequency(wxCommandEvent& event);
 
-  // GIS functions
-  void OnAddGisData(wxCommandEvent &event);
+    // GIS functions
+    void OnAddGisData(wxCommandEvent& event);
 
-  void OnAddWebData(wxCommandEvent &event);
+    void OnAddWebData(wxCommandEvent& event);
 
-  void OnAddGroup(wxCommandEvent & event);
+    void OnAddGroup(wxCommandEvent& event);
 
-  void OnShortcutAttributionDone(wxCommandEvent &event);
+    void OnShortcutAttributionDone(wxCommandEvent& event);
 
-  // ToolsFunction
-  void OnDanglingNodes(wxCommandEvent &event);
+    // ToolsFunction
+    void OnDanglingNodes(wxCommandEvent& event);
 
-  void OnGeometryValidity(wxCommandEvent &event);
+    void OnGeometryValidity(wxCommandEvent& event);
 
-  void OnCloseManagedPane(wxAuiManagerEvent &event);
+    void OnCloseManagedPane(wxAuiManagerEvent& event);
 
-  void OnStatisticsUpdate(wxCommandEvent &event);
+    void OnStatisticsUpdate(wxCommandEvent& event);
 
-  void OnStatisticsDialog(wxCommandEvent &event);
+    void OnStatisticsDialog(wxCommandEvent& event);
 
-  // child event function
-  // void OnMenuZoomPreviousChange(wxCommandEvent & event);
-  void _CheckUpdates(bool ismanual = false);
+    // child event function
+    // void OnMenuZoomPreviousChange(wxCommandEvent & event);
+    void _CheckUpdates(bool ismanual = false);
 
-  // view layout
-  void OnLayoutDefault(wxCommandEvent &event);
+    // view layout
+    void OnLayoutDefault(wxCommandEvent& event);
 
-  void OnLayoutVertical(wxCommandEvent &event);
+    void OnLayoutVertical(wxCommandEvent& event);
 
-  void OnLayoutHorizontal(wxCommandEvent &event);
+    void OnLayoutHorizontal(wxCommandEvent& event);
 
-  // update menu functions
-  void OnUpdateMenuProject(wxUpdateUIEvent &event);
+    // update menu functions
+    void OnUpdateMenuProject(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuPreviousZoom(wxUpdateUIEvent &event);
+    void OnUpdateMenuPreviousZoom(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditUndo(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditUndo(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditDraw(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditDraw(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditModify(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditModify(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditBezierDraw(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditBezierDraw(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditBezierModify(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditBezierModify(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuBezierSettings(wxUpdateUIEvent &event);
+    void OnUpdateMenuBezierSettings(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditDelete(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditDelete(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuVertexInsert(wxUpdateUIEvent &event);
+    void OnUpdateMenuVertexInsert(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuVertexDelete(wxUpdateUIEvent &event);
+    void OnUpdateMenuVertexDelete(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditMerge(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditMerge(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditPointOrient(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditPointOrient(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditClearSelection(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditClearSelection(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditQueryRun(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditQueryRun(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditQueryAdd(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditQueryAdd(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuSnappingShowPanel(wxUpdateUIEvent &event);
+    void OnUpdateMenuSnappingShowPanel(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuSnappingShowOnMap(wxUpdateUIEvent &event);
+    void OnUpdateMenuSnappingShowOnMap(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuShowShortcuts(wxUpdateUIEvent &event);
+    void OnUpdateMenuShowShortcuts(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuShowQuery(wxUpdateUIEvent &event);
+    void OnUpdateMenuShowQuery(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuShowTOC(wxUpdateUIEvent &event);
+    void OnUpdateMenuShowTOC(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuShowLog(wxUpdateUIEvent &event);
+    void OnUpdateMenuShowLog(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuShowInfo(wxUpdateUIEvent &event);
+    void OnUpdateMenuShowInfo(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuFlipLine(wxUpdateUIEvent &event);
+    void OnUpdateMenuFlipLine(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuSmoothLine(wxUpdateUIEvent &event);
+    void OnUpdateMenuSmoothLine(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuEditSharedNode(wxUpdateUIEvent &event);
+    void OnUpdateMenuEditSharedNode(wxUpdateUIEvent& event);
 
-  void OnUpdateStatisticsDialog(wxUpdateUIEvent &event);
+    void OnUpdateStatisticsDialog(wxUpdateUIEvent& event);
 
-  void OnUpdateGeometryValidity(wxUpdateUIEvent &event);
+    void OnUpdateGeometryValidity(wxUpdateUIEvent& event);
 
-  void OnUpdateMenuZoomLayer(wxUpdateUIEvent &event);
+    void OnUpdateMenuZoomLayer(wxUpdateUIEvent& event);
 
-  void OnSysColourChanged(wxSysColourChangedEvent &event);
+    void OnSysColourChanged(wxSysColourChangedEvent& event);
 
-  void _CreateMenu();
+    void _CreateMenu();
 
-  void _CreateToolBar();
+    void _CreateToolBar();
 
-  void _LoadPreference(bool reload);
+    void _LoadPreference(bool reload);
 
-  void _CreatePerspectives();
+    void _CreatePerspectives();
 
-  DECLARE_EVENT_TABLE();
-  DECLARE_DYNAMIC_CLASS(ToolMapFrame)
+    DECLARE_EVENT_TABLE();
+    DECLARE_DYNAMIC_CLASS(ToolMapFrame)
 
- public:
-  ToolMapFrame();
+  public:
+    ToolMapFrame();
 
-  ToolMapFrame(wxFrame *frame, const wxString &title, wxPoint pos, wxSize size, const wxString &name);
+    ToolMapFrame(wxFrame* frame, const wxString& title, wxPoint pos, wxSize size, const wxString& name);
 
-  ~ToolMapFrame();
+    ~ToolMapFrame();
 
-  bool AddLayers(const wxArrayString &filenames);
+    bool AddLayers(const wxArrayString& filenames);
 };
 
 #endif

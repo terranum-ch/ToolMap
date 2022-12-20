@@ -51,48 +51,48 @@ const int ID_SYMDLG_PANEL = 10159;
 class DataBaseTM;
 
 class tmSymbolDLG : public wxDialog {
- private:
-  DataBaseTM *m_pDB;
+  private:
+    DataBaseTM* m_pDB;
 
-  void _Init();
+    void _Init();
 
-  void CreateControlsBasic();
+    void CreateControlsBasic();
 
-  DECLARE_DYNAMIC_CLASS(tmSymbolDLG)
+    DECLARE_DYNAMIC_CLASS(tmSymbolDLG)
 
- protected:
-  wxPanel *m_SymbolPanel;
+  protected:
+    wxPanel* m_SymbolPanel;
 
-  // wxHtmlWindow * m_MetaDataWnd;
-  void SetSizeHint();
+    // wxHtmlWindow * m_MetaDataWnd;
+    void SetSizeHint();
 
-  wxArrayLong m_QueriesId;
+    wxArrayLong m_QueriesId;
 
-  void _LoadQueries(wxChoice *choicectrl, TOC_GENERIC_NAME toctarget);
+    void _LoadQueries(wxChoice* choicectrl, TOC_GENERIC_NAME toctarget);
 
- public:
-  /// Constructors
-  tmSymbolDLG();
+  public:
+    /// Constructors
+    tmSymbolDLG();
 
-  ~tmSymbolDLG();
+    ~tmSymbolDLG();
 
-  tmSymbolDLG(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-              const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
-              const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
+    tmSymbolDLG(wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
-  bool Create(wxWindow *parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
-              const wxString &caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint &pos = SYMBOL_TMSYMBOLDLG_POSITION,
-              const wxSize &size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
+    bool Create(wxWindow* parent, wxWindowID id = SYMBOL_TMSYMBOLDLG_IDNAME,
+                const wxString& caption = SYMBOL_TMSYMBOLDLG_TITLE, const wxPoint& pos = SYMBOL_TMSYMBOLDLG_POSITION,
+                const wxSize& size = SYMBOL_TMSYMBOLDLG_SIZE, long style = SYMBOL_TMSYMBOLDLG_STYLE);
 
-  void SetDatabase(DataBaseTM *database) {
-    m_pDB = database;
-  }
+    void SetDatabase(DataBaseTM* database) {
+        m_pDB = database;
+    }
 
-  // void SetMetaData (const wxString & metadata);
-  // void CreateControlsLine();
-  /*void CreateControlsPoint();
-  void CreateControlsPolygon();
-  void CreateControlsRaster();*/
+    // void SetMetaData (const wxString & metadata);
+    // void CreateControlsLine();
+    /*void CreateControlsPoint();
+    void CreateControlsPolygon();
+    void CreateControlsRaster();*/
 };
 
 #endif

@@ -28,29 +28,31 @@
 #endif
 
 class tmRealPointDist {
- private:
-  wxRealPoint coordinate;
-  wxRealPoint origin;
+  private:
+    wxRealPoint coordinate;
+    wxRealPoint origin;
 
- public:
-  tmRealPointDist() : coordinate(), origin() {}
+  public:
+    tmRealPointDist()
+        : coordinate(),
+          origin() {}
 
-  tmRealPointDist(double xx, double yy, const wxRealPoint &originorigin);
+    tmRealPointDist(double xx, double yy, const wxRealPoint& originorigin);
 
-  tmRealPointDist(const tmRealPointDist &pt);
+    tmRealPointDist(const tmRealPointDist& pt);
 
-  double GetDistFromOrigin() const;
+    double GetDistFromOrigin() const;
 
-  wxRealPoint GetOrigin() const {
-    return origin;
-  }
+    wxRealPoint GetOrigin() const {
+        return origin;
+    }
 
-  wxRealPoint GetCoordinate() const {
-    return coordinate;
-  }
+    wxRealPoint GetCoordinate() const {
+        return coordinate;
+    }
 
-  // copy function
-  tmRealPointDist &operator=(const tmRealPointDist &source);
+    // copy function
+    tmRealPointDist& operator=(const tmRealPointDist& source);
 };
 
 WX_DECLARE_OBJARRAY(tmRealPointDist, wxArrayRealPointsDist);

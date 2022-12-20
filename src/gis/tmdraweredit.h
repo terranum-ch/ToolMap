@@ -32,54 +32,54 @@
 #include "../core/tmarraysize.h"
 
 class tmDrawerEditLine : public wxObject {
- private:
-  wxPoint *m_LeftPT;
-  wxPoint *m_Pt;
-  wxPoint *m_RightPT;
-  int m_Index;
+  private:
+    wxPoint* m_LeftPT;
+    wxPoint* m_Pt;
+    wxPoint* m_RightPT;
+    int m_Index;
 
-  wxPen m_EditPen;
-  wxOverlay m_Overlay;
+    wxPen m_EditPen;
+    wxOverlay m_Overlay;
 
-  void DLVertexDelete();
+    void DLVertexDelete();
 
-  int DLGetCountPoints();
+    int DLGetCountPoints();
 
-  wxPoint *DLGetPoints();
+    wxPoint* DLGetPoints();
 
-  void DLReorderVertex();
+    void DLReorderVertex();
 
- protected:
- public:
-  tmDrawerEditLine();
+  protected:
+  public:
+    tmDrawerEditLine();
 
-  ~tmDrawerEditLine();
+    ~tmDrawerEditLine();
 
-  // creating and validating
-  bool CreateVertex(const wxArrayPoints &pts, int index);
+    // creating and validating
+    bool CreateVertex(const wxArrayPoints& pts, int index);
 
-  bool CreateVertex(const wxPoint &pt, wxPoint *left, wxPoint *right, int index);
+    bool CreateVertex(const wxPoint& pt, wxPoint* left, wxPoint* right, int index);
 
-  bool CreateVertex(const wxPoint &pt);
+    bool CreateVertex(const wxPoint& pt);
 
-  bool IsEndVertex();
+    bool IsEndVertex();
 
-  bool IsOK();
+    bool IsOK();
 
-  bool ClearVertex();
+    bool ClearVertex();
 
-  bool SetVertex(const wxPoint &pt);
+    bool SetVertex(const wxPoint& pt);
 
-  int GetVertexIndex() {
-    return m_Index;
-  }
+    int GetVertexIndex() {
+        return m_Index;
+    }
 
-  // Drawing functions
-  void SetSymbology(wxColour col, int width);
+    // Drawing functions
+    void SetSymbology(wxColour col, int width);
 
-  bool DrawEditPart(wxClientDC *pdc);
+    bool DrawEditPart(wxClientDC* pdc);
 
-  void DrawEditReset(wxClientDC *pdc);
+    void DrawEditReset(wxClientDC* pdc);
 };
 
 #endif

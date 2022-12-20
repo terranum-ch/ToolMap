@@ -31,40 +31,40 @@
 #include "tmsymbolvector.h"  // tmSymbol class definition
 
 class tmSymbolVectorPoint : public tmSymbolVector {
- private:
-  tmSymbolDataPointUnique m_ptUniqueSymbol;
+  private:
+    tmSymbolDataPointUnique m_ptUniqueSymbol;
 
-  virtual tmSymbolDLG *GetSymbolDialog(wxWindow *parent, const wxPoint &dlgpos);
+    virtual tmSymbolDLG* GetSymbolDialog(wxWindow* parent, const wxPoint& dlgpos);
 
-  virtual bool GetDialogData(tmSymbolDLG *dlg);
+    virtual bool GetDialogData(tmSymbolDLG* dlg);
 
- protected:
- public:
-  tmSymbolVectorPoint();
+  protected:
+  public:
+    tmSymbolVectorPoint();
 
-  tmSymbolVectorPoint(const tmSymbolVectorPoint &origin);
+    tmSymbolVectorPoint(const tmSymbolVectorPoint& origin);
 
-  ~tmSymbolVectorPoint();
+    ~tmSymbolVectorPoint();
 
-  virtual wxColour GetColour();
+    virtual wxColour GetColour();
 
-  virtual int GetRadius() {
-    return m_ptUniqueSymbol.m_Radius;
-  }
+    virtual int GetRadius() {
+        return m_ptUniqueSymbol.m_Radius;
+    }
 
-  virtual int GetTransparency() {
-    return m_ptUniqueSymbol.m_GlobalTransparency;
-  }
+    virtual int GetTransparency() {
+        return m_ptUniqueSymbol.m_GlobalTransparency;
+    }
 
-  virtual void SetColour(const wxColour &colour) {
-    m_ptUniqueSymbol.m_Colour = colour;
-  }
+    virtual void SetColour(const wxColour& colour) {
+        m_ptUniqueSymbol.m_Colour = colour;
+    }
 
-  virtual bool Serialize(tmSerialize &s);
+    virtual bool Serialize(tmSerialize& s);
 
-  tmSymbolDataPointUnique *GetSymbolData() {
-    return &m_ptUniqueSymbol;
-  }
+    tmSymbolDataPointUnique* GetSymbolData() {
+        return &m_ptUniqueSymbol;
+    }
 };
 
 #endif

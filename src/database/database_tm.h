@@ -27,8 +27,6 @@
 #include <wx/wx.h>
 #endif
 
-#include "database.h"
-
 #include "../core/prjdefmemmanage.h"       // for transfering data directely
 #include "../core/projectdefmemory.h"      // for transfering data directely
 #include "../core/tmsnappingmemory.h"      // for snapping defintions.
@@ -36,7 +34,7 @@
 #include "../gis/tmlayermanager.h"         // GIS definition
 #include "../gui/projectproperties_dlg.h"  // for scale RANK function
 #include "../gui/shortcut_defs.h"          // for key definitions (F1,...)
-
+#include "database.h"
 
 class BezierSettingsData;
 
@@ -71,212 +69,212 @@ const wxString TABLE_NAME_GIS_ATTRIBUTION[] = {_T("generic_aat"), _T("generic_pa
 const int TM_DATABASE_VERSION = 233;
 
 enum tmDB_OPEN_STATUS {
-  tmDB_OPEN_FAILED = 0,
-  tmDB_OPEN_OK = 1,
-  tmDB_OPEN_FAILED_NOT_TM_DB = 2,
-  tmDB_OPEN_ERR_NOT_FOUND = 3,
-  tmDB_OPEN_FAILED_WRONG_VERSION = 100
+    tmDB_OPEN_FAILED = 0,
+    tmDB_OPEN_OK = 1,
+    tmDB_OPEN_FAILED_NOT_TM_DB = 2,
+    tmDB_OPEN_ERR_NOT_FOUND = 3,
+    tmDB_OPEN_FAILED_WRONG_VERSION = 100
 };
 
 class DataBaseTM : public DataBase {
- private:
-  int m_iDBLayerIndex;
+  private:
+    int m_iDBLayerIndex;
 
-  // field operations private (creation)
-  bool AddTableIfNotExist(const wxString &TableName);
+    // field operations private (creation)
+    bool AddTableIfNotExist(const wxString& TableName);
 
-  bool DeleteTableIfExist(const wxString &TableName);
+    bool DeleteTableIfExist(const wxString& TableName);
 
-  // general database operations
-  bool FillLayerTableTypeData();
+    // general database operations
+    bool FillLayerTableTypeData();
 
-  bool FillDefaultScaleData();
+    bool FillDefaultScaleData();
 
-  bool FillShortCutTable();
+    bool FillShortCutTable();
 
-  // bool TableEmpty (const wxString & tablename);
-  bool CreateEmptyTMDatabase();
-  // bool _AddEnumField(ProjectDefMemoryFields * field, int layerindex);
+    // bool TableEmpty (const wxString & tablename);
+    bool CreateEmptyTMDatabase();
+    // bool _AddEnumField(ProjectDefMemoryFields * field, int layerindex);
 
- public:
-  DataBaseTM();
+  public:
+    DataBaseTM();
 
-  ~DataBaseTM();
+    ~DataBaseTM();
 
-  // utility function
-  bool CreateLangDefData();
+    // utility function
+    bool CreateLangDefData();
 
-  // database operations
-  bool TableExist(const wxString &tablename);              //[TESTED]
-  int OpenTMDatabase(const wxString &pathname);            //[TESTED]
-  bool CreateTMDatabase(PrjDefMemManage *pPrjDefinition);  //[TESTED]
+    // database operations
+    bool TableExist(const wxString& tablename);              //[TESTED]
+    int OpenTMDatabase(const wxString& pathname);            //[TESTED]
+    bool CreateTMDatabase(PrjDefMemManage* pPrjDefinition);  //[TESTED]
 
-  // Database project operations
-  bool IsProjectDataDefined();
+    // Database project operations
+    bool IsProjectDataDefined();
 
-  bool SetProjectData(PrjDefMemManage *pPrjDefinition);
+    bool SetProjectData(PrjDefMemManage* pPrjDefinition);
 
-  bool GetProjectData(PrjDefMemManage *pPrjDefinition);
+    bool GetProjectData(PrjDefMemManage* pPrjDefinition);
 
-  bool InitProjectWithStartingWizard(PrjDefMemManage *pPrjDefinition);
+    bool InitProjectWithStartingWizard(PrjDefMemManage* pPrjDefinition);
 
-  int GetDatabaseToolMapVersion();  //[TESTED]
+    int GetDatabaseToolMapVersion();  //[TESTED]
 
-  bool SetProjectExportData(int iExportType, const wxString &spath);
+    bool SetProjectExportData(int iExportType, const wxString& spath);
 
-  bool SetProjectLastExported(const wxArrayString &layers);
+    bool SetProjectLastExported(const wxArrayString& layers);
 
-  bool SetProjectBackupPath(const wxString &spath);
+    bool SetProjectBackupPath(const wxString& spath);
 
-  int GetProjectExportData(int &iExportType, wxString &spath);
+    int GetProjectExportData(int& iExportType, wxString& spath);
 
-  wxArrayString GetProjectLastExported();
+    wxArrayString GetProjectLastExported();
 
-  int GetProjectBackupPath(wxString &spath);
+    int GetProjectBackupPath(wxString& spath);
 
-  // Database layer operations
-  bool AddLayer(ProjectDefMemoryLayers *myLayer);
+    // Database layer operations
+    bool AddLayer(ProjectDefMemoryLayers* myLayer);
 
-  bool AddLayerPolygonDefaultBorder(ProjectDefMemoryLayers *myLayer);
+    bool AddLayerPolygonDefaultBorder(ProjectDefMemoryLayers* myLayer);
 
-  void SetActiveLayerId(ProjectDefMemoryLayers *myLayer);
+    void SetActiveLayerId(ProjectDefMemoryLayers* myLayer);
 
-  int GetActiveLayerId() {
-    return m_iDBLayerIndex;
-  }
+    int GetActiveLayerId() {
+        return m_iDBLayerIndex;
+    }
 
-  int GetNextLayer(ProjectDefMemoryLayers *myLayer);
+    int GetNextLayer(ProjectDefMemoryLayers* myLayer);
 
-  bool UpdateLayer(ProjectDefMemoryLayers *myLayer, wxString &sSqlSentence);
+    bool UpdateLayer(ProjectDefMemoryLayers* myLayer, wxString& sSqlSentence);
 
-  bool DeleteLayer(const wxArrayLong &deletelist, PrjDefMemManage *projectdef, wxString &sSqlSentence);
+    bool DeleteLayer(const wxArrayLong& deletelist, PrjDefMemManage* projectdef, wxString& sSqlSentence);
 
-  int GetLayerID(TOC_GENERIC_NAME layertype);
+    int GetLayerID(TOC_GENERIC_NAME layertype);
 
-  // Database object operations
-  bool AddObject(ProjectDefMemoryObjects *myObject, int DBlayerIndex = -1);
+    // Database object operations
+    bool AddObject(ProjectDefMemoryObjects* myObject, int DBlayerIndex = -1);
 
-  bool EditObject(ProjectDefMemoryObjects *myObject);
+    bool EditObject(ProjectDefMemoryObjects* myObject);
 
-  bool DataBaseGetNextResultAsObject(ProjectDefMemoryObjects *object, int ilayertype);
+    bool DataBaseGetNextResultAsObject(ProjectDefMemoryObjects* object, int ilayertype);
 
-  int DeleteMultipleObjects(PrjDefMemManage *pProjet);
+    int DeleteMultipleObjects(PrjDefMemManage* pProjet);
 
-  void DeleteLayersObjects(int iLayer, wxString &sSqlSentence);
+    void DeleteLayersObjects(int iLayer, wxString& sSqlSentence);
 
-  bool LoadLayerObjects(ProjectDefMemoryLayers *layer);
+    bool LoadLayerObjects(ProjectDefMemoryLayers* layer);
 
-  // field operations
-  bool AddField(ProjectDefMemoryFields *myField);
+    // field operations
+    bool AddField(ProjectDefMemoryFields* myField);
 
-  bool GetFields(PrjMemFieldArray &fieldarray, ProjectDefMemoryLayers *actuallayer);
+    bool GetFields(PrjMemFieldArray& fieldarray, ProjectDefMemoryLayers* actuallayer);
 
-  int GetFieldsFromDB(PrjDefMemManage *myPrj);
+    int GetFieldsFromDB(PrjDefMemManage* myPrj);
 
-  bool UpdateField(ProjectDefMemoryFields *myField, int iLayer, wxString &sSqlSentence);
+    bool UpdateField(ProjectDefMemoryFields* myField, int iLayer, wxString& sSqlSentence);
 
-  bool DeleteField(wxArrayString &myFields, int iLayer, wxString &sSqlSentence);
+    bool DeleteField(wxArrayString& myFields, int iLayer, wxString& sSqlSentence);
 
-  bool DeleteFields(int iLayer);
+    bool DeleteFields(int iLayer);
 
-  // database query
-  bool GetObjectListByLayerType(int ilayertype, bool bOrder = FALSE);
+    // database query
+    bool GetObjectListByLayerType(int ilayertype, bool bOrder = FALSE);
 
-  wxArrayString GetLayerNameByType(int ilayertype);
+    wxArrayString GetLayerNameByType(int ilayertype);
 
-  // database Scale operations
-  long GetNextScaleValue(long &DBindex, bool bFirst);
+    // database Scale operations
+    long GetNextScaleValue(long& DBindex, bool bFirst);
 
-  bool EditScale(ProjectDefMemoryScale *myScaleObj);
+    bool EditScale(ProjectDefMemoryScale* myScaleObj);
 
-  int DeleteMultipleScales(PrjDefMemManage *pProjet);
+    int DeleteMultipleScales(PrjDefMemManage* pProjet);
 
-  // database rank operations
-  bool SetRank(ListGenReport *list, int icol, const wxString &stable, const wxString &sfield, bool bStringType = FALSE,
-               const wxString &rankfield = _T("RANK"));
+    // database rank operations
+    bool SetRank(ListGenReport* list, int icol, const wxString& stable, const wxString& sfield,
+                 bool bStringType = FALSE, const wxString& rankfield = _T("RANK"));
 
-  bool SetScaleRank(ScaleList *list, int icol, const wxString &stable, const wxString &sfield,
-                    const wxString &rankfield = _T("RANK"));
+    bool SetScaleRank(ScaleList* list, int icol, const wxString& stable, const wxString& sfield,
+                      const wxString& rankfield = _T("RANK"));
 
-  // projects operations
-  PrjDefMemManage *GetProjectDataFromDB();
+    // projects operations
+    PrjDefMemManage* GetProjectDataFromDB();
 
-  bool UpdateDataBaseProject(PrjDefMemManage *pProjDef);
+    bool UpdateDataBaseProject(PrjDefMemManage* pProjDef);
 
-  // database TOC operations
-  bool InitTOCGenericLayers();
+    // database TOC operations
+    bool InitTOCGenericLayers();
 
-  tmLayerProperties *GetNextTOCEntry(bool userelativepath);
+    tmLayerProperties* GetNextTOCEntry(bool userelativepath);
 
-  long AddTOCLayer(tmLayerProperties *item);
+    long AddTOCLayer(tmLayerProperties* item);
 
-  bool RemoveTOCLayer(const long &itemid);
+    bool RemoveTOCLayer(const long& itemid);
 
-  void PrepareTOCStatusUpdate(wxString &sentence, tmLayerProperties *item, int itemRank = 0,
-                              const wxString &symbology = wxEmptyString);
+    void PrepareTOCStatusUpdate(wxString& sentence, tmLayerProperties* item, int itemRank = 0,
+                                const wxString& symbology = wxEmptyString);
 
-  // database query operations
-  bool GetNextQueries(long &qid, wxString &name, wxString &description, bool bfirst);
+    // database query operations
+    bool GetNextQueries(long& qid, wxString& name, wxString& description, bool bfirst);
 
-  bool GetQueriesById(const long &qid, int &target, wxString &name, wxString &description);
+    bool GetQueriesById(const long& qid, int& target, wxString& name, wxString& description);
 
-  bool EditQueries(int target, const wxString &name, const wxString &description, long qid = -1);
+    bool EditQueries(int target, const wxString& name, const wxString& description, long qid = -1);
 
-  bool DeleteQuery(long qid);
+    bool DeleteQuery(long qid);
 
-  // database shortcut operations
-  bool GetNextShortcutByLayerType(int layer_type, wxString &key, wxString &description, bool bFirstLoop);
+    // database shortcut operations
+    bool GetNextShortcutByLayerType(int layer_type, wxString& key, wxString& description, bool bFirstLoop);
 
-  bool GetAllUnusedShortcuts(wxArrayString &keylist);
+    bool GetAllUnusedShortcuts(wxArrayString& keylist);
 
-  bool GetNextShortCutObject(long &shortcutid, const int &key, bool bFirstLoop);
+    bool GetNextShortCutObject(long& shortcutid, const int& key, bool bFirstLoop);
 
-  bool EditShortcut(int shortcutkey, const wxString &description, const wxArrayLong &types);
+    bool EditShortcut(int shortcutkey, const wxString& description, const wxArrayLong& types);
 
-  bool DeleteShortcut(int shortcutkey);
+    bool DeleteShortcut(int shortcutkey);
 
-  bool GetNextShortcutFull(bool bFirstLoop, int &layertype, int &key, wxString &description, long &shortcutvalue);
+    bool GetNextShortcutFull(bool bFirstLoop, int& layertype, int& key, wxString& description, long& shortcutvalue);
 
-  // database snapping operations
-  bool GetNextSnapping(long &lid, wxString &layername, int &snapstatus, bool bfirstloop);
+    // database snapping operations
+    bool GetNextSnapping(long& lid, wxString& layername, int& snapstatus, bool bfirstloop);
 
-  bool GetValidLayersForSnapping(wxArrayLong &lids, wxArrayString &lnames);
+    bool GetValidLayersForSnapping(wxArrayLong& lids, wxArrayString& lnames);
 
-  bool AddLayersSnapping(const wxArrayLong &lids, int snappingstatus);
+    bool AddLayersSnapping(const wxArrayLong& lids, int snappingstatus);
 
-  bool DeleteLayerSnapping(int layersid);
+    bool DeleteLayerSnapping(int layersid);
 
-  bool SaveSnappingAllStatus(tmSnappingMemory *snapmemory);
+    bool SaveSnappingAllStatus(tmSnappingMemory* snapmemory);
 
-  // database snapping tolerence operations
-  bool SetSnappingTolerence(int iTolerence);
+    // database snapping tolerence operations
+    bool SetSnappingTolerence(int iTolerence);
 
-  int GetSnappingTolerence();
+    int GetSnappingTolerence();
 
-  // database geometry operations
-  bool GeometryDelete(wxArrayLong *selected, int layertype);
+    // database geometry operations
+    bool GeometryDelete(wxArrayLong* selected, int layertype);
 
-  long GeometrySave(OGRGeometry *geometry, int layertype);
+    long GeometrySave(OGRGeometry* geometry, int layertype);
 
-  bool GeometryUpdate(OGRGeometry *geometry, long oid, int layertype);
+    bool GeometryUpdate(OGRGeometry* geometry, long oid, int layertype);
 
-  OGRGeometry *GeometryLoad(long oid, int layertype);
+    OGRGeometry* GeometryLoad(long oid, int layertype);
 
-  // attribution operations
-  bool DeleteAttribution(wxArrayLong *selected, int layertype);
+    // attribution operations
+    bool DeleteAttribution(wxArrayLong* selected, int layertype);
 
-  wxArrayLong GetObjectsFromFeature(long selectedfeature, int layertype);
+    wxArrayLong GetObjectsFromFeature(long selectedfeature, int layertype);
 
-  long GetSelectedLayerId(long ojectid);
+    long GetSelectedLayerId(long ojectid);
 
-  bool DeleteAdvancedAttribution(long selectedobject, long selectedlayerid);
+    bool DeleteAdvancedAttribution(long selectedobject, long selectedlayerid);
 
-  bool SaveBezierSettings(BezierSettingsData *data);
+    bool SaveBezierSettings(BezierSettingsData* data);
 
-  bool LoadBezierSettings(BezierSettingsData *data);
+    bool LoadBezierSettings(BezierSettingsData* data);
 
-  // static path convertion
-  static bool ConvertPath(wxString &path);
+    // static path convertion
+    static bool ConvertPath(wxString& path);
 };
 
 #endif

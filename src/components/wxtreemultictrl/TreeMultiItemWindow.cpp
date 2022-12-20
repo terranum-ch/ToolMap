@@ -30,57 +30,57 @@
  * different class name.
  */
 
-TreeMultiItemWindow::TreeMultiItemWindow(TreeMultiItemNode *parent, const wxString &name)
+TreeMultiItemWindow::TreeMultiItemWindow(TreeMultiItemNode* parent, const wxString& name)
     : TreeMultiItemBase(parent),
       _window(0),
       _topSpacing(0),
       _frontSpacing(0),
       _span(false) {
-  _name = name;
+    _name = name;
 }
 
 TreeMultiItemWindow::~TreeMultiItemWindow() {
-  if (_window) _window->Destroy();
+    if (_window) _window->Destroy();
 }
 
-void TreeMultiItemWindow::AssignWindow(wxWindow *wnd) {
-  // delete previous, assign new (even if zero)
-  if (_window) _window->Destroy();
+void TreeMultiItemWindow::AssignWindow(wxWindow* wnd) {
+    // delete previous, assign new (even if zero)
+    if (_window) _window->Destroy();
 
-  _window = wnd;
+    _window = wnd;
 
-  // recalculate the size
-  if (wnd) {
-    wxSize size;
+    // recalculate the size
+    if (wnd) {
+        wxSize size;
 
-    // resize the sized control by sizer or
-    // by single window. For a sizer handled window
-    // GetBestSize returns the optimal size
+        // resize the sized control by sizer or
+        // by single window. For a sizer handled window
+        // GetBestSize returns the optimal size
 
-    /// \todo This might need rivision for retaining the sizer size
-    /// maybe we need to check whether size is <> 0,0 before get best size
+        /// \todo This might need rivision for retaining the sizer size
+        /// maybe we need to check whether size is <> 0,0 before get best size
 
-    if (wnd->GetSizer())
-      size = wnd->GetBestSize();
-    else
-      size = wnd->GetSize();
+        if (wnd->GetSizer())
+            size = wnd->GetBestSize();
+        else
+            size = wnd->GetSize();
 
-    _height = size.GetHeight();
-    _width = size.GetWidth();
+        _height = size.GetHeight();
+        _width = size.GetWidth();
 
-  } else {
-    _height = 0;
-    _width = 0;
-  }
+    } else {
+        _height = 0;
+        _width = 0;
+    }
 }
 
 #if (CHECKBOXVIEW)
 
 void TreeMultiItemWindow::SetCheckboxState(int state) {
-  TreeMultiItemBase::SetCheckboxState(state);
+    TreeMultiItemBase::SetCheckboxState(state);
 
-  // enable or disable the window
-  if (GetCheckbox() && GetWindow() && state != 2) GetWindow()->Enable(state == 1);
+    // enable or disable the window
+    if (GetCheckbox() && GetWindow() && state != 2) GetWindow()->Enable(state == 1);
 };
 
 #endif  // #if(CHECKBOXVIEW)

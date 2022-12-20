@@ -44,25 +44,25 @@
   @date 20 May 2008
   *******************************************************************************/
 class tmValidator : public wxTextValidator {
- private:
-  void SetCharRestricted();
+  private:
+    void SetCharRestricted();
 
-  void SetCharDataBase();
+    void SetCharDataBase();
 
-  void SetCharNumericStric();
+    void SetCharNumericStric();
 
-  void GetAlphaList(wxArrayString &mylist);
+    void GetAlphaList(wxArrayString& mylist);
 
-  void GetStrictNumList(wxArrayString &mylist);
+    void GetStrictNumList(wxArrayString& mylist);
 
-  void GetComplexList(wxArrayString &mylist);
+    void GetComplexList(wxArrayString& mylist);
 
-  bool SetEnhancedStyle(long style);
+    bool SetEnhancedStyle(long style);
 
-  void GetExcludeChars(wxArrayString &mylist);
+    void GetExcludeChars(wxArrayString& mylist);
 
- public:
-  tmValidator(long style = wxFILTER_NONE);
+  public:
+    tmValidator(long style = wxFILTER_NONE);
 };
 
 #endif

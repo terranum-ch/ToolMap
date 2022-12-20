@@ -28,19 +28,19 @@
 #endif
 
 class tmShortcutObject {
- private:
-  void InitMemberValues();
+  private:
+    void InitMemberValues();
 
- public:
-  int m_LayerType;
-  int m_ShortcutKey;
-  wxString m_ShortcutDescription;
-  wxArrayLong m_ShortcutValues;
-  bool m_ShortcutValid;
+  public:
+    int m_LayerType;
+    int m_ShortcutKey;
+    wxString m_ShortcutDescription;
+    wxArrayLong m_ShortcutValues;
+    bool m_ShortcutValid;
 
-  tmShortcutObject();
+    tmShortcutObject();
 
-  ~tmShortcutObject();
+    ~tmShortcutObject();
 };
 
 // Creating a list of MemoryObjects
@@ -63,25 +63,25 @@ WX_DECLARE_OBJARRAY(tmShortcutObject, tmShortCutObjArray);
   @date 18 December 2008
   *******************************************************************************/
 class tmShortcutMemory : public wxObject {
- private:
-  tmShortCutObjArray m_Shortcuts;
+  private:
+    tmShortCutObjArray m_Shortcuts;
 
- protected:
- public:
-  tmShortcutMemory();
+  protected:
+  public:
+    tmShortcutMemory();
 
-  ~tmShortcutMemory();
+    ~tmShortcutMemory();
 
-  // shortcut operations
-  void AddShortcutMemory(int iLayerType, int iKey, const wxString &description, long lShortcutValue);
+    // shortcut operations
+    void AddShortcutMemory(int iLayerType, int iKey, const wxString& description, long lShortcutValue);
 
-  void Clear();
+    void Clear();
 
-  int GetShortcut(int iKey, int &iLayerType, wxString &description, wxArrayLong &shortcutvalues);
+    int GetShortcut(int iKey, int& iLayerType, wxString& description, wxArrayLong& shortcutvalues);
 
-  int GetCount() {
-    return m_Shortcuts.GetCount();
-  }
+    int GetCount() {
+        return m_Shortcuts.GetCount();
+    }
 };
 
 #endif

@@ -18,27 +18,27 @@
 
 #include "tmarraysize.h"
 
-tmRealPointDist::tmRealPointDist(double xx, double yy, const wxRealPoint &originorigin) {
-  coordinate = wxRealPoint(xx, yy);
-  origin = originorigin;
+tmRealPointDist::tmRealPointDist(double xx, double yy, const wxRealPoint& originorigin) {
+    coordinate = wxRealPoint(xx, yy);
+    origin = originorigin;
 }
 
-tmRealPointDist::tmRealPointDist(const tmRealPointDist &pt) {
-  coordinate = pt.GetCoordinate();
-  origin = pt.GetOrigin();
+tmRealPointDist::tmRealPointDist(const tmRealPointDist& pt) {
+    coordinate = pt.GetCoordinate();
+    origin = pt.GetOrigin();
 }
 
 double tmRealPointDist::GetDistFromOrigin() const {
-  double distance1_x = coordinate.x - origin.x;
-  double distance1_y = coordinate.y - origin.y;
-  double dist1 = sqrt((distance1_x * distance1_x) + (distance1_y * distance1_y));
-  return dist1;
+    double distance1_x = coordinate.x - origin.x;
+    double distance1_y = coordinate.y - origin.y;
+    double dist1 = sqrt((distance1_x * distance1_x) + (distance1_y * distance1_y));
+    return dist1;
 }
 
-tmRealPointDist &tmRealPointDist::operator=(const tmRealPointDist &source) {
-  coordinate = source.GetCoordinate();
-  origin = source.GetOrigin();
-  return *this;
+tmRealPointDist& tmRealPointDist::operator=(const tmRealPointDist& source) {
+    coordinate = source.GetCoordinate();
+    origin = source.GetOrigin();
+    return *this;
 }
 
 #include <wx/arrimpl.cpp>

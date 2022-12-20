@@ -31,14 +31,14 @@
 #include "tmgisdataraster.h"
 
 class tmGISDataRasterEGRID : public tmGISDataRaster {
- private:
- protected:
- public:
-  tmGISDataRasterEGRID();
+  private:
+  protected:
+  public:
+    tmGISDataRasterEGRID();
 
-  ~tmGISDataRasterEGRID();
+    ~tmGISDataRasterEGRID();
 
-  virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
+    virtual wxString GetDataSizeAsHtml(int iPrecision = 2);
 };
 
 #endif

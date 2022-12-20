@@ -28,53 +28,53 @@
 class DataBase;
 
 class tmProjectMaintenance {
- private:
-  wxArrayString m_Messages;
-  wxArrayString m_Errors;
+  private:
+    wxArrayString m_Messages;
+    wxArrayString m_Errors;
 
-  bool m_IsVerbose;
-  DataBase *m_DB;
-  bool m_DestroyDatabase;
+    bool m_IsVerbose;
+    DataBase* m_DB;
+    bool m_DestroyDatabase;
 
-  wxArrayString _GetAllTables();
+    wxArrayString _GetAllTables();
 
-  bool _DoCodeOnTables(const wxString &query, const wxString &errmsg, const wxString &sucessmsg);
+    bool _DoCodeOnTables(const wxString& query, const wxString& errmsg, const wxString& sucessmsg);
 
-  bool _CleanLayerOrphansKind(const wxString &tablegeom, const wxString &tablekind);
+    bool _CleanLayerOrphansKind(const wxString& tablegeom, const wxString& tablekind);
 
-  bool _CleanLayerOrphansAttributes(int geomtype, const wxString &generictablename);
+    bool _CleanLayerOrphansAttributes(int geomtype, const wxString& generictablename);
 
- public:
-  tmProjectMaintenance(const wxString &databasename, DataBase *database = nullptr);
+  public:
+    tmProjectMaintenance(const wxString& databasename, DataBase* database = nullptr);
 
-  virtual ~tmProjectMaintenance();
+    virtual ~tmProjectMaintenance();
 
-  // bool CheckTables();
-  bool RepairTables();
+    // bool CheckTables();
+    bool RepairTables();
 
-  bool OptimizeTables();
+    bool OptimizeTables();
 
-  bool ClearOrphans();
+    bool ClearOrphans();
 
-  inline const bool IsVerbose() const;
+    inline const bool IsVerbose() const;
 
-  void SetVerbose(bool value);
+    void SetVerbose(bool value);
 
-  inline const wxArrayString GetErrors() const;
+    inline const wxArrayString GetErrors() const;
 
-  inline const wxArrayString GetMessages() const;
+    inline const wxArrayString GetMessages() const;
 };
 
 inline const bool tmProjectMaintenance::IsVerbose() const {
-  return m_IsVerbose;
+    return m_IsVerbose;
 }
 
 inline const wxArrayString tmProjectMaintenance::GetErrors() const {
-  return m_Errors;
+    return m_Errors;
 }
 
 inline const wxArrayString tmProjectMaintenance::GetMessages() const {
-  return m_Messages;
+    return m_Messages;
 }
 
 #endif

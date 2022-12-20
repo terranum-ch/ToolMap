@@ -48,30 +48,30 @@ class tmLayerProperties;
   @date 11 August 2008
   *******************************************************************************/
 class tmTOCCtrlMenu : public wxMenu {
- private:
-  int m_SelectedPos;
-  tmLayerProperties *m_LayerProperties;
+  private:
+    int m_SelectedPos;
+    tmLayerProperties* m_LayerProperties;
 
-  void _CreateTOCAddGroup();
+    void _CreateTOCAddGroup();
 
-  void _CreateTOCRenameGroup();
+    void _CreateTOCRenameGroup();
 
-  void _CreateTOCRemoveGroup();
+    void _CreateTOCRemoveGroup();
 
-  void _CreateTOCBasic();
+    void _CreateTOCBasic();
 
-  void _CreateTOCShowVertex();
+    void _CreateTOCShowVertex();
 
-  void _CreateTOCProperties();
+    void _CreateTOCProperties();
 
- public:
-  tmTOCCtrlMenu() {
-    ;
-  }
+  public:
+    tmTOCCtrlMenu() {
+        ;
+    }
 
-  tmTOCCtrlMenu(tmLayerProperties *item, int pos, int nbItems);
+    tmTOCCtrlMenu(tmLayerProperties* item, int pos, int nbItems);
 
-  ~tmTOCCtrlMenu();
+    ~tmTOCCtrlMenu();
 };
 
 #endif

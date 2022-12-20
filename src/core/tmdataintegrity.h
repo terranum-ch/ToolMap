@@ -28,29 +28,29 @@
 class DataBaseTM;
 
 class tmDataIntegrity {
- private:
-  DataBaseTM *m_pDB;
+  private:
+    DataBaseTM* m_pDB;
 
-  wxString m_QueryTemplateType;
-  wxString m_QueryTemplateAAttrib;
+    wxString m_QueryTemplateType;
+    wxString m_QueryTemplateAAttrib;
 
-  long m_ErrorType;
-  long m_ErrorAAttrib;
+    long m_ErrorType;
+    long m_ErrorAAttrib;
 
- public:
-  tmDataIntegrity(DataBaseTM *database);
+  public:
+    tmDataIntegrity(DataBaseTM* database);
 
-  ~tmDataIntegrity();
+    ~tmDataIntegrity();
 
-  bool HasErrorType(const PRJDEF_LAYERS_TYPE &layertype);
+    bool HasErrorType(const PRJDEF_LAYERS_TYPE& layertype);
 
-  bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
+    bool HasErrorAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE& layertype);
 
-  bool CorrectType(const PRJDEF_LAYERS_TYPE &layertype);
+    bool CorrectType(const PRJDEF_LAYERS_TYPE& layertype);
 
-  bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE &layertype);
+    bool CorrectAAttrib(long layerindex, const PRJDEF_LAYERS_TYPE& layertype);
 
-  wxString GetLastError();
+    wxString GetLastError();
 };
 
 #endif
