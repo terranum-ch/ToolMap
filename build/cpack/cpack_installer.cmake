@@ -14,8 +14,13 @@ install(TARGETS ${CMAKE_PROJECT_NAME}
 # install GPL licence file
 install(FILES build/cpack/LICENSE.txt DESTINATION .)
 
+if (APPLE)
+    message(STATUS "Skipping share directory on OSX")
+else()
+    install(DIRECTORY ${CMAKE_BINARY_DIR}/share DESTINATION .)
+endif()
+
 # search dll to install
-install(DIRECTORY ${CMAKE_BINARY_DIR}/share DESTINATION .)
 if (WIN32)
     install(
             DIRECTORY ${CMAKE_BINARY_DIR}/bin/

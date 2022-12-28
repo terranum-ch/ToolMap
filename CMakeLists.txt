@@ -166,9 +166,6 @@ ENDIF (USE_UNITTEST)
 # Install step for copying *dylib into application bundle on OSX and for changing their reference from
 # absolute to relative
 IF (APPLE)
-    # create the share directory (mainly for unit testing)
-    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/share)
-
     # change cmake_install_prefix from /usr/local to the binary directory
     set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
     set(APPS ${CMAKE_INSTALL_PREFIX}/bin/${CMAKE_PROJECT_NAME}.app)  # paths to executables
