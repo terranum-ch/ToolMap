@@ -5,7 +5,7 @@ import os
 class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = [
-        "wxwidgets/3.2.1@terranum-conan+wxwidgets/stable",
+        "wxwidgets/3.2.2.1@terranum-conan+wxwidgets/stable",
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
         "gdal/3.5.2@terranum-conan+gdal/stable",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
