@@ -244,6 +244,16 @@ bool DataBase::DataBaseOpen(const wxString& datadir, const wxString& name) {
         return false;
     }
 
+    if(m_IsDatabaseOpened){
+        mysql_refresh(m_MySQL, REFRESH_TABLES);
+        mysql_refresh(m_MySQL, REFRESH_LOG);
+        mysql_refresh(m_MySQL, REFRESH_HOSTS);
+        mysql_refresh(m_MySQL, REFRESH_STATUS);
+        mysql_refresh(m_MySQL, REFRESH_THREADS);
+        mysql_close(m_MySQL);
+        m_MySQL = mysql_init(nullptr);
+        m_IsDatabaseOpened = false;
+    }
     if (!m_IsDatabaseOpened) {
         if (mysql_real_connect(m_MySQL, NULL, NULL, NULL, (const char*)name.mb_str(wxConvUTF8), 3309, NULL,
                                CLIENT_MULTI_STATEMENTS) == NULL) {
