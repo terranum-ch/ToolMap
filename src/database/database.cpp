@@ -246,7 +246,7 @@ bool DataBase::DataBaseOpen(const wxString& datadir, const wxString& name) {
 
     if(m_IsDatabaseOpened){
         mysql_refresh(m_MySQL, REFRESH_TABLES);
-        mysql_refresh(m_MySQL, REFRESH_LOG);
+        //mysql_refresh(m_MySQL, REFRESH_LOG);
         mysql_refresh(m_MySQL, REFRESH_HOSTS);
         mysql_refresh(m_MySQL, REFRESH_STATUS);
         mysql_refresh(m_MySQL, REFRESH_THREADS);
