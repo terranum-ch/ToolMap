@@ -184,6 +184,16 @@ class tmSymbolDLGPolyRule : public tmSymbolDLG {
 
     void OnMenuDisable(wxCommandEvent & event);
 
+    void OnMenuSetBorderColour(wxCommandEvent& event);
+
+    void OnMenuSetBorderWidth(wxCommandEvent& event);
+
+    void OnMenuSetFillColour(wxCommandEvent& event);
+
+    void OnMenuSetFillStyle(wxCommandEvent& event);
+
+    void OnMenuSetTransparency(wxCommandEvent& event);
+
     void OnUpdateUIBtnRemove(wxUpdateUIEvent& event);
 
     void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent& event);

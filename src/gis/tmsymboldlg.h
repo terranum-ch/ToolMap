@@ -26,6 +26,7 @@
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif
+#include <wx/numdlg.h>
 
 #include <wx/clrpicker.h>     // colour picker used in all child
 #include <wx/html/htmlwin.h>  // html window for metadata

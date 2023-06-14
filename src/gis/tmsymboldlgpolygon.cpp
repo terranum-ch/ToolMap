@@ -21,6 +21,9 @@
 #include "../core/datalistreportctrl.h"
 #include "tmgisdatavectorshp.h"
 #include "tmlayerproperties.h"
+#include "tmsymboldlgpolygon.h"
+#include "tmsymbolvectorpolygon.h"
+
 
 IMPLEMENT_DYNAMIC_CLASS(tmSymbolDLGPolygon, tmSymbolDLG)
 
@@ -138,6 +141,11 @@ EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST_SYMBOL, tmSymbolDLGPolyRule::OnRightClick)
 EVT_MENU(ID_CONTEXT_MENU_EDIT, tmSymbolDLGPolyRule::OnMenuEdit)
 EVT_MENU(ID_CONTEXT_MENU_ENABLE, tmSymbolDLGPolyRule::OnMenuEndable)
 EVT_MENU(ID_CONTEXT_MENU_DISABLE, tmSymbolDLGPolyRule::OnMenuDisable)
+EVT_MENU(ID_CONTEXT_MENU_BORDER_COLOR, tmSymbolDLGPolyRule::OnMenuSetBorderColour)
+EVT_MENU(ID_CONTEXT_MENU_BORDER_WIDTH, tmSymbolDLGPolyRule::OnMenuSetBorderWidth)
+EVT_MENU(ID_CONTEXT_MENU_FILL_COLOR, tmSymbolDLGPolyRule::OnMenuSetFillColour)
+EVT_MENU(ID_CONTEXT_MENU_FILL_STYLE, tmSymbolDLGPolyRule::OnMenuSetFillStyle)
+EVT_MENU(ID_CONTEXT_MENU_TRANSPARENCY, tmSymbolDLGPolyRule::OnMenuSetTransparency)
 END_EVENT_TABLE()
 
 void tmSymbolDLGPolyRule::_CreateControls() {
@@ -396,6 +404,13 @@ void tmSymbolDLGPolyRule::OnRightClick(wxListEvent& event) {
     menu.AppendSeparator();
     menu.Append(ID_CONTEXT_MENU_ENABLE, wxT("Enable"));
     menu.Append(ID_CONTEXT_MENU_DISABLE, wxT("Disable"));
+    menu.AppendSeparator();
+    menu.Append(ID_CONTEXT_MENU_BORDER_COLOR, _("Set border color..."));
+    menu.Append(ID_CONTEXT_MENU_BORDER_WIDTH, _("Set border width..."));
+    menu.Append(ID_CONTEXT_MENU_FILL_COLOR, _("Set fill color..."));
+    menu.Append(ID_CONTEXT_MENU_FILL_STYLE, _("Set fill style..."));
+    menu.AppendSeparator();
+    menu.Append(ID_CONTEXT_MENU_TRANSPARENCY, _("Set transparency..."));
 
     if(num_selected != 1){
         menu.Enable(ID_CONTEXT_MENU_EDIT, false);
@@ -432,6 +447,27 @@ void tmSymbolDLGPolyRule::_EnableItems(bool enable) {
         tmSymbolRule* myRule = m_Rules[index];
         wxASSERT(myRule);
         myRule->SetActive(enable);
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGPolyRule::OnMenuSetBorderColour(wxCommandEvent& event) {}
+void tmSymbolDLGPolyRule::OnMenuSetBorderWidth(wxCommandEvent& event) {}
+void tmSymbolDLGPolyRule::OnMenuSetFillColour(wxCommandEvent& event) {}
+void tmSymbolDLGPolyRule::OnMenuSetFillStyle(wxCommandEvent& event) {}
+
+void tmSymbolDLGPolyRule::OnMenuSetTransparency(wxCommandEvent& event) {
+    wxNumberEntryDialog my_dlg(this, _("Set Transparency"), _("Transparency"), _("Transparency"), 0, 0, 100);
+    if (my_dlg.ShowModal() == wxID_CANCEL){
+        return ;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto * poly = (tmSymbolVectorPolygon*) myRule->GetSymbolData();
+        poly->GetSymbolData()->m_GlobalTransparency =  (int) my_dlg.GetValue();
     }
     _LoadTableData();
 }
@@ -513,7 +549,6 @@ bool tmSymbolDLGPolyRule::Create(wxWindow* parent, wxWindowID id, const wxString
 int tmSymbolDLGPolyRule::GetSelectedPanel() {
     return m_PolyUniqueStyle.m_PanelNo;
 }
-
 void tmSymbolDLGPolyRule::SetPolyUniqueStyle(tmSymbolDataPolygonUnique value) {
     m_PolyUniqueStyle = value;
 }
