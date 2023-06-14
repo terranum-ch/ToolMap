@@ -50,6 +50,8 @@ class DataListReportCtrl : public wxListCtrl {
 
     long GetSelectedFirst();
 
+    int GetSelectedAll(wxArrayLong& selected_index);
+
     wxString GetText(long index, int col = 0);
 
     void SetText(long index, const wxString& text, int col = 0);

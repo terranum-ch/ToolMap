@@ -52,6 +52,14 @@ const int ID_BTN_ADD = 10331;
 const int ID_BTN_REMOVE = 10332;
 const int ID_BTN_REMOVEALL = 10333;
 const int ID_LIST_SYMBOL = 10334;
+const int ID_CONTEXT_MENU_EDIT = 10335;
+const int ID_CONTEXT_MENU_ENABLE = 10336;
+const int ID_CONTEXT_MENU_DISABLE = 10337;
+const int ID_CONTEXT_MENU_BORDER_COLOR = 10338;
+const int ID_CONTEXT_MENU_BORDER_WIDTH = 10339;
+const int ID_CONTEXT_MENU_FILL_COLOR = 10340;
+const int ID_CONTEXT_MENU_FILL_STYLE = 10341;
+const int ID_CONTEXT_MENU_TRANSPARENCY = 10342;
 
 class tmLayerProperties;
 
@@ -168,6 +176,14 @@ class tmSymbolDLGPolyRule : public tmSymbolDLG {
 
     void OnDoubleClick(wxListEvent& event);
 
+    void OnRightClick(wxListEvent& event);
+
+    void OnMenuEdit(wxCommandEvent& event);
+
+    void OnMenuEndable(wxCommandEvent & event);
+
+    void OnMenuDisable(wxCommandEvent & event);
+
     void OnUpdateUIBtnRemove(wxUpdateUIEvent& event);
 
     void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent& event);
@@ -175,6 +191,8 @@ class tmSymbolDLGPolyRule : public tmSymbolDLG {
     virtual bool TransferDataToWindow();
 
     virtual bool TransferDataFromWindow();
+
+    void _EnableItems(bool enable);
 
     DECLARE_EVENT_TABLE();
 
@@ -205,6 +223,7 @@ class tmSymbolDLGPolyRule : public tmSymbolDLG {
     void SetSelectedField(wxString value);
 
     void SetSelectedPanel(int panelindex);
+
 };
 
 inline const wxString tmSymbolDLGPolyRule::GetSelectedField() const {

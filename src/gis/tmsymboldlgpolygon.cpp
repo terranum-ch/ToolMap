@@ -134,6 +134,10 @@ EVT_BUTTON(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnBtnRemoveAll)
 EVT_UPDATE_UI(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnUpdateUIBtnRemove)
 EVT_UPDATE_UI(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnUpdateUIBtnRemoveAll)
 EVT_LIST_ITEM_ACTIVATED(ID_LIST_SYMBOL, tmSymbolDLGPolyRule::OnDoubleClick)
+EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST_SYMBOL, tmSymbolDLGPolyRule::OnRightClick)
+EVT_MENU(ID_CONTEXT_MENU_EDIT, tmSymbolDLGPolyRule::OnMenuEdit)
+EVT_MENU(ID_CONTEXT_MENU_ENABLE, tmSymbolDLGPolyRule::OnMenuEndable)
+EVT_MENU(ID_CONTEXT_MENU_DISABLE, tmSymbolDLGPolyRule::OnMenuDisable)
 END_EVENT_TABLE()
 
 void tmSymbolDLGPolyRule::_CreateControls() {
@@ -378,6 +382,60 @@ void tmSymbolDLGPolyRule::OnDoubleClick(wxListEvent& event) {
     _LoadTableData();
 }
 
+
+void tmSymbolDLGPolyRule::OnRightClick(wxListEvent& event) {
+    wxArrayLong my_selected_index;
+    int num_selected = m_SymbolListCtrl->GetSelectedAll(my_selected_index);
+    if (num_selected == 0){
+        return;
+    }
+
+    // display contextual menu
+    wxMenu menu(wxT("Symbology"));
+    menu.Append(ID_CONTEXT_MENU_EDIT, wxT("Edit symbology..."));
+    menu.AppendSeparator();
+    menu.Append(ID_CONTEXT_MENU_ENABLE, wxT("Enable"));
+    menu.Append(ID_CONTEXT_MENU_DISABLE, wxT("Disable"));
+
+    if(num_selected != 1){
+        menu.Enable(ID_CONTEXT_MENU_EDIT, false);
+    }
+
+    m_SymbolListCtrl->PopupMenu(&menu);
+}
+
+void tmSymbolDLGPolyRule::OnMenuEdit(wxCommandEvent& event) {
+    long my_sel_index = m_SymbolListCtrl->GetSelectedFirst();
+    wxASSERT(my_sel_index != wxNOT_FOUND);
+    tmSymbolRule* myRule = m_Rules[my_sel_index];
+    wxASSERT(myRule);
+    tmSymbolRuleEdit_DLG myDlg(this, myRule);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+    *myRule = *(myDlg.GetRule());
+    _LoadTableData();
+}
+
+void tmSymbolDLGPolyRule::OnMenuEndable(wxCommandEvent& event) {
+    _EnableItems(true);
+}
+
+void tmSymbolDLGPolyRule::OnMenuDisable(wxCommandEvent& event) {
+    _EnableItems(false);
+}
+
+void tmSymbolDLGPolyRule::_EnableItems(bool enable) {
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        myRule->SetActive(enable);
+    }
+    _LoadTableData();
+}
+
 void tmSymbolDLGPolyRule::OnUpdateUIBtnRemove(wxUpdateUIEvent& event) {
     if (m_SymbolListCtrl && m_SymbolListCtrl->GetSelectedFirst() != wxNOT_FOUND) {
         event.Enable(true);
@@ -459,11 +517,9 @@ int tmSymbolDLGPolyRule::GetSelectedPanel() {
 void tmSymbolDLGPolyRule::SetPolyUniqueStyle(tmSymbolDataPolygonUnique value) {
     m_PolyUniqueStyle = value;
 }
-
 void tmSymbolDLGPolyRule::SetSelectedField(wxString value) {
     m_SelectedField = value;
 }
-
 void tmSymbolDLGPolyRule::SetSelectedPanel(int panelindex) {
     m_PolyUniqueStyle.m_PanelNo = panelindex;
 }

@@ -212,6 +212,16 @@ long DataListReportCtrl::GetSelectedFirst() {
     return GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 }
 
+int DataListReportCtrl::GetSelectedAll(wxArrayLong& selected_index) {
+    selected_index.clear();
+    long itemIndex = -1;
+    while ((itemIndex = GetNextItem(itemIndex, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED)) != wxNOT_FOUND) {
+        // Got the selected item index
+        selected_index.Add(itemIndex);
+    }
+    return selected_index.GetCount();
+}
+
 wxString DataListReportCtrl::GetText(long index, int col) {
     wxListItem Item;
     Item.SetId(index);
