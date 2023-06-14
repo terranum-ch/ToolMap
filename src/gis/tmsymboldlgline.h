@@ -49,6 +49,14 @@ const int ID_BTN_REMOVE_LINE = 10332;
 const int ID_BTN_REMOVEALL_LINE = 10333;
 const int ID_LIST_SYMBOL_LINE = 10334;
 
+const int ID_CONTEXT_MENU_EDIT_LINE = 10343;
+const int ID_CONTEXT_MENU_ENABLE_LINE = 10344;
+const int ID_CONTEXT_MENU_DISABLE_LINE = 10345;
+const int ID_CONTEXT_MENU_LINE_COLOR_LINE = 10346;
+const int ID_CONTEXT_MENU_LINE_STYLE_LINE = 10347;
+const int ID_CONTEXT_MENU_LINE_WIDTH_LINE = 10348;
+const int ID_CONTEXT_MENU_TRANSPARENCY_LINE = 10349;
+
 class tmLayerProperties;
 
 class tmGISDataVectorSHP;
@@ -162,9 +170,27 @@ class tmSymbolDLGLineRule : public tmSymbolDLG {
 
     void OnDoubleClick(wxListEvent& event);
 
+    void OnRightClick(wxListEvent& event);
+
+    void OnMenuEdit(wxCommandEvent& event);
+
+    void OnMenuDisable(wxCommandEvent& event);
+
+    void OnMenuEnable(wxCommandEvent& event);
+
+    void OnMenuLineColor(wxCommandEvent& event);
+
+    void OnMenuLineStyle(wxCommandEvent& event);
+
+    void OnMenuLineWidth(wxCommandEvent& event);
+
+    void OnMenuTransparency(wxCommandEvent& event);
+
     void OnUpdateUIBtnRemove(wxUpdateUIEvent& event);
 
     void OnUpdateUIBtnRemoveAll(wxUpdateUIEvent& event);
+
+    void _EnableItems(bool enable);
 
     virtual bool TransferDataToWindow();
 

@@ -19,6 +19,7 @@
 #include "../core/datalistreportctrl.h"
 #include "tmgisdatavectorshp.h"
 #include "tmlayerproperties.h"
+#include "tmsymbolvectorline.h"
 
 IMPLEMENT_DYNAMIC_CLASS(tmSymbolDLGLine, tmSymbolDLG)
 
@@ -124,6 +125,14 @@ EVT_BUTTON(ID_BTN_REMOVEALL_LINE, tmSymbolDLGLineRule::OnBtnRemoveAll)
 EVT_UPDATE_UI(ID_BTN_REMOVE_LINE, tmSymbolDLGLineRule::OnUpdateUIBtnRemove)
 EVT_UPDATE_UI(ID_BTN_REMOVEALL_LINE, tmSymbolDLGLineRule::OnUpdateUIBtnRemoveAll)
 EVT_LIST_ITEM_ACTIVATED(ID_LIST_SYMBOL_LINE, tmSymbolDLGLineRule::OnDoubleClick)
+EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST_SYMBOL_LINE, tmSymbolDLGLineRule::OnRightClick)
+EVT_MENU(ID_CONTEXT_MENU_EDIT_LINE, tmSymbolDLGLineRule::OnMenuEdit)
+EVT_MENU(ID_CONTEXT_MENU_ENABLE_LINE, tmSymbolDLGLineRule::OnMenuEnable)
+EVT_MENU(ID_CONTEXT_MENU_DISABLE_LINE, tmSymbolDLGLineRule::OnMenuDisable)
+EVT_MENU(ID_CONTEXT_MENU_LINE_COLOR_LINE, tmSymbolDLGLineRule::OnMenuLineColor)
+EVT_MENU(ID_CONTEXT_MENU_LINE_STYLE_LINE, tmSymbolDLGLineRule::OnMenuLineStyle)
+EVT_MENU(ID_CONTEXT_MENU_LINE_WIDTH_LINE, tmSymbolDLGLineRule::OnMenuLineWidth)
+EVT_MENU(ID_CONTEXT_MENU_TRANSPARENCY_LINE, tmSymbolDLGLineRule::OnMenuTransparency)
 END_EVENT_TABLE()
 
 void tmSymbolDLGLineRule::_CreateControls() {
@@ -459,4 +468,126 @@ void tmSymbolDLGLineRule::SetSelectedField(wxString value) {
 
 void tmSymbolDLGLineRule::SetSelectedPanel(int panelindex) {
     m_LineUniqueStyle.m_PanelNo = panelindex;
+}
+
+void tmSymbolDLGLineRule::OnRightClick(wxListEvent& event) {
+    wxArrayLong selected_index;
+    int num_selected = m_SymbolListCtrl->GetSelectedAll(selected_index);
+    if (num_selected == 0) {
+        return;
+    }
+
+    wxMenu context_menu(_("Symbology"));
+    context_menu.Append(ID_CONTEXT_MENU_EDIT_LINE, _("Edit symbology..."));
+    context_menu.AppendSeparator();
+    context_menu.Append(ID_CONTEXT_MENU_ENABLE_LINE, _("Enable"));
+    context_menu.Append(ID_CONTEXT_MENU_DISABLE_LINE, _("Disable"));
+    context_menu.AppendSeparator();
+    context_menu.Append(ID_CONTEXT_MENU_LINE_WIDTH_LINE, _("Set line width..."));
+    context_menu.Append(ID_CONTEXT_MENU_LINE_COLOR_LINE, _("Set line color..."));
+    context_menu.Append(ID_CONTEXT_MENU_LINE_STYLE_LINE, _("Set line style..."));
+    context_menu.AppendSeparator();
+    context_menu.Append(ID_CONTEXT_MENU_TRANSPARENCY_LINE, _("Set transparency..."));
+    if (num_selected != 1) {
+        context_menu.Enable(ID_CONTEXT_MENU_EDIT_LINE, false);
+    }
+    m_SymbolListCtrl->PopupMenu(&context_menu);
+}
+
+void tmSymbolDLGLineRule::OnMenuEdit(wxCommandEvent& event) {
+    long myItemIndex = m_SymbolListCtrl->GetSelectedFirst();
+    tmSymbolRule* myRule = m_Rules[myItemIndex];
+    wxASSERT(myRule);
+    tmSymbolRuleEdit_DLG myDlg(this, myRule);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+
+    *myRule = *(myDlg.GetRule());
+    _LoadTableData();
+}
+
+void tmSymbolDLGLineRule::OnMenuDisable(wxCommandEvent& event) {
+    _EnableItems(false);
+    _LoadTableData();
+}
+
+void tmSymbolDLGLineRule::OnMenuEnable(wxCommandEvent& event) {
+    _EnableItems(true);
+    _LoadTableData();
+}
+
+void tmSymbolDLGLineRule::_EnableItems(bool enable) {
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        myRule->SetActive(enable);
+    }
+}
+
+void tmSymbolDLGLineRule::OnMenuLineColor(wxCommandEvent& event) {
+    wxColourDialog my_dlg(this);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* line = (tmSymbolVectorLine*)myRule->GetSymbolData();
+        line->GetSymbolData()->m_Colour = my_dlg.GetColourData().GetColour();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGLineRule::OnMenuLineStyle(wxCommandEvent& event) {
+    wxSingleChoiceDialog my_dlg(this, _("Line style"), _("Select line style"),
+                                sizeof(tmSYMBOLPENSTYLES_NAME) / sizeof(wxString), tmSYMBOLPENSTYLES_NAME);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* line = (tmSymbolVectorLine*)myRule->GetSymbolData();
+        line->GetSymbolData()->m_Shape = my_dlg.GetSelection();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGLineRule::OnMenuLineWidth(wxCommandEvent& event) {
+    wxNumberEntryDialog my_dlg(this, _("Set border width"), _("Border width"), _("Border"), 1, 0, 100);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* line = (tmSymbolVectorLine*)myRule->GetSymbolData();
+        line->GetSymbolData()->m_Width = (int)my_dlg.GetValue();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGLineRule::OnMenuTransparency(wxCommandEvent& event) {
+    wxNumberEntryDialog my_dlg(this, _("Set Transparency"), _("Transparency"), _("Transparency"), 0, 0, 100);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* line = (tmSymbolVectorLine*)myRule->GetSymbolData();
+        line->GetSymbolData()->m_GlobalTransparency = (int)my_dlg.GetValue();
+    }
+    _LoadTableData();
 }

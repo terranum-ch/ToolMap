@@ -138,14 +138,14 @@ EVT_UPDATE_UI(ID_BTN_REMOVE, tmSymbolDLGPolyRule::OnUpdateUIBtnRemove)
 EVT_UPDATE_UI(ID_BTN_REMOVEALL, tmSymbolDLGPolyRule::OnUpdateUIBtnRemoveAll)
 EVT_LIST_ITEM_ACTIVATED(ID_LIST_SYMBOL, tmSymbolDLGPolyRule::OnDoubleClick)
 EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST_SYMBOL, tmSymbolDLGPolyRule::OnRightClick)
-EVT_MENU(ID_CONTEXT_MENU_EDIT, tmSymbolDLGPolyRule::OnMenuEdit)
-EVT_MENU(ID_CONTEXT_MENU_ENABLE, tmSymbolDLGPolyRule::OnMenuEndable)
-EVT_MENU(ID_CONTEXT_MENU_DISABLE, tmSymbolDLGPolyRule::OnMenuDisable)
-EVT_MENU(ID_CONTEXT_MENU_BORDER_COLOR, tmSymbolDLGPolyRule::OnMenuSetBorderColour)
-EVT_MENU(ID_CONTEXT_MENU_BORDER_WIDTH, tmSymbolDLGPolyRule::OnMenuSetBorderWidth)
-EVT_MENU(ID_CONTEXT_MENU_FILL_COLOR, tmSymbolDLGPolyRule::OnMenuSetFillColour)
-EVT_MENU(ID_CONTEXT_MENU_FILL_STYLE, tmSymbolDLGPolyRule::OnMenuSetFillStyle)
-EVT_MENU(ID_CONTEXT_MENU_TRANSPARENCY, tmSymbolDLGPolyRule::OnMenuSetTransparency)
+EVT_MENU(ID_CONTEXT_MENU_EDIT_POLY, tmSymbolDLGPolyRule::OnMenuEdit)
+EVT_MENU(ID_CONTEXT_MENU_ENABLE_POLY, tmSymbolDLGPolyRule::OnMenuEndable)
+EVT_MENU(ID_CONTEXT_MENU_DISABLE_POLY, tmSymbolDLGPolyRule::OnMenuDisable)
+EVT_MENU(ID_CONTEXT_MENU_BORDER_COLOR_POLY, tmSymbolDLGPolyRule::OnMenuSetBorderColour)
+EVT_MENU(ID_CONTEXT_MENU_BORDER_WIDTH_POLY, tmSymbolDLGPolyRule::OnMenuSetBorderWidth)
+EVT_MENU(ID_CONTEXT_MENU_FILL_COLOR_POLY, tmSymbolDLGPolyRule::OnMenuSetFillColour)
+EVT_MENU(ID_CONTEXT_MENU_FILL_STYLE_POLY, tmSymbolDLGPolyRule::OnMenuSetFillStyle)
+EVT_MENU(ID_CONTEXT_MENU_TRANSPARENCY_POLY, tmSymbolDLGPolyRule::OnMenuSetTransparency)
 END_EVENT_TABLE()
 
 void tmSymbolDLGPolyRule::_CreateControls() {
@@ -400,20 +400,20 @@ void tmSymbolDLGPolyRule::OnRightClick(wxListEvent& event) {
 
     // display contextual menu
     wxMenu menu(wxT("Symbology"));
-    menu.Append(ID_CONTEXT_MENU_EDIT, wxT("Edit symbology..."));
+    menu.Append(ID_CONTEXT_MENU_EDIT_POLY, wxT("Edit symbology..."));
     menu.AppendSeparator();
-    menu.Append(ID_CONTEXT_MENU_ENABLE, wxT("Enable"));
-    menu.Append(ID_CONTEXT_MENU_DISABLE, wxT("Disable"));
+    menu.Append(ID_CONTEXT_MENU_ENABLE_POLY, wxT("Enable"));
+    menu.Append(ID_CONTEXT_MENU_DISABLE_POLY, wxT("Disable"));
     menu.AppendSeparator();
-    menu.Append(ID_CONTEXT_MENU_BORDER_COLOR, _("Set border color..."));
-    menu.Append(ID_CONTEXT_MENU_BORDER_WIDTH, _("Set border width..."));
-    menu.Append(ID_CONTEXT_MENU_FILL_COLOR, _("Set fill color..."));
-    menu.Append(ID_CONTEXT_MENU_FILL_STYLE, _("Set fill style..."));
+    menu.Append(ID_CONTEXT_MENU_BORDER_COLOR_POLY, _("Set border color..."));
+    menu.Append(ID_CONTEXT_MENU_BORDER_WIDTH_POLY, _("Set border width..."));
+    menu.Append(ID_CONTEXT_MENU_FILL_COLOR_POLY, _("Set fill color..."));
+    menu.Append(ID_CONTEXT_MENU_FILL_STYLE_POLY, _("Set fill style..."));
     menu.AppendSeparator();
-    menu.Append(ID_CONTEXT_MENU_TRANSPARENCY, _("Set transparency..."));
+    menu.Append(ID_CONTEXT_MENU_TRANSPARENCY_POLY, _("Set transparency..."));
 
     if(num_selected != 1){
-        menu.Enable(ID_CONTEXT_MENU_EDIT, false);
+        menu.Enable(ID_CONTEXT_MENU_EDIT_POLY, false);
     }
 
     m_SymbolListCtrl->PopupMenu(&menu);
@@ -434,10 +434,12 @@ void tmSymbolDLGPolyRule::OnMenuEdit(wxCommandEvent& event) {
 
 void tmSymbolDLGPolyRule::OnMenuEndable(wxCommandEvent& event) {
     _EnableItems(true);
+    _LoadTableData();
 }
 
 void tmSymbolDLGPolyRule::OnMenuDisable(wxCommandEvent& event) {
     _EnableItems(false);
+    _LoadTableData();
 }
 
 void tmSymbolDLGPolyRule::_EnableItems(bool enable) {
@@ -448,7 +450,6 @@ void tmSymbolDLGPolyRule::_EnableItems(bool enable) {
         wxASSERT(myRule);
         myRule->SetActive(enable);
     }
-    _LoadTableData();
 }
 
 void tmSymbolDLGPolyRule::OnMenuSetBorderColour(wxCommandEvent& event) {
