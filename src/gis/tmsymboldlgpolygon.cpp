@@ -451,10 +451,69 @@ void tmSymbolDLGPolyRule::_EnableItems(bool enable) {
     _LoadTableData();
 }
 
-void tmSymbolDLGPolyRule::OnMenuSetBorderColour(wxCommandEvent& event) {}
-void tmSymbolDLGPolyRule::OnMenuSetBorderWidth(wxCommandEvent& event) {}
-void tmSymbolDLGPolyRule::OnMenuSetFillColour(wxCommandEvent& event) {}
-void tmSymbolDLGPolyRule::OnMenuSetFillStyle(wxCommandEvent& event) {}
+void tmSymbolDLGPolyRule::OnMenuSetBorderColour(wxCommandEvent& event) {
+    wxColourDialog my_dlg(this);
+    if (my_dlg.ShowModal() == wxID_CANCEL){
+        return ;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto * poly = (tmSymbolVectorPolygon*) myRule->GetSymbolData();
+        poly->GetSymbolData()->m_bColour =  my_dlg.GetColourData().GetColour();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGPolyRule::OnMenuSetBorderWidth(wxCommandEvent& event) {
+    wxNumberEntryDialog my_dlg(this, _("Set border width"), _("Border width"), _("Border"), 0, 0, 100);
+    if (my_dlg.ShowModal() == wxID_CANCEL){
+        return ;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto * poly = (tmSymbolVectorPolygon*) myRule->GetSymbolData();
+        poly->GetSymbolData()->m_bWidth =  (int) my_dlg.GetValue();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGPolyRule::OnMenuSetFillColour(wxCommandEvent& event) {
+    wxColourDialog my_dlg(this);
+    if (my_dlg.ShowModal() == wxID_CANCEL){
+        return ;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto * poly = (tmSymbolVectorPolygon*) myRule->GetSymbolData();
+        poly->GetSymbolData()->m_fColour =  my_dlg.GetColourData().GetColour();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGPolyRule::OnMenuSetFillStyle(wxCommandEvent& event) {
+    wxSingleChoiceDialog my_dlg(this, _("Fill style"), _("Select fill style"), sizeof(tmSYMBOLFILLSTYLES_NAME) / sizeof(wxString), tmSYMBOLFILLSTYLES_NAME);
+    if (my_dlg.ShowModal() == wxID_CANCEL){
+        return ;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto * poly = (tmSymbolVectorPolygon*) myRule->GetSymbolData();
+        poly->GetSymbolData()->m_fStyle =  my_dlg.GetSelection();
+    }
+    _LoadTableData();
+}
 
 void tmSymbolDLGPolyRule::OnMenuSetTransparency(wxCommandEvent& event) {
     wxNumberEntryDialog my_dlg(this, _("Set Transparency"), _("Transparency"), _("Transparency"), 0, 0, 100);
