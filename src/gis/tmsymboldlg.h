@@ -32,6 +32,7 @@
 #include <wx/html/htmlwin.h>  // html window for metadata
 #include <wx/notebook.h>
 #include <wx/spinctrl.h>
+#include <wx/colordlg.h>
 
 #include "../core/tmcolourpickerctrl.h"  // colour picker
 #include "../core/tmsliderwithtxt.h"     // slider with textctrl
