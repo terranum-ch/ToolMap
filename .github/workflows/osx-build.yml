@@ -34,7 +34,7 @@ jobs:
         run: |
           mkdir ${{github.workspace}}/bin
           cd ${{github.workspace}}/bin
-          conan install .. -o unit_test=True
+          conan install .. -o unit_test=True --build=qhull
 
 #      - name: Install OpenMP
 #        run: |
