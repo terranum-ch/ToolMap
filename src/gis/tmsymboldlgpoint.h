@@ -56,8 +56,7 @@ const int ID_CONTEXT_MENU_ENABLE_POINT = 10351;
 const int ID_CONTEXT_MENU_DISABLE_POINT = 10352;
 const int ID_CONTEXT_MENU_POINT_COLOR = 10353;
 const int ID_CONTEXT_MENU_POINT_RADIUS = 10354;
-const int ID_CONTEXT_MENU_POINT_WIDTH = 10355;
-const int ID_CONTEXT_MENU_TRANSPARENCY_POINT = 10356;
+const int ID_CONTEXT_MENU_TRANSPARENCY_POINT = 10355;
 
 class tmLayerProperties;
 
@@ -167,6 +166,22 @@ class tmSymbolDLGPointRule : public tmSymbolDLG {
     void OnBtnRemoveAll(wxCommandEvent& event);
 
     void OnDoubleClick(wxListEvent& event);
+
+    void OnRightClick(wxListEvent & event);
+
+    void OnMenuEdit(wxCommandEvent& event);
+
+    void OnMenuDisable(wxCommandEvent& event);
+
+    void OnMenuEnable(wxCommandEvent& event);
+
+    void _EnableItems(bool enable);
+
+    void OnMenuPointColor(wxCommandEvent& event);
+
+    void OnMenuPointRadius(wxCommandEvent& event);
+
+    void OnMenuTransparency(wxCommandEvent& event);
 
     void OnUpdateUIBtnRemove(wxUpdateUIEvent& event);
 

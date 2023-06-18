@@ -21,6 +21,7 @@
 #include "../core/datalistreportctrl.h"
 #include "tmgisdatavectorshp.h"
 #include "tmlayerproperties.h"
+#include "tmsymbolvectorpoint.h"
 
 IMPLEMENT_DYNAMIC_CLASS(tmSymbolDLGPoint, tmSymbolDLG)
 
@@ -115,6 +116,13 @@ EVT_BUTTON(ID_BTN_REMOVEALL_POINT, tmSymbolDLGPointRule::OnBtnRemoveAll)
 EVT_UPDATE_UI(ID_BTN_REMOVE_POINT, tmSymbolDLGPointRule::OnUpdateUIBtnRemove)
 EVT_UPDATE_UI(ID_BTN_REMOVEALL_POINT, tmSymbolDLGPointRule::OnUpdateUIBtnRemoveAll)
 EVT_LIST_ITEM_ACTIVATED(ID_LIST_SYMBOL_POINT, tmSymbolDLGPointRule::OnDoubleClick)
+EVT_LIST_ITEM_RIGHT_CLICK(ID_LIST_SYMBOL_POINT, tmSymbolDLGPointRule::OnRightClick)
+EVT_MENU(ID_CONTEXT_MENU_EDIT_POINT, tmSymbolDLGPointRule::OnMenuEdit)
+EVT_MENU(ID_CONTEXT_MENU_ENABLE_POINT, tmSymbolDLGPointRule::OnMenuEnable)
+EVT_MENU(ID_CONTEXT_MENU_DISABLE_POINT, tmSymbolDLGPointRule::OnMenuDisable)
+EVT_MENU(ID_CONTEXT_MENU_POINT_COLOR, tmSymbolDLGPointRule::OnMenuPointColor)
+EVT_MENU(ID_CONTEXT_MENU_POINT_RADIUS, tmSymbolDLGPointRule::OnMenuPointRadius)
+EVT_MENU(ID_CONTEXT_MENU_TRANSPARENCY_POINT, tmSymbolDLGPointRule::OnMenuTransparency)
 END_EVENT_TABLE()
 
 void tmSymbolDLGPointRule::_CreateControls() {
@@ -430,4 +438,108 @@ void tmSymbolDLGPointRule::SetSelectedField(wxString value) {
 
 void tmSymbolDLGPointRule::SetSelectedPanel(int panelindex) {
     m_PointUniqueStyle.m_PanelNo = panelindex;
+}
+
+void tmSymbolDLGPointRule::OnRightClick(wxListEvent& event) {
+    wxArrayLong selected_index;
+    int num_selected = m_SymbolListCtrl->GetSelectedAll(selected_index);
+    if (num_selected == 0) {
+        return;
+    }
+
+    wxMenu context_menu(_("Symbology"));
+    context_menu.Append(ID_CONTEXT_MENU_EDIT_POINT, _("Edit symbology..."));
+    context_menu.AppendSeparator();
+    context_menu.Append(ID_CONTEXT_MENU_ENABLE_POINT, _("Enable"));
+    context_menu.Append(ID_CONTEXT_MENU_DISABLE_POINT, _("Disable"));
+    context_menu.AppendSeparator();
+    context_menu.Append(ID_CONTEXT_MENU_POINT_RADIUS, _("Set point radius..."));
+    context_menu.Append(ID_CONTEXT_MENU_POINT_COLOR, _("Set point color..."));
+    context_menu.AppendSeparator();
+    context_menu.Append(ID_CONTEXT_MENU_TRANSPARENCY_POINT, _("Set transparency..."));
+    if (num_selected != 1) {
+        context_menu.Enable(ID_CONTEXT_MENU_EDIT_POINT, false);
+    }
+    m_SymbolListCtrl->PopupMenu(&context_menu);
+}
+
+void tmSymbolDLGPointRule::OnMenuEdit(wxCommandEvent& event) {
+    long myItemIndex = m_SymbolListCtrl->GetSelectedFirst();
+    tmSymbolRule* myRule = m_Rules[myItemIndex];
+    wxASSERT(myRule);
+    tmSymbolRuleEdit_DLG myDlg(this, myRule);
+    if (myDlg.ShowModal() != wxID_OK) {
+        return;
+    }
+
+    *myRule = *(myDlg.GetRule());
+    _LoadTableData();
+}
+
+void tmSymbolDLGPointRule::OnMenuDisable(wxCommandEvent& event) {
+    _EnableItems(false);
+    _LoadTableData();
+}
+
+void tmSymbolDLGPointRule::OnMenuEnable(wxCommandEvent& event) {
+    _EnableItems(true);
+    _LoadTableData();
+}
+
+void tmSymbolDLGPointRule::_EnableItems(bool enable) {
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        myRule->SetActive(enable);
+    }
+}
+
+void tmSymbolDLGPointRule::OnMenuPointColor(wxCommandEvent& event) {
+    wxColourDialog my_dlg(this);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* point = (tmSymbolVectorPoint*)myRule->GetSymbolData();
+        point->GetSymbolData()->m_Colour = my_dlg.GetColourData().GetColour();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGPointRule::OnMenuPointRadius(wxCommandEvent& event) {
+    wxNumberEntryDialog my_dlg(this, _("Set Point radius"), _("Point radius"), _("Radius"), 1, 0, 100);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* point = (tmSymbolVectorPoint*)myRule->GetSymbolData();
+        point->GetSymbolData()->m_Radius = (int)my_dlg.GetValue();
+    }
+    _LoadTableData();
+}
+
+void tmSymbolDLGPointRule::OnMenuTransparency(wxCommandEvent& event) {
+    wxNumberEntryDialog my_dlg(this, _("Set Transparency"), _("Transparency"), _("Transparency"), 0, 0, 100);
+    if (my_dlg.ShowModal() == wxID_CANCEL) {
+        return;
+    }
+    wxArrayLong my_selected_ids;
+    m_SymbolListCtrl->GetSelectedAll(my_selected_ids);
+    for (long index : my_selected_ids) {
+        tmSymbolRule* myRule = m_Rules[index];
+        wxASSERT(myRule);
+        auto* point = (tmSymbolVectorPoint*)myRule->GetSymbolData();
+        point->GetSymbolData()->m_GlobalTransparency = (int)my_dlg.GetValue();
+    }
+    _LoadTableData();
 }
