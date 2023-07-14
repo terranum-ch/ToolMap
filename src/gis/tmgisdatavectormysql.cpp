@@ -856,7 +856,7 @@ bool tmGISDataVectorMYSQL::GetSnapCoord(const wxRealPoint& clickpt, double buffe
     // search for intersecting features
     wxString sSentence = wxString::Format(
         _T("SELECT OBJECT_ID, OBJECT_GEOMETRY FROM %s WHERE ")
-        _T("Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
+        _T("ST_Intersects(GeomFromText('%s'),OBJECT_GEOMETRY)"),
         GetShortFileName().c_str(), mySBuffer.c_str());
 
     MYSQL_ROW row;

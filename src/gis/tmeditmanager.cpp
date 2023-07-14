@@ -1659,7 +1659,7 @@ wxRealPoint* tmEditManager::EMIterateAllSnappingLayers(const wxRealPoint& clicke
     double myMinDistance = 0;
     for (unsigned int p = 0; p < mySnapPts.GetCount(); p++) {
         wxRealPoint mySubstrPtr = mySnapPts.Item(p) - clickedpoint;
-        double myDistance = fabs(sqrt((mySubstrPtr.x * mySubstrPtr.x) + (mySubstrPtr.y * mySubstrPtr.y)));
+        double myDistance = sqrt((mySubstrPtr.x * mySubstrPtr.x) + (mySubstrPtr.y * mySubstrPtr.y));
         if (p == 0) {
             myMinDistance = myDistance;
         } else {

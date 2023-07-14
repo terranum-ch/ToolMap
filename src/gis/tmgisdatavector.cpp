@@ -214,7 +214,6 @@ bool tmGISDataVector::GetVertexIntersection(OGRGeometry* geometry, OGRGeometry* 
                 myLineLine->getPoint(i, myPointLine);
                 if (myPointLine && myPointLine->Intersects(buffer)) {
                     points.Add(wxRealPoint(myPointLine->getX(), myPointLine->getY()));
-                    break;
                 }
             }
             OGRGeometryFactory::destroyGeometry(myPointLine);
