@@ -7,13 +7,14 @@ class Toolmap(ConanFile):
     requires = [
         "wxwidgets/3.2.2.1@terranum-conan+wxwidgets/stable",
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
-        "gdal/3.5.2@terranum-conan+gdal/stable",
+        "gdal/3.7.0@terranum-conan+gdal/stable",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
-        "libtiff/4.4.0",
-        "libdeflate/1.12",
-        "proj/9.0.1",
+        "libtiff/4.5.1",
+        "libdeflate/1.18",
+        "proj/9.1.1",
         "libjpeg/9e",
-        "libpng/1.6.38"
+        "libpng/1.6.40",
+        "zlib/1.2.13"
     ]
 
     options = {
@@ -28,7 +29,7 @@ class Toolmap(ConanFile):
 
     def requirements(self):
         if self.options.unit_test or self.options.code_coverage:
-            self.requires("gtest/1.12.1")
+            self.requires("gtest/1.14.0")
 
     def configure(self):
         if self.options.code_coverage:
