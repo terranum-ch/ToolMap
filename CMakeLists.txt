@@ -127,7 +127,7 @@ TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib)
 #ENDIF (WIN32)
 
 if (UNIX)
-    add_definitions(-std=c++11)
+    add_definitions(-std=c++14)
 endif (UNIX)
 
 # IF (APPLE)
