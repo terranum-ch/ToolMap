@@ -34,9 +34,9 @@ jobs:
         # gitlab support (wxwidgets, mysql, gdal)
         conan remote add gitlab https://gitlab.com/api/v4/packages/conan
         
-        # create default profile with libstdc++11
+        # create default profile with libstdc++14
         conan profile new default --detect
-        conan profile update settings.compiler.libcxx=libstdc++11 default
+        conan profile update settings.compiler.libcxx=libstdc++14 default
         conan profile update conf.tools.system.package_manager:mode=install default
         conan profile update conf.tools.system.package_manager:sudo=True default
 
