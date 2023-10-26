@@ -73,7 +73,7 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o code_coverage=True --build=gtk --build=missing
+        conan install .. -o code_coverage=True --build=missing
 
     - name: Configure CMake
       working-directory: ${{github.workspace}}/bin
