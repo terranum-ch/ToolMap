@@ -9,12 +9,12 @@ class Toolmap(ConanFile):
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
         "gdal/3.7.0@terranum-conan+gdal/stable",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
-        "libtiff/4.5.1",
-        "libdeflate/1.18",
-        "proj/9.1.1",
+        "libtiff/4.6.0",
+        "libdeflate/1.19",
+        "proj/9.3.0",
         "libjpeg/9e",
         "libpng/1.6.40",
-        "zlib/1.2.13"
+        "zlib/1.3"
     ]
 
     options = {
@@ -37,11 +37,6 @@ class Toolmap(ConanFile):
         
         self.options["gdal"].with_curl = True # for xml support
         self.options["gdal"].shared = True
-
-
-        # this isn't needed anymore with wxWidgets 3.2.1
-        # if self.settings.os == "Linux":
-        #    self.options["wxwidgets"].webview = False  # webview control isn't available on linux.
 
     def imports(self):
         # copy libraries
