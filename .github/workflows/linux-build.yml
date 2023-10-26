@@ -22,6 +22,13 @@ jobs:
       with:
         python-version: 3.8
 
+    - name: Cache Conan libs
+      id: cache-conan
+      uses: pat-s/always-upload-cache@v3.0.11
+      with:
+        path: /home/runner/.conan
+        key: conan-linux
+
     - name: Install Conan
       run: |
         python -m pip install --upgrade pip
@@ -30,9 +37,9 @@ jobs:
         # gitlab support (wxwidgets, mysql, gdal)
         conan remote add gitlab https://gitlab.com/api/v4/packages/conan
         
-        # create default profile with libstdc++14
+        # create default profile with libstdc++11
         conan profile new default --detect
-        conan profile update settings.compiler.libcxx=libstdc++14 default
+        conan profile update settings.compiler.libcxx=libstdc++11 default
         conan profile update conf.tools.system.package_manager:mode=install default
         conan profile update conf.tools.system.package_manager:sudo=True default
 
@@ -59,7 +66,7 @@ jobs:
       run: |
         mkdir ${{github.workspace}}/bin
         cd ${{github.workspace}}/bin
-        conan install .. -o unit_test=True --build=gtk
+        conan install .. -o unit_test=True --build=gtk --build=missing
 
     - name: Build
       working-directory: ${{github.workspace}}/bin

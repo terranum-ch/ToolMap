@@ -20,6 +20,13 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Cache Conan libs
+        id: cache-conan
+        uses: pat-s/always-upload-cache@v3.0.11
+        with:
+          path: /Users/runner/.conan
+          key: conan-osx
+
       - name: Install conan
         run: |
           python -m pip install --upgrade pip
@@ -34,11 +41,7 @@ jobs:
         run: |
           mkdir ${{github.workspace}}/bin
           cd ${{github.workspace}}/bin
-          conan install .. -o unit_test=True --build=qhull
-
-#      - name: Install OpenMP
-#        run: |
-#          brew install libomp
+          conan install .. -o unit_test=True --build=qhull --build=missing
 
       - name: Build
         run: |
