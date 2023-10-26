@@ -34,7 +34,7 @@ jobs:
 
           # gitlab support
           conan config set general.revisions_enabled=1
-          conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+          conan remote add gitlab https://gitlab.com/api/v4/packages/conan --force
           conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
 
       - name: Install libraries

@@ -35,10 +35,10 @@ jobs:
         pip install wheel conan==1.*
         
         # gitlab support (wxwidgets, mysql, gdal)
-        conan remote add gitlab https://gitlab.com/api/v4/packages/conan
+        conan remote add gitlab https://gitlab.com/api/v4/packages/conan --force
         
         # create default profile with libstdc++11
-        conan profile new default --detect
+        conan profile new default --detect --force
         conan profile update settings.compiler.libcxx=libstdc++11 default
         conan profile update conf.tools.system.package_manager:mode=install default
         conan profile update conf.tools.system.package_manager:sudo=True default
