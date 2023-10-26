@@ -6,7 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- None
+### Added
+
+- Changing multiple symbology for shape file layers has been added (see #498)
+
+### Changed
+
+- Bumping GDAL to 3.7.0
+- Bumping wxWidgets to 3.2.2.1
+- Bumping libtiff to 4.6.0
+- Bumping proj to 9.3.0
+
+### Fixed
+
+- Fixing new issue with new projects under Windows.
+- Fixing snapping to the nearest point (see #497).
+
 
 ## [4.0.2691 - 2022-12-20] - NUGLAR
 
@@ -19,11 +34,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New application logo (see #486)
 - Using SVG for toolbar's icon instead of bitmaps (see #487)
-- complete redesign of the table of contents to allow layers grouping (see #477, #178, #467)
+- Complete redesign of the table of contents to allow layers grouping (see #477, #178, #467)
 - Improving the crash report email, adding the Toolmap's version (see #483)
 - Moving from MySQL 5.6.51 to MariaDB 10.6.10 (see #471)
-- bumping GDAL to 3.5.2
-- bumping wxWidgets to 3.2.1
+- Bumping GDAL to 3.5.2
+- Bumping wxWidgets to 3.2.1
 - Moving to gtest for unit testing (see #472)
 - Moving ToolbasView to a separate project
 
