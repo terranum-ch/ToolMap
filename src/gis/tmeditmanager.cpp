@@ -1031,7 +1031,9 @@ bool tmEditManager::_LoadSnappingStatus() {
 
             // Search if vertex are snapped
             if (mySnapStatus == tmSNAPPING_BEGIN_END) {
-                for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v += m_ArcPoints.GetCount() - 1) {
+                unsigned int added = m_ArcPoints.GetCount() -1;
+                if(added == 0) added = 1;
+                for (unsigned int v = 0; v < m_ArcPoints.GetCount(); v += added) {
                     if (myActualGISData->IsPointSnapped(*m_ArcPoints[v], mySnapStatus, myActualID)) {
                         int myItemIndex = m_ArcSnappedPointsIndexes.Index(v);
                         if (myItemIndex == wxNOT_FOUND) {
