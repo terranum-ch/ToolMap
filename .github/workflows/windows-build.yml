@@ -68,7 +68,7 @@ jobs:
         cpack -C ${{env.BUILD_TYPE}} -G WIX
 
     - name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         path: |
           ${{github.workspace}}/bin/*.zip
