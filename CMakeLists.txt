@@ -85,11 +85,9 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 #INCLUDE_DIRECTORIES(plugins/lscrashreport/src)
 #ADD_SUBDIRECTORY(plugins/lscrashreport)
 
-# Adding fontconfig for Linux (this is needed for wxPdfDocument)
-SET(ADDED_LIBS "")
 if (UNIX AND NOT APPLE)
-    SET(ADDED_LIBS "fontconfig")
-endif ()
+    find_package(PNG REQUIRED)
+endif (UNIX AND NOT APPLE)
 
 # osx icon
 set(MACOSX_BUNDLE_ICON_FILE art/toolmap.icns)
@@ -98,7 +96,10 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Reso
 
 # Create a library with all sources files mainly for unit testing
 ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES})
-target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS} ${ADDED_LIBS})
+target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
+if(UNIX AND NOT APPLE)
+    target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${PNG_LIBRARY} xkbcommon fontconfig)
+endif(UNIX AND NOT APPLE)
 
 # Create the Toolmap binary
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
@@ -108,6 +109,9 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
         src/gui/resource.rc
         )
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib)
+if(UNIX AND NOT APPLE)
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${PNG_LIBRARY} xkbcommon fontconfig)
+endif(UNIX AND NOT APPLE)
 
 #IF (WIN32)
 #    SOURCE_GROUP(resource FILES src/resource.rc)

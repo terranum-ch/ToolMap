@@ -38,6 +38,9 @@ class Toolmap(ConanFile):
         self.options["gdal"].with_curl = True # for xml support
         self.options["gdal"].shared = True
 
+        if self.settings.os == "Linux":
+            self.options["wxwidgets"].png = "system"
+
     def imports(self):
         # copy libraries
         self.copy("*.dll", dst="bin", src="bin")  # From bin to bin
