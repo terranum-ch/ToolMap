@@ -1,6 +1,6 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) TERRANUM 2022
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.6)
 
 PROJECT("ToolMap")
 
@@ -87,6 +87,7 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 
 if (UNIX AND NOT APPLE)
     find_package(PNG REQUIRED)
+    message(STATUS "PNG lib is : ${PNG_LIBRARY}")
 endif (UNIX AND NOT APPLE)
 
 # osx icon

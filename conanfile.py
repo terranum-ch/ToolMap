@@ -13,7 +13,7 @@ class Toolmap(ConanFile):
         "libdeflate/1.19",
         "proj/9.3.0",
         "libjpeg/9e",
-        "libpng/1.6.40",
+        #"libpng/1.6.40",
         "zlib/1.3"
     ]
 
@@ -36,10 +36,12 @@ class Toolmap(ConanFile):
             self.options.unit_test = True
         
         self.options["gdal"].with_curl = True # for xml support
+
         self.options["gdal"].shared = True
 
         if self.settings.os == "Linux":
             self.options["wxwidgets"].png = "system"
+            self.options['gdal'].with_png = False # to avoid static linking of libpng
 
     def imports(self):
         # copy libraries
