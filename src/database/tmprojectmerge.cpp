@@ -15,6 +15,7 @@
 
 #include "tmprojectmerge.h"
 
+#include "database_tm.h"
 #include "database.h"
 #include "databaseresult.h"
 
@@ -458,7 +459,7 @@ bool tmProjectMerge::CheckSimilar() {
         return false;
     }
     m_DB->DataBaseClearResults();
-    if (myVersion != 231) {
+    if (myVersion != TM_DATABASE_VERSION) {
         m_Errors.Add(
             wxString::Format(_("Wrong project version, works only for projects v.%d found (%ld)!"), 231, myVersion));
         return false;
