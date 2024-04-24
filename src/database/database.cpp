@@ -180,7 +180,7 @@ bool DataBase::DataBaseCreateNew(const wxString& datadir, const wxString& name) 
     // check if database path already exists
     wxFileName mydb_path(datadir, name);
     if (mydb_path.Exists()) {
-        wxLogError(_("Database: '%s' allready exists!"), mydb_path.GetFullPath());
+        wxLogError(_("Database: '%s' already exists!"), mydb_path.GetFullPath());
         return false;
     }
 
@@ -250,9 +250,9 @@ bool DataBase::DataBaseOpen(const wxString& datadir, const wxString& name) {
         mysql_refresh(m_MySQL, REFRESH_HOSTS);
         mysql_refresh(m_MySQL, REFRESH_STATUS);
         mysql_refresh(m_MySQL, REFRESH_THREADS);
-        mysql_close(m_MySQL);
-        m_MySQL = mysql_init(nullptr);
-        m_IsDatabaseOpened = false;
+        //mysql_close(m_MySQL);
+        //m_MySQL = mysql_init(nullptr);
+        //m_IsDatabaseOpened = false;
     }
     if (!m_IsDatabaseOpened) {
         if (mysql_real_connect(m_MySQL, NULL, NULL, NULL, (const char*)name.mb_str(wxConvUTF8), 3309, NULL,
