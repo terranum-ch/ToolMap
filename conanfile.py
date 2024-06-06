@@ -5,7 +5,7 @@ import os
 class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = [
-        "wxwidgets/3.2.4@terranum-conan+wxwidgets/stable",
+        "wxwidgets/3.2.5@terranum-conan+wxwidgets/stable",
         "mariadb/10.6.10@terranum-conan+mariadb/stable",
         "gdal/3.7.0@terranum-conan+gdal/stable",
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
@@ -13,7 +13,7 @@ class Toolmap(ConanFile):
         "libdeflate/1.19",
         "proj/9.3.0",
         "libjpeg/9e",
-        #"libpng/1.6.40",
+        "libpng/1.6.43",
         "zlib/1.3"
     ]
 
