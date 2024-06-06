@@ -63,8 +63,9 @@ jobs:
         sudo apt-get install libxkbfile-dev libxmu-dev libxmuu-dev libxpm-dev libxrandr-dev libxrender-dev 
         sudo apt-get install libxres-dev libxss-dev libxt-dev libxtst-dev libxv-dev libxvmc-dev libxxf86vm-dev 
         sudo apt-get install xtrans-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-xkb-dev libxcb-icccm4-dev 
-        sudo apt-get install libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev
-        sudo apt-get install libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev uuid-dev libxcb-util-dev
+        sudo apt-get install libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev 
+        sudo apt-get install libxcb-sync-dev libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev 
+        sudo apt-get install uuid-dev libxcb-util-dev libxcb-dri2-0-dev
 
     - name: Install libraries
       run: |
