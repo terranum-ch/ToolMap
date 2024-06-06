@@ -2306,6 +2306,9 @@ bool tmEditManager::FlipLine() {
     for (unsigned int f = 0; f < mySelected->GetCount(); f++) {
         OGRFeature* myFeature = mySelLayer->GetFeatureByOID(mySelected->Item(f));
         wxASSERT(myFeature);
+        if (myFeature == nullptr) {
+            continue;
+        }
 
         // don't delete, internally geometry.
         OGRLineString* myOGRSelLine = (OGRLineString*)myFeature->GetGeometryRef();

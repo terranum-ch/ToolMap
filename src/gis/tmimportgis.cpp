@@ -87,6 +87,11 @@ bool tmImportGIS::Import(DataBaseTM* database, PrjDefMemManage* prj, wxProgressD
         }
 
         OGRGeometry* myGeom = myFeature->GetGeometryRef();
+        if (myGeom == nullptr) {
+            OGRFeature::DestroyFeature(myFeature);
+            wxLogWarning(_("Empty geometry in feature %ld"), myFeature->GetFID());
+            continue;
+        }
         wxASSERT(myGeom);
         wxArrayLong oids;
 
