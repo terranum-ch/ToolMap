@@ -46,7 +46,7 @@ IF (APPLE)
     add_custom_command(
             TARGET UnitTests
             POST_BUILD
-            COMMAND install_name_tool -change @rpath/libgdal.33.dylib @executable_path/libgdal.33.dylib bin/UnitTests
+            COMMAND install_name_tool -change @rpath/libgdal.34.dylib @executable_path/libgdal.34.dylib bin/UnitTests
             COMMENT "Installing GDAL library for Unit testing"
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
