@@ -30,13 +30,14 @@ class Toolmap(ConanFile):
     def requirements(self):
         if self.options.unit_test or self.options.code_coverage:
             self.requires("gtest/1.14.0")
+        if self.settings.os == "Macos":
+            self.requires("json-c/0.17")    # building json-c/0.16 isn't working on latest OSX.
 
     def configure(self):
         if self.options.code_coverage:
             self.options.unit_test = True
         
         self.options["gdal"].with_curl = True # for xml support
-
         self.options["gdal"].shared = True
 
         if self.settings.os == "Linux":
