@@ -607,7 +607,11 @@ bool tmLayerManager::_ReplaceLayer(const wxFileName& filename, const wxString& o
     // need to create an attribut index ?
     if (myLayerToReplace->GetSymbolRuleManagerRef()->GetRulesRef()->GetCount() > 0 &&
         myLayerToReplace->GetSymbolRuleManagerRef()->IsUsingRules()) {
-        tmGISDataVectorSHP* myGISData = (tmGISDataVectorSHP*)tmGISData::LoadLayer(myLayerToReplace);
+        auto myGISData = (tmGISDataVectorSHP*)tmGISData::LoadLayer(myLayerToReplace);
+        if (myGISData == nullptr) {
+            wxLogError(_("Unable to load layer : %s"), myLayerToReplace->GetName().GetName());
+            return false;
+        }
         wxString myQuery2 = wxString::Format(_T("DROP INDEX on %s"), myLayerToReplace->GetName().GetName());
         myGISData->ExecuteSQLQuery(myQuery2);
         wxString myFieldName = myLayerToReplace->GetSymbolRuleManagerRef()->GetFieldName();

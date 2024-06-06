@@ -228,6 +228,7 @@ bool tmImport::SetAttributes(DataBaseTM* database, PrjDefMemManage* prj, const w
                              wxArrayLong& oids) {
     // Get layer
     ProjectDefMemoryLayers* layer = prj->FindLayer(m_LayerName);
+    if (layer == nullptr) return false;
 
     // Get field names
     wxArrayString fields;

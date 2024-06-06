@@ -453,7 +453,9 @@ OGRGeometry* tmGISDataVector::CreateOGRGeometry(const wxRealPoint& pt) {
 bool tmGISDataVector::CutLineAtVertex(long oid, const wxRealPoint& clickedpt, int searchRadius, int layertype) {
     // get the line
     OGRFeature* myFeature = GetFeatureByOID(oid);
-    wxASSERT(myFeature);
+    if (myFeature == nullptr) {
+        return false;
+    }
     OGRLineString* myLine = (OGRLineString*)myFeature->GetGeometryRef();
 
     // create search buffer
