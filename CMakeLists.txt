@@ -151,15 +151,10 @@ ENDIF (MSVC)
 if (USE_CODECOV)
     include(CodeCoverage)
     append_coverage_compiler_flags()
-    #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
-    set(COVERAGE_EXCLUDES '/usr/*'
-            '${PROJECT_SOURCE_DIR}/tests/src/*'
-            '${PROJECT_SOURCE_DIR}/libs/*'
-            '${CMAKE_BINARY_DIR}/_deps/*')
     setup_target_for_coverage_lcov(
             NAME code-coverage
             EXECUTABLE UnitTests
-            EXCLUDE "/usr/*" "test/*" "_deps/*" "bin/*" "*/lib/*" "*/include/*" "*/.conan/*"
+            EXCLUDE "/usr/*" "test/*" "_deps/*" "bin/*" "*/lib/*" "*/include/*" "*/.conan/*" "${PROJECT_SOURCE_DIR}/tests/src/*" "${CMAKE_BINARY_DIR}/_deps/*"
             DEPENDENCIES UnitTests)
 endif (USE_CODECOV)
 
