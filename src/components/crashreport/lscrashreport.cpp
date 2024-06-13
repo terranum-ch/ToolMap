@@ -336,22 +336,28 @@ bool lsCrashReport::SendReportWeb(const wxString& serverurl, const wxString& pro
     wxFileName myTempZipFileName(m_Report->GetCompressedFileName());
     curl_easy_setopt(easyhandle, CURLOPT_URL, (const char*)serverurl.mb_str(wxConvUTF8));
 
-    struct curl_httppost* formpost = nullptr;
-    struct curl_httppost* lastptr = nullptr;
-    struct curl_slist* headerlist = nullptr;
+    curl_mime *mime;
+    curl_mimepart *part;
 
-    curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, "filename", CURLFORM_COPYCONTENTS,
-                 (const char*)myTempZipFileName.GetFullName().mb_str(wxConvUTF8),  // "postit2.c",
-                 CURLFORM_END);
+    /* Create a mime handle. */
+    mime = curl_mime_init(easyhandle);
 
-    curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, "filecontents", CURLFORM_FILE,
-                 (const char*)myTempZipFileName.GetFullPath().mb_str(wxConvUTF8),  // "postit2.c",
-                 CURLFORM_END);
+    /* Add a simple part. */
+    part = curl_mime_addpart(mime);
+    curl_mime_name(part, "filename");
+    curl_mime_data(part, (const char*)myTempZipFileName.GetFullName().mb_str(wxConvUTF8), CURL_ZERO_TERMINATED);
 
-    curl_formadd(&formpost, &lastptr, CURLFORM_COPYNAME, "softname", CURLFORM_COPYCONTENTS,
-                 (const char*)m_SoftName.mb_str(wxConvUTF8), CURLFORM_END);
+    /* Add a file part. */
+    part = curl_mime_addpart(mime);
+    curl_mime_filedata(part, (const char*)myTempZipFileName.GetFullPath().mb_str(wxConvUTF8));
 
-    curl_easy_setopt(easyhandle, CURLOPT_HTTPPOST, formpost);
+    /* Add a simple part. */
+    part = curl_mime_addpart(mime);
+    curl_mime_name(part, "softname");
+    curl_mime_data(part, (const char*)m_SoftName.mb_str(wxConvUTF8), CURL_ZERO_TERMINATED);
+
+    /* Associate the multipart post with the easy handle. */
+    curl_easy_setopt(easyhandle, CURLOPT_MIMEPOST, mime);
 
     if (!proxy.IsEmpty()) {
         curl_easy_setopt(easyhandle, CURLOPT_PROXY, (const char*)proxy.mb_str(wxConvUTF8));
@@ -372,15 +378,13 @@ bool lsCrashReport::SendReportWeb(const wxString& serverurl, const wxString& pro
         wxLogError(myErr);
 
         curl_easy_cleanup(easyhandle);
-        curl_formfree(formpost);
-        curl_slist_free_all(headerlist);
+        curl_mime_free(mime);
         return false;
     }
     wxString myPageInfo = myBuffer.GetString();
     wxLogWarning(myPageInfo);
     curl_easy_cleanup(easyhandle);
-    curl_formfree(formpost);
-    curl_slist_free_all(headerlist);
+    curl_mime_free(mime);
     return true;
 }
 
