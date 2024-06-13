@@ -16,9 +16,9 @@
 
 #include "gtest/gtest.h"
 
-#include "test_param.h"
 #include "../../src/core/tmprojectupdater.h"
 #include "database_environnement.h"
+#include "test_param.h"
 
 // =================================================================
 bool CopyDir2(wxString from, wxString to) {
