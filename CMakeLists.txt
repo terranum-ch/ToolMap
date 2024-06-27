@@ -18,6 +18,11 @@ set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
 set(CMAKE_PROJECT_VERSION_PATCH ${GIT_NUMBER})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
+if(UNIX AND NOT APPLE)
+    find_package(PNG REQUIRED)
+    message(STATUS "PNG_LIBRARIES: ${PNG_LIBRARY}")
+endif()
+
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
@@ -86,7 +91,6 @@ INCLUDE("${PROJECT_SOURCE_DIR}/src/components/wxtreemultictrl/wxtreectrloptions.
 #ADD_SUBDIRECTORY(plugins/lscrashreport)
 
 if (UNIX AND NOT APPLE)
-    find_package(PNG REQUIRED)
     message(STATUS "PNG lib is : ${PNG_LIBRARY}")
 endif (UNIX AND NOT APPLE)
 
@@ -111,6 +115,7 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
         )
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib)
 if(UNIX AND NOT APPLE)
+    message(STATUS "PNG lib is : ${PNG_LIBRARY}")
     target_link_libraries(${CMAKE_PROJECT_NAME} ${PNG_LIBRARY} xkbcommon fontconfig)
 endif(UNIX AND NOT APPLE)
 
