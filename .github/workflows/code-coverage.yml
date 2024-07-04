@@ -10,10 +10,13 @@ jobs:
     name: Code coverage
     
     runs-on: ubuntu-22.04
+    # running on 24.04 leads to mismatch problem on gcov :  https://github.com/linux-test-project/lcov/issues/209
 
     env:
-      BUILD_TYPE: Release
-      # CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918 Not needed for public repository
+      BUILD_TYPE: RelWithDebInfo
+      CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918
+      # tocken is needed for public repository,
+      # see : https://docs.codecov.com/docs/codecov-uploader#supporting-token-less-uploads-for-forks-of-open-source-repos-using-codecov
       PROJ_LIB: ${{github.workspace}}/bin/share/proj
 
     steps:
@@ -77,13 +80,9 @@ jobs:
         cd ${{github.workspace}}/bin
         conan install .. -o code_coverage=True --build=gtk --build=missing
 
-    - name: Build
+    - name: Configure
       working-directory: ${{github.workspace}}/bin
-      run: conan build ..
-
-    - name: copy proj.db for coverage
-      working-directory: ${{github.workspace}}/bin
-      run: cp ${{github.workspace}}/bin/bin/proj.db ${{github.workspace}}/bin
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_CODECOV=1 -DUSE_UNITTEST=1
 
     - name: Build and run code coverage
       working-directory: ${{github.workspace}}/bin
