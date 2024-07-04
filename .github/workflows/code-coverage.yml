@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-24.04
 
     env:
-      BUILD_TYPE: RelWithDebInfo
+      BUILD_TYPE: Release
       # CODECOV_TOKEN: 9c75edd2-e08d-48ce-a919-5ee804875918 Not needed for public repository
       PROJ_LIB: ${{github.workspace}}/bin/share/proj
 
@@ -77,9 +77,13 @@ jobs:
         cd ${{github.workspace}}/bin
         conan install .. -o code_coverage=True --build=gtk --build=missing
 
-    - name: Configure CMake
+    - name: Build
       working-directory: ${{github.workspace}}/bin
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DUSE_CODECOV=1 -DUSE_UNITTEST=1
+      run: conan build ..
+
+    - name: copy proj.db for coverage
+      working-directory: ${{github.workspace}}/bin
+      run: cp ${{github.workspace}}/bin/bin/proj.db ${{github.workspace}}/bin
 
     - name: Build and run code coverage
       working-directory: ${{github.workspace}}/bin
