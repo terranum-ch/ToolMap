@@ -18,10 +18,10 @@ set(CMAKE_PROJECT_VERSION_MINOR ${${PROJECT_NAME}_MINOR_VERSION})
 set(CMAKE_PROJECT_VERSION_PATCH ${GIT_NUMBER})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
-if(UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
     find_package(PNG REQUIRED)
     message(STATUS "PNG_LIBRARIES: ${PNG_LIBRARY}")
-endif()
+endif ()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
@@ -33,6 +33,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif ()
+
+## Code coverage for IDE, see https://www.jetbrains.com/help/clion/code-coverage-clion.html#compiler-flags
+SET(USE_CODECOVERAGE_IDE OFF CACHE BOOL "Should we do code coverage for IDE ?")
+if (USE_CODECOVERAGE_IDE)
+    message(STATUS "Code coverage for IDE")
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+    SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")
+    message(STATUS "CMAKE_CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+endif (USE_CODECOVERAGE_IDE)
 
 # Enable tests
 SET(USE_UNITTEST CACHE BOOL "Should we create the tests for ${CMAKE_PROJECT_NAME}")
@@ -65,7 +74,7 @@ if (WITH_TOOLBASVIEW)
             CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_DIR} -DCMAKE_BUILD_TYPE=Release
             BUILD_COMMAND conan build ../ToolBasView
             INSTALL_COMMAND ""
-            )
+    )
 endif ()
 
 # Sources and headers 
@@ -102,9 +111,9 @@ set_source_files_properties(${ICON_PATH} PROPERTIES MACOSX_PACKAGE_LOCATION Reso
 # Create a library with all sources files mainly for unit testing
 ADD_LIBRARY("${CMAKE_PROJECT_NAME}_lib" STATIC ${SRC_FILES})
 target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
-if(UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
     target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${PNG_LIBRARY} xkbcommon fontconfig)
-endif(UNIX AND NOT APPLE)
+endif (UNIX AND NOT APPLE)
 
 # Create the Toolmap binary
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
@@ -112,12 +121,12 @@ ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
         ${MAIN_SRC_FILE}
         ${ICON_PATH}
         src/gui/resource.rc
-        )
+)
 TARGET_LINK_LIBRARIES(${CMAKE_PROJECT_NAME} ${CMAKE_PROJECT_NAME}_lib)
-if(UNIX AND NOT APPLE)
+if (UNIX AND NOT APPLE)
     message(STATUS "PNG lib is : ${PNG_LIBRARY}")
     target_link_libraries(${CMAKE_PROJECT_NAME} ${PNG_LIBRARY} xkbcommon fontconfig)
-endif(UNIX AND NOT APPLE)
+endif (UNIX AND NOT APPLE)
 
 #IF (WIN32)
 #    SOURCE_GROUP(resource FILES src/resource.rc)
@@ -152,7 +161,6 @@ IF (MSVC)
     MESSAGE(STATUS "Adding multiprocessor support for Visual Studio (/MP Flag)")
 ENDIF (MSVC)
 
-## Code coverage
 if (USE_CODECOV)
     include(CodeCoverage)
     append_coverage_compiler_flags()
