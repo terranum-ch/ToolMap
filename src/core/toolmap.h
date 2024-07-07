@@ -18,20 +18,25 @@
 
  \section intro_sec Introduction
 
- This program is intended to be a full featured multi-layers GIS editor, implementing the
- SION Method. More informations on the method could be found here : http://www.crealp.ch
+ ToolMap is a free, open-source digitisation software (available at toolmap.ch)
+ designed to produce complex vector GIS maps. It facilitates the production
+ of datasets in various fields, particularly for vectorising
+ geological maps or natural hazard maps. Its unique approach, combined with integrated validation tools,
+ guarantees topologically consistent datasets.
 
- This program was the result of a partnership between Swisstopo and the CREALP. For licence
- informations please refer to the corresponding section.
+ This program began as a partnership between Swisstopo and CREALP.
+ It is now maintained and developed by Terranum.
+ For licence informations please refer to the corresponding section.
 
- \image html toolmap.jpg
+ \image html toolmap.png
 
  \section doc Documentation topics
  To find our way in all the documentated class of the programm, We have sorted our
  documentation based on topics or part of the program. Some topics are presented here :
 
 
- - \subpage intro
+ - \subpage building
+ - \subpage startup
  - \subpage Prj_def "Project definition"
  - \subpage Prj_Edit_Obj "Object Definition"
  - \subpage Misc "Miscellaneous"
@@ -43,19 +48,33 @@
  the Free Software Foundation; either version 2 of the License, or
  (at your option) any later version.
 
- \author Lucien Schreiber (c) CREALP 2007
+ \author L. Schreiber, P. Horton
  \date  Since november 2007
 
+ \page building Building the program
 
- \page intro Introduction
+ Conan is used to build ToolMap and manage its dependencies. The following steps are used to build the program :
+
+            conan install .. -s build_type=<BUILD_TYPE> -o <OPTIONS>
+
+  - BUILD_TYPE : Debug, Release
+  - OPTIONS : unit_test=True, code_coverage=True
+
+            conan build ..
+
+If using cmake instead of conan build, the following options are available :
+
+  -D CMAKE_BUILD_TYPE=<Debug|Release>
+  -D USE_CODECOV=1
+  -D USE_UNITTEST=1
+  -D USE_CODECOVERAGE_IDE=1  Append the flags needed for running code coverage inside the IDE
+
+ \page startup Program startup
  During ToolMap 2 startup, the followed process is described hereafter :
  - ToolMapApp::OnInit() function is called and create the program frame (see class ToolMapFrame)
  - ToolMapFrame object is then initialised and create both the menu bar and the toolbar.
  - ToolMapFrame::CreateToolMapMenu
  - ToolMapFrame::CreateToolMapToolBar
-
- Those two last function were copy-pasted from DialogBlocks (http://www.anthemion.co.uk/dialogblocks/)
- a graphical UI designer.
 
  The program is then started and mainly waiting for event.
 
@@ -74,8 +93,6 @@
  Some code created by others that we use
  - \subpage wxSerialize "wxSerialize"
  - \subpage wxTreeMultiCtrl "wxTreeMultiCtrl"
-
-
  */
 
 #ifndef TOOLMAP_H
