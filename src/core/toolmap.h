@@ -34,8 +34,6 @@
  To find our way in all the documentated class of the programm, We have sorted our
  documentation based on topics or part of the program. Some topics are presented here :
 
-
- - \subpage building
  - \subpage startup
  - \subpage Prj_def "Project definition"
  - \subpage Prj_Edit_Obj "Object Definition"
@@ -50,24 +48,6 @@
 
  \author L. Schreiber, P. Horton
  \date  Since november 2007
-
- \page building Building the program
-
- Conan is used to build ToolMap and manage its dependencies. The following steps are used to build the program :
-
-            conan install .. -s build_type=<BUILD_TYPE> -o <OPTIONS>
-
-  - BUILD_TYPE : Debug, Release
-  - OPTIONS : unit_test=True, code_coverage=True
-
-            conan build ..
-
-If using cmake instead of conan build, the following options are available :
-
-  -D CMAKE_BUILD_TYPE=<Debug|Release>
-  -D USE_CODECOV=1
-  -D USE_UNITTEST=1
-  -D USE_CODECOVERAGE_IDE=1  Append the flags needed for running code coverage inside the IDE
 
  \page startup Program startup
  During ToolMap 2 startup, the followed process is described hereafter :
