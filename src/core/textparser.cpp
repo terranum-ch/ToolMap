@@ -259,6 +259,11 @@ bool TextParserTxtFile::CheckFileToParse() {
     }
 
     // check that the file isn't empty
+    if (m_File->GetLineCount() == 0) {
+         wxLogError(_("File %s is empty, nothing to parse"), m_ParseFileName.GetFullName().c_str());
+         return false;
+    }
+
     wxString myTestLine = m_File->GetLine(0);
     if (myTestLine.IsEmpty()) {
         wxLogError(_("File %s is empty, nothing to parse"), m_ParseFileName.GetFullName().c_str());
