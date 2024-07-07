@@ -57,13 +57,26 @@ TEST_F(VrRealRectTest, Intersect) {
 
 TEST_F(VrRealRectTest, IntersectNeg) {
     vrRealRect rect1(-10.0, -10.0, 10.0, 10.0);
-    vrRealRect rect2(-5.0, -5.0, 5.0, 5.0);
+    vrRealRect rect2(-5.0, -5.0, 10.0, 10.0);
 
     vrRealRect result = rect1.Intersect(rect2);
 
     EXPECT_TRUE(result.IsOk());
     EXPECT_EQ(result.GetLeft(), -5.0);
     EXPECT_EQ(result.GetTop(), -5.0);
+    EXPECT_EQ(result.m_width, 5.0);
+    EXPECT_EQ(result.m_height, 5.0);
+}
+
+TEST_F(VrRealRectTest, IntersectNeg2) {
+    vrRealRect rect1(0, 0, 10.0, 10.0);
+    vrRealRect rect2(5, -5, 10.0, 10.0);
+
+    vrRealRect result = rect1.Intersect(rect2);
+
+    EXPECT_TRUE(result.IsOk());
+    EXPECT_EQ(result.GetLeft(), 5.0);
+    EXPECT_EQ(result.GetTop(), 0.0);
     EXPECT_EQ(result.m_width, 5.0);
     EXPECT_EQ(result.m_height, 5.0);
 }
