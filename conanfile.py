@@ -11,7 +11,7 @@ class Toolmap(ConanFile):
         "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
         "libtiff/4.6.0",
         "libdeflate/1.19",
-        "proj/9.3.0",
+        "proj/9.3.1",
         "libjpeg/9e",
         "zlib/1.3",
     ]
