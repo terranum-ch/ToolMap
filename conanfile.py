@@ -37,6 +37,10 @@ class Toolmap(ConanFile):
     def configure(self):
         if self.options.code_coverage:
             self.options.unit_test = True
+
+        if self.settings.os == "Windows": # avoid linking issues
+            self.options["zlib"].shared = True
+            self.options["libjpeg"].shared = True
         
         self.options["gdal"].with_curl = True # for xml support
         self.options["gdal"].shared = True
