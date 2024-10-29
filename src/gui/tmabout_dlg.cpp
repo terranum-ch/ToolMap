@@ -125,7 +125,7 @@ void tmAboutDLG::CreateControls(wxWindow* parent) {
 
     wxStaticText* m_staticText22;
     wxString myLicenceTxt = _(
-        " Copyright (c) 2022 TERRANUM\n Copyright (c) 2013 SWISSTOPO\n Copyright (c) 2013 CREALP \n\nThis program is "
+        " Copyright (c) 2024 TERRANUM\n Copyright (c) 2013 SWISSTOPO\n Copyright (c) 2013 CREALP \n\nThis program is "
         "free "
         "software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as "
         "published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later "
