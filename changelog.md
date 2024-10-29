@@ -6,25 +6,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.2XXX - 2024-10-29] - MORCOTE
 
-### Added
-
-- Changing multiple symbology for shape file layers has been added (see #498)
-
 ### Changed
 
 - Bumping GDAL to 3.8.3
 - Bumping wxWidgets to 3.2.5
-- Bumping libtiff to 4.6.0
 - Bumping proj to 9.3.1
 - Updating deprecated curl code.
 - Adding some unit tests.
 
 ### Fixed
 
-- Fixing new issue with new projects under Windows.
-- Fixing snapping to the nearest point (see #497).
 - Fixing crash when moving a label point (see #502).
 - Fixing issues with special characters in object kinds (see #510).
+
+
+## [4.0.2734 - 2023-10-27] - ANDERMATT
+
+### Added
+
+- Changing multiple symbology for shape file layers has been added (see #498)
+
+### Changed
+
+- Bumping GDAL to 3.7.0
+- Bumping wxWidgets to 3.2.2.1
+- Bumping libtiff to 4.6.0
+- Bumping proj to 9.3.0
+
+### Fixed
+
+- Fixing new issue with new projects under Windows.
+- Fixing snapping to the nearest point (see #497).
 
 
 ## [4.0.2691 - 2022-12-20] - NUGLAR
