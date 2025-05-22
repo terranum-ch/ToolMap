@@ -1,4 +1,4 @@
-name: Build MacOS (Intel)
+name: Build MacOS
 
 on:
   push:
@@ -8,17 +8,17 @@ on:
 
 jobs:
   build:
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Set up Python 3.10
+      - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
 
       - name: Cache Conan libs
         id: cache-conan
