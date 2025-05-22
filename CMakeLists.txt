@@ -1,10 +1,11 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) TERRANUM 2022
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.10)
 
 PROJECT("ToolMap")
 
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/build/cmake ${CMAKE_MODULE_PATH})
+ADD_DEFINITIONS(-DEMBEDDED_LIBRARY)
 
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "4")

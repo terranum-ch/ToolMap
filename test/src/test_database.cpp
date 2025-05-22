@@ -226,7 +226,7 @@ TEST_F(TestDatabase, QueriesNumber) {
 }
 
 TEST_F(TestDatabase, Version) {
-    EXPECT_TRUE(DataBase::DataBaseGetVersion() == _T("10.6.10-MariaDB"));
+    EXPECT_TRUE(DataBase::DataBaseGetVersion() == _T("10.6.22-MariaDB"));
 }
 
 TEST_F(TestDatabase, CreateNewDatabase) {

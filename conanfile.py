@@ -5,15 +5,15 @@ import os
 class Toolmap(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     requires = [
-        "wxwidgets/3.2.5@terranum-conan+wxwidgets/stable",
-        "mariadb/10.6.10@terranum-conan+mariadb/stable",
-        "gdal/3.8.3@terranum-conan+gdal/stable",
-        "wxpdfdocument/1.0.3-beta@terranum-conan+wxpdfdocument/stable",
-        "libtiff/4.6.0",
-        "libdeflate/1.19",
-        "proj/9.3.1",
-        "libjpeg/9e",
-        "zlib/1.3",
+        "wxwidgets/3.2.8@terranum-conan+wxwidgets/stable",
+        "mariadb/10.6.22@terranum-conan+mariadb/stable",
+        "gdal/3.10.3@terranum-conan+gdal/stable",
+        "wxpdfdocument/1.3.1@terranum-conan+wxpdfdocument/stable",
+        "libtiff/4.7.0",
+        # "libdeflate/1.19",
+        # "proj/9.3.1",
+        # "libjpeg/9e",
+        # "zlib/1.3",
     ]
 
     options = {
@@ -28,7 +28,7 @@ class Toolmap(ConanFile):
 
     def requirements(self):
         if self.options.unit_test or self.options.code_coverage:
-            self.requires("gtest/1.14.0")
+            self.requires("gtest/1.15.0")
         if self.settings.os == "Macos":
             self.requires("json-c/0.17")    # building json-c/0.16 isn't working on latest OSX.
         if self.settings.os == "Windows" or self.settings.os == "Macos":
