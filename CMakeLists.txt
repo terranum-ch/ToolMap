@@ -25,7 +25,7 @@ if (UNIX AND NOT APPLE)
 endif ()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+conan_basic_setup(KEEP_RPATHS)
 
 # Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
