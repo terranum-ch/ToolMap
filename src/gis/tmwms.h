@@ -33,4 +33,8 @@ class tmWMSBrowser {
     wxString GetWMSUrl() const {return m_wms_url;}
 };
 
+/// Class for creating a XML file from a WMS server using GDALDriver::CreateCopy capability
+/// see here for tutorial https://gdal.org/en/stable/tutorials/raster_api_tut.html
+
+
 #endif  // TMWMS_H
