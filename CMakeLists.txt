@@ -26,6 +26,11 @@ endif ()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
+if (APPLE)
+    set(CMAKE_INSTALL_RPATH "@executable_path")
+else()
+    set(CMAKE_INSTALL_RPATH "$ORIGIN")
+endif()
 
 # Export for sourcetrail
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
