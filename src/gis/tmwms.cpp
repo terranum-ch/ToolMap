@@ -3,13 +3,14 @@
 //
 
 #include "tmwms.h"
+#include <gdal_priv.h>
 
 tmWMSBrowser::tmWMSBrowser(const wxString& wms_url) {
     m_wms_url = wms_url;
 }
 
 /// @brief Download and store the XML file containing the WMS capabilities (Layers and other information)
-bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name) {
+bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, const wxString &lang) {
     m_wms_xml_file = wxFileName(output_xml_file_name);
 
     CURL* curl = curl_easy_init();
@@ -23,7 +24,8 @@ bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name) {
         return false;
     }
 
-    curl_easy_setopt(curl, CURLOPT_URL, m_wms_url.mb_str().data());
+    wxLogDebug("WMS Capabilities URL: %s", GetWMSCapabilitiesURL(lang));
+    curl_easy_setopt(curl, CURLOPT_URL, GetWMSCapabilitiesURL(lang).mb_str().data());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteToFile);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
 
@@ -102,4 +104,35 @@ size_t tmWMSBrowser::WriteToFile(void* ptr, size_t size, size_t nmemb, void* use
     size_t totalSize = size * nmemb;
     file->Write(ptr, totalSize);
     return totalSize;
+}
+
+
+tmWMSFileXML::tmWMSFileXML(const wxString &wms_url) {
+    m_wms_url = wms_url;
+    // Initialize GDAL
+    GDALAllRegister();
+}
+
+bool tmWMSFileXML::CreateXML(const wxString &layer_name, const wxString &output_xml_file_name) {
+    // Get The WMS URL for the layer
+    wxString wms_layer_url = GetWMSLayerURL(layer_name);
+    wxLogDebug("WMS Layer URL: %s", wms_layer_url);
+
+    wxFileName output_file(output_xml_file_name);
+    // Use GDAL to create the XML file from the WMS layer
+    GDALDataset *poSrcDS = (GDALDataset *) GDALOpen( wms_layer_url.mb_str(wxConvUTF8), GA_ReadOnly );
+    GDALDriver *poDriver;
+    poDriver = GetGDALDriverManager()->GetDriverByName("WMS");
+    if( poDriver == NULL ) {
+        wxLogError("Failed to open WMS driver");
+        return false;
+    }
+    GDALDataset *poDstDS;
+    poDstDS = poDriver->CreateCopy( output_xml_file_name.mb_str(wxConvUTF8), poSrcDS, FALSE,
+                                    NULL, NULL, NULL );
+    /* Once we're done, close properly the dataset */
+    if( poDstDS != NULL )
+        GDALClose( (GDALDatasetH) poDstDS );
+    GDALClose( (GDALDatasetH) poSrcDS );
+    return true;
 }

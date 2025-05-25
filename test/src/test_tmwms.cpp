@@ -10,7 +10,7 @@ TEST(WMSBrowserTest, Constructor) {
 }
 
 TEST(WMSBrowserTest, DownloadCapabilities) {
-    tmWMSBrowser wmsBrowser("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities&lang=fr");
+    tmWMSBrowser wmsBrowser("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
 
     wxFileName xml_output(g_TestPathEXPORT + _T("/wms_output.xml"));
     if (xml_output.Exists()) {
@@ -21,8 +21,8 @@ TEST(WMSBrowserTest, DownloadCapabilities) {
 }
 
 TEST(WMSBrowserTest, GetLayers) {
-    tmWMSBrowser wmsBrowser("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetCapabilities&lang=fr");
-    EXPECT_TRUE(wmsBrowser.DownloadCapabilities(g_TestPathEXPORT + _T("/wms_output.xml")));
+    tmWMSBrowser wmsBrowser("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
+    EXPECT_TRUE(wmsBrowser.DownloadCapabilities(g_TestPathEXPORT + _T("/wms_output.xml"), "fr"));
 
     wxArrayString layers_names, layers_titles, layers_abstracts;
     EXPECT_TRUE(wmsBrowser.GetLayers(layers_names, layers_titles, layers_abstracts));
@@ -36,4 +36,19 @@ TEST(WMSBrowserTest, GetLayers) {
         wxLogMessage("Layer Title: %s", layers_titles[i]);
         wxLogMessage("Layer Abstract: %s", layers_abstracts[i]);
     }
+}
+
+TEST(WMSFileXMLTest, Ctor) {
+    tmWMSFileXML wmsFileXML("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
+    EXPECT_EQ(wmsFileXML.GetWMSUrl(), "https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
+}
+
+
+TEST(WMSFileXMLTest, CreateXML) {
+    tmWMSFileXML wmsFileXML("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
+    wxFileName xml_output(g_TestPathEXPORT + _T("/wms_layer_output.xml"));
+    if (xml_output.Exists()) {
+        wxRemoveFile(xml_output.GetFullPath());
+    }
+    EXPECT_TRUE(wmsFileXML.CreateXML("ch.swisstopo.geologie-geocover", xml_output.GetFullPath()));
 }

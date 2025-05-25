@@ -25,16 +25,32 @@ class tmWMSBrowser {
   public:
     explicit tmWMSBrowser(const wxString& wms_url);
 
-    bool DownloadCapabilities(const wxString & output_xml_file_name);
+    bool DownloadCapabilities(const wxString & output_xml_file_name, const wxString &lang=wxEmptyString);
     bool GetLayers(wxArrayString& layers_names,
                    wxArrayString& layers_titles,
                    wxArrayString& layers_abstracts);;
 
     wxString GetWMSUrl() const {return m_wms_url;}
+    wxString GetWMSCapabilitiesURL(const wxString & lang = wxEmptyString) const {
+        return m_wms_url + "&REQUEST=GetCapabilities" + (lang.IsEmpty() ? "" : "&lang=" + lang);
+    }
 };
 
 /// Class for creating a XML file from a WMS server using GDALDriver::CreateCopy capability
 /// see here for tutorial https://gdal.org/en/stable/tutorials/raster_api_tut.html
+class tmWMSFileXML {
+  private:
+    wxString m_wms_url = wxEmptyString;
 
+  public:
+    explicit tmWMSFileXML(const wxString& wms_url);
+
+    bool CreateXML(const wxString & layer_name, const wxString& output_xml_file_name);
+    wxString GetWMSUrl() const {return m_wms_url;}
+
+    wxString GetWMSLayerURL(const wxString & layer_name) const {
+        return m_wms_url + "&REQUEST=GetMap&LAYERS=" + layer_name + "&CRS=EPSG:3857";
+    }
+};
 
 #endif  // TMWMS_H
