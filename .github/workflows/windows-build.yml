@@ -28,7 +28,7 @@ jobs:
 
     - name: Cache Conan libs
       id: cache-conan
-      uses: pat-s/always-upload-cache@v3.0.11
+      uses: actions/cache@v4
       with:
         path: C:/Users/runneradmin/.conan
         key: conan-windows
