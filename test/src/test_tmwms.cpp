@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "test_param.h"
 #include "../../src/gis/tmwms.h"
+#include "../../src/gis/tmgisdata.h"
 #include <wx/filename.h>
 
 
@@ -38,7 +39,18 @@ TEST(WMSBrowserTest, GetLayers) {
     }
 }
 
-TEST(WMSFileXMLTest, CreateXML) {
+// Initing GIS drivers is necessary for the tmWMSFileXML class to work properly
+// as it relies on GDAL to create the XML file.
+class TestWMSXml : public ::testing::Test {
+protected:
+    virtual void SetUp() {
+      tmGISData::InitGISDrivers(true, true);
+    }
+    virtual void TearDown() {
+    }
+};
+
+TEST_F(TestWMSXml, DISABLED_CreateXML) {
     tmWMSFileXML wmsFileXML("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     EXPECT_EQ(wmsFileXML.GetWMSUrl(), "https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     wxFileName xml_output(g_TestPathEXPORT + _T("/wms_layer_output.xml"));

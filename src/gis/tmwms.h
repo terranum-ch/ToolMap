@@ -38,6 +38,7 @@ class tmWMSBrowser {
 
 /// Class for creating a XML file from a WMS server using GDALDriver::CreateCopy capability
 /// see here for tutorial https://gdal.org/en/stable/tutorials/raster_api_tut.html
+/// GDAL needs to be initialized before using this class, see tmGISData::InitGISDrivers or GDALAllRegister
 class tmWMSFileXML {
   private:
     wxString m_wms_url = wxEmptyString;

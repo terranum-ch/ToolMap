@@ -109,8 +109,6 @@ size_t tmWMSBrowser::WriteToFile(void* ptr, size_t size, size_t nmemb, void* use
 
 tmWMSFileXML::tmWMSFileXML(const wxString &wms_url) {
     m_wms_url = wms_url;
-    // Initialize GDAL
-    GDALAllRegister();
 }
 
 bool tmWMSFileXML::CreateXML(const wxString &layer_name, const wxString &output_xml_file_name) {
