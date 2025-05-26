@@ -5,13 +5,23 @@
 #include "tmwmsframe.h"
 
 tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos,
-                                    const wxSize& size, long style)
+                                     const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
 
     // Connect Events
-    m_btn_export->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(tmWMSBrowserFrame::OnBtnExport), NULL,
-                          this);
+    m_btn_export->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnExport, this);
+    m_ctrl_btn_wms_load_layers->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnLoadLayers, this);
+}
+
+void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent& event) {
+    wxMessageBox(_("Loading layers is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
+    event.Skip();
+}
+
+void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent& event) {
+    wxMessageBox(_("Export functionality is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
+    event.Skip();
 }
 
 void tmWMSBrowserFrame::_create_controls() {
@@ -73,9 +83,4 @@ void tmWMSBrowserFrame::_create_controls() {
     bSizer1->Fit(this);
 
     this->Centre(wxBOTH);
-}
-
-void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent& event) {
-    wxMessageBox(_("Export functionality is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
-    event.Skip();
 }

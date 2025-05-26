@@ -31,6 +31,7 @@ class tmWMSBrowserFrame : public wxDialog {
     wxSearchCtrl* m_ctrl_search;
 
     // Virtual event handlers, override them in your derived class
+    virtual void OnBtnLoadLayers(wxCommandEvent& event);
     virtual void OnBtnExport(wxCommandEvent& event);
     void _create_controls();
 
