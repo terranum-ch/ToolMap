@@ -23,6 +23,7 @@
 #include "../gis/tmimport.h"
 #include "../gui/backupmanager_dlg.h"
 #include "../gui/tmimportdatawiz.h"
+#include "../gui/tmwmsframe.h"
 #include "backupmanager.h"
 #include "tmlog.h"
 
@@ -155,6 +156,7 @@ EVT_MENU(ID_MENU_PRJ_MERGE, ToolMapFrame::OnProjectMerge)
 EVT_MENU_RANGE(wxID_FILE1, wxID_FILE5, ToolMapFrame::OnOpenRecentProject)
 EVT_MENU(ID_MENU_ADD_SPATIAL_DATA, ToolMapFrame::OnAddGisData)
 EVT_MENU(ID_MENU_ADD_WEBDATA, ToolMapFrame::OnAddWebData)
+   EVT_MENU(ID_MENU_LOAD_WMS_DATA, ToolMapFrame::OnLoadWMSData)
 EVT_MENU(ID_MENU_ADD_GROUP, ToolMapFrame::OnAddGroup)
 EVT_MENU(ID_MENU_IMPORT_GIS_DATA, ToolMapFrame::OnImportGISData)
 EVT_MENU(ID_MENU_EXPORT_GIS_GEOMETRIES, ToolMapFrame::OnExportSelectedGISData)
@@ -581,6 +583,7 @@ void ToolMapFrame::_CreateMenu() {
     itemMenu24->Append(ID_MENU_ADD_SPATIAL_DATA, _("Link data...\tCtrl+O"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_UNLINK_SPATIAL_DATA, _("Unlink data...\tCtrl+W"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->Append(ID_MENU_ADD_WEBDATA, _("Add Web data...\tCtrl+Alt+W"));
+    itemMenu24->Append(ID_MENU_LOAD_WMS_DATA, _("Load WMS data...\tCtrl+Shift+L"), wxEmptyString, wxITEM_NORMAL);
     itemMenu24->AppendSeparator();
     itemMenu24->Append(ID_MENU_ADD_GROUP, _("Add group...\tCtrl+G"));
     itemMenu24->AppendSeparator();
@@ -1440,6 +1443,12 @@ void ToolMapFrame::OnAddGroup(wxCommandEvent& event) {
 
 void ToolMapFrame::OnAddWebData(wxCommandEvent& event) {
     m_LayerManager->AddWebLayer();
+}
+
+void ToolMapFrame::OnLoadWMSData(wxCommandEvent& event) {
+    // display the WMS dialog to browse WMS layers and export them as XML files.
+    tmWMSBrowserFrame my_frame(this);
+    my_frame.ShowModal();
 }
 
 bool ToolMapFrame::AddLayers(const wxArrayString& filenames) {

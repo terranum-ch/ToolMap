@@ -228,6 +228,7 @@ const int ID_MENU_VALIDITY = 15204;
 const int ID_MENU_EXPORT_CONCATENATED = wxWindow::NewControlId();
 const int ID_MENU_ZOOM_FRAME = wxWindow::NewControlId();
 const int ID_MENU_ADD_WEBDATA = wxWindow::NewControlId();
+const int ID_MENU_LOAD_WMS_DATA = wxWindow::NewControlId();
 
 const wxString g_ProgName = _T("ToolMap");
 
@@ -432,6 +433,8 @@ class ToolMapFrame : public wxFrame {
     void OnAddGisData(wxCommandEvent& event);
 
     void OnAddWebData(wxCommandEvent& event);
+
+    void OnLoadWMSData(wxCommandEvent& event);
 
     void OnAddGroup(wxCommandEvent& event);
 
