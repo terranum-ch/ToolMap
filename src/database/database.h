@@ -34,7 +34,6 @@
 #include <wx/wx.h>
 #endif
 
-#define EMBEDDED_LIBRARY
 #include "mysql.h"
 // #include <wx/arrstr.h> // array string
 // #include <wx/strconv.h> // unicode conversion

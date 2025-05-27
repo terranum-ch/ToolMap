@@ -1,25 +1,25 @@
 <GDAL_WMS>
-  <Service name="WMS">
-    <Version>1.3.0</Version>
-    <ServerUrl>https://wms.geo.admin.ch/?</ServerUrl>
-    <Layers>ch.swisstopo.pixelkarte-farbe</Layers>
-    <CRS>EPSG:2056</CRS>
-    <ImageFormat>image/jpeg</ImageFormat>
-  </Service>
-  <DataWindow>
-    <UpperLeftX>2420000</UpperLeftX>
-    <UpperLeftY>1350000</UpperLeftY>
-    <LowerRightX>2900000</LowerRightX>
-    <LowerRightY>1050000</LowerRightY>
-    <TileLevel>20</TileLevel>
-    <TileCountX>1</TileCountX>
-    <TileCountY>1</TileCountY>
-    <YOrigin>top</YOrigin>
-  </DataWindow>
-  <Projection>EPSG:2056</Projection>
-  <BandsCount>3</BandsCount>
-  <BlockSizeX>1024</BlockSizeX>
-  <BlockSizeY>1024</BlockSizeY>
-  <TiledImage>true</TiledImage>
-  <Cache/>
+    <Service name="WMS">
+        <Version>1.3.0</Version>
+        <ServerUrl>https://wms.geo.admin.ch/?</ServerUrl>
+        <Layers>ch.swisstopo.pixelkarte-farbe</Layers>
+        <CRS>EPSG:2056</CRS>
+        <ImageFormat>image/jpeg</ImageFormat>
+    </Service>
+    <DataWindow>
+        <UpperLeftX>2420000</UpperLeftX>
+        <UpperLeftY>1350000</UpperLeftY>
+        <LowerRightX>2900000</LowerRightX>
+        <LowerRightY>1050000</LowerRightY>
+        <TileLevel>20</TileLevel>
+        <TileCountX>1</TileCountX>
+        <TileCountY>1</TileCountY>
+        <YOrigin>top</YOrigin>
+    </DataWindow>
+    <Projection>EPSG:2056</Projection>
+    <BandsCount>3</BandsCount>
+    <BlockSizeX>1024</BlockSizeX>
+    <BlockSizeY>1024</BlockSizeY>
+    <TiledImage>true</TiledImage>
+    <Cache/>
 </GDAL_WMS>

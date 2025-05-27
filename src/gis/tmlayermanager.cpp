@@ -527,6 +527,17 @@ void tmLayerManager::AddWebLayer() {
     // create the list with all WMS files
     wxArrayString myWMSFilesFullPath;
     wxDir::GetAllFiles(myWebPath.GetFullPath(), &myWMSFilesFullPath, _T("*.xml"), wxDIR_FILES);
+
+    // remove files with extension .aux.xml
+    for (unsigned int i = 0; i < myWMSFilesFullPath.GetCount(); ++i) {
+        wxFileName fileName(myWMSFilesFullPath.Item(i));
+        wxString fileNameStr = fileName.GetFullName();
+        if (fileNameStr.EndsWith(_T(".aux.xml"))) {
+            myWMSFilesFullPath.RemoveAt(i);
+            --i; // adjust index after removal
+        }
+    }
+
     if (myWMSFilesFullPath.GetCount() == 0) {
         wxLogError(_("No WMS files found! Try re-installing ToolMap!"));
         return;

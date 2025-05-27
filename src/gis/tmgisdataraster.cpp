@@ -58,7 +58,7 @@ bool tmGISDataRaster::Open(const wxString& filename, bool bReadWrite) {
     delete[] buffer;
     if (m_DataSet == nullptr) {
         if (IsLoggingEnabled()) {
-            wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
+            wxLogDebug(_T("Unable to open %s : %s"), m_FileType, filename);
             wxLogDebug(CPLGetLastErrorMsg());
         }
         return FALSE;
