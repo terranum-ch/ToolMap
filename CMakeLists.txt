@@ -1,6 +1,6 @@
 # CMAKE BUILD FILE FOR ToolMap 2
 # (c) TERRANUM 2022
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.10)
 
 PROJECT("ToolMap")
 

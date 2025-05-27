@@ -59,6 +59,7 @@ bool tmGISDataRaster::Open(const wxString& filename, bool bReadWrite) {
     if (m_DataSet == nullptr) {
         if (IsLoggingEnabled()) {
             wxLogDebug(_T("Unable to open %s : %s"), m_FileType.c_str(), filename.c_str());
+            wxLogDebug(CPLGetLastErrorMsg());
         }
         return FALSE;
     }
@@ -158,6 +159,9 @@ tmGISDataRaster* tmGISDataRaster::CreateGISRasterBasedOnExt(const wxString& exte
 }
 
 void tmGISDataRaster::InitGISDriversRaster() {
+    if (IsLoggingEnabled()) {
+        CPLSetConfigOption("CPL_DEBUG", "ON");
+    }
     GDALAllRegister();
 }
 

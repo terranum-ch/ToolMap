@@ -12,6 +12,7 @@ cmake-build-*
 *.srctrlprj
 *.srctrlbm
 *.srctrldb
+*.aux.xml
 .DS_Store
 _local
 /doc/feature_new_toc/feature_new_toc.docx
