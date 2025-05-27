@@ -67,6 +67,15 @@ jobs:
         sudo apt-get install libxcb-xkb-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-shape0-dev libxcb-sync-dev
         sudo apt-get install libxcb-xfixes0-dev libxcb-xinerama0-dev xkb-data libxcb-dri3-dev uuid-dev libxcb-util-dev
 
+      # ensure that we have the latest version of mariadb, gdal, wxwidgets and wxpdfdocument
+      # and avoid mismatch problem with the cache.
+    - name: Remove our conan lib
+      run: |
+        conan remove mariadb/10.6.22@terranum-conan+mariadb/stable -q build_type=Release -f
+        conan remove gdal/3.10.3@terranum-conan+gdal/stable -q build_type=Release -f
+        conan remove wxwidgets/3.2.8.1@terranum-conan+wxwidgets/stable -q build_type=Release -f
+        conan remove wxpdfdocument/1.3.1@terranum-conan+wxpdfdocument/stable -q build_type=Release -f
+
     - name: Install libraries
       run: |
         mkdir ${{github.workspace}}/bin
