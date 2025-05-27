@@ -14,6 +14,7 @@ class Toolmap(ConanFile):
         # "proj/9.3.1",
         # "libjpeg/9e",
         # "zlib/1.3",
+        # "expat/2.6.3", # resolve conflict between wxwidgets and gdal
     ]
 
     options = {
