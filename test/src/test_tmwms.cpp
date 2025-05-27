@@ -50,7 +50,7 @@ protected:
     }
 };
 
-TEST_F(TestWMSXml, DISABLED_CreateXML) {
+TEST_F(TestWMSXml, CreateXML) {
     tmWMSFileXML wmsFileXML("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     EXPECT_EQ(wmsFileXML.GetWMSUrl(), "https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     wxFileName xml_output(g_TestPathEXPORT + _T("/wms_layer_output.xml"));

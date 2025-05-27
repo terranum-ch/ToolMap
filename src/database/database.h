@@ -34,6 +34,11 @@
 #include <wx/wx.h>
 #endif
 
+// include MySQL embedded library
+#ifndef EMBEDDED_LIBRARY
+#define EMBEDDED_LIBRARY
+#endif
+
 #include "mysql.h"
 // #include <wx/arrstr.h> // array string
 // #include <wx/strconv.h> // unicode conversion
