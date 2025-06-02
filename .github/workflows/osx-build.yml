@@ -41,10 +41,10 @@ jobs:
       # and avoid mismatch problem with the cache.
       - name: Remove our conan lib
         run: |
-          conan remove mariadb/10.6.22@terranum-conan+mariadb/stable -q build_type=Release -f
-          conan remove gdal/3.10.3@terranum-conan+gdal/stable -q build_type=Release -f
-          conan remove wxwidgets/3.2.8.1@terranum-conan+wxwidgets/stable -q build_type=Release -f
-          conan remove wxpdfdocument/1.3.1@terranum-conan+wxpdfdocument/stable -q build_type=Release -f
+          conan remove mariadb/10.6.22 -f
+          conan remove gdal/3.10.3 -f
+          conan remove wxwidgets/3.2.8.1 -f
+          conan remove wxpdfdocument/1.3.1 -f
 
       - name: Install libraries
         run: |
