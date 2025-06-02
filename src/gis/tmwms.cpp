@@ -33,13 +33,14 @@ bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, co
     curl_easy_cleanup(curl);
     file.Close();
 
-    return res == CURLE_OK;
+    return true;
 }
 
 /// @brief Get the layers names, titles and abstracts from the XML capabilities
 bool tmWMSBrowser::GetLayers(wxArrayString& layers_names, wxArrayString& layers_titles,
                              wxArrayString& layers_abstracts) {
     if (m_wms_xml_file.GetFullPath().IsEmpty()) {
+        wxLogError("file path is empty!");
         return false;
     }
 
@@ -50,11 +51,13 @@ bool tmWMSBrowser::GetLayers(wxArrayString& layers_names, wxArrayString& layers_
     // Parse the XML capabilities to extract layer names, titles and abstracts
     wxXmlDocument doc;
     if (!doc.Load(m_wms_xml_file.GetFullPath())) {
+        wxLogError("Unable to load document in xml file!");
         return false;
     }
 
     wxXmlNode* root = doc.GetRoot();
     if (!root) {
+        wxLogError("unable to get root in xml document!");
         return false;
     }
 
