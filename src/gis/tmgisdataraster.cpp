@@ -403,7 +403,8 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
                                      *imgbuf + offs, imgSize.GetWidth(), imgSize.GetHeight(), GDT_Byte, 3, 0);
                 if (ret == CE_Failure) {
                     if (IsLoggingEnabled()) {
-                        wxLogError(_T("An unknown error occured while reading band %i"), i);
+                        wxLogError(_T("An error occurred while reading band %i"), i);
+                        wxLogError(CPLGetLastErrorMsg());
                     }
                     break;
                 }
