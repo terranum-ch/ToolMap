@@ -26,6 +26,7 @@ endif ()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(KEEP_RPATHS)
+message(STATUS "Conan libs: ${CONAN_LIBS}")
 if (APPLE)
     set(CMAKE_INSTALL_RPATH "@executable_path")
 else()
