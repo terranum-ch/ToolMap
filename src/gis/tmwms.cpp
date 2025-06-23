@@ -25,6 +25,11 @@ bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, co
     }
 
     wxLogDebug("WMS Capabilities URL: %s", GetWMSCapabilitiesURL(lang));
+    
+    // we skip the verification of the server's certificate on Windows (otherwise not working)
+    #ifdef __WINDOWS__
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+    #endif
     curl_easy_setopt(curl, CURLOPT_URL, GetWMSCapabilitiesURL(lang).mb_str().data());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteToFile);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
