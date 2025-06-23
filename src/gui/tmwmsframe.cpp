@@ -4,8 +4,10 @@
 
 #include "tmwmsframe.h"
 
-tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos,
-                                     const wxSize &size, long style)
+#include "../gis/tmwms.h"
+
+tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos,
+                                     const wxSize& size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
 
@@ -16,10 +18,10 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxSt
     m_ctrl_layer_list->InsertColumn(1, _("Layer"), wxLIST_FORMAT_LEFT, 200);
     m_ctrl_layer_list->InsertColumn(2, _("Title"), wxLIST_FORMAT_LEFT, 200);
     m_ctrl_layer_list->InsertColumn(3, _("Abstract"), wxLIST_FORMAT_LEFT, 400);
-    m_ctrl_layer_list->SetColumnWidth(0, 30); // Checkbox column width
-    m_ctrl_layer_list->SetColumnWidth(1, 200); // Layer name column width
-    m_ctrl_layer_list->SetColumnWidth(2, 200); // Title column width
-    m_ctrl_layer_list->SetColumnWidth(3, 300); // Abstract column width
+    m_ctrl_layer_list->SetColumnWidth(0, 30);   // Checkbox column width
+    m_ctrl_layer_list->SetColumnWidth(1, 200);  // Layer name column width
+    m_ctrl_layer_list->SetColumnWidth(2, 200);  // Title column width
+    m_ctrl_layer_list->SetColumnWidth(3, 300);  // Abstract column width
     m_ctrl_layer_list->SetWindowStyle(wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES);
 
     add_layer_to_list("test layer", "Test Layer Title",
@@ -30,43 +32,84 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxSt
     m_ctrl_btn_wms_load_layers->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnLoadLayers, this);
 }
 
-void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
-    wxMessageBox(_("Loading layers is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
-    event.Skip();
+void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent& event) {
+    // create temporary file to store the WMS capabilities XML
+    wxFileName xml_output(wxFileName::CreateTempFileName("wms_capabilities_"));
+    xml_output.SetExt("xml");
+    wxLogDebug("Xml Output: '%s'", xml_output.GetFullPath());
+
+    // get download capabilities from WMS server
+    tmWMSBrowser wms_browser(m_ctrl_wms_url->GetValue());
+    if (!wms_browser.DownloadCapabilities(xml_output.GetFullPath(), m_ctrl_wms_lang->GetValue())) {
+        wxLogError(_("Failed to download WMS capabilities from the server."));
+        return;
+    }
+
+    // Get the layers from the downloaded XML file
+    wxArrayString layers_names, layers_titles, layers_abstracts;
+    if (!wms_browser.GetLayers(layers_names, layers_titles, layers_abstracts)) {
+        wxLogError(_("Failed to get layers from the WMS capabilities XML."));
+        return;
+    }
+
+    // Clear the list control before adding new layers
+    m_ctrl_layer_list->DeleteAllItems();
+
+    // Add layers to the list control
+    for (size_t i = 0; i < layers_names.GetCount(); ++i) {
+        add_layer_to_list(layers_names[i], layers_titles[i], layers_abstracts[i], i);
+    }
 }
 
-void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
+void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent& event) {
     wxMessageBox(_("Export functionality is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
     event.Skip();
 }
 
 /// \brief Adds a layer to the list control.
-void tmWMSBrowserFrame::add_layer_to_list(const wxString &layer_name, const wxString &layer_title,
-                                          const wxString &layer_abstract, int layer_index) {
+void tmWMSBrowserFrame::add_layer_to_list(const wxString& layer_name, const wxString& layer_title,
+                                          const wxString& layer_abstract, int layer_index) {
     m_ctrl_layer_list->InsertItem(m_ctrl_layer_list->GetItemCount(), wxEmptyString);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 1, layer_name);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 2, layer_title);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 3, layer_abstract);
     m_ctrl_layer_list->SetItemData(m_ctrl_layer_list->GetItemCount() - 1, layer_index);
-
 }
 
 void tmWMSBrowserFrame::_create_controls() {
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer *bSizer1 = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* bSizer1;
+    bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer *sbSizer1 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("WMS server")), wxHORIZONTAL);
+    wxStaticBoxSizer* sbSizer1;
+    sbSizer1 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("WMS server")), wxHORIZONTAL);
 
     m_staticText1 = new wxStaticText(sbSizer1->GetStaticBox(), wxID_ANY, _("Url:"), wxDefaultPosition, wxDefaultSize,
                                      0);
     m_staticText1->Wrap(-1);
     sbSizer1->Add(m_staticText1, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-    m_ctrl_wms_url = new wxComboBox(sbSizer1->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                                    0, NULL, 0);
+    m_ctrl_wms_url = new wxComboBox(sbSizer1->GetStaticBox(), wxID_ANY,
+                                    _("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0"), wxDefaultPosition,
+                                    wxDefaultSize, 0, NULL, 0);
     m_ctrl_wms_url->Append(_("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0"));
+    m_ctrl_wms_url->SetSelection(0);
     sbSizer1->Add(m_ctrl_wms_url, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+    m_staticText3 = new wxStaticText(sbSizer1->GetStaticBox(), wxID_ANY, _("Lang"), wxDefaultPosition, wxDefaultSize,
+                                     0);
+    m_staticText3->Wrap(-1);
+    sbSizer1->Add(m_staticText3, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+    m_ctrl_wms_lang = new wxComboBox(sbSizer1->GetStaticBox(), wxID_ANY, _("en"), wxDefaultPosition, wxSize(100, -1), 0,
+                                     NULL, 0);
+    m_ctrl_wms_lang->Append(_("fr"));
+    m_ctrl_wms_lang->Append(_("en"));
+    m_ctrl_wms_lang->Append(_("de"));
+    m_ctrl_wms_lang->Append(_("it"));
+    m_ctrl_wms_lang->SetSelection(1);
+    sbSizer1->Add(m_ctrl_wms_lang, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     m_ctrl_btn_wms_load_layers = new wxButton(sbSizer1->GetStaticBox(), wxID_ANY, _("Load layers"), wxDefaultPosition,
                                               wxDefaultSize, 0);
@@ -74,12 +117,13 @@ void tmWMSBrowserFrame::_create_controls() {
 
     bSizer1->Add(sbSizer1, 0, wxEXPAND | wxALL, 5);
 
-    m_ctrl_layer_list = new wxListView(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON | wxLC_REPORT);
+    m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON | wxLC_REPORT);
     m_ctrl_layer_list->SetMinSize(wxSize(800, 600));
 
     bSizer1->Add(m_ctrl_layer_list, 1, wxALL | wxEXPAND, 5);
 
-    wxStaticBoxSizer *sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("label")), wxHORIZONTAL);
+    wxStaticBoxSizer* sbSizer2;
+    sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("label")), wxHORIZONTAL);
 
     m_btn_export = new wxButton(sbSizer2->GetStaticBox(), wxID_ANY, _("Export..."), wxDefaultPosition, wxDefaultSize,
                                 0);
