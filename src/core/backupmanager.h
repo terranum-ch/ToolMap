@@ -29,6 +29,7 @@
 #include <wx/wfstream.h>
 #include <wx/xml/xml.h>
 #include <wx/zipstrm.h>
+#include <wx/scopedptr.h>
 
 class DataBaseTM;
 
