@@ -68,8 +68,34 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
 }
 
 void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
-    wxMessageBox(_("Export functionality is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
-    event.Skip();
+    _get_checked_layers();
+    
+    // display a directory dialog to select the output directory
+    wxDirDialog dir_dlg(this, _("Select output directory"), wxEmptyString, wxDD_DEFAULT_STYLE);
+    if (dir_dlg.ShowModal() != wxID_OK) {
+        return; // User cancelled the dialog
+    }
+    wxString output_dir = dir_dlg.GetPath();
+    if (output_dir.IsEmpty()) {
+        wxLogError(_("No output directory selected."));
+        return;
+    }
+
+    // Get the checked layers and export them to XML files
+    tmWMSFileXML wmsFileXML(m_ctrl_wms_url->GetValue());
+    for (size_t i = 0; i < m_checked_layers.GetCount(); ++i) {
+        int layer_index = m_checked_layers[i];
+        wxString layer_name = m_layers_names[layer_index];
+        if (!wmsFileXML.CreateXML(layer_name, output_dir + wxFileName::GetPathSeparator() + layer_name + ".xml")) {
+            wxLogError(_("Failed to create XML file for layer: %s"), layer_name);
+        } else {
+            wxLogDebug(_("Exported layer '%s' to XML file."), layer_name);
+        }
+    }
+    wxMessageBox(
+        wxString::Format(_("%llu layers exported into the output directory: %s"),
+        static_cast<unsigned long long>(m_checked_layers.GetCount()), output_dir),
+        _("Export Complete"), wxOK | wxICON_INFORMATION, this);
 }
 
 void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
@@ -105,14 +131,14 @@ void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
     }
 }
 
-void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent & event) {
+void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent &event) {
     if (m_info_text_ctrl == nullptr) {
         return; // Ensure status bar is created
     }
     // display total number of layers and total number of displayed layers
     wxString status_text = wxString::Format(_("Total: %llu, Displayed: %d"),
-                       static_cast<unsigned long long>(m_layers_names.GetCount()),
-                       m_ctrl_layer_list->GetItemCount());
+                                            static_cast<unsigned long long>(m_layers_names.GetCount()),
+                                            m_ctrl_layer_list->GetItemCount());
     m_info_text_ctrl->SetLabel(status_text);
 }
 
@@ -204,7 +230,8 @@ void tmWMSBrowserFrame::_create_controls() {
 
     sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
-    m_info_text_ctrl = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _T("Total: 0, Displayed: 0"), wxDefaultPosition,
+    m_info_text_ctrl = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _T("Total: 0, Displayed: 0"),
+                                        wxDefaultPosition,
                                         wxDefaultSize, 0);
     m_info_text_ctrl->Wrap(-1);
     sbSizer2->Add(m_info_text_ctrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
