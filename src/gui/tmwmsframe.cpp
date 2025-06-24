@@ -28,6 +28,8 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxSt
     m_btn_export->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnExport, this);
     m_ctrl_btn_wms_load_layers->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnLoadLayers, this);
     m_ctrl_layer_list->Bind(wxEVT_LIST_ITEM_ACTIVATED, &tmWMSBrowserFrame::OnDoubleClickItems, this);
+    m_ctrl_search->Bind(wxEVT_SEARCHCTRL_SEARCH_BTN, &tmWMSBrowserFrame::OnSearchList, this);
+    m_ctrl_search->Bind(wxEVT_SEARCH_CANCEL, &tmWMSBrowserFrame::OnSearchBtnCancel, this);
 }
 
 void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
@@ -44,8 +46,10 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     }
 
     // Get the layers from the downloaded XML file
-    wxArrayString layers_names, layers_titles, layers_abstracts;
-    if (!wms_browser.GetLayers(layers_names, layers_titles, layers_abstracts)) {
+    m_layers_abstracts.Clear();
+    m_layers_names.Clear();
+    m_layers_titles.Clear();
+    if (!wms_browser.GetLayers(m_layers_names, m_layers_titles, m_layers_abstracts)) {
         wxLogError(_("Failed to get layers from the WMS capabilities XML."));
         return;
     }
@@ -54,8 +58,8 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     m_ctrl_layer_list->DeleteAllItems();
 
     // Add layers to the list control
-    for (size_t i = 0; i < layers_names.GetCount(); ++i) {
-        add_layer_to_list(layers_names[i], layers_titles[i], layers_abstracts[i], i);
+    for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
+        add_layer_to_list(m_layers_names[i], m_layers_titles[i], m_layers_abstracts[i], i);
     }
 }
 
@@ -69,6 +73,31 @@ void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
                                   m_ctrl_layer_list->GetItemText(event.GetIndex(), 3),
                                   m_ctrl_layer_list->GetItemText(event.GetIndex(), 2));
     details_dlg.ShowModal();
+}
+
+void tmWMSBrowserFrame::OnSearchList(wxCommandEvent &event) {
+    // remove item from the list not matching the search text
+    wxString search_text = m_ctrl_search->GetValue().Lower();
+    m_ctrl_layer_list->DeleteAllItems();
+    if (search_text.IsEmpty()) {
+        for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
+            add_layer_to_list(m_layers_names[i], m_layers_titles[i], m_layers_abstracts[i], i);
+        }
+    } else {
+        for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
+            if (m_layers_titles[i].Lower().Contains(search_text)) {
+                add_layer_to_list(m_layers_names[i], m_layers_titles[i], m_layers_abstracts[i], i);
+            }
+        }
+    }
+
+}
+
+void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
+    m_ctrl_layer_list->DeleteAllItems();
+    for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
+        add_layer_to_list(m_layers_names[i], m_layers_titles[i], m_layers_abstracts[i], i);
+    }
 }
 
 /// \brief Adds a layer to the list control.
@@ -136,7 +165,7 @@ void tmWMSBrowserFrame::_create_controls() {
 
     sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
-    m_staticText2 = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _("Filter: "), wxDefaultPosition,
+    m_staticText2 = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _("Filter title: "), wxDefaultPosition,
                                      wxDefaultSize, 0);
     m_staticText2->Wrap(-1);
     sbSizer2->Add(m_staticText2, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);

@@ -35,12 +35,18 @@ protected:
     wxStaticText *m_staticText2 = nullptr;
     wxSearchCtrl *m_ctrl_search = nullptr;
 
+    wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts;
+
     // Virtual event handlers, override them in your derived class
     virtual void OnBtnLoadLayers(wxCommandEvent &event);
 
     virtual void OnBtnExport(wxCommandEvent &event);
 
     virtual void OnDoubleClickItems(wxListEvent &event);
+
+    virtual void OnSearchList(wxCommandEvent &event);
+
+    virtual void OnSearchBtnCancel(wxCommandEvent &event);
 
     void _create_controls();
 
