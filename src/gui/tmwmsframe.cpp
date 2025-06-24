@@ -65,7 +65,10 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
 }
 
 void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
-event.Skip();
+    tmWMSFrameDetails details_dlg(this, m_ctrl_layer_list->GetItemText(event.GetIndex(), 1),
+                                  m_ctrl_layer_list->GetItemText(event.GetIndex(), 3),
+                                  m_ctrl_layer_list->GetItemText(event.GetIndex(), 2));
+    details_dlg.ShowModal();
 }
 
 /// \brief Adds a layer to the list control.
@@ -156,24 +159,40 @@ void tmWMSBrowserFrame::_create_controls() {
 }
 
 
-tmWMSFrameDetails::tmWMSFrameDetails( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
-{
+tmWMSFrameDetails::tmWMSFrameDetails(wxWindow *parent, const wxString &name_wms, const wxString &abstract_wms,
+                                     const wxString &title_wms, wxWindowID id, const wxString &title,
+                                     const wxPoint &pos, const wxSize &size, long style) : wxDialog(
+    parent, id, title, pos, size, style) {
+    m_name_wms = name_wms;
+    m_abstract_wms = abstract_wms;
+    m_title_wms = title_wms;
     _create_controls();
 }
 
+
 void tmWMSFrameDetails::_create_controls() {
-    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+    this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer* bSizer2;
-    bSizer2 = new wxBoxSizer( wxVERTICAL );
+    wxBoxSizer *bSizer2;
+    bSizer2 = new wxBoxSizer(wxVERTICAL);
 
-    m_ctrl_html = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 500,400 ), wxHW_SCROLLBAR_AUTO );
-    bSizer2->Add( m_ctrl_html, 1, wxALL|wxEXPAND, 5 );
+    m_ctrl_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxHW_SCROLLBAR_AUTO);
+    bSizer2->Add(m_ctrl_html, 1, wxALL | wxEXPAND, 5);
 
 
-    this->SetSizer( bSizer2 );
+    this->SetSizer(bSizer2);
     this->Layout();
-    bSizer2->Fit( this );
+    bSizer2->Fit(this);
 
-    this->Centre( wxBOTH );
+    this->Centre(wxBOTH);
+}
+
+bool tmWMSFrameDetails::TransferDataToWindow() {
+    // construct html content with WMS layer details
+    wxString html_txt = _("<H1>Layer Details</H1>");
+    html_txt += wxString::Format(_("<b>Name:</b> %s<br><br>"), m_name_wms);
+    html_txt += wxString::Format(_("<b>Title:</b> %s<br><br>"), m_title_wms);
+    html_txt += wxString::Format(_("<b>Abstract:</b> %s"), m_abstract_wms);
+    m_ctrl_html->SetPage(html_txt);
+    return wxDialog::TransferDataToWindow();
 }

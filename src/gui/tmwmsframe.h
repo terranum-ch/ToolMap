@@ -61,14 +61,18 @@ public:
 class tmWMSFrameDetails : public wxDialog {
 protected:
     wxHtmlWindow *m_ctrl_html;
+    wxString m_name_wms;
+    wxString m_abstract_wms;
+    wxString m_title_wms;
+
+    void _create_controls();
+    bool TransferDataToWindow() override;
 
 public:
-    void _create_controls();
-
-    tmWMSFrameDetails(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("Details"),
+    tmWMSFrameDetails(wxWindow *parent, const wxString &name_wms, const wxString &abstract_wms, const wxString &title_wms,
+                      wxWindowID id = wxID_ANY, const wxString &title = _("Details"),
                       const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
                       long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
-
 };
 
 #endif  // TMWMSFRAME_H
