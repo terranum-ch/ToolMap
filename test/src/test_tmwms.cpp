@@ -10,6 +10,12 @@ TEST(WMSBrowserTest, Constructor) {
     EXPECT_EQ(wmsBrowser.GetWMSUrl(), "http://example.com/wms");
 }
 
+TEST(WMSBrowserTest, TestTempFileName) {
+    wxFileName xml_output(wxFileName::CreateTempFileName("wms_capabilities_"));
+    EXPECT_FALSE(xml_output.GetFullPath().IsEmpty());
+    wxLogDebug("Xml Output: '%s'", xml_output.GetFullPath());
+}
+
 TEST(WMSBrowserTest, DownloadCapabilities) {
     tmWMSBrowser wmsBrowser("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
 
@@ -61,3 +67,4 @@ TEST_F(TestWMSXml, CreateXML) {
     }
     EXPECT_TRUE(wmsFileXML.CreateXML("ch.swisstopo.geologie-geocover", xml_output.GetFullPath()));
 }
+
