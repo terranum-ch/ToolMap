@@ -21,7 +21,7 @@ TEST(WMSBrowserTest, DownloadCapabilities) {
     EXPECT_TRUE(wmsBrowser.DownloadCapabilities(xml_output.GetFullPath()));
 }
 
-TEST(WMSBrowserTest, DISABLED_GetLayers) {
+TEST(WMSBrowserTest, GetLayers) {
     tmWMSBrowser wmsBrowser("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     wxFileName my_outputfile(g_TestPathEXPORT, "wms_output.xml");
     EXPECT_TRUE(wmsBrowser.DownloadCapabilities(my_outputfile.GetFullPath(), "fr"));
@@ -51,7 +51,7 @@ protected:
     }
 };
 
-TEST_F(TestWMSXml, DISABLED_CreateXML) {
+TEST_F(TestWMSXml, CreateXML) {
     tmWMSFileXML wmsFileXML("https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     EXPECT_EQ(wmsFileXML.GetWMSUrl(), "https://wms.geo.admin.ch/?SERVICE=WMS&VERSION=1.3.0");
     wxFileName xml_output(g_TestPathEXPORT + _T("/wms_layer_output.xml"));

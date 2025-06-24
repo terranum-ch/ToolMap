@@ -526,9 +526,9 @@ bool tmProjectMerge::CheckSimilar() {
         // Tables and entries to act on
         const wxString arrayTables[] = {"dmn_layer_object", "generic_pat", "generic_lat", "generic_aat",
                                         "shortcut_list"};
-        wxArrayString tables = wxArrayString(sizeof(arrayTables), *arrayTables);
+        wxArrayString tables = wxArrayString(sizeof(arrayTables), arrayTables);
         const wxString arrayFields[] = {"OBJECT_ID", "OBJECT_VAL_ID", "OBJECT_VAL_ID", "OBJECT_VAL_ID", "OBJECT_ID"};
-        wxArrayString fields = wxArrayString(sizeof(arrayFields), *arrayFields);
+        wxArrayString fields = wxArrayString(sizeof(arrayFields), arrayFields);
 
         // Change IDs to values out of range to avoid conflicts
         for (int i = 0; i < issuesIds.GetCount(); i++) {
