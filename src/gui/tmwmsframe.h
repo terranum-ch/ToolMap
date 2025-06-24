@@ -34,6 +34,7 @@ protected:
     wxButton *m_btn_export = nullptr;
     wxStaticText *m_staticText2 = nullptr;
     wxSearchCtrl *m_ctrl_search = nullptr;
+    wxStaticText* m_info_text_ctrl = nullptr;
 
     wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts;
 
@@ -47,6 +48,8 @@ protected:
     virtual void OnSearchList(wxCommandEvent &event);
 
     virtual void OnSearchBtnCancel(wxCommandEvent &event);
+
+    virtual void UpdateInfoText(wxUpdateUIEvent & event);
 
     void _create_controls();
 

@@ -30,6 +30,7 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxSt
     m_ctrl_layer_list->Bind(wxEVT_LIST_ITEM_ACTIVATED, &tmWMSBrowserFrame::OnDoubleClickItems, this);
     m_ctrl_search->Bind(wxEVT_SEARCHCTRL_SEARCH_BTN, &tmWMSBrowserFrame::OnSearchList, this);
     m_ctrl_search->Bind(wxEVT_SEARCH_CANCEL, &tmWMSBrowserFrame::OnSearchBtnCancel, this);
+    m_info_text_ctrl->Bind(wxEVT_UPDATE_UI, &tmWMSBrowserFrame::UpdateInfoText, this);
 }
 
 void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
@@ -90,7 +91,6 @@ void tmWMSBrowserFrame::OnSearchList(wxCommandEvent &event) {
             }
         }
     }
-
 }
 
 void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
@@ -98,6 +98,17 @@ void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
     for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
         add_layer_to_list(m_layers_names[i], m_layers_titles[i], m_layers_abstracts[i], i);
     }
+}
+
+void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent & event) {
+    if (m_info_text_ctrl == nullptr) {
+        return; // Ensure status bar is created
+    }
+    // display total number of layers and total number of displayed layers
+    wxString status_text = wxString::Format(_("Total: %llu, Displayed: %d"),
+                       static_cast<unsigned long long>(m_layers_names.GetCount()),
+                       m_ctrl_layer_list->GetItemCount());
+    m_info_text_ctrl->SetLabel(status_text);
 }
 
 /// \brief Adds a layer to the list control.
@@ -149,6 +160,7 @@ void tmWMSBrowserFrame::_create_controls() {
                                               wxDefaultSize, 0);
     sbSizer1->Add(m_ctrl_btn_wms_load_layers, 0, wxALL, 5);
 
+
     bSizer1->Add(sbSizer1, 0, wxEXPAND | wxALL, 5);
 
     m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON | wxLC_REPORT);
@@ -163,6 +175,15 @@ void tmWMSBrowserFrame::_create_controls() {
                                 0);
     sbSizer2->Add(m_btn_export, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+
+    sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
+
+    m_info_text_ctrl = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _T("Total: 0, Displayed: 0"), wxDefaultPosition,
+                                        wxDefaultSize, 0);
+    m_info_text_ctrl->Wrap(-1);
+    sbSizer2->Add(m_info_text_ctrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+
     sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
 
     m_staticText2 = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _("Filter title: "), wxDefaultPosition,
@@ -173,12 +194,14 @@ void tmWMSBrowserFrame::_create_controls() {
     m_ctrl_search = new wxSearchCtrl(sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition,
                                      wxSize(200, -1), 0);
 #ifndef __WXMAC__
-    m_ctrl_search->ShowSearchButton(true);
+	m_ctrl_search->ShowSearchButton( true );
 #endif
     m_ctrl_search->ShowCancelButton(true);
     sbSizer2->Add(m_ctrl_search, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+
     bSizer1->Add(sbSizer2, 0, wxEXPAND | wxALL, 5);
+
 
     this->SetSizer(bSizer1);
     this->Layout();
