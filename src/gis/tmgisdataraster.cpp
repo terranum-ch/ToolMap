@@ -18,6 +18,8 @@
 
 #include "tmgisdataraster.h"
 
+#include <wx/fileconf.h>
+
 #include "tmgisdatarasteregrid.h"
 #include "tmgisdatarasterjpeg.h"
 #include "tmgisdatarastertiff.h"
@@ -170,12 +172,21 @@ void tmGISDataRaster::InitGISDriversRaster() {
     myCertPath.AppendDir(_T("certs"));
     myCertPath.SetFullName(_T("cacert.pem"));
     myCertPath.Normalize(wxPATH_NORM_ABSOLUTE);
-
     if (!myCertPath.Exists()) {
         wxLogError(_("Certificate file does not exist! Try re-installing ToolMap"));
         return;
     }
-    CPLSetConfigOption("GDAL_HTTP_SSLCERT", myCertPath.GetFullPath());
+    CPLSetConfigOption("GDAL_HTTP_SSLCERT", myCertPath.GetFullPath().c_str());
+
+    // Set proxy info if defined
+    wxConfigBase* myConfig = wxFileConfig::Get();
+    wxASSERT(myConfig);
+    wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
+    if (!myProxyInfo.IsEmpty()) {
+        wxLogDebug(_("Using proxy info: %s"), myProxyInfo);
+        CPLSetConfigOption("GDAL_HTTP_PROXY", myProxyInfo.ToStdString().c_str());
+        CPLSetConfigOption("GDAL_HTTPS_PROXY", myProxyInfo.ToStdString().c_str());
+    }
 
     GDALAllRegister();
 }
