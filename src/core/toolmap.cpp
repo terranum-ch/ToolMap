@@ -1863,11 +1863,9 @@ void ToolMapFrame::OnUpdateMenuShowLog(wxUpdateUIEvent& event) {
 
 void ToolMapFrame::OnUpdateMenuShowInfo(wxUpdateUIEvent& event) {
     wxWindow* myInfoWnd = wxWindow::FindWindowById(ID_INFORMATION_DLG);
-    bool bCheck = false;
-    if (myInfoWnd != nullptr && myInfoWnd->IsShown()) {
-        bCheck = true;
+    if (myInfoWnd != nullptr) {
+        event.Check(myInfoWnd->IsShown());
     }
-    event.Check(bCheck);
 }
 
 void ToolMapFrame::OnUpdateMenuFlipLine(wxUpdateUIEvent& event) {

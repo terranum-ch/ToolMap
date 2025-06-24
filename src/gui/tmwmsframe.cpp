@@ -6,8 +6,8 @@
 
 #include "../gis/tmwms.h"
 
-tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos,
-                                     const wxSize& size, long style)
+tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos,
+                                     const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
 
@@ -18,21 +18,19 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow* parent, wxWindowID id, const wxSt
     m_ctrl_layer_list->InsertColumn(1, _("Layer"), wxLIST_FORMAT_LEFT, 200);
     m_ctrl_layer_list->InsertColumn(2, _("Title"), wxLIST_FORMAT_LEFT, 200);
     m_ctrl_layer_list->InsertColumn(3, _("Abstract"), wxLIST_FORMAT_LEFT, 400);
-    m_ctrl_layer_list->SetColumnWidth(0, 30);   // Checkbox column width
-    m_ctrl_layer_list->SetColumnWidth(1, 200);  // Layer name column width
-    m_ctrl_layer_list->SetColumnWidth(2, 200);  // Title column width
-    m_ctrl_layer_list->SetColumnWidth(3, 300);  // Abstract column width
+    m_ctrl_layer_list->SetColumnWidth(0, 30); // Checkbox column width
+    m_ctrl_layer_list->SetColumnWidth(1, 200); // Layer name column width
+    m_ctrl_layer_list->SetColumnWidth(2, 200); // Title column width
+    m_ctrl_layer_list->SetColumnWidth(3, 300); // Abstract column width
     m_ctrl_layer_list->SetWindowStyle(wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES);
-
-    add_layer_to_list("test layer", "Test Layer Title",
-                      "This is a test layer abstract to demonstrate the WMS Browser functionality.", 0);
 
     // Connect Events
     m_btn_export->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnExport, this);
     m_ctrl_btn_wms_load_layers->Bind(wxEVT_BUTTON, &tmWMSBrowserFrame::OnBtnLoadLayers, this);
+    m_ctrl_layer_list->Bind(wxEVT_LIST_ITEM_ACTIVATED, &tmWMSBrowserFrame::OnDoubleClickItems, this);
 }
 
-void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent& event) {
+void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     // create temporary file to store the WMS capabilities XML
     wxFileName xml_output(wxFileName::CreateTempFileName("wms_capabilities_"));
     xml_output.SetExt("xml");
@@ -61,14 +59,18 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent& event) {
     }
 }
 
-void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent& event) {
+void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
     wxMessageBox(_("Export functionality is not yet implemented."), _("Info"), wxOK | wxICON_INFORMATION);
     event.Skip();
 }
 
+void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
+event.Skip();
+}
+
 /// \brief Adds a layer to the list control.
-void tmWMSBrowserFrame::add_layer_to_list(const wxString& layer_name, const wxString& layer_title,
-                                          const wxString& layer_abstract, int layer_index) {
+void tmWMSBrowserFrame::add_layer_to_list(const wxString &layer_name, const wxString &layer_title,
+                                          const wxString &layer_abstract, int layer_index) {
     m_ctrl_layer_list->InsertItem(m_ctrl_layer_list->GetItemCount(), wxEmptyString);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 1, layer_name);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 2, layer_title);
@@ -79,10 +81,10 @@ void tmWMSBrowserFrame::add_layer_to_list(const wxString& layer_name, const wxSt
 void tmWMSBrowserFrame::_create_controls() {
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer* bSizer1;
+    wxBoxSizer *bSizer1;
     bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer* sbSizer1;
+    wxStaticBoxSizer *sbSizer1;
     sbSizer1 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("WMS server")), wxHORIZONTAL);
 
     m_staticText1 = new wxStaticText(sbSizer1->GetStaticBox(), wxID_ANY, _("Url:"), wxDefaultPosition, wxDefaultSize,
@@ -122,7 +124,7 @@ void tmWMSBrowserFrame::_create_controls() {
 
     bSizer1->Add(m_ctrl_layer_list, 1, wxALL | wxEXPAND, 5);
 
-    wxStaticBoxSizer* sbSizer2;
+    wxStaticBoxSizer *sbSizer2;
     sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("label")), wxHORIZONTAL);
 
     m_btn_export = new wxButton(sbSizer2->GetStaticBox(), wxID_ANY, _("Export..."), wxDefaultPosition, wxDefaultSize,
@@ -151,4 +153,27 @@ void tmWMSBrowserFrame::_create_controls() {
     bSizer1->Fit(this);
 
     this->Centre(wxBOTH);
+}
+
+
+tmWMSFrameDetails::tmWMSFrameDetails( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+    _create_controls();
+}
+
+void tmWMSFrameDetails::_create_controls() {
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+    wxBoxSizer* bSizer2;
+    bSizer2 = new wxBoxSizer( wxVERTICAL );
+
+    m_ctrl_html = new wxHtmlWindow( this, wxID_ANY, wxDefaultPosition, wxSize( 500,400 ), wxHW_SCROLLBAR_AUTO );
+    bSizer2->Add( m_ctrl_html, 1, wxALL|wxEXPAND, 5 );
+
+
+    this->SetSizer( bSizer2 );
+    this->Layout();
+    bSizer2->Fit( this );
+
+    this->Centre( wxBOTH );
 }
