@@ -189,7 +189,7 @@ void tmWMSBrowserFrame::_create_controls() {
 
     bSizer1->Add(sbSizer1, 0, wxEXPAND | wxALL, 5);
 
-    m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON | wxLC_REPORT);
+    m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
     m_ctrl_layer_list->SetMinSize(wxSize(800, 600));
 
     bSizer1->Add(m_ctrl_layer_list, 1, wxALL | wxEXPAND, 5);
