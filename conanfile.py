@@ -87,6 +87,13 @@ class Toolmap(ConanFile):
             self.copy("*.xml", dst="share/toolmap",
                       src=os.path.join(_source_folder, "resources", "web"))
 
+        # copy ssl certificates needed for web layers
+        if self.settings.os == "Windows" or self.settings.os == "Linux":
+            self.copy("*.pem", dst="share/certs", src=os.path.join(_source_folder, "resources", "certs"))
+        if self.settings.os == "Macos":
+            self.copy("*.pem", dst="bin/ToolMap.app/Contents/share/certs",
+                      src=os.path.join(_source_folder, "resources", "certs"))
+
     def build(self):
         cmake = CMake(self)
         if self.options.unit_test:

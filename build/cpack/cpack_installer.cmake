@@ -1,4 +1,4 @@
-# INSTALLER
+﻿# INSTALLER
 # use git version for package number
 set(VERSION_PATCH ${lsVERSION_SOFT_VERSION})
 
@@ -43,6 +43,10 @@ if (WIN32)
     # this part is a partial duplicates of copywebfiles.cmake
     FILE(GLOB WEBFILES "resource/web/*.xml")
     install(FILES ${WEBFILES} DESTINATION share/toolmap)
+
+    # install SSL certificate
+    FILE(GLOB CERTFILES "resource/certs/*.pem")
+    install(FILES ${CERTFILES} DESTINATION share/certs)
 
     # install proj files
     install(DIRECTORY ${PROJ_SHARE_PATH} DESTINATION share)

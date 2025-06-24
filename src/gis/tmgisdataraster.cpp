@@ -162,6 +162,21 @@ void tmGISDataRaster::InitGISDriversRaster() {
     if (IsLoggingEnabled()) {
         CPLSetConfigOption("CPL_DEBUG", "ON");
     }
+
+    // Set SSL certificate option (for WMS layers)
+    wxFileName myCertPath(wxStandardPaths::Get().GetExecutablePath());
+    myCertPath.RemoveLastDir();
+    myCertPath.AppendDir(_T("share"));
+    myCertPath.AppendDir(_T("certs"));
+    myCertPath.SetFullName(_T("cacert.pem"));
+    myCertPath.Normalize(wxPATH_NORM_ABSOLUTE);
+
+    if (!myCertPath.Exists()) {
+        wxLogError(_("Certificate file does not exist! Try re-installing ToolMap"));
+        return;
+    }
+    CPLSetConfigOption("GDAL_HTTP_SSLCERT", myCertPath.GetFullPath());
+
     GDALAllRegister();
 }
 
