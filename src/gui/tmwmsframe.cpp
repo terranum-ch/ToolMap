@@ -34,6 +34,9 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxSt
 }
 
 void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
+    // remove checked items
+    m_checked_layers.Clear();
+
     // create temporary file to store the WMS capabilities XML
     wxFileName xml_output(wxFileName::CreateTempFileName("wms_capabilities_"));
     xml_output.SetExt("xml");
@@ -79,6 +82,7 @@ void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
 void tmWMSBrowserFrame::OnSearchList(wxCommandEvent &event) {
     // remove item from the list not matching the search text
     wxString search_text = m_ctrl_search->GetValue().Lower();
+    _get_checked_layers();
     m_ctrl_layer_list->DeleteAllItems();
     if (search_text.IsEmpty()) {
         for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
@@ -94,6 +98,7 @@ void tmWMSBrowserFrame::OnSearchList(wxCommandEvent &event) {
 }
 
 void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
+    _get_checked_layers();
     m_ctrl_layer_list->DeleteAllItems();
     for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
         add_layer_to_list(m_layers_names[i], m_layers_titles[i], m_layers_abstracts[i], i);
@@ -111,6 +116,22 @@ void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent & event) {
     m_info_text_ctrl->SetLabel(status_text);
 }
 
+void tmWMSBrowserFrame::_get_checked_layers() {
+    // iterate the items and update the checked layers
+    for (long i = 0; i < m_ctrl_layer_list->GetItemCount(); ++i) {
+        int layer_index = m_ctrl_layer_list->GetItemData(i);
+        if (m_ctrl_layer_list->IsItemChecked(i)) {
+            if (m_checked_layers.Index(layer_index) == wxNOT_FOUND) {
+                m_checked_layers.Add(layer_index);
+            }
+        } else {
+            if (m_checked_layers.Index(layer_index) != wxNOT_FOUND) {
+                m_checked_layers.Remove(layer_index);
+            }
+        }
+    }
+}
+
 /// \brief Adds a layer to the list control.
 void tmWMSBrowserFrame::add_layer_to_list(const wxString &layer_name, const wxString &layer_title,
                                           const wxString &layer_abstract, int layer_index) {
@@ -119,6 +140,11 @@ void tmWMSBrowserFrame::add_layer_to_list(const wxString &layer_name, const wxSt
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 2, layer_title);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 3, layer_abstract);
     m_ctrl_layer_list->SetItemData(m_ctrl_layer_list->GetItemCount() - 1, layer_index);
+    if (m_checked_layers.Index(layer_index) != wxNOT_FOUND) {
+        m_ctrl_layer_list->CheckItem(m_ctrl_layer_list->GetItemCount() - 1, true);
+    } else {
+        m_ctrl_layer_list->CheckItem(m_ctrl_layer_list->GetItemCount() - 1, false);
+    }
 }
 
 void tmWMSBrowserFrame::_create_controls() {

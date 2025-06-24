@@ -37,6 +37,7 @@ protected:
     wxStaticText* m_info_text_ctrl = nullptr;
 
     wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts;
+    wxArrayInt m_checked_layers;
 
     // Virtual event handlers, override them in your derived class
     virtual void OnBtnLoadLayers(wxCommandEvent &event);
@@ -50,6 +51,8 @@ protected:
     virtual void OnSearchBtnCancel(wxCommandEvent &event);
 
     virtual void UpdateInfoText(wxUpdateUIEvent & event);
+
+    void _get_checked_layers();
 
     void _create_controls();
 
