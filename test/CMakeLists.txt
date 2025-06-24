@@ -32,7 +32,8 @@ file(GLOB src_tests ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 add_executable(UnitTests ${src_tests})
 
-target_link_libraries(UnitTests ${CONAN_LIBS} "${PROJECT_NAME}_lib")
+#target_link_libraries(UnitTests ${CONAN_LIBS} "${PROJECT_NAME}_lib")
+target_link_libraries(UnitTests "${PROJECT_NAME}_lib")
 add_test(NAME test COMMAND UnitTests)
 
 # suppressing warning for missing PDB files for linked libs
