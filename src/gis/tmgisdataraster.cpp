@@ -179,7 +179,7 @@ void tmGISDataRaster::InitGISDriversRaster() {
     // On OSX, cacert.pam is asking for a password. It looks like a bug in OSX. see :
     // https://github.com/curl/curl/issues/1308
     #ifdef __WXMSW__
-    CPLSetConfigOption("GDAL_HTTP_SSLCERT", myCertPath.GetFullPath().c_str());
+    CPLSetConfigOption("CURL_CA_BUNDLE", myCertPath.GetFullPath().c_str());
     #endif
     // Set proxy info if defined
     wxConfigBase *myConfig = wxFileConfig::Get();
