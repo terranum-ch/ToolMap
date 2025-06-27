@@ -46,17 +46,17 @@ tmGISDataRaster::~tmGISDataRaster() {
     m_RasterBand = nullptr;
 }
 
-bool tmGISDataRaster::Open(const wxString& filename, bool bReadWrite) {
+bool tmGISDataRaster::Open(const wxString &filename, bool bReadWrite) {
     // init parent member values
     tmGISData::Open(filename, bReadWrite);
 
     // convert utf wxString into char *
     // const char* ascii_str =
-    char* buffer = new char[filename.Length() * sizeof(wxString)];
-    strcpy(buffer, (const char*)filename.mb_str(wxConvUTF8));
+    char *buffer = new char[filename.Length() * sizeof(wxString)];
+    strcpy(buffer, (const char *) filename.mb_str(wxConvUTF8));
 
     // open the raster and return true if success
-    m_DataSet = (GDALDataset*)GDALOpen(buffer, (GDALAccess) false);  // bReadWrite);
+    m_DataSet = (GDALDataset *) GDALOpen(buffer, (GDALAccess) false); // bReadWrite);
     delete[] buffer;
     if (m_DataSet == nullptr) {
         if (IsLoggingEnabled()) {
@@ -69,9 +69,9 @@ bool tmGISDataRaster::Open(const wxString& filename, bool bReadWrite) {
     return TRUE;
 }
 
-void tmGISDataRaster::UseExisting(const wxString& filename, GDALDatasetH hdst) {
+void tmGISDataRaster::UseExisting(const wxString &filename, GDALDatasetH hdst) {
     tmGISData::Open(filename);
-    m_DataSet = static_cast<GDALDataset*>(hdst);
+    m_DataSet = static_cast<GDALDataset *>(hdst);
 }
 
 tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle() {
@@ -89,7 +89,7 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle() {
     // getting bounding box
     double dCoord[6];
     if (m_DataSet->GetGeoTransform(dCoord) != CE_None) {
-        wxWindow* myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
+        wxWindow *myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
         wxASSERT(myMainWnd);
         wxCommandEvent evt(tmEVT_LM_INCOMPATIBLE_WARNING, wxID_ANY);
         evt.SetString(GetFullFileName().c_str());
@@ -108,12 +108,12 @@ tmRealRect tmGISDataRaster::GetMinimalBoundingRectangle() {
 
     // send warning if rotation information is found
     if (dCoord[2] != 0 || dCoord[4] != 0) {
-        wxWindow* myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
+        wxWindow *myMainWnd = wxWindow::FindWindowByName("MAIN_WINDOW");
         wxASSERT(myMainWnd);
 
         wxCommandEvent evt(tmEVT_LM_ROTATION_WARNING, wxID_ANY);
         evt.SetString(GetShortFileName().c_str());
-        wxRealPoint* myPt = new wxRealPoint(dCoord[2], dCoord[4]);
+        wxRealPoint *myPt = new wxRealPoint(dCoord[2], dCoord[4]);
         evt.SetClientData(myPt);
         myMainWnd->GetEventHandler()->QueueEvent(evt.Clone());
         /*
@@ -134,7 +134,7 @@ wxString tmGISDataRaster::GetAllRasterGISFormatsWildcards() {
     return myWildCards;
 }
 
-tmGISDataRaster* tmGISDataRaster::CreateGISRasterBasedOnType(const int& gis_format_index) {
+tmGISDataRaster *tmGISDataRaster::CreateGISRasterBasedOnType(const int &gis_format_index) {
     switch (gis_format_index) {
         case tmGIS_RASTER_TIFF:
             return new tmGISDataRasterTIFF();
@@ -152,7 +152,7 @@ tmGISDataRaster* tmGISDataRaster::CreateGISRasterBasedOnType(const int& gis_form
     return nullptr;
 }
 
-tmGISDataRaster* tmGISDataRaster::CreateGISRasterBasedOnExt(const wxString& extension) {
+tmGISDataRaster *tmGISDataRaster::CreateGISRasterBasedOnExt(const wxString &extension) {
     int iLoop = sizeof(tmGISDATA_RASTER_TYPE_EXTENSION) / sizeof(wxString);
     for (int i = 0; i < iLoop; i++) {
         if (tmGISDATA_RASTER_TYPE_EXTENSION[i].Contains(extension)) return CreateGISRasterBasedOnType(i);
@@ -176,10 +176,13 @@ void tmGISDataRaster::InitGISDriversRaster() {
         wxLogError(_("Certificate file does not exist! Try re-installing ToolMap"));
         return;
     }
+    // On OSX, cacert.pam is asking for a password. It looks like a bug in OSX. see :
+    // https://github.com/curl/curl/issues/1308
+    #ifndef __WXOSX__
     CPLSetConfigOption("GDAL_HTTP_SSLCERT", myCertPath.GetFullPath().c_str());
-
+    #endif
     // Set proxy info if defined
-    wxConfigBase* myConfig = wxFileConfig::Get();
+    wxConfigBase *myConfig = wxFileConfig::Get();
     wxASSERT(myConfig);
     wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
     if (!myProxyInfo.IsEmpty()) {
@@ -218,7 +221,7 @@ wxSize tmGISDataRaster::GetImagePxDim() {
   @author Lucien Schreiber (c) CREALP 2008
   @date 25 September 2008
   *******************************************************************************/
-bool tmGISDataRaster::GetImagePxSize(double& pxsizeX, double& pxsizeY, const tmRealRect& imgrealcoord) {
+bool tmGISDataRaster::GetImagePxSize(double &pxsizeX, double &pxsizeY, const tmRealRect &imgrealcoord) {
     tmRealRect myImageCoord = imgrealcoord;
     if (imgrealcoord == tmRealRect(0, 0, 0, 0)) myImageCoord = GetMinimalBoundingRectangle();
 
@@ -240,7 +243,7 @@ bool tmGISDataRaster::GetImagePxSize(double& pxsizeX, double& pxsizeY, const tmR
   @author Lucien Schreiber (c) CREALP 2008
   @date 25 September 2008
   *******************************************************************************/
-wxRect tmGISDataRaster::ConvertClipedImage(const tmRealRect& origin, const tmRealRect& clipped) {
+wxRect tmGISDataRaster::ConvertClipedImage(const tmRealRect &origin, const tmRealRect &clipped) {
     // getting informations : image width in pixels and sizeof one pixels width
     // height.
     wxSize originPX = GetImagePxDim();
@@ -261,24 +264,24 @@ wxRect tmGISDataRaster::ConvertClipedImage(const tmRealRect& origin, const tmRea
     // simple case, origin and clipped are similar, image is fully displayed
     if (origin == clipped) return clippedPX;
 
-    if (origin.x_min < clipped.x_min)  // left clipped
+    if (origin.x_min < clipped.x_min) // left clipped
     {
         clippedPX.x = (clipped.x_min - origin.x_min) / dPxWidthX;
         clippedPX.width = clippedPX.GetWidth() - clippedPX.x;
     }
 
-    if (clipped.x_max < origin.x_max)  // right clipped
+    if (clipped.x_max < origin.x_max) // right clipped
     {
         clippedPX.width = clippedPX.width - ((origin.x_max - clipped.x_max) / dPxWidthX);
     }
 
-    if (clipped.y_max < origin.y_max)  // top clipped
+    if (clipped.y_max < origin.y_max) // top clipped
     {
         clippedPX.y = (origin.y_max - clipped.y_max) / dPxWidthY;
         clippedPX.height = clippedPX.GetHeight() - clippedPX.y;
     }
 
-    if (origin.y_min < clipped.y_min)  // bottom clipped
+    if (origin.y_min < clipped.y_min) // bottom clipped
     {
         clippedPX.height = clippedPX.GetHeight() - ((clipped.y_min - origin.y_min) / dPxWidthY);
     }
@@ -352,10 +355,10 @@ bool tmGISDataRaster::IsImageInsideVisibleArea() {
   @author Thuban Team & modfied by Lucien Schreiber
   @date 24 September 2008
   *******************************************************************************/
-CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imglen, unsigned char** maskbuf,
-                                     unsigned int* masklen, wxSize imgSize) {
+CPLErr tmGISDataRaster::GetImageData(unsigned char **imgbuf, unsigned int *imglen, unsigned char **maskbuf,
+                                     unsigned int *masklen, wxSize imgSize) {
     // my definitions
-    int bEnablem_DataSettAlpha = FALSE;  //, bEnableSrcAlpha = FALSE;
+    int bEnablem_DataSettAlpha = FALSE; //, bEnableSrcAlpha = FALSE;
     int bMakeMask = false, bMakeAlpha = false, bInvertMask = false;
     wxRect imgfilter = m_PxImgFilter;
 
@@ -365,13 +368,13 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
 
     CPLErr ret = CE_None;
 
-    GDALColorTable* pal = nullptr;
+    GDALColorTable *pal = nullptr;
 
     m_DataSet->FlushCache();
 
     int rasterCount = m_DataSet->GetRasterCount();
-    int nRasterXSize = imgfilter.GetWidth();   // m_DataSet->GetRasterXSize();
-    int nRasterYSize = imgfilter.GetHeight();  // m_DataSet->GetRasterYSize();
+    int nRasterXSize = imgfilter.GetWidth(); // m_DataSet->GetRasterXSize();
+    int nRasterYSize = imgfilter.GetHeight(); // m_DataSet->GetRasterYSize();
     if (!(nRasterXSize > 0 && nRasterYSize > 0)) {
         if (IsLoggingEnabled()) {
             wxLogMessage(_("The dimensions (%ix%i) are invalid"), nRasterXSize, nRasterYSize);
@@ -383,7 +386,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
     // create the new image array for RGBRGB... values
     //
     *imglen = 3 * imgSize.GetWidth() * imgSize.GetHeight();
-    *imgbuf = (unsigned char*)CPLMalloc(*imglen);
+    *imgbuf = (unsigned char *) CPLMalloc(*imglen);
     if (*imgbuf == nullptr) {
         if (IsLoggingEnabled()) {
             wxLogMessage(_("The system does not have enough memory to project"));
@@ -398,7 +401,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
     if (rasterCount >= 3) {
         for (int i = 1; i <= 3; i++) {
             int offs = 0;
-            GDALRasterBand* band = m_DataSet->GetRasterBand(i);
+            GDALRasterBand *band = m_DataSet->GetRasterBand(i);
 
             switch (band->GetColorInterpretation()) {
                 case GCI_Undefined:
@@ -442,12 +445,12 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
         //
 
         // definitions for grayscale
-        GDALRasterBand* band = m_DataSet->GetRasterBand(1);
+        GDALRasterBand *band = m_DataSet->GetRasterBand(1);
         int iLoop = 0;
         double dRange = 0;
         int iBuffSize = 0;
-        void* myGdalScanData = nullptr;
-        unsigned char* data = nullptr;
+        void *myGdalScanData = nullptr;
+        unsigned char *data = nullptr;
         // char Resultat = '\n';
         GDALDataType myDataType;
 
@@ -479,10 +482,10 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
                         break;
                     }
 
-                    for (unsigned char* data = *imgbuf; data != (*imgbuf + *imglen); data += 3) {
-                        unsigned short int val = *((unsigned short int*)data);
+                    for (unsigned char *data = *imgbuf; data != (*imgbuf + *imglen); data += 3) {
+                        unsigned short int val = *((unsigned short int *) data);
 
-                        const GDALColorEntry* color = pal->GetColorEntry(val);
+                        const GDALColorEntry *color = pal->GetColorEntry(val);
 
                         if (pal_interp == GPI_Gray) {
                             *(data + 0) = color->c1;
@@ -497,7 +500,7 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
                 }
                 break;
 
-            case GCI_Undefined:  // can we try to make a greyscale image?
+            case GCI_Undefined: // can we try to make a greyscale image?
             case GCI_GrayIndex:
 
                 // compute stats,
@@ -552,24 +555,24 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
             //
 
             *masklen = ((imgSize.GetWidth() + 7) / 8) * imgSize.GetHeight();
-            *maskbuf = (unsigned char*)CPLMalloc(*masklen);
+            *maskbuf = (unsigned char *) CPLMalloc(*masklen);
 
             if (*maskbuf != nullptr) {
-                unsigned char* tmp = (unsigned char*)CPLMalloc(imgSize.GetWidth() * imgSize.GetHeight());
+                unsigned char *tmp = (unsigned char *) CPLMalloc(imgSize.GetWidth() * imgSize.GetHeight());
 
                 if (tmp == nullptr) {
                     CPLFree(*maskbuf);
                     *maskbuf = nullptr;
                 } else {
-                    GDALRasterBand* band = m_DataSet->GetRasterBand(rasterCount);
+                    GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
 
                     ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), nRasterXSize, nRasterYSize, tmp,
                                          imgSize.GetWidth(), imgSize.GetHeight(), GDT_Byte, 0, 0);
 
                     if (ret != CE_Failure) {
                         int i, j, b = 1, c = 0;
-                        unsigned char* ptr = *maskbuf;
-                        unsigned char* tptr = tmp;
+                        unsigned char *ptr = *maskbuf;
+                        unsigned char *tptr = tmp;
 
                         // unsigned int empty_count=0;
 
@@ -691,10 +694,10 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
             //
 
             *masklen = imgSize.GetWidth() * imgSize.GetHeight();
-            *maskbuf = (unsigned char*)CPLMalloc(*masklen);
+            *maskbuf = (unsigned char *) CPLMalloc(*masklen);
 
             if (*maskbuf != nullptr) {
-                GDALRasterBand* band = m_DataSet->GetRasterBand(rasterCount);
+                GDALRasterBand *band = m_DataSet->GetRasterBand(rasterCount);
 
                 ret = band->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), nRasterXSize, nRasterYSize, *maskbuf,
                                      imgSize.GetWidth(), imgSize.GetHeight(), GDT_Byte, 0, 0);
@@ -735,11 +738,11 @@ CPLErr tmGISDataRaster::GetImageData(unsigned char** imgbuf, unsigned int* imgle
   @author Lucien Schreiber (c) CREALP 2009
   @date 04 September 2009
   *******************************************************************************/
-bool tmGISDataRaster::GetImageTranslucency(wxSize imgSize, int translucencypercent, unsigned char** alphachn) {
+bool tmGISDataRaster::GetImageTranslucency(wxSize imgSize, int translucencypercent, unsigned char **alphachn) {
     // checks
     wxASSERT(translucencypercent >= 0 && translucencypercent <= 100);
     unsigned int myimglen = imgSize.GetWidth() * imgSize.GetHeight();
-    *alphachn = (unsigned char*)CPLMalloc(myimglen);
+    *alphachn = (unsigned char *) CPLMalloc(myimglen);
     if (*alphachn == nullptr) {
         wxLogError(_T("Error creating translucency"));
         return false;
@@ -749,9 +752,9 @@ bool tmGISDataRaster::GetImageTranslucency(wxSize imgSize, int translucencyperce
     int myTransValue = translucencypercent * 255 / 100;
     myTransValue = 255 - myTransValue;
 
-    unsigned char* pData = *alphachn;
+    unsigned char *pData = *alphachn;
     for (unsigned int i = 0; i < myimglen; i++) {
-        *(pData + i) = (char)myTransValue;
+        *(pData + i) = (char) myTransValue;
     }
     return true;
 }
@@ -770,13 +773,13 @@ bool tmGISDataRaster::GetImageTranslucency(wxSize imgSize, int translucencyperce
   @author Lucien Schreiber (c) CREALP 2008
   @date 03 October 2008
   *******************************************************************************/
-void* tmGISDataRaster::ReadImageData(GDALRasterBand* gdalBand, const wxRect& imgfilter, const wxSize& imgSize,
-                                     int& buffsize) {
+void *tmGISDataRaster::ReadImageData(GDALRasterBand *gdalBand, const wxRect &imgfilter, const wxSize &imgSize,
+                                     int &buffsize) {
     GDALDataType type = gdalBand->GetRasterDataType();
     int size = GDALGetDataTypeSize(type) / 8;
 
     buffsize = size * imgSize.GetWidth() * imgSize.GetHeight();
-    void* data = CPLMalloc(buffsize);
+    void *data = CPLMalloc(buffsize);
 
     CPLErr myErr = gdalBand->RasterIO(GF_Read, imgfilter.GetX(), imgfilter.GetY(), imgfilter.GetWidth(),
                                       imgfilter.GetHeight(), data, imgSize.GetWidth(), imgSize.GetHeight(), type, 0, 0);
@@ -798,31 +801,31 @@ void* tmGISDataRaster::ReadImageData(GDALRasterBand* gdalBand, const wxRect& img
   @author Lucien Schreiber (c) CREALP 2008
   @date 03 October 2008
   *******************************************************************************/
-double tmGISDataRaster::ReadGDALValueToDouble(void* data, GDALDataType type, int index) {
+double tmGISDataRaster::ReadGDALValueToDouble(void *data, GDALDataType type, int index) {
     double val;
 
     switch (type) {
         case GDT_Byte:
-            return (double)((GByte*)data)[index];
+            return (double) ((GByte *) data)[index];
             break;
         case GDT_UInt16:
-            return (double)((GUInt16*)data)[index];
+            return (double) ((GUInt16 *) data)[index];
             break;
         case GDT_Int16:
-            return (double)((GInt16*)data)[index];
+            return (double) ((GInt16 *) data)[index];
             break;
         case GDT_UInt32:
-            return (double)((GUInt32*)data)[index];
+            return (double) ((GUInt32 *) data)[index];
             break;
         case GDT_Int32:
-            return (double)((GInt32*)data)[index];
+            return (double) ((GInt32 *) data)[index];
             break;
         case GDT_Float32:
-            return (double)((float*)data)[index];
+            return (double) ((float *) data)[index];
             break;
         case GDT_Float64:
-            val = ((double*)data)[index];
-            return (double)((double*)data)[index];
+            val = ((double *) data)[index];
+            return (double) ((double *) data)[index];
             break;
         default:
             if (IsLoggingEnabled()) {
@@ -846,7 +849,7 @@ double tmGISDataRaster::ReadGDALValueToDouble(void* data, GDALDataType type, int
   @author Lucien Schreiber (c) CREALP 2008
   @date 03 October 2008
   *******************************************************************************/
-bool tmGISDataRaster::GetStatMinMaxNoDataValue(double& dmin, double& dmax, double& dnodata) {
+bool tmGISDataRaster::GetStatMinMaxNoDataValue(double &dmin, double &dmax, double &dnodata) {
     int bResult = false;
     bool bReturn = false;
     dmin = 0;
@@ -943,7 +946,7 @@ wxString tmGISDataRaster::GetBandMetaData() {
 wxString tmGISDataRaster::GetUnitMetaData() {
     GDALDataType myDataType = m_DataSet->GetRasterBand(1)->GetRasterDataType();
     wxString myRetVal = _("Raster units are : ");
-    myRetVal.Append(tmRASTER_DATATYPES[(int)myDataType]);
+    myRetVal.Append(tmRASTER_DATATYPES[(int) myDataType]);
     return myRetVal;
 }
 
@@ -956,13 +959,13 @@ wxString tmGISDataRaster::GetUnitMetaData() {
   @author Lucien Schreiber (c) CREALP 2008
   @date 24 October 2008
   *******************************************************************************/
-int tmGISDataRaster::GetPyramidsInfo(wxArrayString* pyramids) {
+int tmGISDataRaster::GetPyramidsInfo(wxArrayString *pyramids) {
     int iNbPyramids = 0;
     if (m_DataSet == nullptr) {
         return wxNOT_FOUND;
     }
 
-    GDALRasterBand* myOverview = nullptr;
+    GDALRasterBand *myOverview = nullptr;
     if (!m_RasterBand) {
         m_RasterBand = m_DataSet->GetRasterBand(1);
     }
@@ -983,14 +986,14 @@ int tmGISDataRaster::GetPyramidsInfo(wxArrayString* pyramids) {
     return iNbPyramids;
 }
 
-bool tmGISDataRaster::CreateSpatialIndex(GDALProgressFunc progress, void* pfProgressData) {
+bool tmGISDataRaster::CreateSpatialIndex(GDALProgressFunc progress, void *pfProgressData) {
     wxASSERT(m_DataSet);
     int myInts[] = {4, 8, 16, 32};
     wxString myConstRRD = "USE_RRD";
     wxString myConstRRDValue = "TRUE";
     wxString myOverviewTypeName = _T("NEAREST");
 
-    CPLSetConfigOption((const char*)myConstRRD.mb_str(wxConvUTF8), (const char*)myConstRRDValue.mb_str(wxConvUTF8));
+    CPLSetConfigOption((const char *) myConstRRD.mb_str(wxConvUTF8), (const char *) myConstRRDValue.mb_str(wxConvUTF8));
     if (m_DataSet->BuildOverviews(myOverviewTypeName.mb_str(), 4, myInts, 0, nullptr, progress, pfProgressData) ==
         CE_None) {
         return true;
@@ -1045,14 +1048,14 @@ wxString tmGISDataRaster::GetImagePxSizeMetadata() {
 void tmRotationWarning_DLG::_CreateControls() {
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer* bSizer1;
+    wxBoxSizer *bSizer1;
     bSizer1 = new wxBoxSizer(wxVERTICAL);
 
     m_TextLayerCtrl = new wxStaticText(this, wxID_ANY, m_TxtTemplate, wxDefaultPosition, wxDefaultSize, 0);
     m_TextLayerCtrl->Wrap(-1);
     bSizer1->Add(m_TextLayerCtrl, 0, wxALL, 5);
 
-    wxStaticBoxSizer* sbSizer1;
+    wxStaticBoxSizer *sbSizer1;
     sbSizer1 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Rotation:")), wxVERTICAL);
 
     m_TextRotationCtrl = new wxStaticText(this, wxID_ANY, _("0.00012\n0.12000"), wxDefaultPosition, wxDefaultSize, 0);
@@ -1081,11 +1084,11 @@ void tmRotationWarning_DLG::_CreateControls() {
     this->Centre(wxBOTH);
 }
 
-void tmRotationWarning_DLG::OnHelp(wxCommandEvent& event) {
+void tmRotationWarning_DLG::OnHelp(wxCommandEvent &event) {
     wxLaunchDefaultBrowser(_T("http://www.crealp.ch/toolmap/documentation/doku.php?id=man:data_manage#rotation"));
 }
 
-tmRotationWarning_DLG::tmRotationWarning_DLG(wxWindow* parent, wxWindowID id, const wxString& title)
+tmRotationWarning_DLG::tmRotationWarning_DLG(wxWindow *parent, wxWindowID id, const wxString &title)
     : wxDialog(parent, id, title) {
     m_Hide = false;
     m_Rotation1 = 0.0;
