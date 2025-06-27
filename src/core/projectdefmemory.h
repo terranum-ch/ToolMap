@@ -70,6 +70,13 @@ static wxString PRJDEF_PROJ_TYPE_STRING[] = {
     wxTRANSLATE("Swiss projection (CH1903+ / LV95)"),
     wxTRANSLATE("World (WGS84)"),
 };
+
+static wxString PRJDEF_PROJ_TYPE_EPSG[] = {
+    wxTRANSLATE("EPSG:21781"), //"Swiss projection (CH1903)"
+    wxTRANSLATE("EPSG:2056"), // (CH1903+ / LV95)")
+    wxTRANSLATE("EPSG:3857") //"World (WGS84)"),
+};
+
 enum PRJDEF_PROJ_TYPE {
     PROJ_SWISS_CH1903 = 0,
     PROJ_SWISS_CH1903PLUS,

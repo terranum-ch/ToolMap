@@ -6,13 +6,15 @@
 
 #include "../gis/tmwms.h"
 
-tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, wxWindowID id, const wxString &title,
+tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, const wxString &project_projection,
+                                     wxWindowID id, const wxString &title,
                                      const wxPoint &pos,
                                      const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
 
     m_is_project_open = is_project_open;
+    m_project_projection = project_projection;
     if (!m_is_project_open) {
         m_ctrl_append_to_project->SetValue(false);
         m_ctrl_append_to_project->Disable();
@@ -67,7 +69,7 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     }
 
     // add the crs to the list control
-    if (m_layers_crs.GetCount() ==0) {
+    if (m_layers_crs.GetCount() == 0) {
         wxLogError(_("No CRS found in the WMS capabilities XML."));
         m_layers_crs.Add("EPSG:3857"); // Default to EPSG:3857 if no CRS found
     }
@@ -88,6 +90,15 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     }
 
     m_ctrl_projection->Set(layers_crs_helper);
+    m_ctrl_projection->SetSelection(0); // Select the first CRS by default
+
+    // if existing, select the project projection in the list
+    if (!m_project_projection.IsEmpty()) {
+        int proj_index = m_layers_crs.Index(m_project_projection);
+        if (proj_index != wxNOT_FOUND) {
+            m_ctrl_projection->SetSelection(proj_index);
+        }
+    }
 
     // Clear the list control before adding new layers
     m_ctrl_layer_list->DeleteAllItems();
@@ -114,7 +125,7 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
     }
 
     // get the selected projection
-    wxString selected_projection =  m_layers_crs.Item( m_ctrl_projection->GetSelection());
+    wxString selected_projection = m_layers_crs.Item(m_ctrl_projection->GetSelection());
     // get the projection digits and remove EPSG text
     wxString projection_code_txt = selected_projection.AfterFirst(':');
 
@@ -123,11 +134,13 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
     for (size_t i = 0; i < m_checked_layers.GetCount(); ++i) {
         int layer_index = m_checked_layers[i];
         wxString layer_name = m_layers_names[layer_index];
-        if (!wmsFileXML.CreateXML(layer_name, output_dir + wxFileName::GetPathSeparator() + layer_name + projection_code_txt + ".xml", selected_projection)) {
+        wxString export_layer_pathname = output_dir + wxFileName::GetPathSeparator() + layer_name + projection_code_txt
+                                         + ".xml";
+        if (!wmsFileXML.CreateXML(layer_name, export_layer_pathname, selected_projection)) {
             wxLogError(_("Failed to create XML file for layer: %s"), layer_name);
         } else {
-            wxLogDebug(_("Exported layer '%s' to XML file."), layer_name);
-            m_exported_layers.Add(output_dir + wxFileName::GetPathSeparator() + layer_name + ".xml");
+            wxLogDebug(_("Exported layer '%s' to XML file."), export_layer_pathname);
+            m_exported_layers.Add(export_layer_pathname);
         }
     }
     wxMessageBox(

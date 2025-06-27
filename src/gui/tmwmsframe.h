@@ -34,16 +34,17 @@ protected:
     wxButton *m_btn_export = nullptr;
     wxStaticText *m_staticText2 = nullptr;
     wxSearchCtrl *m_ctrl_search = nullptr;
-    wxStaticText* m_info_text_ctrl = nullptr;
-    wxCheckBox* m_ctrl_append_to_project = nullptr;
-    wxChoice* m_ctrl_projection = nullptr;
-    wxStaticText* m_staticText5 = nullptr;
+    wxStaticText *m_info_text_ctrl = nullptr;
+    wxCheckBox *m_ctrl_append_to_project = nullptr;
+    wxChoice *m_ctrl_projection = nullptr;
+    wxStaticText *m_staticText5 = nullptr;
 
 
     wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts, m_layers_crs;
     wxArrayInt m_checked_layers;
     bool m_is_project_open;;
     wxArrayString m_exported_layers;
+    wxString m_project_projection;
 
     // Virtual event handlers, override them in your derived class
     virtual void OnBtnLoadLayers(wxCommandEvent &event);
@@ -56,7 +57,7 @@ protected:
 
     virtual void OnSearchBtnCancel(wxCommandEvent &event);
 
-    virtual void UpdateInfoText(wxUpdateUIEvent & event);
+    virtual void UpdateInfoText(wxUpdateUIEvent &event);
 
     void _get_checked_layers();
 
@@ -67,7 +68,8 @@ protected:
                            int layer_index);
 
 public:
-    tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, wxWindowID id = wxID_ANY, const wxString &title = _("WMS Browser"),
+    tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, const wxString &project_projection,
+                      wxWindowID id = wxID_ANY, const wxString &title = _("WMS Browser"),
                       const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
                       long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
@@ -92,10 +94,12 @@ protected:
     wxString m_title_wms;
 
     void _create_controls();
+
     bool TransferDataToWindow() override;
 
 public:
-    tmWMSFrameDetails(wxWindow *parent, const wxString &name_wms, const wxString &abstract_wms, const wxString &title_wms,
+    tmWMSFrameDetails(wxWindow *parent, const wxString &name_wms, const wxString &abstract_wms,
+                      const wxString &title_wms,
                       wxWindowID id = wxID_ANY, const wxString &title = _("Details"),
                       const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
                       long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
