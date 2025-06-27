@@ -93,6 +93,8 @@ class Toolmap(ConanFile):
         if self.settings.os == "Macos":
             self.copy("*.pem", dst="bin/ToolMap.app/Contents/share/certs",
                       src=os.path.join(_source_folder, "resources", "certs"))
+            if self.options.unit_test:
+                self.copy("*.pem", dst="share/certs", src=os.path.join(_source_folder, "resources", "certs"))
 
     def build(self):
         cmake = CMake(self)
