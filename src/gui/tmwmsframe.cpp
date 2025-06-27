@@ -6,10 +6,16 @@
 
 #include "../gis/tmwms.h"
 
-tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, wxWindowID id, const wxString &title, const wxPoint &pos,
+tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, wxWindowID id, const wxString &title, const wxPoint &pos,
                                      const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
+
+    m_is_project_open = is_project_open;
+    if (!m_is_project_open) {
+        m_ctrl_append_to_project->SetValue(false);
+        m_ctrl_append_to_project->Disable();
+    }
 
     m_ctrl_layer_list->EnableCheckBoxes();
 
@@ -69,7 +75,8 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
 
 void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
     _get_checked_layers();
-    
+    m_exported_layers.Clear();
+
     // display a directory dialog to select the output directory
     wxDirDialog dir_dlg(this, _("Select output directory"), wxEmptyString, wxDD_DEFAULT_STYLE);
     if (dir_dlg.ShowModal() != wxID_OK) {
@@ -90,12 +97,14 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
             wxLogError(_("Failed to create XML file for layer: %s"), layer_name);
         } else {
             wxLogDebug(_("Exported layer '%s' to XML file."), layer_name);
+            m_exported_layers.Add(output_dir + wxFileName::GetPathSeparator() + layer_name + ".xml");
         }
     }
     wxMessageBox(
         wxString::Format(_("%llu layers exported into the output directory: %s"),
-        static_cast<unsigned long long>(m_checked_layers.GetCount()), output_dir),
+                         static_cast<unsigned long long>(m_checked_layers.GetCount()), output_dir),
         _("Export Complete"), wxOK | wxICON_INFORMATION, this);
+    Close(); // Close the dialog after export
 }
 
 void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
@@ -136,7 +145,7 @@ void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent &event) {
         return; // Ensure status bar is created
     }
     // display total number of layers and total number of displayed layers
-    wxString status_text = wxString::Format(_("Total: %llu, Displayed: %d"),
+    wxString status_text = wxString::Format(_("Total: %llu\tDisplayed: %d"),
                                             static_cast<unsigned long long>(m_layers_names.GetCount()),
                                             m_ctrl_layer_list->GetItemCount());
     m_info_text_ctrl->SetLabel(status_text);
@@ -215,7 +224,7 @@ void tmWMSBrowserFrame::_create_controls() {
 
     bSizer1->Add(sbSizer1, 0, wxEXPAND | wxALL, 5);
 
-    m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT);
+    m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON | wxLC_REPORT);
     m_ctrl_layer_list->SetMinSize(wxSize(800, 600));
 
     bSizer1->Add(m_ctrl_layer_list, 1, wxALL | wxEXPAND, 5);
@@ -227,14 +236,10 @@ void tmWMSBrowserFrame::_create_controls() {
                                 0);
     sbSizer2->Add(m_btn_export, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-
-    sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
-
-    m_info_text_ctrl = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _T("Total: 0, Displayed: 0"),
-                                        wxDefaultPosition,
-                                        wxDefaultSize, 0);
-    m_info_text_ctrl->Wrap(-1);
-    sbSizer2->Add(m_info_text_ctrl, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    m_ctrl_append_to_project = new wxCheckBox(sbSizer2->GetStaticBox(), wxID_ANY, _("Append to project"),
+                                              wxDefaultPosition, wxDefaultSize, 0);
+    m_ctrl_append_to_project->SetValue(true);
+    sbSizer2->Add(m_ctrl_append_to_project, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
 
     sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
@@ -254,6 +259,16 @@ void tmWMSBrowserFrame::_create_controls() {
 
 
     bSizer1->Add(sbSizer2, 0, wxEXPAND | wxALL, 5);
+
+    wxBoxSizer *bSizer3;
+    bSizer3 = new wxBoxSizer(wxHORIZONTAL);
+
+    m_info_text_ctrl = new wxStaticText(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    m_info_text_ctrl->Wrap(-1);
+    bSizer3->Add(m_info_text_ctrl, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+
+    bSizer1->Add(bSizer3, 0, wxEXPAND, 5);
 
 
     this->SetSizer(bSizer1);

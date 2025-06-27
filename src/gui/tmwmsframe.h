@@ -35,9 +35,12 @@ protected:
     wxStaticText *m_staticText2 = nullptr;
     wxSearchCtrl *m_ctrl_search = nullptr;
     wxStaticText* m_info_text_ctrl = nullptr;
+    wxCheckBox* m_ctrl_append_to_project = nullptr;
 
     wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts;
     wxArrayInt m_checked_layers;
+    bool m_is_project_open;;
+    wxArrayString m_exported_layers;
 
     // Virtual event handlers, override them in your derived class
     virtual void OnBtnLoadLayers(wxCommandEvent &event);
@@ -61,9 +64,17 @@ protected:
                            int layer_index);
 
 public:
-    tmWMSBrowserFrame(wxWindow *parent, wxWindowID id = wxID_ANY, const wxString &title = _("WMS Browser"),
+    tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, wxWindowID id = wxID_ANY, const wxString &title = _("WMS Browser"),
                       const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
                       long style = wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
+
+    wxArrayString GetExportedLayers() const {
+        return m_exported_layers;
+    }
+
+    bool DoAppendLayersToProject() const {
+        return m_ctrl_append_to_project->GetValue();
+    }
 };
 
 
