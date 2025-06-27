@@ -1449,10 +1449,13 @@ void ToolMapFrame::OnAddWebData(wxCommandEvent &event) {
 
 void ToolMapFrame::OnLoadWMSData(wxCommandEvent &event) {
     wxASSERT(m_PManager);
-    PrjDefMemManage * m_prj_def =  m_PManager->GetMemoryProjectDefinition();
-    wxASSERT(m_prj_def);
-    // get project projection and transform it to the EPSG string
-    wxString myProjEpsg = PRJDEF_PROJ_TYPE_EPSG[m_prj_def->m_PrjProjType];
+    wxString myProjEpsg = wxEmptyString;
+    if (m_PManager->IsProjectOpen()) {
+        PrjDefMemManage * m_prj_def =  m_PManager->GetMemoryProjectDefinition();
+        wxASSERT(m_prj_def);
+        // get project projection and transform it to the EPSG string
+        myProjEpsg = PRJDEF_PROJ_TYPE_EPSG[m_prj_def->m_PrjProjType];
+    }
 
     // display the WMS dialog to browse WMS layers and export them as XML files.
     tmWMSBrowserFrame my_frame(this, m_PManager->IsProjectOpen(), myProjEpsg);
