@@ -58,6 +58,7 @@ ToolMapApp::ToolMapApp() {
 }
 
 bool ToolMapApp::OnInit() {
+    SetAppearance(Appearance::System);
 #ifdef __WXDEBUG__
     // debugging string for OSX
     // this is needed for viewing string content with Xcode !!
