@@ -81,12 +81,10 @@ wxString Bitmaps::ColorBlack = "#444444";
 wxString Bitmaps::ColorWhite = "#FFFFFF";
 
 wxString Bitmaps::GetColor() {
-#ifndef __WIN32__
     wxSystemAppearance s = wxSystemSettings::GetAppearance();
     if (s.IsDark()) {
         return Bitmaps::ColorWhite;
     }
-#endif
     return Bitmaps::ColorBlack;
 };
 

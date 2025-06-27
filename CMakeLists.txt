@@ -11,8 +11,8 @@ add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
 
 # using git version
 set(${PROJECT_NAME}_MAJOR_VERSION "4")
-set(${PROJECT_NAME}_MINOR_VERSION "0")
-set(CODE_NAME "NUGLAR")
+set(${PROJECT_NAME}_MINOR_VERSION "1")
+set(CODE_NAME "CHIASSO")
 include(version)
 
 # defining cmake version for installer mainly
