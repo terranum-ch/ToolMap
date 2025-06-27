@@ -28,7 +28,7 @@ class tmWMSBrowser {
     bool DownloadCapabilities(const wxString & output_xml_file_name, const wxString &lang=wxEmptyString);
     bool GetLayers(wxArrayString& layers_names,
                    wxArrayString& layers_titles,
-                   wxArrayString& layers_abstracts);;
+                   wxArrayString& layers_abstracts, wxArrayString &layers_crs);;
 
     wxString GetWMSUrl() const {return m_wms_url;}
     wxString GetWMSCapabilitiesURL(const wxString & lang = wxEmptyString) const {
@@ -46,11 +46,11 @@ class tmWMSFileXML {
   public:
     explicit tmWMSFileXML(const wxString& wms_url);
 
-    bool CreateXML(const wxString & layer_name, const wxString& output_xml_file_name);
+    bool CreateXML(const wxString & layer_name, const wxString& output_xml_file_name, const wxString &projection_epsg);
     wxString GetWMSUrl() const {return m_wms_url;}
 
-    wxString GetWMSLayerURL(const wxString & layer_name) const {
-        return m_wms_url + "&REQUEST=GetMap&LAYERS=" + layer_name + "&CRS=EPSG:3857";
+    wxString GetWMSLayerURL(const wxString & layer_name, const wxString & projection_epsg) const {
+        return m_wms_url + "&REQUEST=GetMap&LAYERS=" + layer_name + "&CRS=" + projection_epsg;
     }
 };
 

@@ -6,7 +6,8 @@
 
 #include "../gis/tmwms.h"
 
-tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, wxWindowID id, const wxString &title, const wxPoint &pos,
+tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, wxWindowID id, const wxString &title,
+                                     const wxPoint &pos,
                                      const wxSize &size, long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
@@ -59,10 +60,34 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     m_layers_abstracts.Clear();
     m_layers_names.Clear();
     m_layers_titles.Clear();
-    if (!wms_browser.GetLayers(m_layers_names, m_layers_titles, m_layers_abstracts)) {
+    m_layers_crs.Clear();
+    if (!wms_browser.GetLayers(m_layers_names, m_layers_titles, m_layers_abstracts, m_layers_crs)) {
         wxLogError(_("Failed to get layers from the WMS capabilities XML."));
         return;
     }
+
+    // add the crs to the list control
+    if (m_layers_crs.GetCount() ==0) {
+        wxLogError(_("No CRS found in the WMS capabilities XML."));
+        m_layers_crs.Add("EPSG:3857"); // Default to EPSG:3857 if no CRS found
+    }
+
+    wxArrayString layers_crs_helper = m_layers_crs;
+    // enhance the CRS list by adding common name to ESPG codes
+    for (size_t i = 0; i < layers_crs_helper.GetCount(); ++i) {
+        if (layers_crs_helper[i].StartsWith("EPSG:")) {
+            wxString epsg_code = layers_crs_helper[i].AfterFirst(':');
+            if (epsg_code == "3857") {
+                layers_crs_helper[i] = "EPSG:3857 (WGS 84)";
+            } else if (epsg_code == "21781") {
+                layers_crs_helper[i] = "EPSG:21781 (CH1903)";
+            } else if (epsg_code == "2056") {
+                layers_crs_helper[i] = "EPSG:2056 (CH1903+)";
+            }
+        }
+    }
+
+    m_ctrl_projection->Set(layers_crs_helper);
 
     // Clear the list control before adding new layers
     m_ctrl_layer_list->DeleteAllItems();
@@ -88,12 +113,17 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
         return;
     }
 
+    // get the selected projection
+    wxString selected_projection =  m_layers_crs.Item( m_ctrl_projection->GetSelection());
+    // get the projection digits and remove EPSG text
+    wxString projection_code_txt = selected_projection.AfterFirst(':');
+
     // Get the checked layers and export them to XML files
     tmWMSFileXML wmsFileXML(m_ctrl_wms_url->GetValue());
     for (size_t i = 0; i < m_checked_layers.GetCount(); ++i) {
         int layer_index = m_checked_layers[i];
         wxString layer_name = m_layers_names[layer_index];
-        if (!wmsFileXML.CreateXML(layer_name, output_dir + wxFileName::GetPathSeparator() + layer_name + ".xml")) {
+        if (!wmsFileXML.CreateXML(layer_name, output_dir + wxFileName::GetPathSeparator() + layer_name + projection_code_txt + ".xml", selected_projection)) {
             wxLogError(_("Failed to create XML file for layer: %s"), layer_name);
         } else {
             wxLogDebug(_("Exported layer '%s' to XML file."), layer_name);
@@ -241,8 +271,16 @@ void tmWMSBrowserFrame::_create_controls() {
     m_ctrl_append_to_project->SetValue(true);
     sbSizer2->Add(m_ctrl_append_to_project, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+    m_staticText5 = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _("Projection:"), wxDefaultPosition,
+                                     wxDefaultSize, 0);
+    m_staticText5->Wrap(-1);
+    sbSizer2->Add(m_staticText5, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-    sbSizer2->Add(0, 0, 1, wxEXPAND, 5);
+    wxArrayString m_ctrl_projectionChoices;
+    m_ctrl_projection = new wxChoice(sbSizer2->GetStaticBox(), wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                                     m_ctrl_projectionChoices, 0);
+    m_ctrl_projection->SetSelection(0);
+    sbSizer2->Add(m_ctrl_projection, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
     m_staticText2 = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _("Filter title: "), wxDefaultPosition,
                                      wxDefaultSize, 0);

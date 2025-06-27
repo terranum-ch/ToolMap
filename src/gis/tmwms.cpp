@@ -43,7 +43,7 @@ bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, co
 
 /// @brief Get the layers names, titles and abstracts from the XML capabilities
 bool tmWMSBrowser::GetLayers(wxArrayString& layers_names, wxArrayString& layers_titles,
-                             wxArrayString& layers_abstracts) {
+                             wxArrayString& layers_abstracts, wxArrayString &layers_crs) {
     if (m_wms_xml_file.GetFullPath().IsEmpty()) {
         wxLogError("file path is empty!");
         return false;
@@ -52,6 +52,7 @@ bool tmWMSBrowser::GetLayers(wxArrayString& layers_names, wxArrayString& layers_
     layers_names.Clear();
     layers_titles.Clear();
     layers_abstracts.Clear();
+    layers_crs.Clear();
 
     // Parse the XML capabilities to extract layer names, titles and abstracts
     wxXmlDocument doc;
@@ -76,8 +77,18 @@ bool tmWMSBrowser::GetLayers(wxArrayString& layers_names, wxArrayString& layers_
                     wxXmlNode* layerNode = layerMasterNode->GetChildren();
                     while (layerNode) {
                         if (layerNode->GetName() == "Layer") {
+                            // get CRS for the first layer (Projection)
+                            if (layers_crs.GetCount() == 0) {
+                                wxXmlNode* crsNode = layerNode->GetChildren();
+                                while (crsNode) {
+                                    if (crsNode->GetName() == "CRS") {
+                                        layers_crs.Add(crsNode->GetNodeContent());
+                                    }
+                                    crsNode = crsNode->GetNext();
+                                }
+                            }
+                            // get Name, Title and Abstract for the layer
                             wxString name, title, abstract;
-
                             wxXmlNode* childNode = layerNode->GetChildren();
                             while (childNode) {
                                 if (childNode->GetName() == "Name") {
@@ -119,9 +130,9 @@ tmWMSFileXML::tmWMSFileXML(const wxString &wms_url) {
     m_wms_url = wms_url;
 }
 
-bool tmWMSFileXML::CreateXML(const wxString &layer_name, const wxString &output_xml_file_name) {
+bool tmWMSFileXML::CreateXML(const wxString &layer_name, const wxString &output_xml_file_name, const wxString &projection_epsg) {
     // Get The WMS URL for the layer
-    wxString wms_layer_url = GetWMSLayerURL(layer_name);
+    wxString wms_layer_url = GetWMSLayerURL(layer_name, projection_epsg);
     wxLogDebug("WMS Layer URL: %s", wms_layer_url);
 
     wxFileName output_file(output_xml_file_name);

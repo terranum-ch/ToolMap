@@ -33,18 +33,19 @@ TEST(WMSBrowserTest, GetLayers) {
     wxFileName my_outputfile(g_TestPathEXPORT, "wms_output.xml");
     EXPECT_TRUE(wmsBrowser.DownloadCapabilities(my_outputfile.GetFullPath(), "fr"));
 
-    wxArrayString layers_names, layers_titles, layers_abstracts;
-    EXPECT_TRUE(wmsBrowser.GetLayers(layers_names, layers_titles, layers_abstracts));
+    wxArrayString layers_names, layers_titles, layers_abstracts, layers_crs;
+    EXPECT_TRUE(wmsBrowser.GetLayers(layers_names, layers_titles, layers_abstracts,layers_crs));
     EXPECT_FALSE(layers_names.IsEmpty());
     EXPECT_FALSE(layers_titles.IsEmpty());
     EXPECT_FALSE(layers_abstracts.IsEmpty());
+    EXPECT_FALSE(layers_crs.IsEmpty());
 
     // Print the layer names, titles and abstracts
-    for (size_t i = 0; i < layers_names.GetCount(); ++i) {
-        wxLogMessage("Layer Name: %s", layers_names[i]);
-        wxLogMessage("Layer Title: %s", layers_titles[i]);
-        wxLogMessage("Layer Abstract: %s", layers_abstracts[i]);
-    }
+    // for (size_t i = 0; i < layers_names.GetCount(); ++i) {
+    //     wxLogMessage("Layer Name: %s", layers_names[i]);
+    //     wxLogMessage("Layer Title: %s", layers_titles[i]);
+    //     wxLogMessage("Layer Abstract: %s", layers_abstracts[i]);
+    // }
 }
 
 // Initing GIS drivers is necessary for the tmWMSFileXML class to work properly
@@ -66,7 +67,7 @@ TEST_F(TestWMSXml, CreateXML) {
     if (xml_output.Exists()) {
         wxRemoveFile(xml_output.GetFullPath());
     }
-    EXPECT_TRUE(wmsFileXML.CreateXML("ch.swisstopo.geologie-geocover", xml_output.GetFullPath()));
+    EXPECT_TRUE(wmsFileXML.CreateXML("ch.swisstopo.geologie-geocover", xml_output.GetFullPath(), "EPSG:3857"));
 }
 
 TEST_F(TestWMSXml, OpenLayer) {
@@ -77,7 +78,7 @@ TEST_F(TestWMSXml, OpenLayer) {
     if (xml_output.Exists()) {
         wxRemoveFile(xml_output.GetFullPath());
     }
-    EXPECT_TRUE(wmsFileXML.CreateXML("ch.swisstopo.geologie-geocover", xml_output.GetFullPath()));
+    EXPECT_TRUE(wmsFileXML.CreateXML("ch.swisstopo.geologie-geocover", xml_output.GetFullPath(), "EPSG:3857"));
 
     tmLayerProperties* item = new tmLayerProperties();
     item->InitFromPathAndName(xml_output.GetPath(), xml_output.GetFullName(),

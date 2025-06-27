@@ -36,8 +36,11 @@ protected:
     wxSearchCtrl *m_ctrl_search = nullptr;
     wxStaticText* m_info_text_ctrl = nullptr;
     wxCheckBox* m_ctrl_append_to_project = nullptr;
+    wxChoice* m_ctrl_projection = nullptr;
+    wxStaticText* m_staticText5 = nullptr;
 
-    wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts;
+
+    wxArrayString m_layers_names, m_layers_titles, m_layers_abstracts, m_layers_crs;
     wxArrayInt m_checked_layers;
     bool m_is_project_open;;
     wxArrayString m_exported_layers;
