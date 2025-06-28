@@ -35,9 +35,24 @@ bool tmGISDataRasterWeb::SetSpatialFilter(tmRealRect filter, int type) {
     }
     m_FilterCoordLocal = filter;
 
+    // get projection as defined in the WMS layer
+    OGRSpatialReference oSRS;
+    const char* pszProjection = m_DataSet->GetProjectionRef();
+    if (pszProjection != nullptr && strlen(pszProjection) > 0) {
+        if (oSRS.importFromWkt(pszProjection) == OGRERR_NONE) {
+            oSRS.AutoIdentifyEPSG();
+        }
+    }
+
+    // check if the projection is valid. If not set to EPSG 3857 (Google Projection)
+    if (oSRS.IsEmpty()) {
+        wxLogError(_("Invalid projection for WMS layer, using EPSG 3857 (Google projection)"));
+        oSRS.importFromEPSG(3857);
+    }
+
     // convert project coordinates into web coordinates and loads data into tmwebframe
-    wxRealPoint xymin = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_min, filter.y_min));
-    wxRealPoint xymax = GetCoordConvert()->GetPointGoogle(wxRealPoint(filter.x_max, filter.y_max));
+    wxRealPoint xymin = GetCoordConvert()->GetPointProjection(wxRealPoint(filter.x_min, filter.y_min), oSRS);
+    wxRealPoint xymax = GetCoordConvert()->GetPointProjection(wxRealPoint(filter.x_max, filter.y_max), oSRS);
     m_FilterCoordWeb = tmRealRect(xymin.x, xymin.y, xymax.x, xymax.y);
 
     // get image information

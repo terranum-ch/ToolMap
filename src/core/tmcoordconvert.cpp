@@ -107,6 +107,21 @@ wxRealPoint tmCoordConvert::GetPointGoogle(const wxRealPoint& in) {
     return _Transform(_CreateSpatialRef(m_ProjType), _CreateSpatialRefGoogle(), in);
 }
 
+wxRealPoint tmCoordConvert::GetPointProjection(const wxRealPoint& in, OGRSpatialReference& oSRS) {
+    wxString layerEPSG = oSRS.GetAuthorityCode(nullptr);
+    int layerEPSGInt = wxAtoi(layerEPSG);
+
+    if (layerEPSGInt == projEPSGCH1903 && m_ProjType == PROJ_SWISS_CH1903) {
+        return in;
+    } else if (layerEPSGInt == projEPSGCH1903plus && m_ProjType == PROJ_SWISS_CH1903PLUS) {
+        return in;
+    } else if (layerEPSGInt == projEPSGWGS84 && m_ProjType == PROJ_WORLD_WGS84) {
+        return in;
+    }
+
+    return _Transform(_CreateSpatialRef(m_ProjType), &oSRS, in);
+}
+
 double tmCoordConvert::GetDistance(const wxRealPoint& p1, const wxRealPoint& p2) {
     if (m_ProjType == PROJ_SWISS_CH1903 || m_ProjType == PROJ_SWISS_CH1903PLUS) {
         if (p1.y == p2.y) {

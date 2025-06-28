@@ -51,6 +51,8 @@ class tmCoordConvert {
 
     wxRealPoint GetPointGoogle(const wxRealPoint& in);
 
+    wxRealPoint GetPointProjection(const wxRealPoint& in, OGRSpatialReference& oSRS);
+
     wxBitmap* GetProjectGoogleRaster(wxBitmap* web_raster, tmRealRect* coord_web, tmRealRect* coord_local);
 
     double GetDistance(const wxRealPoint& p1, const wxRealPoint& p2);
