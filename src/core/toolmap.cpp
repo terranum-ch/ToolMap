@@ -102,9 +102,17 @@ void ToolMapApp::OnFatalException() {
     wxConfigBase *myConfig = wxFileConfig::Get();
     wxASSERT(myConfig);
     wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
+    bool useSystemProxy = myConfig->ReadBool("UPDATE/use_system_proxy", false);
+
+    wxString proxyToUse;
+    if (useSystemProxy) {
+        proxyToUse = wxEmptyString; // Let cURL use system proxy
+    } else {
+        proxyToUse = myProxyInfo;
+    }
 
     if (!myCrashReport.SendReportWeb(_T("https://www.terranum.ch/toolmap/crash-reports/upload_file.php"),
-                                     myProxyInfo)) {
+                                     proxyToUse)) {
         wxString myDocPath = wxStandardPaths::Get().GetDocumentsDir();
         if (!myCrashReport.SaveReportFile(myDocPath)) {
             wxLogError(_("Unable to save the crashreport!"));
