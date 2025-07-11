@@ -1190,6 +1190,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
     wxASSERT(myConfig);
     bool bCheckStartup = myConfig->ReadBool("UPDATE/check_on_start", true);
     wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
+    bool useSystemProxy = myConfig->ReadBool("UPDATE/use_system_proxy", false);
 
     if (!bCheckStartup && !ismanual) {
         return;
@@ -1212,7 +1213,14 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
         wxFAIL;
     }
 
-    WebUpdateThread *myUpdate = new WebUpdateThread(m_InfoBar, myProxyInfo);
+    wxString proxyToUse;
+    if (useSystemProxy) {
+        proxyToUse = wxEmptyString; // Let cURL use system proxy
+    } else {
+        proxyToUse = myProxyInfo;
+    }
+
+    WebUpdateThread *myUpdate = new WebUpdateThread(m_InfoBar, proxyToUse);
     myUpdate->CheckNewVersion(mySvnVersion, true, ismanual, true);
 }
 

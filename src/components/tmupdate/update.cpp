@@ -118,11 +118,12 @@ WebUpdateThread::WebUpdateThread(wxWindow* parent, const wxString& proxy) {
     myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_TIMEOUT_MS, WEBUPDATE_CONNECTION_TIMEOUT);
     wxASSERT(myCurlError == CURLE_OK);
 
-    // prepare proxy if needed
+    // Proxy logic: if proxy is empty, let cURL use system proxy (CURLOPT_PROXY not set)
     if (!proxy.IsEmpty()) {
         myCurlError = curl_easy_setopt(m_CurlHandle, CURLOPT_PROXY, (const char*)proxy.mb_str(wxConvUTF8));
         wxASSERT(myCurlError == CURLE_OK);
     }
+    // If proxy is empty, do not set CURLOPT_PROXY at all (system proxy will be used if configured)
 
 #if defined(__WIN32__)
     // Disable certificate check (does not work on Windows)

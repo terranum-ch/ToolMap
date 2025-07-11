@@ -40,6 +40,7 @@ class PreferenceDLG : public wxDialog {
     wxCheckBox* m_BuildOverviewCtrl;
     wxCheckBox* m_ctrl_debug_error;
     wxCheckBox* m_ctrl_debug_query;
+    wxCheckBox* m_UseSystemProxyCtrl;
 
     wxSlider* m_WaitingTimeCtrl;
     wxRadioButton* m_RamCtrl;

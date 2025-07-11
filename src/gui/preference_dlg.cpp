@@ -94,6 +94,12 @@ void PreferenceDLG::_CreateControls() {
     wxPanel* m_panel_proxy = new wxPanel(m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
     wxBoxSizer* bSizerProxy = new wxBoxSizer(wxVERTICAL);
 
+    m_UseSystemProxyCtrl = new wxCheckBox(m_panel_proxy, wxID_ANY, _( "Use system proxy settings" ), wxDefaultPosition, wxDefaultSize, 0);
+    bSizerProxy->Add(m_UseSystemProxyCtrl, 0, wxALL, 5);
+    m_UseSystemProxyCtrl->Bind(wxEVT_CHECKBOX, [this](wxCommandEvent& event) {
+        m_ProxyInfoCtrl->Enable(!m_UseSystemProxyCtrl->GetValue());
+    });
+
     wxStaticText* m_staticText7;
     m_staticText7 = new wxStaticText(m_panel_proxy, wxID_ANY, _("Proxy informations:"), wxDefaultPosition, wxDefaultSize, 0);
     m_staticText7->Wrap(-1);
@@ -185,6 +191,9 @@ bool PreferenceDLG::TransferDataToWindow() {
 
     m_ctrl_debug_error->SetValue(myConfig->ReadBool("DEBUG/log_mysql_errors", false));
     m_ctrl_debug_query->SetValue(myConfig->ReadBool("DEBUG/log_mysql_queries", false));
+    bool useSystemProxy = myConfig->ReadBool("UPDATE/use_system_proxy", false);
+    m_UseSystemProxyCtrl->SetValue(useSystemProxy);
+
     return true;
 }
 
@@ -202,5 +211,6 @@ bool PreferenceDLG::TransferDataFromWindow() {
 
     myConfig->Write("DEBUG/log_mysql_errors", m_ctrl_debug_error->GetValue());
     myConfig->Write("DEBUG/log_mysql_queries", m_ctrl_debug_query->GetValue());
+    myConfig->Write("UPDATE/use_system_proxy", m_UseSystemProxyCtrl->GetValue());
     return true;
 }
