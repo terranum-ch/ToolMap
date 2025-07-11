@@ -85,24 +85,33 @@ void PreferenceDLG::_CreateControls() {
     m_UpdateCheckCtrl->SetValue(true);
     bSizer6->Add(m_UpdateCheckCtrl, 0, wxALL, 5);
 
-    wxStaticText* m_staticText7;
-    m_staticText7 = new wxStaticText(m_panel3, wxID_ANY, _("Proxy informations:"), wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText7->Wrap(-1);
-    bSizer6->Add(m_staticText7, 0, wxALL, 5);
-
-    m_ProxyInfoCtrl = new wxTextCtrl(m_panel3, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
-    bSizer6->Add(m_ProxyInfoCtrl, 0, wxALL | wxEXPAND, 5);
-
-    wxStaticText* m_staticText8;
-    m_staticText8 = new wxStaticText(m_panel3, wxID_ANY, _("Please use the following form: myproxy.com:8080"),
-                                     wxDefaultPosition, wxDefaultSize, 0);
-    m_staticText8->Wrap(-1);
-    bSizer6->Add(m_staticText8, 0, wxALL, 5);
-
     m_panel3->SetSizer(bSizer6);
     m_panel3->Layout();
     bSizer6->Fit(m_panel3);
     m_notebook2->AddPage(m_panel3, _("Updates"), false);
+
+    // PROXY PANEL
+    wxPanel* m_panel_proxy = new wxPanel(m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
+    wxBoxSizer* bSizerProxy = new wxBoxSizer(wxVERTICAL);
+
+    wxStaticText* m_staticText7;
+    m_staticText7 = new wxStaticText(m_panel_proxy, wxID_ANY, _("Proxy informations:"), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText7->Wrap(-1);
+    bSizerProxy->Add(m_staticText7, 0, wxALL, 5);
+
+    m_ProxyInfoCtrl = new wxTextCtrl(m_panel_proxy, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
+    bSizerProxy->Add(m_ProxyInfoCtrl, 0, wxALL | wxEXPAND, 5);
+
+    wxStaticText* m_staticText8;
+    m_staticText8 = new wxStaticText(m_panel_proxy, wxID_ANY, _("Please use the following form: myproxy.com:8080"),
+                                     wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText8->Wrap(-1);
+    bSizerProxy->Add(m_staticText8, 0, wxALL, 5);
+
+    m_panel_proxy->SetSizer(bSizerProxy);
+    m_panel_proxy->Layout();
+    bSizerProxy->Fit(m_panel_proxy);
+    m_notebook2->AddPage(m_panel_proxy, _("Proxy"), false);
 
     // DEBUG PANEL
     wxPanel* m_panel_debug = new wxPanel(m_notebook2, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL);
