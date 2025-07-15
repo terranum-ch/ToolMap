@@ -10,7 +10,7 @@ tmWMSBrowser::tmWMSBrowser(const wxString& wms_url) {
 }
 
 /// @brief Download and store the XML file containing the WMS capabilities (Layers and other information)
-bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, const wxString &lang) {
+bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, const wxString &lang, const wxString& proxy) {
     m_wms_xml_file = wxFileName(output_xml_file_name);
 
     CURL* curl = curl_easy_init();
@@ -33,6 +33,11 @@ bool tmWMSBrowser::DownloadCapabilities(const wxString& output_xml_file_name, co
     curl_easy_setopt(curl, CURLOPT_URL, GetWMSCapabilitiesURL(lang).mb_str().data());
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteToFile);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file);
+
+    // Proxy logic: if proxy is empty, let cURL use system proxy (CURLOPT_PROXY not set)
+    if (!proxy.IsEmpty()) {
+        curl_easy_setopt(curl, CURLOPT_PROXY, (const char*)proxy.mb_str(wxConvUTF8));
+    }
 
     CURLcode res = curl_easy_perform(curl);
     curl_easy_cleanup(curl);

@@ -26,6 +26,7 @@
 #include "../gui/tmwmsframe.h"
 #include "backupmanager.h"
 #include "tmlog.h"
+#include "proxy.h"
 
 #if wxUSE_CRASHREPORT
 
@@ -99,17 +100,7 @@ void ToolMapApp::OnFatalException() {
         return;
     }
 
-    wxConfigBase *myConfig = wxFileConfig::Get();
-    wxASSERT(myConfig);
-    wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
-    bool useSystemProxy = myConfig->ReadBool("UPDATE/use_system_proxy", false);
-
-    wxString proxyToUse;
-    if (useSystemProxy) {
-        proxyToUse = wxEmptyString; // Let cURL use system proxy
-    } else {
-        proxyToUse = myProxyInfo;
-    }
+    wxString proxyToUse = GetProxy();
 
     if (!myCrashReport.SendReportWeb(_T("https://www.terranum.ch/toolmap/crash-reports/upload_file.php"),
                                      proxyToUse)) {
@@ -1197,8 +1188,6 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
     wxConfigBase *myConfig = wxFileConfig::Get();
     wxASSERT(myConfig);
     bool bCheckStartup = myConfig->ReadBool("UPDATE/check_on_start", true);
-    wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
-    bool useSystemProxy = myConfig->ReadBool("UPDATE/use_system_proxy", false);
 
     if (!bCheckStartup && !ismanual) {
         return;
@@ -1221,12 +1210,7 @@ void ToolMapFrame::_CheckUpdates(bool ismanual) {
         wxFAIL;
     }
 
-    wxString proxyToUse;
-    if (useSystemProxy) {
-        proxyToUse = wxEmptyString; // Let cURL use system proxy
-    } else {
-        proxyToUse = myProxyInfo;
-    }
+    wxString proxyToUse = GetProxy();
 
     WebUpdateThread *myUpdate = new WebUpdateThread(m_InfoBar, proxyToUse);
     myUpdate->CheckNewVersion(mySvnVersion, true, ismanual, true);

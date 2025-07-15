@@ -4,7 +4,10 @@
 
 #include "tmwmsframe.h"
 
+#include <wx/fileconf.h>
+
 #include "../gis/tmwms.h"
+#include "../core/proxy.h"
 
 tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, const wxString &project_projection,
                                      wxWindowID id, const wxString &title,
@@ -46,6 +49,9 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     // remove checked items
     m_checked_layers.Clear();
 
+    // get proxy config
+    wxString proxyToUse = GetProxy();
+
     // create temporary file to store the WMS capabilities XML
     wxFileName xml_output(wxFileName::CreateTempFileName("wms_capabilities_"));
     xml_output.SetExt("xml");
@@ -53,7 +59,7 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
 
     // get download capabilities from WMS server
     tmWMSBrowser wms_browser(m_ctrl_wms_url->GetValue());
-    if (!wms_browser.DownloadCapabilities(xml_output.GetFullPath(), m_ctrl_wms_lang->GetValue())) {
+    if (!wms_browser.DownloadCapabilities(xml_output.GetFullPath(), m_ctrl_wms_lang->GetValue(), proxyToUse)) {
         wxLogError(_("Failed to download WMS capabilities from the server."));
         return;
     }

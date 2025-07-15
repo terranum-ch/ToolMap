@@ -25,7 +25,7 @@ class tmWMSBrowser {
   public:
     explicit tmWMSBrowser(const wxString& wms_url);
 
-    bool DownloadCapabilities(const wxString & output_xml_file_name, const wxString &lang=wxEmptyString);
+    bool DownloadCapabilities(const wxString & output_xml_file_name, const wxString &lang=wxEmptyString, const wxString& proxy=wxEmptyString);
     bool GetLayers(wxArrayString& layers_names,
                    wxArrayString& layers_titles,
                    wxArrayString& layers_abstracts, wxArrayString &layers_crs);;

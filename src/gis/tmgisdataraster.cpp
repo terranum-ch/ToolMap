@@ -24,6 +24,7 @@
 #include "tmgisdatarasterjpeg.h"
 #include "tmgisdatarastertiff.h"
 #include "tmgisdatarasterweb.h"
+#include "../core/proxy.h"
 
 DEFINE_EVENT_TYPE(tmEVT_LM_ROTATION_WARNING);
 DEFINE_EVENT_TYPE(tmEVT_LM_INCOMPATIBLE_WARNING);
@@ -182,9 +183,7 @@ void tmGISDataRaster::InitGISDriversRaster() {
     CPLSetConfigOption("CURL_CA_BUNDLE", myCertPath.GetFullPath().c_str());
     #endif
     // Set proxy info if defined
-    wxConfigBase *myConfig = wxFileConfig::Get();
-    wxASSERT(myConfig);
-    wxString myProxyInfo = myConfig->Read("UPDATE/proxy_info", wxEmptyString);
+    wxString myProxyInfo = GetProxy();
     if (!myProxyInfo.IsEmpty()) {
         wxLogDebug(_("Using proxy info: %s"), myProxyInfo);
         CPLSetConfigOption("GDAL_HTTP_PROXY", myProxyInfo.ToStdString().c_str());

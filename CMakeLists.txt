@@ -123,6 +123,9 @@ target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${CONAN_LIBS})
 if (UNIX AND NOT APPLE)
     target_link_libraries("${CMAKE_PROJECT_NAME}_lib" ${PNG_LIBRARY} xkbcommon fontconfig)
 endif (UNIX AND NOT APPLE)
+if (WIN32)
+    target_link_libraries("${CMAKE_PROJECT_NAME}_lib" winhttp)
+endif (WIN32)
 
 # Create the Toolmap binary
 ADD_EXECUTABLE(${CMAKE_PROJECT_NAME}
@@ -136,6 +139,9 @@ if (UNIX AND NOT APPLE)
     message(STATUS "PNG lib is : ${PNG_LIBRARY}")
     target_link_libraries(${CMAKE_PROJECT_NAME} ${PNG_LIBRARY} xkbcommon fontconfig)
 endif (UNIX AND NOT APPLE)
+if (WIN32)
+    target_link_libraries(${CMAKE_PROJECT_NAME} winhttp)
+endif (WIN32)
 
 #IF (WIN32)
 #    SOURCE_GROUP(resource FILES src/resource.rc)
