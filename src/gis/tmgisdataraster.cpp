@@ -185,7 +185,7 @@ void tmGISDataRaster::InitGISDriversRaster() {
     // Set proxy info if defined
     wxString myProxyInfo = GetProxy();
     if (!myProxyInfo.IsEmpty()) {
-        wxLogDebug(_("Using proxy info: %s"), myProxyInfo);
+        wxLogInfo(_("Using proxy info: %s"), myProxyInfo);
         CPLSetConfigOption("GDAL_HTTP_PROXY", myProxyInfo.ToStdString().c_str());
         CPLSetConfigOption("GDAL_HTTPS_PROXY", myProxyInfo.ToStdString().c_str());
     }

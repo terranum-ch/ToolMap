@@ -193,6 +193,7 @@ bool PreferenceDLG::TransferDataToWindow() {
     m_ctrl_debug_query->SetValue(myConfig->ReadBool("DEBUG/log_mysql_queries", false));
     bool useSystemProxy = myConfig->ReadBool("UPDATE/use_system_proxy", true);
     m_UseSystemProxyCtrl->SetValue(useSystemProxy);
+    m_ProxyInfoCtrl->Enable(!m_UseSystemProxyCtrl->GetValue());
 
     return true;
 }
