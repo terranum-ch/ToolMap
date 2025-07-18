@@ -42,11 +42,21 @@ wxString GetProxy() {
 
     if (config) {
         myProxyInfo = config->Read("UPDATE/proxy_info", wxEmptyString);
-        useSystemProxy = config->ReadBool("UPDATE/use_system_proxy", false);
+        useSystemProxy = config->ReadBool("UPDATE/use_system_proxy", true);
     }
 
     if (useSystemProxy) {
         proxyToUse = GetSystemProxy();
+
+        wxArrayString parts = wxSplit(proxyToUse, ';');
+        for (const auto& part : parts) {
+            if (part.StartsWith("https=")) {
+                proxyToUse = part.AfterFirst('=');
+            } else if (part.StartsWith("http=")) {
+                proxyToUse = part.AfterFirst('=');
+            }
+        }
+
     } else {
         proxyToUse = myProxyInfo;
     }
