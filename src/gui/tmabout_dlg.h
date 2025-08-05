@@ -34,7 +34,7 @@
 // TODO: Change this for using wxGenericStaticBitmap (2.9.0)
 // #include <wx/generic/statbmpg.h> // for big static bitmap
 
-const wxString g_CodeName = "NUGLAR";
+const wxString g_CodeName = "CHIASSO";
 
 class tmAboutDLG : public wxDialog {
   private:

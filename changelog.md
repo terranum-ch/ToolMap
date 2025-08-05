@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.2875 - 2025-08-05] - CHIASSO
+
+### Added
+
+- Adding a frame to select WMS layers (defaulting to swisstopo WMS server) (see #514)
+- Update proxy usage to allow for system proxy (see #395)
+- Implementing a proxy automatic configuration (PAC) support (see #395)
+
+### Changed
+
+- Bumping GDAL to 3.10.3
+- Bumping wxWidgets to 3.3.0
+- Bumping mariadb to 10.6.22
+- Updating CPack file and defaulting to install for all users
+- Removing installer shortcuts to Desktop and Uninstaller
+- Moving the proxy definition to its own tab
+
+### Fixed
+
+- Adding support for dark mode on Windows (see #494)
+- Snapping to nearest point (see #497)
+- Fixing issue with backup restoration (see #491)
+
+
 ## [4.0.2800 - 2024-10-29] - MORCOTE
 
 ### Changed
