@@ -6,13 +6,12 @@
 
 #include <wx/fileconf.h>
 
-#include "../gis/tmwms.h"
 #include "../core/proxy.h"
+#include "../gis/tmwms.h"
 
-tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, const wxString &project_projection,
-                                     wxWindowID id, const wxString &title,
-                                     const wxPoint &pos,
-                                     const wxSize &size, long style)
+tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow* parent, bool is_project_open, const wxString& project_projection,
+                                     wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
+                                     long style)
     : wxDialog(parent, id, title, pos, size, style) {
     _create_controls();
 
@@ -30,10 +29,10 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, con
     m_ctrl_layer_list->InsertColumn(1, _("Layer"), wxLIST_FORMAT_LEFT, 200);
     m_ctrl_layer_list->InsertColumn(2, _("Title"), wxLIST_FORMAT_LEFT, 200);
     m_ctrl_layer_list->InsertColumn(3, _("Abstract"), wxLIST_FORMAT_LEFT, 400);
-    m_ctrl_layer_list->SetColumnWidth(0, 30); // Checkbox column width
-    m_ctrl_layer_list->SetColumnWidth(1, 200); // Layer name column width
-    m_ctrl_layer_list->SetColumnWidth(2, 200); // Title column width
-    m_ctrl_layer_list->SetColumnWidth(3, 300); // Abstract column width
+    m_ctrl_layer_list->SetColumnWidth(0, 30);   // Checkbox column width
+    m_ctrl_layer_list->SetColumnWidth(1, 200);  // Layer name column width
+    m_ctrl_layer_list->SetColumnWidth(2, 200);  // Title column width
+    m_ctrl_layer_list->SetColumnWidth(3, 300);  // Abstract column width
     m_ctrl_layer_list->SetWindowStyle(wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES);
 
     // Connect Events
@@ -45,7 +44,7 @@ tmWMSBrowserFrame::tmWMSBrowserFrame(wxWindow *parent, bool is_project_open, con
     m_info_text_ctrl->Bind(wxEVT_UPDATE_UI, &tmWMSBrowserFrame::UpdateInfoText, this);
 }
 
-void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
+void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent& event) {
     // remove checked items
     m_checked_layers.Clear();
 
@@ -77,7 +76,7 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     // add the crs to the list control
     if (m_layers_crs.GetCount() == 0) {
         wxLogError(_("No CRS found in the WMS capabilities XML."));
-        m_layers_crs.Add("EPSG:3857"); // Default to EPSG:3857 if no CRS found
+        m_layers_crs.Add("EPSG:3857");  // Default to EPSG:3857 if no CRS found
     }
 
     wxArrayString layers_crs_helper = m_layers_crs;
@@ -96,7 +95,7 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     }
 
     m_ctrl_projection->Set(layers_crs_helper);
-    m_ctrl_projection->SetSelection(0); // Select the first CRS by default
+    m_ctrl_projection->SetSelection(0);  // Select the first CRS by default
 
     // if existing, select the project projection in the list
     if (!m_project_projection.IsEmpty()) {
@@ -115,14 +114,14 @@ void tmWMSBrowserFrame::OnBtnLoadLayers(wxCommandEvent &event) {
     }
 }
 
-void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
+void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent& event) {
     _get_checked_layers();
     m_exported_layers.Clear();
 
     // display a directory dialog to select the output directory
     wxDirDialog dir_dlg(this, _("Select output directory"), wxEmptyString, wxDD_DEFAULT_STYLE);
     if (dir_dlg.ShowModal() != wxID_OK) {
-        return; // User cancelled the dialog
+        return;  // User cancelled the dialog
     }
     wxString output_dir = dir_dlg.GetPath();
     if (output_dir.IsEmpty()) {
@@ -140,8 +139,8 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
     for (size_t i = 0; i < m_checked_layers.GetCount(); ++i) {
         int layer_index = m_checked_layers[i];
         wxString layer_name = m_layers_names[layer_index];
-        wxString export_layer_pathname = output_dir + wxFileName::GetPathSeparator() + layer_name + projection_code_txt
-                                         + ".xml";
+        wxString export_layer_pathname = output_dir + wxFileName::GetPathSeparator() + layer_name +
+                                         projection_code_txt + ".xml";
         if (!wmsFileXML.CreateXML(layer_name, export_layer_pathname, selected_projection)) {
             wxLogError(_("Failed to create XML file for layer: %s"), layer_name);
         } else {
@@ -149,21 +148,20 @@ void tmWMSBrowserFrame::OnBtnExport(wxCommandEvent &event) {
             m_exported_layers.Add(export_layer_pathname);
         }
     }
-    wxMessageBox(
-        wxString::Format(_("%llu layers exported into the output directory: %s"),
-                         static_cast<unsigned long long>(m_checked_layers.GetCount()), output_dir),
-        _("Export Complete"), wxOK | wxICON_INFORMATION, this);
-    Close(); // Close the dialog after export
+    wxMessageBox(wxString::Format(_("%llu layers exported into the output directory: %s"),
+                                  static_cast<unsigned long long>(m_checked_layers.GetCount()), output_dir),
+                 _("Export Complete"), wxOK | wxICON_INFORMATION, this);
+    Close();  // Close the dialog after export
 }
 
-void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent &event) {
+void tmWMSBrowserFrame::OnDoubleClickItems(wxListEvent& event) {
     tmWMSFrameDetails details_dlg(this, m_ctrl_layer_list->GetItemText(event.GetIndex(), 1),
                                   m_ctrl_layer_list->GetItemText(event.GetIndex(), 3),
                                   m_ctrl_layer_list->GetItemText(event.GetIndex(), 2));
     details_dlg.ShowModal();
 }
 
-void tmWMSBrowserFrame::OnSearchList(wxCommandEvent &event) {
+void tmWMSBrowserFrame::OnSearchList(wxCommandEvent& event) {
     // remove item from the list not matching the search text
     wxString search_text = m_ctrl_search->GetValue().Lower();
     _get_checked_layers();
@@ -181,7 +179,7 @@ void tmWMSBrowserFrame::OnSearchList(wxCommandEvent &event) {
     }
 }
 
-void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
+void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent& event) {
     _get_checked_layers();
     m_ctrl_layer_list->DeleteAllItems();
     for (size_t i = 0; i < m_layers_names.GetCount(); ++i) {
@@ -189,9 +187,9 @@ void tmWMSBrowserFrame::OnSearchBtnCancel(wxCommandEvent &event) {
     }
 }
 
-void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent &event) {
+void tmWMSBrowserFrame::UpdateInfoText(wxUpdateUIEvent& event) {
     if (m_info_text_ctrl == nullptr) {
-        return; // Ensure status bar is created
+        return;  // Ensure status bar is created
     }
     // display total number of layers and total number of displayed layers
     wxString status_text = wxString::Format(_("Total: %llu\tDisplayed: %d"),
@@ -217,8 +215,8 @@ void tmWMSBrowserFrame::_get_checked_layers() {
 }
 
 /// \brief Adds a layer to the list control.
-void tmWMSBrowserFrame::add_layer_to_list(const wxString &layer_name, const wxString &layer_title,
-                                          const wxString &layer_abstract, int layer_index) {
+void tmWMSBrowserFrame::add_layer_to_list(const wxString& layer_name, const wxString& layer_title,
+                                          const wxString& layer_abstract, int layer_index) {
     m_ctrl_layer_list->InsertItem(m_ctrl_layer_list->GetItemCount(), wxEmptyString);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 1, layer_name);
     m_ctrl_layer_list->SetItem(m_ctrl_layer_list->GetItemCount() - 1, 2, layer_title);
@@ -234,10 +232,10 @@ void tmWMSBrowserFrame::add_layer_to_list(const wxString &layer_name, const wxSt
 void tmWMSBrowserFrame::_create_controls() {
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer *bSizer1;
+    wxBoxSizer* bSizer1;
     bSizer1 = new wxBoxSizer(wxVERTICAL);
 
-    wxStaticBoxSizer *sbSizer1;
+    wxStaticBoxSizer* sbSizer1;
     sbSizer1 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("WMS server")), wxHORIZONTAL);
 
     m_staticText1 = new wxStaticText(sbSizer1->GetStaticBox(), wxID_ANY, _("Url:"), wxDefaultPosition, wxDefaultSize,
@@ -270,7 +268,6 @@ void tmWMSBrowserFrame::_create_controls() {
                                               wxDefaultSize, 0);
     sbSizer1->Add(m_ctrl_btn_wms_load_layers, 0, wxALL, 5);
 
-
     bSizer1->Add(sbSizer1, 0, wxEXPAND | wxALL, 5);
 
     m_ctrl_layer_list = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_ICON | wxLC_REPORT);
@@ -278,8 +275,11 @@ void tmWMSBrowserFrame::_create_controls() {
 
     bSizer1->Add(m_ctrl_layer_list, 1, wxALL | wxEXPAND, 5);
 
-    wxStaticBoxSizer *sbSizer2;
-    sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("label")), wxHORIZONTAL);
+    wxBoxSizer* bSizer4;
+    bSizer4 = new wxBoxSizer(wxHORIZONTAL);
+
+    wxStaticBoxSizer* sbSizer2;
+    sbSizer2 = new wxStaticBoxSizer(new wxStaticBox(this, wxID_ANY, _("Export")), wxHORIZONTAL);
 
     m_btn_export = new wxButton(sbSizer2->GetStaticBox(), wxID_ANY, _("Export..."), wxDefaultPosition, wxDefaultSize,
                                 0);
@@ -301,32 +301,31 @@ void tmWMSBrowserFrame::_create_controls() {
     m_ctrl_projection->SetSelection(0);
     sbSizer2->Add(m_ctrl_projection, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-    m_staticText2 = new wxStaticText(sbSizer2->GetStaticBox(), wxID_ANY, _("Filter title: "), wxDefaultPosition,
-                                     wxDefaultSize, 0);
-    m_staticText2->Wrap(-1);
-    sbSizer2->Add(m_staticText2, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    bSizer4->Add(sbSizer2, 0, wxEXPAND | wxALL, 5);
 
-    m_ctrl_search = new wxSearchCtrl(sbSizer2->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition,
-                                     wxSize(200, -1), 0);
+    bSizer4->Add(0, 0, 1, wxEXPAND, 5);
+
+    m_staticText2 = new wxStaticText(this, wxID_ANY, _("Filter title: "), wxDefaultPosition, wxDefaultSize, 0);
+    m_staticText2->Wrap(-1);
+    bSizer4->Add(m_staticText2, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+
+    m_ctrl_search = new wxSearchCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxSize(200, -1), 0);
 #ifndef __WXMAC__
-	m_ctrl_search->ShowSearchButton( true );
+    m_ctrl_search->ShowSearchButton(true);
 #endif
     m_ctrl_search->ShowCancelButton(true);
-    sbSizer2->Add(m_ctrl_search, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    bSizer4->Add(m_ctrl_search, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
+    bSizer1->Add(bSizer4, 0, wxEXPAND, 5);
 
-    bSizer1->Add(sbSizer2, 0, wxEXPAND | wxALL, 5);
-
-    wxBoxSizer *bSizer3;
+    wxBoxSizer* bSizer3;
     bSizer3 = new wxBoxSizer(wxHORIZONTAL);
 
     m_info_text_ctrl = new wxStaticText(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0);
     m_info_text_ctrl->Wrap(-1);
     bSizer3->Add(m_info_text_ctrl, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
 
-
     bSizer1->Add(bSizer3, 0, wxEXPAND, 5);
-
 
     this->SetSizer(bSizer1);
     this->Layout();
@@ -335,27 +334,24 @@ void tmWMSBrowserFrame::_create_controls() {
     this->Centre(wxBOTH);
 }
 
-
-tmWMSFrameDetails::tmWMSFrameDetails(wxWindow *parent, const wxString &name_wms, const wxString &abstract_wms,
-                                     const wxString &title_wms, wxWindowID id, const wxString &title,
-                                     const wxPoint &pos, const wxSize &size, long style) : wxDialog(
-    parent, id, title, pos, size, style) {
+tmWMSFrameDetails::tmWMSFrameDetails(wxWindow* parent, const wxString& name_wms, const wxString& abstract_wms,
+                                     const wxString& title_wms, wxWindowID id, const wxString& title,
+                                     const wxPoint& pos, const wxSize& size, long style)
+    : wxDialog(parent, id, title, pos, size, style) {
     m_name_wms = name_wms;
     m_abstract_wms = abstract_wms;
     m_title_wms = title_wms;
     _create_controls();
 }
 
-
 void tmWMSFrameDetails::_create_controls() {
     this->SetSizeHints(wxDefaultSize, wxDefaultSize);
 
-    wxBoxSizer *bSizer2;
+    wxBoxSizer* bSizer2;
     bSizer2 = new wxBoxSizer(wxVERTICAL);
 
     m_ctrl_html = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(500, 400), wxHW_SCROLLBAR_AUTO);
     bSizer2->Add(m_ctrl_html, 1, wxALL | wxEXPAND, 5);
-
 
     this->SetSizer(bSizer2);
     this->Layout();
