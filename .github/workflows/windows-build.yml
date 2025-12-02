@@ -39,9 +39,8 @@ jobs:
         pip install conan==1.*
 
         # gitlab support
-        conan config set general.revisions_enabled=1
+        conan config set general.revisions_enabled=0
         conan remote add gitlab https://gitlab.com/api/v4/packages/conan --force
-        conan user gitlab+deploy-token-653038 -r gitlab -p sBwmejFz5Pn-gZPSNFMy
 
     # ensure that we have the latest version of mariadb, gdal, wxwidgets and wxpdfdocument
     # and avoid mismatch problem with the cache.
