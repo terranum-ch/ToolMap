@@ -10,6 +10,7 @@ class Toolmap(ConanFile):
         "gdal/3.10.3@terranum-conan+gdal/stable",
         "wxpdfdocument/1.3.1@terranum-conan+wxpdfdocument/stable",
         "libtiff/4.7.0",
+        "libiconv/1.18"  # resolve issue with version 1.17 (not found)
         # "libdeflate/1.19",
         # "proj/9.3.1",
         # "libjpeg/9e",
