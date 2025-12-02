@@ -49,7 +49,7 @@ jobs:
         run: |
           mkdir ${{github.workspace}}/bin
           cd ${{github.workspace}}/bin
-          conan install .. -o unit_test=True --build=qhull --build=missing
+          conan install .. -o unit_test=True --build=qhull --build=missing -s compiler.version=16
 
       - name: Build
         run: |
