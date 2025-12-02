@@ -6,6 +6,9 @@ on:
     types:
       - created
 
+env:
+  CMAKE_POLICY_VERSION_MINIMUM: '3.5'
+
 jobs:
   build:
     runs-on: macos-15
