@@ -65,7 +65,7 @@ jobs:
           cpack -G DragNDrop
 
       - name: Upload
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           path: |
             ${{github.workspace}}/bin/*.dmg
