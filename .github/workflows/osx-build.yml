@@ -77,7 +77,7 @@ jobs:
     if: github.event_name == 'release' && github.event.action == 'created'
 
     steps:
-      - uses: actions/download-artifact@v6
+      - uses: actions/download-artifact@v8
         with:
           name: artifact
           path: dist
