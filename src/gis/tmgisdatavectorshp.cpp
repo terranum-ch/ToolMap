@@ -178,9 +178,9 @@ bool tmGISDataVectorSHP::SetAttributeFilter(const wxString& query) {
         return true;
     }
 
-    // escape ' from query
+    // escape ' from query (OGR SQL only supports doubling the quote, not backslash escaping)
     wxString myQuery(query);
-    myQuery.Replace(_T("'"), _T("\\'"));
+    myQuery.Replace(_T("'"), _T("''"));
     myQuery.Replace(_T("\""), _T("'"));
 
     m_Layer->ResetReading();
